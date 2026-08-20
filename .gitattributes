@@ -1,0 +1,15 @@
+# Normalize text files across Windows and macOS.
+* text=auto eol=lf
+
+# Godot text resources should remain mergeable.
+*.gd text eol=lf
+*.tscn text eol=lf
+*.tres text eol=lf
+*.godot text eol=lf
+
+# Binary assets.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.wav binary
+*.ogg binary
