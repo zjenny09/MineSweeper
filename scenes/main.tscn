@@ -4,12 +4,12 @@
 [ext_resource type="Script" path="res://scripts/board.gd" id="2_board"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
-bg_color = Color(0.075, 0.105, 0.16, 1)
+bg_color = Color(0.086, 0.141, 0.114, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.19, 0.28, 0.42, 1)
+border_color = Color(0.22, 0.38, 0.3, 1)
 corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
@@ -34,7 +34,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.045, 0.063, 0.095, 1)
+color = Color(0.047, 0.075, 0.061, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -65,14 +65,14 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.91, 0.98, 1)
 theme_override_font_sizes/font_size = 30
-text = "扫雷"
+text = "GREEN SWEEPER"
 horizontal_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.47, 0.65, 0.86, 1)
+theme_override_colors/font_color = Color(0.4, 0.82, 0.52, 1)
 theme_override_font_sizes/font_size = 14
-text = "9 × 9  ·  10 颗地雷"
+text = "第一关 · 萌芽  ｜  5 × 5 · 5 个随机污染核心"
 horizontal_alignment = 1
 
 [node name="Separator" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -88,14 +88,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.82, 0.87, 0.94, 1)
 theme_override_font_sizes/font_size = 15
-text = "准备：点击任意格开始"
+text = "点击绿色箭头试试（也可自由选择）"
 
 [node name="FlagsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/InfoRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.96, 0.79, 0.36, 1)
 theme_override_font_sizes/font_size = 15
-text = "旗帜：0/10"
+text = "标记：0/5"
 horizontal_alignment = 2
 
 [node name="Board" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -104,14 +104,14 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 3
 theme_override_constants/v_separation = 3
-columns = 9
+columns = 5
 script = ExtResource("2_board")
 
 [node name="InstructionsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
 theme_override_font_sizes/font_size = 13
-text = "数字格只翻一格  ·  空白格自动展开  ·  右键插旗"
+text = "绿色箭头为安全建议  ·  可点击任意格  ·  右键标记"
 horizontal_alignment = 1
 
 [node name="RestartButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
