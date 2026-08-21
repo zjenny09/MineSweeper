@@ -41,4 +41,30 @@ const LEVEL_5 := {
 	"first_move_guide": false,
 }
 
-const LEVELS := [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5]
+const LEVEL_6 := {
+	"number": 6,
+	"name": "山脉",
+	"size": Vector2i(24, 9),
+	"core_count": 80,
+	"first_move_guide": false,
+	"topology": "triangle",
+}
+
+const LEVELS := [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_6]
+
+
+static func is_valid_level_number(level_number: int) -> bool:
+	return level_number >= 1 and level_number <= LEVELS.size()
+
+
+static func level_index_from_number(level_number: int) -> int:
+	return level_number - 1 if is_valid_level_number(level_number) else -1
+
+
+static func level_number_from_index(level_index: int) -> int:
+	return level_index + 1 if level_index >= 0 and level_index < LEVELS.size() else -1
+
+
+static func get_level_by_number(level_number: int) -> Dictionary:
+	var level_index := level_index_from_number(level_number)
+	return LEVELS[level_index] if level_index >= 0 else {}

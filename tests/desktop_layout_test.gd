@@ -1,0 +1,96 @@
+extends SceneTree
+
+const TEST_SAVE_PATH := "user://green_sweeper_desktop_layout_test.json"
+
+var failures := 0
+
+
+func _init() -> void:
+	call_deferred("_run_tests")
+
+
+func _run_tests() -> void:
+	_cleanup()
+	root.size = Vector2i(1280, 720)
+	var shell_scene: PackedScene = load("res://scenes/shell.tscn")
+	var shell := shell_scene.instantiate()
+	shell.save_path = TEST_SAVE_PATH
+	root.add_child(shell)
+	await process_frame
+
+	_test_menu_columns(shell)
+	await _test_game_columns(shell)
+	await _test_steam_deck_height(shell)
+
+	shell.queue_free()
+	await process_frame
+	_cleanup()
+	if failures == 0:
+		print("Green Sweeper desktop layout tests passed.")
+		quit(0)
+	else:
+		push_error("%d desktop layout test(s) failed." % failures)
+		quit(1)
+
+
+func _test_menu_columns(shell) -> void:
+	var menu_panel := shell.get_node("%MenuPanel") as Control
+	var showcase_panel := shell.get_node("%ShowcasePanel") as Control
+	_expect(_inside_viewport(menu_panel), "The desktop menu panel stays inside 1280x720.")
+	_expect(_inside_viewport(showcase_panel), "The ecology showcase stays inside 1280x720.")
+	_expect(menu_panel.global_position.x + menu_panel.size.x < showcase_panel.global_position.x, "Menu actions and ecology artwork form separate columns.")
+	_expect(showcase_panel.size.x > menu_panel.size.x, "The ecology artwork receives the larger desktop area.")
+
+
+func _test_game_columns(shell) -> void:
+	shell.start_cli_level(5)
+	await process_frame
+	var game = shell.get_active_game()
+	var environment_panel := game.get_node("%EnvironmentPanel") as Control
+	var board_panel := game.get_node("%BoardPanel") as Control
+	var hud_panel := game.get_node("%HudPanel") as Control
+	_expect(_inside_viewport(environment_panel) and _inside_viewport(board_panel) and _inside_viewport(hud_panel), "All three gameplay columns stay inside the viewport.")
+	_expect(environment_panel.global_position.x + environment_panel.size.x < board_panel.global_position.x, "The environment column sits left of the board.")
+	_expect(board_panel.global_position.x + board_panel.size.x < hud_panel.global_position.x, "The HUD column sits right of the board.")
+	var board := game.get_node("%Board") as MinesweeperBoard
+	_expect(board.custom_minimum_size.x >= 480.0 and board.custom_minimum_size.x <= 530.0, "The largest square board uses the expanded desktop target.")
+
+	game.start_level(5)
+	await process_frame
+	_expect(board.custom_minimum_size == Vector2(620.0, 460.0), "The triangle board uses the 620x460 desktop stage.")
+	game.set_session_paused(true)
+	await process_frame
+	var overlay := game.get_node("%PauseOverlay") as Control
+	_expect(overlay.visible and overlay.global_position == Vector2.ZERO, "Pause overlay starts at the viewport origin.")
+	_expect(overlay.size == Vector2(root.size), "Pause overlay covers the complete three-column viewport.")
+	game.set_session_paused(false)
+
+
+func _test_steam_deck_height(shell) -> void:
+	shell.show_main_menu()
+	root.size = Vector2i(1280, 800)
+	await process_frame
+	await process_frame
+	var menu_panel := shell.get_node("%MenuPanel") as Control
+	var showcase_panel := shell.get_node("%ShowcasePanel") as Control
+	_expect(_inside_viewport(menu_panel) and _inside_viewport(showcase_panel), "The menu remains inside a 1280x800 viewport.")
+	_expect(menu_panel.size.y > 680.0 and showcase_panel.size.y > 680.0, "Steam Deck height becomes usable page space.")
+
+
+func _inside_viewport(control: Control) -> bool:
+	var rect := control.get_global_rect()
+	var viewport_rect := Rect2(Vector2.ZERO, Vector2(root.size))
+	return viewport_rect.encloses(rect)
+
+
+func _cleanup() -> void:
+	for suffix in ["", ".tmp", ".bak"]:
+		var path: String = TEST_SAVE_PATH + suffix
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _expect(condition: bool, message: String) -> void:
+	if not condition:
+		failures += 1
+		push_error(message)

@@ -2,7 +2,26 @@
 
 使用 Godot 4.7.2 Standard 和 GDScript 制作的生态主题关卡制扫雷游戏。
 
-## 当前版本：v0.2.2
+## 当前版本：v0.3.1
+
+## 正式游戏外壳
+
+- 正常启动先进入主菜单，不再直接进入棋盘
+- 支持开始游戏、继续上次关卡、动态关卡选择、设置和退出
+- 默认只解锁第一关，完成当前关后自动解锁下一关
+- 自动记录每关完成状态和最佳时间
+- 游戏内支持计时、暂停、继续、重开和返回选关
+- 第一版设置包含主音量与窗口/全屏切换
+- 进度保存在 `user://save_v1.json`；“继续游戏”会重新生成上次关卡，不恢复中途棋盘
+- `--level=1` 至 `--level=6` 可绕过菜单直接测试，且不写入关卡进度
+
+## 横屏桌面原型
+
+- 默认分辨率调整为 `1280 × 720`，并适配Steam Deck的 `1280 × 800`
+- 主菜单采用左侧操作、右侧程序化生态展示
+- 游戏页面采用左侧环境目标、中间棋盘、右侧HUD三栏布局
+- 方格棋盘扩大到约480像素目标范围，三角棋盘扩大到 `620 × 460`
+- 当前横屏版本面向桌面展示，暂未制作复杂窄窗口响应式重排
 
 ### 第一关“萌芽”
 
@@ -33,6 +52,14 @@
 - 第五关“森林”：`12 × 12 / 35个污染核心`
 - 三关均无安全箭头、无首点保护
 - 继续使用方格8邻接、标记和数字双击展开
+
+### 第六关“山脉”
+
+- `24列 × 9排`，共216个真正的上下交替三角格
+- 每局随机生成80个污染核心，无安全箭头、无首点保护
+- 每个三角格只计算共享整条边的最多3个邻居
+- 棋盘保持完整宽幅，以多个程序化山峰表现山脉环境
+- 继续支持经典0区域展开、右键标记和严格数字双击展开
 
 ## 01—06 陆地主题
 
@@ -78,4 +105,8 @@ build/     导出产物（不提交到 Git）
 
 ```text
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/board_smoke_test.gd
+D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/triangle_board_test.gd
+D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/save_store_test.gd
+D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/shell_flow_test.gd
+D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/desktop_layout_test.gd
 ```

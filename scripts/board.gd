@@ -1,10 +1,15 @@
 class_name MinesweeperBoard
-extends GridContainer
+extends Control
 
 signal state_changed(state: int)
 signal flags_changed(used_flags: int, max_flags: int)
 
 const CELL_SCENE: PackedScene = preload("res://scenes/cell.tscn")
+const TRIANGLE_BOARD_VIEW_SCRIPT: Script = preload("res://scripts/triangle_board_view.gd")
+const SQUARE_TOPOLOGY := "square"
+const TRIANGLE_TOPOLOGY := "triangle"
+const TRIANGLE_BOARD_SIZE := Vector2(620.0, 460.0)
+
 
 enum GameState {
 	READY,
@@ -22,10 +27,12 @@ var cell_count := 0
 var safe_cell_count := 0
 var first_move_guide_enabled := false
 var guide_cell_index := -1
+var topology := SQUARE_TOPOLOGY
 
 var game_state: int = GameState.READY
 var used_flags := 0
 var revealed_safe_count := 0
+var interaction_enabled := true
 
 var mines: Array[bool] = []
 var revealed: Array[bool] = []
@@ -34,6 +41,8 @@ var adjacent_counts: Array[int] = []
 var cell_nodes: Array[MineCell] = []
 
 var _random := RandomNumberGenerator.new()
+var _square_grid: GridContainer
+var _triangle_view
 
 
 func _ready() -> void:
@@ -46,11 +55,11 @@ func load_level(level: Dictionary) -> void:
 	var board_size: Vector2i = level.size
 	column_count = board_size.x
 	row_count = board_size.y
-	columns = column_count
 	cell_count = row_count * column_count
 	core_count = level.core_count
 	safe_cell_count = cell_count - core_count
 	first_move_guide_enabled = level.get("first_move_guide", false)
+	topology = level.get("topology", SQUARE_TOPOLOGY)
 
 	_clear_cells()
 	_create_cells()
@@ -76,7 +85,7 @@ func new_game() -> void:
 
 
 func reveal_cell(cell_index: int) -> void:
-	if not _is_valid_index(cell_index):
+	if not interaction_enabled or not _is_valid_index(cell_index):
 		return
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
@@ -103,7 +112,7 @@ func reveal_cell(cell_index: int) -> void:
 
 
 func toggle_flag(cell_index: int) -> void:
-	if not _is_valid_index(cell_index):
+	if not interaction_enabled or not _is_valid_index(cell_index):
 		return
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
@@ -124,7 +133,7 @@ func toggle_flag(cell_index: int) -> void:
 
 
 func chord_cell(cell_index: int) -> void:
-	if not _is_valid_index(cell_index) or game_state != GameState.PLAYING:
+	if not interaction_enabled or not _is_valid_index(cell_index) or game_state != GameState.PLAYING:
 		return
 	if not revealed[cell_index] or adjacent_counts[cell_index] <= 0:
 		return
@@ -153,14 +162,52 @@ func chord_cell(cell_index: int) -> void:
 		_refresh_all_cells()
 
 
+func set_interaction_enabled(enabled: bool) -> void:
+	if interaction_enabled == enabled:
+		return
+	interaction_enabled = enabled
+	_refresh_all_cells()
+
+
+func get_triangle_view():
+	return _triangle_view
+
+
 func _clear_cells() -> void:
-	for cell in cell_nodes:
-		cell.queue_free()
 	cell_nodes.clear()
+	if is_instance_valid(_square_grid):
+		remove_child(_square_grid)
+		_square_grid.free()
+	_square_grid = null
+	if is_instance_valid(_triangle_view):
+		remove_child(_triangle_view)
+		_triangle_view.free()
+	_triangle_view = null
 
 
 func _create_cells() -> void:
-	var cell_size := clampf(360.0 / max(row_count, column_count), 28.0, 64.0)
+	if topology == TRIANGLE_TOPOLOGY:
+		_create_triangle_view()
+	else:
+		_create_square_cells()
+
+
+func _create_square_cells() -> void:
+	var cell_size := clampf(480.0 / max(row_count, column_count), 34.0, 82.0)
+	var separation := 3.0
+	var grid_size := Vector2(
+		float(column_count) * cell_size + float(column_count - 1) * separation,
+		float(row_count) * cell_size + float(row_count - 1) * separation
+	)
+	custom_minimum_size = grid_size
+
+	_square_grid = GridContainer.new()
+	_square_grid.columns = column_count
+	_square_grid.custom_minimum_size = grid_size
+	_square_grid.add_theme_constant_override("h_separation", int(separation))
+	_square_grid.add_theme_constant_override("v_separation", int(separation))
+	add_child(_square_grid)
+
 	for cell_index in cell_count:
 		var cell := CELL_SCENE.instantiate() as MineCell
 		cell.custom_minimum_size = Vector2(cell_size, cell_size)
@@ -168,8 +215,19 @@ func _create_cells() -> void:
 		cell.reveal_requested.connect(reveal_cell)
 		cell.flag_requested.connect(toggle_flag)
 		cell.chord_requested.connect(chord_cell)
-		add_child(cell)
+		_square_grid.add_child(cell)
 		cell_nodes.append(cell)
+
+
+func _create_triangle_view() -> void:
+	custom_minimum_size = TRIANGLE_BOARD_SIZE
+	_triangle_view = TRIANGLE_BOARD_VIEW_SCRIPT.new()
+	add_child(_triangle_view)
+	_triangle_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_triangle_view.setup(row_count, column_count)
+	_triangle_view.reveal_requested.connect(reveal_cell)
+	_triangle_view.flag_requested.connect(toggle_flag)
+	_triangle_view.chord_requested.connect(chord_cell)
 
 
 func _place_random_cores() -> void:
@@ -244,6 +302,12 @@ func _reveal_area(start_index: int) -> void:
 
 
 func _get_neighbors(cell_index: int) -> Array[int]:
+	if topology == TRIANGLE_TOPOLOGY:
+		return _get_triangle_neighbors(cell_index)
+	return _get_square_neighbors(cell_index)
+
+
+func _get_square_neighbors(cell_index: int) -> Array[int]:
 	var neighbors: Array[int] = []
 	var row := int(cell_index / column_count)
 	var column := cell_index % column_count
@@ -263,28 +327,54 @@ func _get_neighbors(cell_index: int) -> Array[int]:
 	return neighbors
 
 
+func _get_triangle_neighbors(cell_index: int) -> Array[int]:
+	var neighbors: Array[int] = []
+	var row := int(cell_index / column_count)
+	var column := cell_index % column_count
+
+	if column > 0:
+		neighbors.append(cell_index - 1)
+	if column + 1 < column_count:
+		neighbors.append(cell_index + 1)
+
+	var vertical_row := row + 1 if (row + column) % 2 == 0 else row - 1
+	if vertical_row >= 0 and vertical_row < row_count:
+		neighbors.append(vertical_row * column_count + column)
+	return neighbors
+
+
 func _refresh_all_cells() -> void:
 	for cell_index in cell_count:
 		_refresh_cell(cell_index)
 
 
 func _refresh_cell(cell_index: int) -> void:
-	if cell_nodes.is_empty():
-		return
-	var game_finished := game_state == GameState.WON or game_state == GameState.LOST
+	var game_finished := game_state == GameState.WON or game_state == GameState.LOST or not interaction_enabled
 	var core_visible := game_state == GameState.LOST and mines[cell_index]
 	var wrong_flag := game_state == GameState.LOST and flagged[cell_index] and not mines[cell_index]
 	var solved_core := game_state == GameState.WON and mines[cell_index]
-	cell_nodes[cell_index].render_state(
-		revealed[cell_index],
-		flagged[cell_index],
-		core_visible,
-		adjacent_counts[cell_index],
-		game_finished,
-		wrong_flag,
-		solved_core,
-		cell_index == guide_cell_index
-	)
+	if is_instance_valid(_triangle_view):
+		_triangle_view.render_state(
+			cell_index,
+			revealed[cell_index],
+			flagged[cell_index],
+			core_visible,
+			adjacent_counts[cell_index],
+			game_finished,
+			wrong_flag,
+			solved_core
+		)
+	elif not cell_nodes.is_empty():
+		cell_nodes[cell_index].render_state(
+			revealed[cell_index],
+			flagged[cell_index],
+			core_visible,
+			adjacent_counts[cell_index],
+			game_finished,
+			wrong_flag,
+			solved_core,
+			cell_index == guide_cell_index
+		)
 
 
 func _reset_array(array: Array, value: Variant) -> void:

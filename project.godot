@@ -7,19 +7,23 @@ config_version=5
 
 config/name="Green Sweeper"
 config/description="A level-based ecological Minesweeper game."
-config/version="0.2.2"
-run/main_scene="res://scenes/main.tscn"
+config/version="0.3.1"
+run/main_scene="res://scenes/shell.tscn"
 
 [display]
 
-window/size/viewport_width=520
-window/size/viewport_height=640
-window/size/window_width_override=520
-window/size/window_height_override=640
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/size/min_width=960
+window/size/min_height=540
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.055, 0.075, 0.11, 1)

@@ -1,21 +1,22 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/board.gd" id="2_board"]
+[ext_resource type="Script" path="res://scripts/eco_showcase.gd" id="3_eco"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
-bg_color = Color(0.086, 0.141, 0.114, 1)
+bg_color = Color(0.075, 0.13, 0.105, 0.97)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.22, 0.38, 0.3, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 10
+border_color = Color(0.22, 0.43, 0.32, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.32)
+shadow_size = 8
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -34,9 +35,219 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.047, 0.075, 0.061, 1)
+color = Color(0.025, 0.052, 0.041, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="PageMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 26
+
+[node name="Columns" type="HBoxContainer" parent="PageMargin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="EnvironmentPanel" type="PanelContainer" parent="PageMargin/Columns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_panel")
+
+[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/EnvironmentPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="VBox" type="VBoxContainer" parent="PageMargin/Columns/EnvironmentPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Brand" type="Label" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.93, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "GREEN SWEEPER"
+
+[node name="EcoShowcase" type="Control" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(184, 190)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("3_eco")
+compact = true
+
+[node name="SubtitleLabel" type="Label" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.82, 0.52, 1)
+theme_override_font_sizes/font_size = 18
+text = "第1关 · 萌芽"
+autowrap_mode = 2
+
+[node name="LevelSummaryLabel" type="Label" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.64, 0.75, 0.69, 1)
+theme_override_font_sizes/font_size = 14
+text = "5 × 5\n5个随机污染核心"
+
+[node name="Separator" type="HSeparator" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ObjectiveTitle" type="Label" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.93, 0.79, 1)
+theme_override_font_sizes/font_size = 15
+text = "当前目标"
+
+[node name="ObjectiveLabel" type="Label" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.8, 0.75, 1)
+theme_override_font_sizes/font_size = 14
+text = "打开所有安全区域，完成生态净化。"
+autowrap_mode = 2
+
+[node name="Fill" type="Control" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InstructionsLabel" type="Label" parent="PageMargin/Columns/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.62, 0.56, 1)
+theme_override_font_sizes/font_size = 13
+text = "左键净化\n右键标记\n双击数字快速展开"
+autowrap_mode = 2
+
+[node name="BoardPanel" type="PanelContainer" parent="PageMargin/Columns"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBox_panel")
+
+[node name="BoardCenter" type="CenterContainer" parent="PageMargin/Columns/BoardPanel"]
+layout_mode = 2
+
+[node name="Board" type="Control" parent="PageMargin/Columns/BoardPanel/BoardCenter"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("2_board")
+
+[node name="HudPanel" type="PanelContainer" parent="PageMargin/Columns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_panel")
+
+[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/HudPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="PageMargin/Columns/HudPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TimeTitle" type="Label" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.68, 0.61, 1)
+theme_override_font_sizes/font_size = 14
+text = "净化时间"
+
+[node name="TimerLabel" type="Label" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.82, 0.94, 1)
+theme_override_font_sizes/font_size = 34
+text = "00:00.0"
+
+[node name="FlagsTitle" type="Label" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.68, 0.61, 1)
+theme_override_font_sizes/font_size = 14
+text = "污染核心"
+
+[node name="FlagsLabel" type="Label" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.79, 0.36, 1)
+theme_override_font_sizes/font_size = 24
+text = "标记：0/5"
+
+[node name="Separator" type="HSeparator" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="StatusTitle" type="Label" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.68, 0.61, 1)
+theme_override_font_sizes/font_size = 14
+text = "净化状态"
+
+[node name="StatusLabel" type="Label" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.87, 0.94, 1)
+theme_override_font_sizes/font_size = 15
+text = "选择第一块净化区域"
+autowrap_mode = 2
+
+[node name="Fill" type="Control" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PauseButton" type="Button" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 16
+text = "暂停  ·  Esc"
+
+[node name="RestartButton" type="Button" parent="PageMargin/Columns/HudPanel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 17
+text = "重新开始"
+
+[node name="PauseOverlay" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Shade" type="ColorRect" parent="PauseOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.02, 0.035, 0.028, 0.88)
+
+[node name="Center" type="CenterContainer" parent="PauseOverlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,83 +255,61 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(480, 0)
+[node name="Panel" type="PanelContainer" parent="PauseOverlay/Center"]
+custom_minimum_size = Vector2(390, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_panel")
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+[node name="Margin" type="MarginContainer" parent="PauseOverlay/Center/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 22
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 22
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
+[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Center/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
+theme_override_constants/separation = 14
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="PauseTitle" type="Label" parent="PauseOverlay/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86, 0.91, 0.98, 1)
-theme_override_font_sizes/font_size = 30
-text = "GREEN SWEEPER"
+theme_override_font_sizes/font_size = 28
+text = "净化暂停"
 horizontal_alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="ResumeButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.82, 0.52, 1)
-theme_override_font_sizes/font_size = 14
-text = "第一关 · 萌芽  ｜  5 × 5 · 5 个随机污染核心"
-horizontal_alignment = 1
+text = "继续游戏"
 
-[node name="Separator" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="InfoRow" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="StatusLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/InfoRow"]
+[node name="PauseRestartButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.82, 0.87, 0.94, 1)
-theme_override_font_sizes/font_size = 15
-text = "点击绿色箭头试试（也可自由选择）"
-
-[node name="FlagsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/InfoRow"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.79, 0.36, 1)
-theme_override_font_sizes/font_size = 15
-text = "标记：0/5"
-horizontal_alignment = 2
-
-[node name="Board" type="GridContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/h_separation = 3
-theme_override_constants/v_separation = 3
-columns = 5
-script = ExtResource("2_board")
-
-[node name="InstructionsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
-theme_override_font_sizes/font_size = 13
-text = "绿色箭头为安全建议  ·  双击数字快速展开  ·  右键标记"
-horizontal_alignment = 1
-
-[node name="RestartButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_override_font_sizes/font_size = 17
 text = "重新开始"
+
+[node name="LevelSelectButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "返回关卡选择"
+
+[node name="PauseSettingsButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "设置"
+
+[node name="MainMenuButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "返回主菜单"
+
+[node name="ExitGameButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "退出游戏"

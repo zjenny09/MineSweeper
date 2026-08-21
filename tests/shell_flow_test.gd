@@ -1,0 +1,215 @@
+extends SceneTree
+
+const TEST_SAVE_PATH := "user://green_sweeper_shell_test.json"
+const SAVE_STORE_SCRIPT: Script = preload("res://scripts/save_store.gd")
+
+var failures := 0
+
+
+func _init() -> void:
+	call_deferred("_run_tests")
+
+
+func _run_tests() -> void:
+	_cleanup_test_files()
+	var settings_fixture: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
+	settings_fixture.set_master_volume(0.72)
+	settings_fixture.save_data()
+	var packed_scene: PackedScene = load("res://scenes/shell.tscn")
+	var shell := packed_scene.instantiate()
+	shell.save_path = TEST_SAVE_PATH
+	root.add_child(shell)
+	await process_frame
+
+	_test_initial_menu(shell)
+	_test_level_argument_parser(shell)
+	_test_locked_level_cards(shell)
+	await _test_start_pause_and_restart(shell)
+	_test_completion_and_unlock(shell)
+	_test_continue(shell)
+	_test_cli_read_only(shell)
+	_test_return_to_level_select(shell)
+	_test_pause_settings_round_trip(shell)
+	_test_return_to_main_menu(shell)
+	_test_volume_setting(shell)
+
+	shell.queue_free()
+	await process_frame
+	_cleanup_test_files()
+	if failures == 0:
+		print("Green Sweeper shell flow tests passed.")
+		quit(0)
+	else:
+		push_error("%d shell flow test(s) failed." % failures)
+		quit(1)
+
+
+func _test_initial_menu(shell) -> void:
+	_expect(shell.get_node("%MainMenu").visible, "A normal launch opens the main menu.")
+	_expect(not shell.get_node("%GameHost").visible, "No game is created before the player chooses one.")
+	_expect(shell.get_node("%ContinueButton").disabled, "Continue is disabled for a new save.")
+	_expect(shell.get_node("%VolumeValueLabel").text == "72%", "Saved volume updates the settings percentage on startup.")
+
+
+func _test_level_argument_parser(shell) -> void:
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=1"])) == 1, "CLI accepts level 1.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=6"])) == 6, "CLI accepts level 6.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=0"])) == -1, "CLI rejects level 0.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=7"])) == -1, "CLI rejects unavailable levels.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=forest"])) == -1, "CLI rejects non-numeric levels.")
+	_expect(shell.parse_level_argument(PackedStringArray()) == 0, "No CLI level keeps the menu flow.")
+
+
+func _test_locked_level_cards(shell) -> void:
+	shell.show_level_select()
+	var cards: Array = shell.get_node("%LevelGrid").get_children()
+	_expect(cards.size() == 6, "Level select builds one card for each land level.")
+	_expect(not cards[0].disabled, "Level 1 is unlocked for a new save.")
+	for index in range(1, cards.size()):
+		_expect(cards[index].disabled, "Later levels begin locked.")
+
+
+func _test_start_pause_and_restart(shell) -> void:
+	shell.start_normal_level(1)
+	var game = shell.get_active_game()
+	_expect(game != null and shell.get_node("%GameHost").visible, "Start creates the game page.")
+	_expect(game.board.level_number == 1, "Start begins at level 1.")
+	_expect(shell.save_store.get_last_played_level() == 1, "Starting records the continue target.")
+
+	var number_index := -1
+	for cell_index in game.board.cell_count:
+		if not game.board.mines[cell_index] and game.board.adjacent_counts[cell_index] > 0:
+			number_index = cell_index
+			break
+	game.board.reveal_cell(number_index)
+	await create_timer(0.08).timeout
+	game.set_session_paused(true)
+	var paused_elapsed: int = game.get_elapsed_ms()
+	var revealed_before: int = game.board.revealed_safe_count
+	var another_safe := -1
+	for cell_index in game.board.cell_count:
+		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
+			another_safe = cell_index
+			break
+	game.board.reveal_cell(another_safe)
+	await create_timer(0.12).timeout
+	_expect(game.is_session_paused(), "The session enters the paused state.")
+	_expect(not game.board.interaction_enabled, "Pause locks board interaction.")
+	_expect(game.board.revealed_safe_count == revealed_before, "A paused board ignores reveal requests.")
+	_expect(abs(game.get_elapsed_ms() - paused_elapsed) <= 15, "Paused time is excluded from the timer.")
+
+	game.set_session_paused(false)
+	_expect(game.board.interaction_enabled, "Resume restores board interaction.")
+	game.restart_level()
+	_expect(game.get_elapsed_ms() == 0 and game.board.revealed.count(true) == 0, "Pause-menu restart resets time and board state.")
+
+
+func _test_completion_and_unlock(shell) -> void:
+	var game = shell.get_active_game()
+	for cell_index in game.board.cell_count:
+		if game.board.game_state == MinesweeperBoard.GameState.WON:
+			break
+		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
+			game.board.reveal_cell(cell_index)
+	_expect(game.board.game_state == MinesweeperBoard.GameState.WON, "The shell receives a real level completion.")
+	_expect(shell.save_store.is_level_completed(1), "Completion is saved for level 1.")
+	_expect(shell.save_store.is_level_unlocked(2), "Completing level 1 unlocks level 2.")
+	_expect(shell.save_store.get_best_time_ms(1) >= 0, "Completion stores a best time.")
+	game.set_session_paused(true)
+	_expect(game.is_session_paused() and game.get_node("%PauseOverlay").visible, "A completed level can still open the menu.")
+	_expect(not game.get_node("%PauseButton").disabled, "The result screen keeps its menu button enabled.")
+	game.set_session_paused(false)
+
+	shell.show_level_select()
+	var cards: Array = shell.get_node("%LevelGrid").get_children()
+	_expect(not cards[1].disabled, "The newly unlocked level is selectable immediately.")
+	_expect(cards[2].disabled, "Level 3 remains locked until level 2 is complete.")
+	_expect(cards[0].text.contains("已净化"), "Completed cards display their status.")
+
+
+func _test_continue(shell) -> void:
+	shell.show_main_menu()
+	var continue_button := shell.get_node("%ContinueButton") as Button
+	_expect(not continue_button.disabled, "Continue is enabled after a normal level starts.")
+	continue_button.emit_signal("pressed")
+	_expect(shell.get_active_game() != null and shell.get_active_game().board.level_number == 1, "Continue regenerates the last played level.")
+	_expect(shell.get_active_game().board.revealed.count(true) == 0, "Continue does not restore an old board snapshot.")
+
+
+func _test_cli_read_only(shell) -> void:
+	var last_level_before: int = shell.save_store.get_last_played_level()
+	shell.start_cli_level(6)
+	var game = shell.get_active_game()
+	_expect(shell.is_cli_read_only() and game.board.level_number == 6, "CLI mode can bypass locks and enter level 6.")
+	for cell_index in game.board.cell_count:
+		if game.board.game_state == MinesweeperBoard.GameState.WON:
+			break
+		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
+			game.board.reveal_cell(cell_index)
+	_expect(game.board.game_state == MinesweeperBoard.GameState.WON, "A CLI session remains fully playable.")
+	_expect(not shell.save_store.is_level_completed(6), "CLI completion does not write progress.")
+	_expect(shell.save_store.get_last_played_level() == last_level_before, "CLI sessions do not replace Continue progress.")
+
+
+func _test_return_to_level_select(shell) -> void:
+	shell.start_normal_level(1)
+	var game = shell.get_active_game()
+	game.level_select_requested.emit()
+	_expect(shell.get_active_game() == null, "Returning to level select releases the old game instance.")
+	_expect(shell.get_node("%LevelSelect").visible, "The level-select page appears after leaving a game.")
+
+
+func _test_pause_settings_round_trip(shell) -> void:
+	shell.start_normal_level(1)
+	var game = shell.get_active_game()
+	game.set_session_paused(true)
+	game.settings_requested.emit()
+	_expect(shell.get_node("%Settings").visible, "Pause can open the shared settings page.")
+	_expect(shell.get_active_game() == game, "Opening settings keeps the current game instance alive.")
+	shell.call("_close_settings")
+	_expect(shell.get_node("%GameHost").visible, "Closing in-game settings returns to the game page.")
+	_expect(shell.get_active_game() == game and game.is_session_paused(), "The same game remains paused after closing settings.")
+
+
+func _test_return_to_main_menu(shell) -> void:
+	shell.start_normal_level(1)
+	var game = shell.get_active_game()
+	_expect(game.get_node("%PauseSettingsButton") != null, "Pause provides a standard settings entry.")
+	_expect(game.get_node("%ExitGameButton") != null, "Pause provides a visible exit-game control.")
+	game.main_menu_requested.emit()
+	_expect(shell.get_active_game() == null, "Returning to the main menu releases the game instance.")
+	_expect(shell.get_node("%MainMenu").visible, "The main menu appears directly from pause navigation.")
+
+
+func _test_volume_setting(shell) -> void:
+	var slider := shell.get_node("%VolumeSlider") as HSlider
+	var display_mode := shell.get_node("%DisplayModeOption") as OptionButton
+	_expect(display_mode.item_count == 2 and display_mode.get_item_text(0) == "窗口模式", "Settings provides explicit window and fullscreen modes.")
+	shell.show_settings()
+	slider.value = 0.44
+	shell.call("_close_settings")
+	_expect(shell.get_node("%MainMenu").visible, "Settings opened from the main menu returns to the main menu.")
+	var keyboard_reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
+	keyboard_reloaded.load_data()
+	_expect(is_equal_approx(keyboard_reloaded.get_master_volume(), 0.44), "Keyboard-style volume changes save when leaving settings.")
+
+	shell.show_settings()
+	slider.value = 0.35
+	shell.call("_on_volume_drag_ended", true)
+	_expect(is_equal_approx(shell.save_store.get_master_volume(), 0.35), "Master volume changes are stored.")
+	var reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
+	reloaded.load_data()
+	_expect(is_equal_approx(reloaded.get_master_volume(), 0.35), "Master volume persists on disk.")
+
+
+func _cleanup_test_files() -> void:
+	for suffix in ["", ".tmp", ".bak"]:
+		var path: String = TEST_SAVE_PATH + suffix
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _expect(condition: bool, message: String) -> void:
+	if not condition:
+		failures += 1
+		push_error(message)
