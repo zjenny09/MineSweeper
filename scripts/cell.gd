@@ -3,6 +3,7 @@ extends Button
 
 signal reveal_requested(cell_index: int)
 signal flag_requested(cell_index: int)
+signal chord_requested(cell_index: int)
 
 const DEFAULT_COLOR := Color("334155")
 const FLAG_COLOR := Color("facc15")
@@ -21,6 +22,8 @@ const NUMBER_COLORS := {
 }
 
 var cell_index := -1
+var _is_revealed := false
+var _input_locked := false
 var _hidden_style: StyleBoxFlat
 var _hover_style: StyleBoxFlat
 var _pressed_style: StyleBoxFlat
@@ -67,31 +70,46 @@ func render_state(
 		text = "↓"
 		_set_text_color(GUIDE_COLOR)
 
-	add_theme_stylebox_override("normal", _guide_style if is_guided else _hidden_style)
-	add_theme_stylebox_override("hover", _guide_hover_style if is_guided else _hover_style)
-	disabled = input_locked or is_revealed
+	_is_revealed = is_revealed
+	_input_locked = input_locked
+	if is_revealed:
+		add_theme_stylebox_override("normal", _revealed_style)
+		add_theme_stylebox_override("hover", _revealed_style)
+		add_theme_stylebox_override("pressed", _revealed_style)
+	elif is_guided:
+		add_theme_stylebox_override("normal", _guide_style)
+		add_theme_stylebox_override("hover", _guide_hover_style)
+		add_theme_stylebox_override("pressed", _guide_hover_style)
+	else:
+		add_theme_stylebox_override("normal", _hidden_style)
+		add_theme_stylebox_override("hover", _hover_style)
+		add_theme_stylebox_override("pressed", _pressed_style)
+	disabled = input_locked
 	add_theme_stylebox_override("disabled", _revealed_style if is_revealed else _hidden_style)
 	if is_guided:
 		tooltip_text = "建议从这里开始（也可以忽略）"
 	elif is_revealed and adjacent_count == 0:
 		tooltip_text = "空白净化区"
 	elif is_revealed:
-		tooltip_text = "邻近污染核心：%d" % adjacent_count
+		tooltip_text = "邻近污染核心：%d；双击可快速展开" % adjacent_count
 	else:
 		tooltip_text = "左键净化，右键标记污染核心"
 
 
 func _on_pressed() -> void:
-	if not disabled:
+	if not _input_locked and not _is_revealed:
 		reveal_requested.emit(cell_index)
 
 
 func _gui_input(event: InputEvent) -> void:
-	if disabled:
+	if _input_locked:
 		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
-		if mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed:
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.double_click and mouse_event.pressed and _is_revealed:
+			chord_requested.emit(cell_index)
+			accept_event()
+		elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and not _is_revealed:
 			flag_requested.emit(cell_index)
 			accept_event()
 

@@ -20,10 +20,13 @@ func _run_tests() -> void:
 	_test_random_layouts(board)
 	_test_flags_win_and_restart(board)
 	_test_player_facing_terms(main_scene, board)
+	_test_level_transition(main_scene, board)
+	_test_level_2(main_scene, board)
+	_test_chord_behavior(main_scene, board)
 
 	main_scene.queue_free()
 	if failures == 0:
-		print("Green Sweeper level 1 guided-board tests passed.")
+		print("Green Sweeper level framework tests passed.")
 		quit(0)
 	else:
 		push_error("%d Green Sweeper test(s) failed." % failures)
@@ -134,6 +137,122 @@ func _test_player_facing_terms(main_scene: Node, board: MinesweeperBoard) -> voi
 	_expect(flags_label.text == "标记：0/5", "The counter uses marking terminology.")
 	_expect(status_label.text.contains("绿色箭头"), "The initial status explains the optional guide.")
 	_expect(board.cell_nodes[board.guide_cell_index].tooltip_text.contains("也可以忽略"), "The guide explicitly remains optional.")
+
+
+func _test_level_transition(main_scene: Node, board: MinesweeperBoard) -> void:
+	main_scene.call("_load_level", 0)
+	board.reveal_cell(board.guide_cell_index)
+	for cell_index in board.cell_count:
+		if board.game_state != MinesweeperBoard.GameState.PLAYING:
+			break
+		if not board.mines[cell_index] and not board.revealed[cell_index]:
+			board.reveal_cell(cell_index)
+	_expect(board.game_state == MinesweeperBoard.GameState.WON, "Level 1 can be completed before advancing.")
+	var primary_button := main_scene.get_node("%RestartButton") as Button
+	_expect(primary_button.text == "进入下一关", "Finishing level 1 offers the next level.")
+	main_scene.call("_on_primary_button_pressed")
+	_expect(board.level_number == 2 and board.level_name == "草丛", "The next-level button loads Grass Clump.")
+
+
+func _test_level_2(main_scene: Node, board: MinesweeperBoard) -> void:
+	main_scene.call("_load_level", 1)
+	_expect(board.row_count == 6 and board.column_count == 6, "Level 2 uses a 6x6 board.")
+	_expect(board.cell_nodes.size() == 36, "Level 2 creates 36 cells.")
+	_expect(board.core_count == 8 and board.safe_cell_count == 28, "Level 2 uses eight pollution cores.")
+	_expect(not board.first_move_guide_enabled and board.guide_cell_index == -1, "Level 2 removes first-move guidance.")
+	_expect(not _any_arrow_visible(board), "Level 2 shows no safe arrow.")
+	_expect(board.mines.count(true) == 8 and board.revealed.count(true) == 0, "Level 2 starts as a complete closed random board.")
+	var status_label := main_scene.get_node("%StatusLabel") as Label
+	var instructions_label := main_scene.get_node("%InstructionsLabel") as Label
+	_expect(status_label.text == "选择第一块净化区域", "Level 2 asks the player to choose freely.")
+	_expect(instructions_label.text.contains("首点可能污染"), "Level 2 warns that the first choice is unprotected.")
+
+	board._random.seed = 6202
+	board.new_game()
+	var first_core := board.mines.find(true)
+	board.reveal_cell(first_core)
+	_expect(board.game_state == MinesweeperBoard.GameState.LOST, "Level 2 can lose on the first click.")
+
+	var layouts: Dictionary = {}
+	for trial in 10:
+		board._random.seed = 7000 + trial
+		board.new_game()
+		layouts[_core_layout_key(board)] = true
+		_expect(board.mines.count(true) == 8, "Every level 2 board contains eight cores.")
+	_expect(layouts.size() > 1, "Level 2 restart produces different layouts.")
+	board._random.randomize()
+
+
+func _test_chord_behavior(main_scene: Node, board: MinesweeperBoard) -> void:
+	main_scene.call("_load_level", 1)
+	board._random.seed = 8100
+	board.new_game()
+	var number_index := _find_chord_candidate(board)
+	_expect(number_index >= 0, "A numbered cell with safe and core neighbors exists for chord testing.")
+	if number_index < 0:
+		return
+	board.reveal_cell(number_index)
+	var mine_neighbors: Array[int] = []
+	var safe_neighbors: Array[int] = []
+	for neighbor in board._get_neighbors(number_index):
+		if board.mines[neighbor]:
+			mine_neighbors.append(neighbor)
+		else:
+			safe_neighbors.append(neighbor)
+
+	var before_count := board.revealed_safe_count
+	board.chord_cell(number_index)
+	_expect(board.revealed_safe_count == before_count, "Double-click does nothing while core marks are missing.")
+
+	for core_index in mine_neighbors:
+		board.toggle_flag(core_index)
+	var double_click := InputEventMouseButton.new()
+	double_click.button_index = MOUSE_BUTTON_LEFT
+	double_click.pressed = true
+	double_click.double_click = true
+	board.cell_nodes[number_index]._gui_input(double_click)
+	_expect(board.revealed_safe_count > before_count, "Double-click opens safe neighbors after every adjacent core is marked.")
+	for safe_index in safe_neighbors:
+		_expect(board.revealed[safe_index], "Every adjacent safe cell is opened by a valid double-click.")
+
+	board._random.seed = 8101
+	board.new_game()
+	number_index = _find_chord_candidate(board)
+	_expect(number_index >= 0, "A second chord candidate exists for wrong-mark testing.")
+	if number_index < 0:
+		return
+	board.reveal_cell(number_index)
+	mine_neighbors.clear()
+	safe_neighbors.clear()
+	for neighbor in board._get_neighbors(number_index):
+		if board.mines[neighbor]:
+			mine_neighbors.append(neighbor)
+		else:
+			safe_neighbors.append(neighbor)
+	for index in range(1, mine_neighbors.size()):
+		board.toggle_flag(mine_neighbors[index])
+	board.toggle_flag(safe_neighbors[0])
+	before_count = board.revealed_safe_count
+	board.chord_cell(number_index)
+	_expect(board.revealed_safe_count == before_count, "A wrong mark prevents double-click expansion even when the count matches.")
+	_expect(board.game_state == MinesweeperBoard.GameState.PLAYING, "Wrong chord marks do not trigger a loss.")
+	board._random.randomize()
+
+
+func _find_chord_candidate(board: MinesweeperBoard) -> int:
+	for cell_index in board.cell_count:
+		if board.mines[cell_index] or board.adjacent_counts[cell_index] <= 0:
+			continue
+		var has_core_neighbor := false
+		var has_safe_neighbor := false
+		for neighbor in board._get_neighbors(cell_index):
+			if board.mines[neighbor]:
+				has_core_neighbor = true
+			else:
+				has_safe_neighbor = true
+		if has_core_neighbor and has_safe_neighbor:
+			return cell_index
+	return -1
 
 
 func _validate_numbers(board: MinesweeperBoard) -> void:

@@ -38,7 +38,6 @@ var _random := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	_random.randomize()
-	load_level(GreenSweeperLevels.LEVEL_1)
 
 
 func load_level(level: Dictionary) -> void:
@@ -124,6 +123,36 @@ func toggle_flag(cell_index: int) -> void:
 	flags_changed.emit(used_flags, core_count)
 
 
+func chord_cell(cell_index: int) -> void:
+	if not _is_valid_index(cell_index) or game_state != GameState.PLAYING:
+		return
+	if not revealed[cell_index] or adjacent_counts[cell_index] <= 0:
+		return
+
+	var neighbors := _get_neighbors(cell_index)
+	var correctly_flagged_cores := 0
+	for neighbor in neighbors:
+		if not flagged[neighbor]:
+			continue
+		if not mines[neighbor]:
+			return
+		correctly_flagged_cores += 1
+
+	if correctly_flagged_cores != adjacent_counts[cell_index]:
+		return
+
+	var previous_revealed_count := revealed_safe_count
+	for neighbor in neighbors:
+		if not mines[neighbor] and not flagged[neighbor] and not revealed[neighbor]:
+			_reveal_area(neighbor)
+
+	if revealed_safe_count == safe_cell_count:
+		game_state = GameState.WON
+		state_changed.emit(game_state)
+	if revealed_safe_count != previous_revealed_count:
+		_refresh_all_cells()
+
+
 func _clear_cells() -> void:
 	for cell in cell_nodes:
 		cell.queue_free()
@@ -138,6 +167,7 @@ func _create_cells() -> void:
 		cell.setup(cell_index)
 		cell.reveal_requested.connect(reveal_cell)
 		cell.flag_requested.connect(toggle_flag)
+		cell.chord_requested.connect(chord_cell)
 		add_child(cell)
 		cell_nodes.append(cell)
 
