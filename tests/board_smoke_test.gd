@@ -22,6 +22,7 @@ func _run_tests() -> void:
 	_test_player_facing_terms(main_scene, board)
 	_test_level_transition(main_scene, board)
 	_test_level_2(main_scene, board)
+	_test_land_level_data(main_scene, board)
 	_test_chord_behavior(main_scene, board)
 
 	main_scene.queue_free()
@@ -151,7 +152,7 @@ func _test_level_transition(main_scene: Node, board: MinesweeperBoard) -> void:
 	var primary_button := main_scene.get_node("%RestartButton") as Button
 	_expect(primary_button.text == "进入下一关", "Finishing level 1 offers the next level.")
 	main_scene.call("_on_primary_button_pressed")
-	_expect(board.level_number == 2 and board.level_name == "草丛", "The next-level button loads Grass Clump.")
+	_expect(board.level_number == 2 and board.level_name == "灌木", "The next-level button loads Shrubland.")
 
 
 func _test_level_2(main_scene: Node, board: MinesweeperBoard) -> void:
@@ -181,6 +182,25 @@ func _test_level_2(main_scene: Node, board: MinesweeperBoard) -> void:
 		_expect(board.mines.count(true) == 8, "Every level 2 board contains eight cores.")
 	_expect(layouts.size() > 1, "Level 2 restart produces different layouts.")
 	board._random.randomize()
+
+
+func _test_land_level_data(main_scene: Node, board: MinesweeperBoard) -> void:
+	var expected_levels := [
+		{"index": 2, "number": 3, "name": "湿地", "size": 8, "cores": 14},
+		{"index": 3, "number": 4, "name": "草原", "size": 10, "cores": 23},
+		{"index": 4, "number": 5, "name": "森林", "size": 12, "cores": 35},
+	]
+	for expected in expected_levels:
+		main_scene.call("_load_level", expected.index)
+		_expect(board.level_number == expected.number and board.level_name == expected.name, "The expected land level loads.")
+		_expect(board.row_count == expected.size and board.column_count == expected.size, "%s uses its configured square size." % expected.name)
+		_expect(board.cell_nodes.size() == expected.size * expected.size, "%s creates the correct cell count." % expected.name)
+		_expect(board.core_count == expected.cores and board.mines.count(true) == expected.cores, "%s creates the configured pollution cores." % expected.name)
+		_expect(not board.first_move_guide_enabled and board.guide_cell_index == -1, "%s has no first-move guide." % expected.name)
+		_expect(board.revealed.count(true) == 0, "%s starts completely closed." % expected.name)
+		_validate_numbers(board)
+	var subtitle_label := main_scene.get_node("%SubtitleLabel") as Label
+	_expect(subtitle_label.text.contains("第5关 · 森林"), "The header updates for the fifth level.")
 
 
 func _test_chord_behavior(main_scene: Node, board: MinesweeperBoard) -> void:
