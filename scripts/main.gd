@@ -36,6 +36,7 @@ var _completion_emitted := false
 var _elapsed_before_segment_ms := 0
 var _segment_started_ms := 0
 var _timer_running := false
+var _operation_mode := 0
 
 
 func _ready() -> void:
@@ -90,11 +91,7 @@ func start_level(level_index: int) -> void:
 		board.safe_cell_count,
 		board.level_name,
 	]
-	instructions_label.text = (
-		"绿色箭头为安全建议\n左键净化 · 右键标记\n双击数字快速展开"
-		if board.first_move_guide_enabled
-		else "无安全提示 · 首点可能污染\n左键净化 · 右键标记\n双击数字快速展开"
-	)
+	_refresh_instructions()
 	visible = true
 	level_started.emit(board.level_number)
 
@@ -105,6 +102,39 @@ func restart_level() -> void:
 	_reset_timer()
 	board.set_interaction_enabled(true)
 	board.new_game()
+
+
+func set_operation_mode(mode: int) -> void:
+	_operation_mode = 1 if mode == 1 else 0
+	board.set_operation_mode(_operation_mode)
+	_refresh_instructions()
+
+
+func get_operation_mode() -> int:
+	return _operation_mode
+
+
+func _refresh_instructions() -> void:
+	if not is_instance_valid(instructions_label) or not is_instance_valid(board):
+		return
+	var guide_text := (
+		"绿色箭头为安全建议"
+		if board.first_move_guide_enabled
+		else "无安全提示 · 首点可能污染"
+	)
+	if _operation_mode == 1:
+		instructions_label.text = (
+			guide_text
+			+ "\n方向键/WASD移动"
+			+ "\nZ净化/展开 · X标记"
+			+ "\n鼠标操作仍可使用"
+		)
+	else:
+		instructions_label.text = (
+			guide_text
+			+ "\n左键净化 · 右键标记"
+			+ "\n双击数字快速展开"
+		)
 
 
 func set_session_paused(paused: bool) -> void:

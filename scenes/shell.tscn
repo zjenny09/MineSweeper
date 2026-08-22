@@ -344,7 +344,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Settings/Center"]
-custom_minimum_size = Vector2(820, 460)
+custom_minimum_size = Vector2(820, 520)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_panel")
 
@@ -401,6 +401,23 @@ theme_override_font_sizes/font_size = 17
 text = "显示模式"
 
 [node name="DisplayModeOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/DisplayModeRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="OperationModeRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="OperationModeTitle" type="Label" parent="Settings/Center/Panel/Margin/VBox/OperationModeRow"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "操作方式"
+
+[node name="OperationModeOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/OperationModeRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2

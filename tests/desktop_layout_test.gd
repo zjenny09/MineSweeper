@@ -19,6 +19,7 @@ func _run_tests() -> void:
 	await process_frame
 
 	_test_menu_columns(shell)
+	await _test_settings_layout(shell)
 	await _test_game_columns(shell)
 	await _test_steam_deck_height(shell)
 
@@ -40,6 +41,16 @@ func _test_menu_columns(shell) -> void:
 	_expect(_inside_viewport(showcase_panel), "The full-screen ecology artwork stays inside 1280x720.")
 	_expect(showcase_panel.get_global_rect().encloses(menu_panel.get_global_rect()), "The title and actions float over the ecology artwork.")
 	_expect(showcase_panel.size.x >= 1279.0 and showcase_panel.size.y >= 719.0, "The welcome artwork fills the 1280x720 viewport.")
+
+
+func _test_settings_layout(shell) -> void:
+	shell.show_settings()
+	await process_frame
+	var operation_mode := shell.get_node("%OperationModeOption") as Control
+	var back_button := shell.get_node("%SettingsBackButton") as Control
+	_expect(_inside_viewport(operation_mode), "The operation-mode selector fits inside 1280x720 settings.")
+	_expect(_inside_viewport(back_button), "The enlarged settings panel keeps its back button inside 1280x720.")
+	shell.show_main_menu()
 
 
 func _test_game_columns(shell) -> void:
@@ -75,6 +86,9 @@ func _test_steam_deck_height(shell) -> void:
 	var showcase_panel := shell.get_node("%ShowcasePanel") as Control
 	_expect(_inside_viewport(menu_panel) and _inside_viewport(showcase_panel), "The menu remains inside a 1280x800 viewport.")
 	_expect(menu_panel.size.y > 680.0 and showcase_panel.size.y > 680.0, "Steam Deck height becomes usable page space.")
+	shell.show_settings()
+	await process_frame
+	_expect(_inside_viewport(shell.get_node("%OperationModeOption") as Control), "The operation selector remains inside the 1280x800 settings page.")
 
 
 func _inside_viewport(control: Control) -> bool:

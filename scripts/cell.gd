@@ -30,6 +30,11 @@ var _pressed_style: StyleBoxFlat
 var _revealed_style: StyleBoxFlat
 var _guide_style: StyleBoxFlat
 var _guide_hover_style: StyleBoxFlat
+var _selected_hidden_style: StyleBoxFlat
+var _selected_revealed_style: StyleBoxFlat
+var _selected_guide_style: StyleBoxFlat
+var _is_keyboard_selected := false
+var _is_guided := false
 
 
 func _ready() -> void:
@@ -72,20 +77,9 @@ func render_state(
 
 	_is_revealed = is_revealed
 	_input_locked = input_locked
-	if is_revealed:
-		add_theme_stylebox_override("normal", _revealed_style)
-		add_theme_stylebox_override("hover", _revealed_style)
-		add_theme_stylebox_override("pressed", _revealed_style)
-	elif is_guided:
-		add_theme_stylebox_override("normal", _guide_style)
-		add_theme_stylebox_override("hover", _guide_hover_style)
-		add_theme_stylebox_override("pressed", _guide_hover_style)
-	else:
-		add_theme_stylebox_override("normal", _hidden_style)
-		add_theme_stylebox_override("hover", _hover_style)
-		add_theme_stylebox_override("pressed", _pressed_style)
+	_is_guided = is_guided
 	disabled = input_locked
-	add_theme_stylebox_override("disabled", _revealed_style if is_revealed else _hidden_style)
+	_apply_visual_style()
 	if is_guided:
 		tooltip_text = "建议从这里开始（也可以忽略）"
 	elif is_revealed and adjacent_count == 0:
@@ -94,6 +88,13 @@ func render_state(
 		tooltip_text = "邻近污染核心：%d；双击可快速展开" % adjacent_count
 	else:
 		tooltip_text = "左键净化，右键标记污染核心"
+
+
+func set_keyboard_selected(selected: bool) -> void:
+	if _is_keyboard_selected == selected:
+		return
+	_is_keyboard_selected = selected
+	_apply_visual_style()
 
 
 func _on_pressed() -> void:
@@ -121,10 +122,53 @@ func _configure_styles() -> void:
 	_revealed_style = _make_style(Color("a3e086"), Color("ffffff"), 2)
 	_guide_style = _make_style(Color("fadf3c"), Color("469d65"), 2)
 	_guide_hover_style = _make_style(Color("ffe96a"), Color("469d65"), 2)
+	_selected_hidden_style = _make_selected_style(_hidden_style, Color("fadf3c"))
+	_selected_revealed_style = _make_selected_style(_revealed_style, Color("fadf3c"))
+	_selected_guide_style = _make_selected_style(_guide_style, DEFAULT_COLOR)
 	add_theme_stylebox_override("normal", _hidden_style)
 	add_theme_stylebox_override("hover", _hover_style)
 	add_theme_stylebox_override("pressed", _pressed_style)
 	add_theme_stylebox_override("disabled", _hidden_style)
+
+
+func _apply_visual_style() -> void:
+	if _hidden_style == null:
+		return
+	var normal_style := _hidden_style
+	var hover_style := _hover_style
+	var pressed_style := _pressed_style
+	if _is_revealed:
+		normal_style = _revealed_style
+		hover_style = _revealed_style
+		pressed_style = _revealed_style
+	elif _is_guided:
+		normal_style = _guide_style
+		hover_style = _guide_hover_style
+		pressed_style = _guide_hover_style
+	if _is_keyboard_selected:
+		var selected_style := _selected_hidden_style
+		if _is_revealed:
+			selected_style = _selected_revealed_style
+		elif _is_guided:
+			selected_style = _selected_guide_style
+		normal_style = selected_style
+		hover_style = selected_style
+		pressed_style = selected_style
+	add_theme_stylebox_override("normal", normal_style)
+	add_theme_stylebox_override("hover", hover_style)
+	add_theme_stylebox_override("pressed", pressed_style)
+	add_theme_stylebox_override("disabled", normal_style)
+
+
+func _make_selected_style(base_style: StyleBoxFlat, border: Color) -> StyleBoxFlat:
+	var style := base_style.duplicate() as StyleBoxFlat
+	style.border_color = border
+	style.set_border_width_all(4)
+	style.expand_margin_left = 1.0
+	style.expand_margin_top = 1.0
+	style.expand_margin_right = 1.0
+	style.expand_margin_bottom = 1.0
+	return style
 
 
 func _make_style(background: Color, border: Color, border_width: int = 1) -> StyleBoxFlat:

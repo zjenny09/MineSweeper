@@ -20,6 +20,7 @@ const SAVE_STORE_SCRIPT: Script = preload("res://scripts/save_store.gd")
 @onready var volume_slider: HSlider = %VolumeSlider
 @onready var volume_value_label: Label = %VolumeValueLabel
 @onready var display_mode_option: OptionButton = %DisplayModeOption
+@onready var operation_mode_option: OptionButton = %OperationModeOption
 @onready var settings_back_button: Button = %SettingsBackButton
 
 var save_store
@@ -36,6 +37,9 @@ func _ready() -> void:
 	display_mode_option.add_item("最大化窗口", 1)
 	display_mode_option.add_item("无边框全屏", 2)
 	display_mode_option.select(save_store.get_window_mode())
+	operation_mode_option.add_item("鼠标操作", 0)
+	operation_mode_option.add_item("键盘操作", 1)
+	operation_mode_option.select(save_store.get_operation_mode())
 	_on_volume_changed(volume_slider.value)
 	_apply_display_mode(display_mode_option.selected)
 	_connect_controls()
@@ -151,6 +155,7 @@ func _connect_controls() -> void:
 	volume_slider.value_changed.connect(_on_volume_changed)
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	display_mode_option.item_selected.connect(_on_display_mode_selected)
+	operation_mode_option.item_selected.connect(_on_operation_mode_selected)
 
 
 func _start_level_number(level_number: int, record_progress: bool) -> void:
@@ -172,6 +177,7 @@ func _start_level_number(level_number: int, record_progress: bool) -> void:
 	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
 	_show_only(game_host)
 	active_game.start_level(GreenSweeperLevels.level_index_from_number(level_number))
+	active_game.call("set_operation_mode", save_store.get_operation_mode())
 
 
 func _on_continue_pressed() -> void:
@@ -269,6 +275,14 @@ func _on_volume_drag_ended(value_changed: bool) -> void:
 func _on_display_mode_selected(index: int) -> void:
 	_apply_display_mode(index)
 	save_store.set_window_mode(index)
+	save_store.save_data()
+
+
+func _on_operation_mode_selected(index: int) -> void:
+	save_store.set_operation_mode(index)
+	operation_mode_option.select(save_store.get_operation_mode())
+	if is_instance_valid(active_game):
+		active_game.call("set_operation_mode", save_store.get_operation_mode())
 	save_store.save_data()
 
 

@@ -11,6 +11,12 @@ const TRIANGLE_TOPOLOGY := "triangle"
 const TRIANGLE_BOARD_SIZE := Vector2(620.0, 460.0)
 
 
+enum OperationMode {
+	MOUSE,
+	KEYBOARD,
+}
+
+
 enum GameState {
 	READY,
 	PLAYING,
@@ -33,6 +39,8 @@ var game_state: int = GameState.READY
 var used_flags := 0
 var revealed_safe_count := 0
 var interaction_enabled := true
+var operation_mode: int = OperationMode.MOUSE
+var keyboard_cell_index := -1
 
 var mines: Array[bool] = []
 var revealed: Array[bool] = []
@@ -47,6 +55,60 @@ var _triangle_view
 
 func _ready() -> void:
 	_random.randomize()
+
+
+func _input(event: InputEvent) -> void:
+	if operation_mode != OperationMode.KEYBOARD:
+		return
+	if not is_visible_in_tree() or not interaction_enabled:
+		return
+	if not event is InputEventKey:
+		return
+	var key_event := event as InputEventKey
+	if not key_event.pressed:
+		return
+	if key_event.ctrl_pressed or key_event.alt_pressed or key_event.meta_pressed:
+		return
+
+	var movement := Vector2i.ZERO
+	match key_event.keycode:
+		KEY_UP:
+			movement = Vector2i(0, -1)
+		KEY_DOWN:
+			movement = Vector2i(0, 1)
+		KEY_LEFT:
+			movement = Vector2i(-1, 0)
+		KEY_RIGHT:
+			movement = Vector2i(1, 0)
+	if movement == Vector2i.ZERO:
+		var movement_key := key_event.physical_keycode
+		if movement_key == 0:
+			movement_key = key_event.keycode
+		match movement_key:
+			KEY_W:
+				movement = Vector2i(0, -1)
+			KEY_S:
+				movement = Vector2i(0, 1)
+			KEY_A:
+				movement = Vector2i(-1, 0)
+			KEY_D:
+				movement = Vector2i(1, 0)
+	if movement != Vector2i.ZERO:
+		_move_keyboard_cursor(movement)
+		get_viewport().set_input_as_handled()
+		return
+
+	if key_event.echo:
+		return
+	var action_key := key_event.physical_keycode
+	if action_key == 0:
+		action_key = key_event.keycode
+	if action_key == KEY_Z:
+		_keyboard_primary_action()
+		get_viewport().set_input_as_handled()
+	elif action_key == KEY_X:
+		toggle_flag(keyboard_cell_index)
+		get_viewport().set_input_as_handled()
 
 
 func load_level(level: Dictionary) -> void:
@@ -79,6 +141,7 @@ func new_game() -> void:
 	_calculate_adjacent_counts()
 	if first_move_guide_enabled:
 		guide_cell_index = _choose_guide_cell()
+	_reset_keyboard_cursor()
 	_refresh_all_cells()
 	state_changed.emit(game_state)
 	flags_changed.emit(used_flags, core_count)
@@ -87,6 +150,7 @@ func new_game() -> void:
 func reveal_cell(cell_index: int) -> void:
 	if not interaction_enabled or not _is_valid_index(cell_index):
 		return
+	_sync_keyboard_cursor(cell_index)
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
 	if revealed[cell_index] or flagged[cell_index]:
@@ -114,6 +178,7 @@ func reveal_cell(cell_index: int) -> void:
 func toggle_flag(cell_index: int) -> void:
 	if not interaction_enabled or not _is_valid_index(cell_index):
 		return
+	_sync_keyboard_cursor(cell_index)
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
 	if revealed[cell_index]:
@@ -135,6 +200,7 @@ func toggle_flag(cell_index: int) -> void:
 func chord_cell(cell_index: int) -> void:
 	if not interaction_enabled or not _is_valid_index(cell_index) or game_state != GameState.PLAYING:
 		return
+	_sync_keyboard_cursor(cell_index)
 	if not revealed[cell_index] or adjacent_counts[cell_index] <= 0:
 		return
 
@@ -167,6 +233,67 @@ func set_interaction_enabled(enabled: bool) -> void:
 		return
 	interaction_enabled = enabled
 	_refresh_all_cells()
+
+
+func set_operation_mode(mode: int) -> void:
+	operation_mode = OperationMode.KEYBOARD if mode == OperationMode.KEYBOARD else OperationMode.MOUSE
+	_reset_keyboard_cursor()
+
+
+func get_operation_mode() -> int:
+	return operation_mode
+
+
+func get_keyboard_cell_index() -> int:
+	return keyboard_cell_index
+
+
+func _reset_keyboard_cursor() -> void:
+	if operation_mode != OperationMode.KEYBOARD or cell_count <= 0:
+		keyboard_cell_index = -1
+	else:
+		keyboard_cell_index = guide_cell_index if _is_valid_index(guide_cell_index) else 0
+	_refresh_keyboard_cursor()
+
+
+func _move_keyboard_cursor(movement: Vector2i) -> void:
+	if not _is_valid_index(keyboard_cell_index):
+		_reset_keyboard_cursor()
+		return
+	var row := int(keyboard_cell_index / column_count)
+	var column := keyboard_cell_index % column_count
+	var next_row := clampi(row + movement.y, 0, row_count - 1)
+	var next_column := clampi(column + movement.x, 0, column_count - 1)
+	_set_keyboard_cursor(next_row * column_count + next_column)
+
+
+func _keyboard_primary_action() -> void:
+	if not _is_valid_index(keyboard_cell_index):
+		return
+	if revealed[keyboard_cell_index]:
+		chord_cell(keyboard_cell_index)
+	else:
+		reveal_cell(keyboard_cell_index)
+
+
+func _sync_keyboard_cursor(cell_index: int) -> void:
+	if operation_mode == OperationMode.KEYBOARD:
+		_set_keyboard_cursor(cell_index)
+
+
+func _set_keyboard_cursor(cell_index: int) -> void:
+	if not _is_valid_index(cell_index) or keyboard_cell_index == cell_index:
+		return
+	keyboard_cell_index = cell_index
+	_refresh_keyboard_cursor()
+
+
+func _refresh_keyboard_cursor() -> void:
+	var selected_index := keyboard_cell_index if operation_mode == OperationMode.KEYBOARD else -1
+	for cell_index in cell_nodes.size():
+		cell_nodes[cell_index].set_keyboard_selected(cell_index == selected_index)
+	if is_instance_valid(_triangle_view):
+		_triangle_view.set_keyboard_cursor(selected_index)
 
 
 func get_triangle_view():
@@ -211,6 +338,7 @@ func _create_square_cells() -> void:
 	for cell_index in cell_count:
 		var cell := CELL_SCENE.instantiate() as MineCell
 		cell.custom_minimum_size = Vector2(cell_size, cell_size)
+		cell.focus_mode = Control.FOCUS_NONE
 		cell.setup(cell_index)
 		cell.reveal_requested.connect(reveal_cell)
 		cell.flag_requested.connect(toggle_flag)
@@ -346,6 +474,7 @@ func _get_triangle_neighbors(cell_index: int) -> Array[int]:
 func _refresh_all_cells() -> void:
 	for cell_index in cell_count:
 		_refresh_cell(cell_index)
+	_refresh_keyboard_cursor()
 
 
 func _refresh_cell(cell_index: int) -> void:

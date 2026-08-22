@@ -24,6 +24,7 @@ func _run_tests() -> void:
 	_test_level_2(main_scene, board)
 	_test_land_level_data(main_scene, board)
 	_test_chord_behavior(main_scene, board)
+	_test_keyboard_controls(main_scene, board)
 
 	main_scene.queue_free()
 	if failures == 0:
@@ -257,6 +258,76 @@ func _test_chord_behavior(main_scene: Node, board: MinesweeperBoard) -> void:
 	_expect(board.revealed_safe_count == before_count, "A wrong mark prevents double-click expansion even when the count matches.")
 	_expect(board.game_state == MinesweeperBoard.GameState.PLAYING, "Wrong chord marks do not trigger a loss.")
 	board._random.randomize()
+
+
+func _test_keyboard_controls(main_scene: Node, board: MinesweeperBoard) -> void:
+	main_scene.call("_load_level", 1)
+	board._random.seed = 8300
+	board.new_game()
+	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
+	_expect(board.get_keyboard_cell_index() == -1, "Mouse mode hides the keyboard cursor.")
+	board.set_operation_mode(MinesweeperBoard.OperationMode.KEYBOARD)
+	_expect(board.get_keyboard_cell_index() == 0, "An unguided keyboard board starts at cell zero.")
+	_expect(board.cell_nodes[0]._is_keyboard_selected, "The selected square cell shows its keyboard outline.")
+
+	board._input(_key_event(KEY_RIGHT))
+	_expect(board.get_keyboard_cell_index() == 1, "Right arrow moves the keyboard cursor one column.")
+	board._input(_key_event(0, KEY_A))
+	_expect(board.get_keyboard_cell_index() == 0, "Physical A moves the keyboard cursor left.")
+	board._input(_key_event(KEY_UP))
+	_expect(board.get_keyboard_cell_index() == 0, "Keyboard movement stops at the top edge.")
+
+	board._input(_key_event(0, KEY_X))
+	_expect(board.flagged[0], "X marks the selected hidden cell.")
+	board._input(_key_event(0, KEY_X))
+	_expect(not board.flagged[0], "X removes a mark from the selected cell.")
+
+	var safe_index := board.mines.find(false)
+	board._set_keyboard_cursor(safe_index)
+	board._input(_key_event(0, KEY_Z))
+	_expect(board.revealed[safe_index], "Z reveals the selected hidden cell.")
+
+	board._random.seed = 8301
+	board.new_game()
+	var number_index := _find_chord_candidate(board)
+	_expect(number_index >= 0, "A keyboard chord candidate exists.")
+	if number_index >= 0:
+		board.reveal_cell(number_index)
+		for neighbor in board._get_neighbors(number_index):
+			if board.mines[neighbor]:
+				board.toggle_flag(neighbor)
+		var before_count := board.revealed_safe_count
+		board._set_keyboard_cursor(number_index)
+		board._input(_key_event(0, KEY_Z))
+		_expect(board.revealed_safe_count > before_count, "Z chords an opened number after every adjacent core is marked.")
+
+	board.new_game()
+	var selected_before := board.get_keyboard_cell_index()
+	board.set_interaction_enabled(false)
+	board._input(_key_event(KEY_RIGHT))
+	_expect(board.get_keyboard_cell_index() == selected_before, "A paused board ignores keyboard movement.")
+	board.set_interaction_enabled(true)
+
+	var mouse_target := mini(5, board.cell_count - 1)
+	var right_click := InputEventMouseButton.new()
+	right_click.button_index = MOUSE_BUTTON_RIGHT
+	right_click.pressed = true
+	board.cell_nodes[mouse_target]._gui_input(right_click)
+	_expect(board.get_keyboard_cell_index() == mouse_target, "Mouse actions synchronize the keyboard cursor.")
+	_expect(board.flagged[mouse_target], "Mouse marking remains available in keyboard mode.")
+
+	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
+	_expect(board.get_keyboard_cell_index() == -1, "Returning to mouse mode clears the keyboard cursor.")
+	_expect(not board.cell_nodes[mouse_target]._is_keyboard_selected, "Mouse mode removes the square selection outline.")
+	board._random.randomize()
+
+
+func _key_event(keycode: int, physical_keycode: int = 0) -> InputEventKey:
+	var event := InputEventKey.new()
+	event.keycode = keycode
+	event.physical_keycode = physical_keycode
+	event.pressed = true
+	return event
 
 
 func _find_chord_candidate(board: MinesweeperBoard) -> int:

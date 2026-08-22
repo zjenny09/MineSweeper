@@ -13,6 +13,7 @@ const REVEALED_COLOR := Color("a3e086")
 const GRID_LINE_COLOR := Color("469d65")
 const FLAG_COLOR := Color("fadf3c")
 const CORE_COLOR := Color("1b2d22")
+const KEYBOARD_CURSOR_COLOR := Color("fadf3c")
 const WRONG_COLOR := Color("9b423d")
 const NUMBER_COLORS := {
 	1: Color("315f8a"),
@@ -37,6 +38,7 @@ var _hovered_index := -1
 var _side_length := 0.0
 var _triangle_height := 0.0
 var _board_origin := Vector2.ZERO
+var _keyboard_cursor_index := -1
 
 
 func _ready() -> void:
@@ -74,6 +76,18 @@ func render_state(
 	wrong_flag_states[cell_index] = wrong_flag
 	solved_core_states[cell_index] = solved_core
 	queue_redraw()
+
+
+func set_keyboard_cursor(cell_index: int) -> void:
+	var next_index := cell_index if cell_index >= 0 and cell_index < cell_count else -1
+	if _keyboard_cursor_index == next_index:
+		return
+	_keyboard_cursor_index = next_index
+	queue_redraw()
+
+
+func get_keyboard_cursor() -> int:
+	return _keyboard_cursor_index
 
 
 func is_upward(cell_index: int) -> bool:
@@ -158,6 +172,11 @@ func _draw() -> void:
 			_draw_flag(center)
 		elif revealed_states[cell_index] and adjacent_count_states[cell_index] > 0:
 			_draw_number(center, adjacent_count_states[cell_index])
+
+		if cell_index == _keyboard_cursor_index:
+			var cursor_outline := PackedVector2Array(points)
+			cursor_outline.append(points[0])
+			draw_polyline(cursor_outline, KEYBOARD_CURSOR_COLOR, 4.0, true)
 
 
 func _draw_mountain_background() -> void:

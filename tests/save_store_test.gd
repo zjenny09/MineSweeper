@@ -46,6 +46,7 @@ func _test_defaults() -> void:
 	_check(is_equal_approx(store.get_master_volume(), 1.0), "default volume should be 1")
 	_check(not store.is_fullscreen(), "fullscreen should default to false")
 	_check(store.get_window_mode() == 1, "new saves should default to a maximized window")
+	_check(store.get_operation_mode() == 0, "new saves should default to mouse operation")
 
 
 func _test_save_and_load() -> void:
@@ -55,6 +56,7 @@ func _test_save_and_load() -> void:
 	store.mark_level_started(2)
 	store.set_master_volume(0.35)
 	store.set_fullscreen(true)
+	store.set_operation_mode(1)
 	_check(store.save_data(), "save_data should succeed")
 
 	var loaded = SaveStore.new(TEST_PATH)
@@ -65,6 +67,7 @@ func _test_save_and_load() -> void:
 	_check(is_equal_approx(loaded.get_master_volume(), 0.35), "volume should persist")
 	_check(loaded.is_fullscreen(), "fullscreen should persist")
 	_check(loaded.get_window_mode() == 2, "legacy fullscreen API should map to borderless fullscreen")
+	_check(loaded.get_operation_mode() == 1, "keyboard operation mode should persist")
 
 
 func _test_legacy_display_migration() -> void:
@@ -72,6 +75,7 @@ func _test_legacy_display_migration() -> void:
 	var legacy_store = SaveStore.new(TEST_PATH)
 	var legacy_data: Dictionary = legacy_store.get_data()
 	legacy_data["settings"].erase("window_mode")
+	legacy_data["settings"].erase("operation_mode")
 	legacy_data["settings"]["fullscreen"] = false
 	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
 	file.store_string(JSON.stringify(legacy_data))
@@ -79,6 +83,7 @@ func _test_legacy_display_migration() -> void:
 	var loaded = SaveStore.new(TEST_PATH)
 	loaded.load_data()
 	_check(loaded.get_window_mode() == 1, "legacy windowed saves should migrate to maximized window")
+	_check(loaded.get_operation_mode() == 0, "legacy saves should default to mouse operation")
 	legacy_data["settings"]["fullscreen"] = true
 	file = FileAccess.open(TEST_PATH, FileAccess.WRITE)
 	file.store_string(JSON.stringify(legacy_data))
@@ -181,6 +186,10 @@ func _test_settings_limits() -> void:
 	_check(store.get_window_mode() == 2 and store.is_fullscreen(), "borderless fullscreen mode should be stored")
 	store.set_window_mode(99)
 	_check(store.get_window_mode() == 1, "invalid display modes should fall back to maximized")
+	store.set_operation_mode(1)
+	_check(store.get_operation_mode() == 1, "keyboard operation mode should be stored")
+	store.set_operation_mode(99)
+	_check(store.get_operation_mode() == 0, "invalid operation modes should fall back to mouse")
 
 
 func _check(condition: bool, message: String) -> void:

@@ -30,6 +30,7 @@ func _run_tests() -> void:
 	_test_cli_read_only(shell)
 	_test_return_to_level_select(shell)
 	_test_pause_settings_round_trip(shell)
+	_test_operation_mode_setting(shell)
 	_test_return_to_main_menu(shell)
 	_test_volume_setting(shell)
 
@@ -169,6 +170,29 @@ func _test_pause_settings_round_trip(shell) -> void:
 	shell.call("_close_settings")
 	_expect(shell.get_node("%GameHost").visible, "Closing in-game settings returns to the game page.")
 	_expect(shell.get_active_game() == game and game.is_session_paused(), "The same game remains paused after closing settings.")
+
+
+func _test_operation_mode_setting(shell) -> void:
+	var option := shell.get_node("%OperationModeOption") as OptionButton
+	_expect(option.item_count == 2, "Settings provides mouse and keyboard operation modes.")
+	_expect(option.selected == 0, "A new save defaults to mouse operation.")
+	var game = shell.get_active_game()
+	game.settings_requested.emit()
+	option.select(1)
+	shell.call("_on_operation_mode_selected", 1)
+	_expect(shell.save_store.get_operation_mode() == 1, "Keyboard operation is stored immediately.")
+	_expect(game.get_operation_mode() == 1, "A retained paused game receives the new operation mode.")
+	_expect(game.board.get_operation_mode() == MinesweeperBoard.OperationMode.KEYBOARD, "The board enters keyboard mode without restarting.")
+	_expect(game.get_node("%InstructionsLabel").text.contains("Z净化/展开") and game.get_node("%InstructionsLabel").text.contains("X标记"), "Keyboard mode displays the selected Z/X controls.")
+	shell.call("_close_settings")
+	_expect(game.is_session_paused(), "Changing operation mode preserves the paused game.")
+	var reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
+	reloaded.load_data()
+	_expect(reloaded.get_operation_mode() == 1, "Keyboard operation mode persists on disk.")
+	shell.start_cli_level(6)
+	var cli_game = shell.get_active_game()
+	_expect(cli_game.board.get_operation_mode() == MinesweeperBoard.OperationMode.KEYBOARD, "CLI games receive the saved operation mode.")
+	_expect(cli_game.board.get_triangle_view().get_keyboard_cursor() >= 0, "The triangle board shows a keyboard selection cursor.")
 
 
 func _test_return_to_main_menu(shell) -> void:

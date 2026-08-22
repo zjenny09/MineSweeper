@@ -21,6 +21,7 @@ func _run_tests() -> void:
 	_test_topology(board)
 	_test_geometry(triangle_view)
 	_test_input_hit(board, triangle_view)
+	_test_keyboard_input(board, triangle_view)
 	_test_triangle_opening(board)
 	_test_triangle_chord(board)
 	_test_end_states(main_scene, board)
@@ -118,6 +119,35 @@ func _test_input_hit(board: MinesweeperBoard, triangle_view) -> void:
 	triangle_view._gui_input(outside_click)
 	_expect(board.revealed_safe_count == revealed_before, "Clicking outside all triangles changes no cell.")
 	board._random.randomize()
+
+
+func _test_keyboard_input(board: MinesweeperBoard, triangle_view) -> void:
+	board._random.seed = 9063
+	board.new_game()
+	board.set_operation_mode(MinesweeperBoard.OperationMode.KEYBOARD)
+	_expect(board.get_keyboard_cell_index() == 0, "The triangle keyboard cursor starts at cell zero.")
+	_expect(triangle_view.get_keyboard_cursor() == 0, "The triangle view displays the board cursor.")
+	board._input(_key_event(KEY_RIGHT))
+	_expect(board.get_keyboard_cell_index() == 1 and triangle_view.get_keyboard_cursor() == 1, "Arrow movement keeps the triangle cursor synchronized.")
+	board._input(_key_event(0, KEY_X))
+	_expect(board.flagged[1], "X marks the selected triangle.")
+	board._input(_key_event(0, KEY_X))
+	_expect(not board.flagged[1], "X removes a triangle mark.")
+	var safe_index := board.mines.find(false)
+	board._set_keyboard_cursor(safe_index)
+	board._input(_key_event(0, KEY_Z))
+	_expect(board.revealed[safe_index], "Z reveals the selected triangle.")
+	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
+	_expect(triangle_view.get_keyboard_cursor() == -1, "Mouse mode hides the triangle keyboard outline.")
+	board._random.randomize()
+
+
+func _key_event(keycode: int, physical_keycode: int = 0) -> InputEventKey:
+	var event := InputEventKey.new()
+	event.keycode = keycode
+	event.physical_keycode = physical_keycode
+	event.pressed = true
+	return event
 
 
 func _test_triangle_opening(board: MinesweeperBoard) -> void:
