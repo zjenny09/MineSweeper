@@ -1,0 +1,115 @@
+[gd_resource type="Theme" load_steps=8 format=3]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2745, 0.6157, 0.3961, 0.34)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_normal"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2745, 0.6157, 0.3961, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+content_margin_left = 16.0
+content_margin_right = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_hover"]
+bg_color = Color(0.6392, 0.8784, 0.5255, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2745, 0.6157, 0.3961, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_pressed"]
+bg_color = Color(0.2745, 0.6157, 0.3961, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2745, 0.6157, 0.3961, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_disabled"]
+bg_color = Color(0.94, 0.96, 0.94, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2745, 0.6157, 0.3961, 0.25)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.9804, 0.8745, 0.2353, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_left = 3.0
+expand_margin_top = 3.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_separator"]
+bg_color = Color(0.2745, 0.6157, 0.3961, 0.26)
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+
+[resource]
+default_font_size = 16
+default_base_scale = 1.0
+Label/colors/font_color = Color(0.1059, 0.2078, 0.1451, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
+Label/constants/shadow_offset_x = 0
+Label/constants/shadow_offset_y = 0
+Button/colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
+Button/colors/font_hover_color = Color(0.1059, 0.2078, 0.1451, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(0.2745, 0.6157, 0.3961, 1)
+Button/colors/font_disabled_color = Color(0.2745, 0.6157, 0.3961, 0.45)
+Button/font_sizes/font_size = 17
+Button/styles/normal = SubResource("StyleBox_button_normal")
+Button/styles/hover = SubResource("StyleBox_button_hover")
+Button/styles/pressed = SubResource("StyleBox_button_pressed")
+Button/styles/disabled = SubResource("StyleBox_button_disabled")
+Button/styles/focus = SubResource("StyleBox_focus")
+OptionButton/colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
+OptionButton/colors/font_hover_color = Color(0.1059, 0.2078, 0.1451, 1)
+OptionButton/colors/font_pressed_color = Color(1, 1, 1, 1)
+OptionButton/colors/font_focus_color = Color(0.2745, 0.6157, 0.3961, 1)
+OptionButton/font_sizes/font_size = 16
+OptionButton/styles/normal = SubResource("StyleBox_button_normal")
+OptionButton/styles/hover = SubResource("StyleBox_button_hover")
+OptionButton/styles/pressed = SubResource("StyleBox_button_pressed")
+OptionButton/styles/focus = SubResource("StyleBox_focus")
+PanelContainer/styles/panel = SubResource("StyleBox_panel")
+HSeparator/styles/separator = SubResource("StyleBox_separator")
+VSeparator/styles/separator = SubResource("StyleBox_separator")

@@ -16,6 +16,7 @@ func _run_tests() -> void:
 	_cleanup()
 	_test_defaults()
 	_test_save_and_load()
+	_test_legacy_display_migration()
 	_test_backup_recovery()
 	_test_structural_corruption_uses_backup()
 	_test_corrupt_file_falls_back()
@@ -44,6 +45,7 @@ func _test_defaults() -> void:
 		_check(store.get_best_time_ms(number) == -1, "level %d should default to no best time" % number)
 	_check(is_equal_approx(store.get_master_volume(), 1.0), "default volume should be 1")
 	_check(not store.is_fullscreen(), "fullscreen should default to false")
+	_check(store.get_window_mode() == 1, "new saves should default to a maximized window")
 
 
 func _test_save_and_load() -> void:
@@ -62,6 +64,28 @@ func _test_save_and_load() -> void:
 	_check(loaded.get_best_time_ms(1) == 4200, "best time should persist")
 	_check(is_equal_approx(loaded.get_master_volume(), 0.35), "volume should persist")
 	_check(loaded.is_fullscreen(), "fullscreen should persist")
+	_check(loaded.get_window_mode() == 2, "legacy fullscreen API should map to borderless fullscreen")
+
+
+func _test_legacy_display_migration() -> void:
+	_cleanup()
+	var legacy_store = SaveStore.new(TEST_PATH)
+	var legacy_data: Dictionary = legacy_store.get_data()
+	legacy_data["settings"].erase("window_mode")
+	legacy_data["settings"]["fullscreen"] = false
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(legacy_data))
+	file.close()
+	var loaded = SaveStore.new(TEST_PATH)
+	loaded.load_data()
+	_check(loaded.get_window_mode() == 1, "legacy windowed saves should migrate to maximized window")
+	legacy_data["settings"]["fullscreen"] = true
+	file = FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(legacy_data))
+	file.close()
+	loaded.load_data()
+	_check(loaded.get_window_mode() == 2, "legacy fullscreen saves should migrate to borderless fullscreen")
+	_cleanup()
 
 
 func _test_backup_recovery() -> void:
@@ -150,6 +174,13 @@ func _test_settings_limits() -> void:
 	_check(store.is_fullscreen(), "fullscreen setter should accept true")
 	store.set_fullscreen(false)
 	_check(not store.is_fullscreen(), "fullscreen setter should accept false")
+	_check(store.get_window_mode() == 1, "legacy false fullscreen should map to maximized window")
+	store.set_window_mode(0)
+	_check(store.get_window_mode() == 0, "windowed mode should be stored")
+	store.set_window_mode(2)
+	_check(store.get_window_mode() == 2 and store.is_fullscreen(), "borderless fullscreen mode should be stored")
+	store.set_window_mode(99)
+	_check(store.get_window_mode() == 1, "invalid display modes should fall back to maximized")
 
 
 func _check(condition: bool, message: String) -> void:

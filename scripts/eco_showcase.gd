@@ -1,6 +1,25 @@
 class_name EcoShowcase
 extends Control
 
+const GREEN := Color("469d65")
+const YELLOW := Color("fadf3c")
+const LIGHT_GREEN := Color("a3e086")
+const INK := Color("1b2d22")
+const DARK_GREEN := Color("2a6243")
+const WHITE := Color("ffffff")
+
+const START_BACKGROUND := Color("f6fbf9")
+const START_FAR_MOUNTAIN := Color("cfead4")
+const START_NEAR_MOUNTAIN := Color("82c888")
+const START_LIGHT_HILL := Color("b5e38e")
+const START_FRONT_HILL := Color("3f8e5c")
+const START_TREE_COLORS := [
+	Color("469d65"),
+	Color("f4d44b"),
+	Color("ed806f"),
+	Color("72c6d3"),
+]
+
 @export_range(0, 6) var environment_number := 0:
 	set(value):
 		environment_number = clampi(value, 0, 6)
@@ -11,11 +30,20 @@ extends Control
 		compact = value
 		queue_redraw()
 
+var _animation_time := 0.0
+
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	clip_contents = true
 	resized.connect(queue_redraw)
+
+
+func _process(delta: float) -> void:
+	if environment_number != 0 or not is_visible_in_tree():
+		return
+	_animation_time += delta
+	queue_redraw()
 
 
 func set_environment(level_number: int) -> void:
@@ -25,147 +53,349 @@ func set_environment(level_number: int) -> void:
 func _draw() -> void:
 	if size.x <= 1.0 or size.y <= 1.0:
 		return
-	var palette := _palette()
-	_draw_sky(palette)
-	_draw_sun(palette)
-	_draw_far_land(palette)
-	_draw_near_land(palette)
-	if environment_number == 3:
-		_draw_wetland(palette)
-	elif environment_number == 6 or environment_number == 0:
-		_draw_mountain_caps(palette)
-	_draw_vegetation(palette)
-	_draw_restoration_glow(palette)
-	draw_rect(Rect2(Vector2.ZERO, size), Color(palette.border), false, 2.0)
+	if environment_number == 0:
+		draw_rect(Rect2(Vector2.ZERO, size), START_BACKGROUND)
+		_draw_start_landscape()
+	else:
+		draw_rect(Rect2(Vector2.ZERO, size), WHITE)
+		_draw_abstract_preview()
 
 
-func _draw_sky(palette: Dictionary) -> void:
-	var bands := 8
-	for band in bands:
-		var ratio := float(band) / float(bands)
-		var color: Color = Color(palette.sky_top).lerp(Color(palette.sky_bottom), ratio)
-		draw_rect(Rect2(0.0, size.y * ratio, size.x, size.y / float(bands) + 1.0), color)
+func _draw_abstract_preview() -> void:
+	_draw_blob(
+		Vector2(size.x * 0.72, size.y * 0.60),
+		Vector2(size.x * 0.38, size.y * 0.46),
+		LIGHT_GREEN,
+		0.8
+	)
+	_draw_blob(
+		Vector2(size.x * 0.13, size.y * 0.70),
+		Vector2(size.x * 0.30, size.y * 0.43),
+		GREEN,
+		1.7
+	)
+	_draw_blob(
+		Vector2(size.x * 0.48, size.y * 0.96),
+		Vector2(size.x * 0.36, size.y * 0.39),
+		YELLOW,
+		2.8
+	)
+	_draw_blob(
+		Vector2(size.x * 0.95, size.y * 0.90),
+		Vector2(size.x * 0.18, size.y * 0.31),
+		GREEN,
+		4.1
+	)
+	_draw_face(Vector2(size.x * 0.18, size.y * 0.60), GREEN)
+	_draw_face(Vector2(size.x * 0.68, size.y * 0.46), LIGHT_GREEN)
+	_draw_face(Vector2(size.x * 0.50, size.y * 0.80), YELLOW)
+	_draw_environment_motif()
 
 
-func _draw_sun(palette: Dictionary) -> void:
-	var center := Vector2(size.x * 0.77, size.y * (0.20 if compact else 0.18))
-	var radius := minf(size.x, size.y) * (0.09 if compact else 0.075)
-	draw_circle(center, radius * 1.7, Color(Color(palette.glow), 0.10))
-	draw_circle(center, radius, Color(Color(palette.glow), 0.82))
+func _draw_start_landscape() -> void:
+	var sun_center := Vector2(
+		size.x * 0.78,
+		size.y * 0.19 + sin(_animation_time * 0.75) * 5.0
+	)
+	var sun_radius := (
+		minf(size.x, size.y)
+		* 0.075
+		* (1.0 + sin(_animation_time * 1.15) * 0.025)
+	)
+	draw_circle(sun_center, sun_radius, YELLOW)
+	draw_circle(sun_center - Vector2(sun_radius * 0.24, 0.0), sun_radius * 0.07, INK)
+	draw_circle(sun_center + Vector2(sun_radius * 0.24, 0.0), sun_radius * 0.07, INK)
 
-
-func _draw_far_land(palette: Dictionary) -> void:
-	var horizon := size.y * (0.56 if compact else 0.58)
-	var points := PackedVector2Array([
-		Vector2(0.0, horizon),
-		Vector2(size.x * 0.13, size.y * 0.38),
-		Vector2(size.x * 0.25, horizon * 0.90),
-		Vector2(size.x * 0.40, size.y * 0.29),
-		Vector2(size.x * 0.56, horizon * 0.94),
-		Vector2(size.x * 0.72, size.y * 0.34),
-		Vector2(size.x * 0.86, horizon * 0.88),
-		Vector2(size.x, size.y * 0.31),
+	var far_mountains := PackedVector2Array([
+		Vector2(0.0, size.y * 0.67),
+		Vector2(size.x * 0.14, size.y * 0.40),
+		Vector2(size.x * 0.25, size.y * 0.59),
+		Vector2(size.x * 0.40, size.y * 0.31),
+		Vector2(size.x * 0.55, size.y * 0.63),
+		Vector2(size.x * 0.71, size.y * 0.38),
+		Vector2(size.x * 0.84, size.y * 0.60),
+		Vector2(size.x, size.y * 0.34),
 		Vector2(size.x, size.y),
 		Vector2(0.0, size.y),
 	])
-	if environment_number == 4:
-		points = PackedVector2Array([
-			Vector2(0.0, horizon), Vector2(size.x * 0.24, horizon * 0.87),
-			Vector2(size.x * 0.48, horizon), Vector2(size.x * 0.73, horizon * 0.84),
-			Vector2(size.x, horizon * 0.96), Vector2(size.x, size.y), Vector2(0.0, size.y),
-		])
-	draw_colored_polygon(points, Color(palette.far_land))
+	draw_colored_polygon(far_mountains, START_FAR_MOUNTAIN)
 
-
-func _draw_near_land(palette: Dictionary) -> void:
-	var points := PackedVector2Array([
-		Vector2(0.0, size.y * 0.73),
-		Vector2(size.x * 0.18, size.y * 0.61),
-		Vector2(size.x * 0.38, size.y * 0.74),
-		Vector2(size.x * 0.58, size.y * 0.57),
-		Vector2(size.x * 0.78, size.y * 0.71),
-		Vector2(size.x, size.y * 0.59),
+	var near_mountains := PackedVector2Array([
+		Vector2(0.0, size.y * 0.76),
+		Vector2(size.x * 0.18, size.y * 0.53),
+		Vector2(size.x * 0.34, size.y * 0.73),
+		Vector2(size.x * 0.53, size.y * 0.47),
+		Vector2(size.x * 0.72, size.y * 0.72),
+		Vector2(size.x * 0.89, size.y * 0.50),
+		Vector2(size.x, size.y * 0.65),
 		Vector2(size.x, size.y),
 		Vector2(0.0, size.y),
 	])
-	draw_colored_polygon(points, Color(palette.near_land))
-	var foreground := PackedVector2Array([
-		Vector2(0.0, size.y * 0.88), Vector2(size.x * 0.25, size.y * 0.82),
-		Vector2(size.x * 0.50, size.y * 0.89), Vector2(size.x * 0.76, size.y * 0.80),
-		Vector2(size.x, size.y * 0.86), Vector2(size.x, size.y), Vector2(0.0, size.y),
+	draw_colored_polygon(near_mountains, START_NEAR_MOUNTAIN)
+
+	_draw_blob(
+		Vector2(size.x * 0.42, size.y * 0.96),
+		Vector2(size.x * 0.62, size.y * 0.25),
+		START_LIGHT_HILL,
+		2.2
+	)
+	_draw_blob(
+		Vector2(size.x * 0.77, size.y * 1.04),
+		Vector2(size.x * 0.54, size.y * 0.25),
+		START_FRONT_HILL,
+		3.4
+	)
+
+	var tree_x_positions := [0.075, 0.17, 0.305, 0.405, 0.55, 0.665, 0.805, 0.93]
+	var tree_scales := [0.052, 0.037, 0.061, 0.045, 0.034, 0.058, 0.048, 0.040]
+	for index in tree_x_positions.size():
+		var scale := minf(size.x, size.y) * float(tree_scales[index])
+		var x := size.x * float(tree_x_positions[index])
+		var ground_y := _get_start_ground_y(x)
+		var position := Vector2(x, ground_y - scale * 1.05)
+		var canopy_color: Color = START_TREE_COLORS[index % START_TREE_COLORS.size()]
+		_draw_flat_tree(position, scale, canopy_color, index)
+
+	var grass_x_positions := [0.05, 0.14, 0.23, 0.36, 0.46, 0.59, 0.69, 0.78, 0.89, 0.96]
+	for index in grass_x_positions.size():
+		var x := size.x * float(grass_x_positions[index])
+		var y := _get_front_ground_y(x) + 2.0
+		_draw_grass_cluster(
+			Vector2(x, y),
+			minf(size.x, size.y) * 0.018,
+			index
+		)
+
+
+func _draw_flat_tree(
+	position: Vector2,
+	scale: float,
+	canopy_color: Color,
+	variant: int
+) -> void:
+	var sway := sin(_animation_time * 1.25 + float(variant) * 0.83) * scale * 0.10
+	var sway_offset := Vector2(sway, 0.0)
+	var root := position + Vector2(0.0, scale * 1.05)
+	var trunk_top := position - Vector2(0.0, scale * 0.12) + sway_offset * 0.65
+	draw_line(
+		root,
+		trunk_top,
+		DARK_GREEN,
+		maxf(3.0, scale * 0.20),
+		true
+	)
+	var main_radii := [0.60, 0.68, 0.55, 0.63, 0.58, 0.66, 0.57, 0.64]
+	var left_radii := [0.46, 0.35, 0.51, 0.39, 0.44, 0.48, 0.36, 0.43]
+	var right_radii := [0.37, 0.50, 0.39, 0.52, 0.34, 0.41, 0.49, 0.38]
+	var main_heights := [0.52, 0.58, 0.45, 0.55, 0.49, 0.61, 0.47, 0.56]
+	var left_offsets := [0.47, 0.40, 0.52, 0.43, 0.49, 0.45, 0.41, 0.50]
+	var right_offsets := [0.39, 0.53, 0.42, 0.48, 0.37, 0.51, 0.46, 0.40]
+	var crown_center := position - Vector2(0.0, scale * float(main_heights[variant])) + sway_offset
+	var left_center := position + Vector2(
+		-scale * float(left_offsets[variant]),
+		-scale * (0.18 + 0.04 * float(variant % 3))
+	) + sway_offset * 0.88
+	var right_center := position + Vector2(
+		scale * float(right_offsets[variant]),
+		-scale * (0.20 + 0.035 * float((variant + 1) % 3))
+	) + sway_offset * 1.08
+	var breathe := 1.0 + sin(_animation_time * 1.45 + float(variant) * 0.70) * 0.025
+	var crown_radius := scale * float(main_radii[variant]) * breathe
+	var left_radius := scale * float(left_radii[variant]) * breathe
+	var right_radius := scale * float(right_radii[variant]) * breathe
+	draw_circle(crown_center, crown_radius, canopy_color)
+	draw_circle(left_center, left_radius, canopy_color)
+	draw_circle(right_center, right_radius, canopy_color)
+	var outline_width := maxf(2.0, scale * 0.065)
+	draw_arc(crown_center, crown_radius, 0.0, TAU, 28, DARK_GREEN, outline_width, true)
+	draw_arc(left_center, left_radius, 0.0, TAU, 24, DARK_GREEN, outline_width, true)
+	draw_arc(right_center, right_radius, 0.0, TAU, 24, DARK_GREEN, outline_width, true)
+
+
+func _draw_grass_cluster(position: Vector2, scale: float, variant: int) -> void:
+	var sway := sin(_animation_time * 1.70 + float(variant) * 0.92) * scale * 0.34
+	draw_line(
+		position,
+		position + Vector2(-scale * 0.55 + sway, -scale),
+		DARK_GREEN,
+		2.0,
+		true
+	)
+	draw_line(
+		position,
+		position + Vector2(sway * 0.72, -scale * 1.15),
+		DARK_GREEN,
+		2.0,
+		true
+	)
+	draw_line(
+		position,
+		position + Vector2(scale * 0.62 + sway * 0.45, -scale * 0.88),
+		DARK_GREEN,
+		2.0,
+		true
+	)
+
+
+func _draw_blob(
+	center: Vector2,
+	radius: Vector2,
+	color: Color,
+	phase: float
+) -> void:
+	draw_colored_polygon(_make_blob_points(center, radius, phase), color)
+
+
+func _make_blob_points(
+	center: Vector2,
+	radius: Vector2,
+	phase: float
+) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for index in 64:
+		var angle := TAU * float(index) / 64.0
+		var wobble := (
+			1.0
+			+ 0.055 * sin(angle * 3.0 + phase)
+			+ 0.025 * sin(angle * 5.0 - phase * 0.6)
+		)
+		points.append(center + Vector2(
+			cos(angle) * radius.x * wobble,
+			sin(angle) * radius.y * wobble
+		))
+	return points
+
+
+func _get_start_ground_y(x: float) -> float:
+	var light_top := _get_blob_top_y(
+		x,
+		Vector2(size.x * 0.42, size.y * 0.96),
+		Vector2(size.x * 0.62, size.y * 0.25),
+		2.2
+	)
+	var front_top := _get_blob_top_y(
+		x,
+		Vector2(size.x * 0.77, size.y * 1.04),
+		Vector2(size.x * 0.54, size.y * 0.25),
+		3.4
+	)
+	return minf(light_top, front_top)
+
+
+func _get_front_ground_y(x: float) -> float:
+	var front_top := _get_blob_top_y(
+		x,
+		Vector2(size.x * 0.77, size.y * 1.04),
+		Vector2(size.x * 0.54, size.y * 0.25),
+		3.4
+	)
+	if front_top < size.y:
+		return front_top
+	return _get_start_ground_y(x)
+
+
+func _get_blob_top_y(
+	x: float,
+	center: Vector2,
+	radius: Vector2,
+	phase: float
+) -> float:
+	var points := _make_blob_points(center, radius, phase)
+	var top_y := size.y
+	for index in points.size():
+		var first := points[index]
+		var second := points[(index + 1) % points.size()]
+		var left := minf(first.x, second.x)
+		var right := maxf(first.x, second.x)
+		if x < left or x > right or is_equal_approx(first.x, second.x):
+			continue
+		var ratio := (x - first.x) / (second.x - first.x)
+		var y := lerpf(first.y, second.y, ratio)
+		top_y = minf(top_y, y)
+	return top_y
+
+
+func _draw_face(position: Vector2, background_color: Color) -> void:
+	var radius := minf(size.x, size.y) * (0.010 if compact else 0.008)
+	var spacing := radius * 2.4
+	var eye_color := INK
+	if background_color == GREEN:
+		eye_color = Color("14231a")
+	draw_circle(position - Vector2(spacing, 0.0), radius, eye_color)
+	draw_circle(position + Vector2(spacing, 0.0), radius, eye_color)
+
+
+func _draw_environment_motif() -> void:
+	if environment_number <= 0:
+		return
+	var center := Vector2(size.x * 0.50, size.y * 0.62)
+	var unit := minf(size.x, size.y) * (0.055 if compact else 0.045)
+	match environment_number:
+		1:
+			_draw_sprout(center, unit)
+		2:
+			_draw_shrub(center, unit)
+		3:
+			_draw_reeds(center, unit)
+		4:
+			_draw_grass(center, unit)
+		5:
+			_draw_tree(center, unit)
+		6:
+			_draw_mountains(center, unit)
+
+
+func _draw_sprout(center: Vector2, unit: float) -> void:
+	draw_line(center + Vector2(0.0, unit), center - Vector2(0.0, unit), INK, 3.0)
+	draw_circle(center - Vector2(unit * 0.55, unit * 0.55), unit * 0.48, GREEN)
+	draw_circle(center + Vector2(unit * 0.55, -unit * 0.30), unit * 0.48, LIGHT_GREEN)
+
+
+func _draw_shrub(center: Vector2, unit: float) -> void:
+	for offset in [
+		Vector2(-0.8, 0.2), Vector2(-0.35, -0.35),
+		Vector2(0.25, -0.45), Vector2(0.75, 0.10), Vector2(0.0, 0.25)
+	]:
+		draw_circle(center + offset * unit, unit * 0.58, GREEN)
+
+
+func _draw_reeds(center: Vector2, unit: float) -> void:
+	for index in 5:
+		var x := center.x + (float(index) - 2.0) * unit * 0.42
+		var top := center.y - unit * (0.9 + 0.20 * float(index % 2))
+		draw_line(Vector2(x, center.y + unit), Vector2(x, top), GREEN, 3.0)
+		draw_circle(Vector2(x, top), unit * 0.18, YELLOW)
+
+
+func _draw_grass(center: Vector2, unit: float) -> void:
+	for index in 7:
+		var x := center.x + (float(index) - 3.0) * unit * 0.28
+		var lean := unit * (0.32 if index % 2 == 0 else -0.26)
+		draw_line(
+			Vector2(x, center.y + unit),
+			Vector2(x + lean, center.y - unit * (0.55 + 0.08 * index)),
+			GREEN,
+			3.0
+		)
+
+
+func _draw_tree(center: Vector2, unit: float) -> void:
+	draw_rect(Rect2(center.x - unit * 0.12, center.y, unit * 0.24, unit * 1.1), INK)
+	draw_circle(center - Vector2(0.0, unit * 0.32), unit * 0.85, GREEN)
+	draw_circle(center - Vector2(unit * 0.62, 0.0), unit * 0.60, LIGHT_GREEN)
+	draw_circle(center + Vector2(unit * 0.62, 0.0), unit * 0.60, GREEN)
+
+
+func _draw_mountains(center: Vector2, unit: float) -> void:
+	var back := PackedVector2Array([
+		center + Vector2(-unit * 2.0, unit),
+		center + Vector2(-unit * 0.65, -unit),
+		center + Vector2(unit * 0.35, unit),
 	])
-	draw_colored_polygon(foreground, Color(palette.foreground))
-
-
-func _draw_mountain_caps(palette: Dictionary) -> void:
-	var peaks := [
-		[Vector2(0.32, 0.36), Vector2(0.40, 0.29), Vector2(0.48, 0.45)],
-		[Vector2(0.65, 0.43), Vector2(0.72, 0.34), Vector2(0.79, 0.47)],
-		[Vector2(0.91, 0.40), Vector2(1.0, 0.31), Vector2(1.0, 0.49)],
-	]
-	for peak in peaks:
-		var points := PackedVector2Array()
-		for point in peak:
-			points.append(Vector2(point.x * size.x, point.y * size.y))
-		draw_colored_polygon(points, Color(Color(palette.glow), 0.50))
-
-
-func _draw_wetland(palette: Dictionary) -> void:
-	for index in 3:
-		var y := size.y * (0.72 + float(index) * 0.07)
-		draw_line(Vector2(size.x * 0.08, y), Vector2(size.x * (0.58 + 0.12 * index), y), Color(Color(palette.glow), 0.35), 3.0)
-	for index in 12:
-		var x := size.x * (0.06 + float(index) * 0.075)
-		var base := size.y * (0.88 - float(index % 3) * 0.015)
-		draw_line(Vector2(x, base), Vector2(x + size.x * 0.012, base - size.y * 0.11), Color(palette.border), 2.0)
-
-
-func _draw_vegetation(palette: Dictionary) -> void:
-	var tree_count := 7 if compact else 15
-	if environment_number == 4:
-		tree_count = 5 if compact else 9
-	elif environment_number == 5:
-		tree_count = 11 if compact else 22
-	elif environment_number == 6:
-		tree_count = 4 if compact else 8
-	for index in tree_count:
-		var t := float(index + 1) / float(tree_count + 1)
-		var x := size.x * t
-		var y := size.y * (0.76 + 0.07 * sin(float(index) * 2.13))
-		var scale := minf(size.x, size.y) * (0.032 + 0.010 * float(index % 3))
-		_draw_tree(Vector2(x, y), scale, palette)
-	if environment_number == 1 or environment_number == 0:
-		var sprout_center := Vector2(size.x * 0.50, size.y * 0.78)
-		draw_line(sprout_center, sprout_center - Vector2(0.0, size.y * 0.12), Color(palette.border), 4.0)
-		draw_circle(sprout_center - Vector2(size.x * 0.025, size.y * 0.10), minf(size.x, size.y) * 0.025, Color(palette.glow))
-		draw_circle(sprout_center + Vector2(size.x * 0.025, -size.y * 0.075), minf(size.x, size.y) * 0.025, Color(palette.glow))
-
-
-func _draw_tree(position: Vector2, scale: float, palette: Dictionary) -> void:
-	draw_rect(Rect2(position.x - scale * 0.10, position.y - scale * 0.1, scale * 0.20, scale * 1.0), Color(palette.trunk))
-	draw_circle(position - Vector2(0.0, scale * 0.45), scale * 0.60, Color(palette.foliage_dark))
-	draw_circle(position - Vector2(scale * 0.38, scale * 0.20), scale * 0.42, Color(palette.foliage))
-	draw_circle(position + Vector2(scale * 0.35, -scale * 0.28), scale * 0.45, Color(palette.foliage))
-
-
-func _draw_restoration_glow(palette: Dictionary) -> void:
-	var glow_count := 5 if compact else 11
-	for index in glow_count:
-		var x := size.x * (0.08 + 0.083 * float(index))
-		var y := size.y * (0.20 + 0.10 * float((index * 7) % 5))
-		var radius := minf(size.x, size.y) * (0.006 + 0.002 * float(index % 2))
-		draw_circle(Vector2(x, y), radius * 2.4, Color(Color(palette.glow), 0.10))
-		draw_circle(Vector2(x, y), radius, Color(Color(palette.glow), 0.75))
-
-
-func _palette() -> Dictionary:
-	var palettes := [
-		{"sky_top": "102720", "sky_bottom": "244d3c", "far_land": "315c49", "near_land": "3f765a", "foreground": "183c2d", "foliage": "69b578", "foliage_dark": "397a4d", "trunk": "604d37", "glow": "d5ef83", "border": "73b890"},
-		{"sky_top": "17302a", "sky_bottom": "31584a", "far_land": "54705a", "near_land": "60825f", "foreground": "294a34", "foliage": "8bcf76", "foliage_dark": "4c8c55", "trunk": "735b3d", "glow": "dff58d", "border": "82c793"},
-		{"sky_top": "132b25", "sky_bottom": "2b5245", "far_land": "3f6752", "near_land": "416f50", "foreground": "1d432e", "foliage": "5fa96c", "foliage_dark": "326d45", "trunk": "66503a", "glow": "c9e982", "border": "6eb283"},
-		{"sky_top": "17313a", "sky_bottom": "32616a", "far_land": "52756c", "near_land": "477767", "foreground": "1c4e42", "foliage": "77aa68", "foliage_dark": "3e7550", "trunk": "65543f", "glow": "b9e6c4", "border": "76b7a6"},
-		{"sky_top": "18342d", "sky_bottom": "41705b", "far_land": "70865d", "near_land": "6f985f", "foreground": "345b3c", "foliage": "89bd67", "foliage_dark": "4a8050", "trunk": "735b3d", "glow": "e2ef94", "border": "8ac88b"},
-		{"sky_top": "0d211c", "sky_bottom": "24483b", "far_land": "315441", "near_land": "2f6043", "foreground": "153624", "foliage": "3f8654", "foliage_dark": "245e3d", "trunk": "584637", "glow": "9fda7a", "border": "5aa875"},
-		{"sky_top": "101e24", "sky_bottom": "354c51", "far_land": "526260", "near_land": "3f6256", "foreground": "1e4035", "foliage": "527b59", "foliage_dark": "315442", "trunk": "594c42", "glow": "d8e7d4", "border": "7fa899"},
-	]
-	return palettes[environment_number]
+	var front := PackedVector2Array([
+		center + Vector2(-unit * 0.35, unit),
+		center + Vector2(unit * 0.70, -unit * 1.20),
+		center + Vector2(unit * 2.0, unit),
+	])
+	draw_colored_polygon(back, LIGHT_GREEN)
+	draw_colored_polygon(front, GREEN)

@@ -7,17 +7,17 @@ signal chord_requested(cell_index: int)
 
 const TOP_INSET := 20.0
 const GRID_MARGIN := 4.0
-const HIDDEN_UP_COLOR := Color("718078b8")
-const HIDDEN_DOWN_COLOR := Color("5e6c65b8")
-const REVEALED_COLOR := Color("b9dfc3f2")
-const GRID_LINE_COLOR := Color("d3e4d9")
-const FLAG_COLOR := Color("facc15")
-const CORE_COLOR := Color("dc2626")
-const WRONG_COLOR := Color("7f1d1d")
+const HIDDEN_UP_COLOR := Color("ffffff")
+const HIDDEN_DOWN_COLOR := Color("f4fbf5")
+const REVEALED_COLOR := Color("a3e086")
+const GRID_LINE_COLOR := Color("469d65")
+const FLAG_COLOR := Color("fadf3c")
+const CORE_COLOR := Color("1b2d22")
+const WRONG_COLOR := Color("9b423d")
 const NUMBER_COLORS := {
-	1: Color("1d4ed8"),
-	2: Color("15803d"),
-	3: Color("dc2626"),
+	1: Color("315f8a"),
+	2: Color("3d7547"),
+	3: Color("a3473f"),
 }
 
 var row_count := 0
@@ -147,7 +147,7 @@ func _draw() -> void:
 		draw_colored_polygon(points, fill)
 		var outline := PackedVector2Array(points)
 		outline.append(points[0])
-		draw_polyline(outline, GRID_LINE_COLOR, 1.25, true)
+		draw_polyline(outline, GRID_LINE_COLOR, 1.4, true)
 
 		var center := get_triangle_center(cell_index)
 		if wrong_flag_states[cell_index]:
@@ -163,33 +163,17 @@ func _draw() -> void:
 func _draw_mountain_background() -> void:
 	if size.x <= 0.0 or size.y <= 0.0:
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color("17241f"))
-	var far_peaks := PackedVector2Array([
-		Vector2(0.0, size.y * 0.62),
-		Vector2(size.x * 0.12, size.y * 0.18),
-		Vector2(size.x * 0.25, size.y * 0.58),
-		Vector2(size.x * 0.39, size.y * 0.12),
-		Vector2(size.x * 0.54, size.y * 0.60),
-		Vector2(size.x * 0.69, size.y * 0.20),
-		Vector2(size.x * 0.82, size.y * 0.56),
-		Vector2(size.x * 0.93, size.y * 0.15),
-		Vector2(size.x, size.y * 0.48),
-		Vector2(size.x, size.y),
-		Vector2(0.0, size.y),
-	])
-	draw_colored_polygon(far_peaks, Color("345d4d"))
-	var near_peaks := PackedVector2Array([
-		Vector2(0.0, size.y * 0.78),
-		Vector2(size.x * 0.18, size.y * 0.34),
-		Vector2(size.x * 0.34, size.y * 0.76),
-		Vector2(size.x * 0.54, size.y * 0.30),
-		Vector2(size.x * 0.73, size.y * 0.74),
-		Vector2(size.x * 0.88, size.y * 0.38),
-		Vector2(size.x, size.y * 0.72),
-		Vector2(size.x, size.y),
-		Vector2(0.0, size.y),
-	])
-	draw_colored_polygon(near_peaks, Color("3f765e"))
+	draw_rect(Rect2(Vector2.ZERO, size), Color("ffffff"))
+	draw_circle(
+		Vector2(size.x * 0.14, size.y * 0.92),
+		minf(size.x, size.y) * 0.26,
+		Color("a3e0862e")
+	)
+	draw_circle(
+		Vector2(size.x * 0.88, size.y * 0.12),
+		minf(size.x, size.y) * 0.18,
+		Color("fadf3c24")
+	)
 
 
 func _draw_number(center: Vector2, number: int) -> void:
@@ -212,8 +196,20 @@ func _draw_flag(center: Vector2) -> void:
 
 
 func _draw_core(center: Vector2) -> void:
-	draw_circle(center, maxf(3.5, _side_length * 0.14), CORE_COLOR)
-	draw_circle(center, maxf(1.5, _side_length * 0.05), Color("fee2e2"))
+	var radius := maxf(4.5, _side_length * 0.16)
+	var crystal := PackedVector2Array([
+		center + Vector2(-radius * 0.85, -radius * 0.20),
+		center + Vector2(-radius * 0.30, -radius),
+		center + Vector2(radius * 0.55, -radius * 0.72),
+		center + Vector2(radius, radius * 0.12),
+		center + Vector2(radius * 0.25, radius),
+		center + Vector2(-radius * 0.72, radius * 0.62),
+	])
+	draw_colored_polygon(crystal, CORE_COLOR)
+	var outline := PackedVector2Array(crystal)
+	outline.append(crystal[0])
+	draw_polyline(outline, Color("ffffff"), 1.4, true)
+	draw_circle(center, radius * 0.22, Color("fadf3c"))
 
 
 func _draw_wrong_mark(center: Vector2) -> void:

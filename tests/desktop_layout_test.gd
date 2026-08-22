@@ -36,10 +36,10 @@ func _run_tests() -> void:
 func _test_menu_columns(shell) -> void:
 	var menu_panel := shell.get_node("%MenuPanel") as Control
 	var showcase_panel := shell.get_node("%ShowcasePanel") as Control
-	_expect(_inside_viewport(menu_panel), "The desktop menu panel stays inside 1280x720.")
-	_expect(_inside_viewport(showcase_panel), "The ecology showcase stays inside 1280x720.")
-	_expect(menu_panel.global_position.x + menu_panel.size.x < showcase_panel.global_position.x, "Menu actions and ecology artwork form separate columns.")
-	_expect(showcase_panel.size.x > menu_panel.size.x, "The ecology artwork receives the larger desktop area.")
+	_expect(_inside_viewport(menu_panel), "The floating menu stays inside 1280x720.")
+	_expect(_inside_viewport(showcase_panel), "The full-screen ecology artwork stays inside 1280x720.")
+	_expect(showcase_panel.get_global_rect().encloses(menu_panel.get_global_rect()), "The title and actions float over the ecology artwork.")
+	_expect(showcase_panel.size.x >= 1279.0 and showcase_panel.size.y >= 719.0, "The welcome artwork fills the 1280x720 viewport.")
 
 
 func _test_game_columns(shell) -> void:

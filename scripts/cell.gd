@@ -5,20 +5,20 @@ signal reveal_requested(cell_index: int)
 signal flag_requested(cell_index: int)
 signal chord_requested(cell_index: int)
 
-const DEFAULT_COLOR := Color("334155")
-const FLAG_COLOR := Color("facc15")
-const GUIDE_COLOR := Color("3d3216")
-const MINE_COLOR := Color("dc2626")
+const DEFAULT_COLOR := Color("1b2d22")
+const FLAG_COLOR := Color("469d65")
+const GUIDE_COLOR := Color("1b2d22")
+const MINE_COLOR := Color("1b2d22")
 const NUMBER_COLORS := {
-	0: Color("64748b"),
-	1: Color("1d4ed8"),
-	2: Color("15803d"),
-	3: Color("dc2626"),
-	4: Color("6d28d9"),
-	5: Color("991b1b"),
-	6: Color("0f766e"),
-	7: Color("111827"),
-	8: Color("475569"),
+	0: Color("777264"),
+	1: Color("315f8a"),
+	2: Color("3d7547"),
+	3: Color("a3473f"),
+	4: Color("66508a"),
+	5: Color("81443c"),
+	6: Color("337576"),
+	7: Color("34342f"),
+	8: Color("676257"),
 }
 
 var cell_index := -1
@@ -115,12 +115,12 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _configure_styles() -> void:
-	_hidden_style = _make_style(Color("59635d"), Color("7d8982"))
-	_hover_style = _make_style(Color("6f7b74"), Color("a4afa8"))
-	_pressed_style = _make_style(Color("444c47"), Color("c3cbc6"))
-	_revealed_style = _make_style(Color("b9dfc3"), Color("6f9f7a"))
-	_guide_style = _make_style(Color("d9a93f"), Color("ffe08a"), 3)
-	_guide_hover_style = _make_style(Color("efc55d"), Color("fff0b5"), 3)
+	_hidden_style = _make_style(Color("ffffff"), Color("469d65"), 2)
+	_hover_style = _make_style(Color("a3e086"), Color("469d65"), 2)
+	_pressed_style = _make_style(Color("469d65"), Color("469d65"), 2)
+	_revealed_style = _make_style(Color("a3e086"), Color("ffffff"), 2)
+	_guide_style = _make_style(Color("fadf3c"), Color("469d65"), 2)
+	_guide_hover_style = _make_style(Color("ffe96a"), Color("469d65"), 2)
 	add_theme_stylebox_override("normal", _hidden_style)
 	add_theme_stylebox_override("hover", _hover_style)
 	add_theme_stylebox_override("pressed", _pressed_style)
@@ -132,7 +132,10 @@ func _make_style(background: Color, border: Color, border_width: int = 1) -> Sty
 	style.bg_color = background
 	style.border_color = border
 	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(4)
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	style.corner_radius_bottom_right = 10
+	style.corner_radius_bottom_left = 10
 	return style
 
 

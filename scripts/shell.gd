@@ -32,11 +32,12 @@ func _ready() -> void:
 	save_store = SAVE_STORE_SCRIPT.new(save_path)
 	save_store.load_data()
 	volume_slider.value = save_store.get_master_volume()
-	display_mode_option.add_item("窗口模式", 0)
-	display_mode_option.add_item("无边框全屏", 1)
-	display_mode_option.select(1 if save_store.is_fullscreen() else 0)
+	display_mode_option.add_item("窗口模式（1280 × 720）", 0)
+	display_mode_option.add_item("最大化窗口", 1)
+	display_mode_option.add_item("无边框全屏", 2)
+	display_mode_option.select(save_store.get_window_mode())
 	_on_volume_changed(volume_slider.value)
-	_apply_fullscreen(display_mode_option.selected == 1)
+	_apply_display_mode(display_mode_option.selected)
 	_connect_controls()
 
 	var requested_level := parse_level_argument(OS.get_cmdline_user_args())
@@ -266,16 +267,15 @@ func _on_volume_drag_ended(value_changed: bool) -> void:
 
 
 func _on_display_mode_selected(index: int) -> void:
-	var enable_fullscreen := index == 1
-	_apply_fullscreen(enable_fullscreen)
-	save_store.set_fullscreen(enable_fullscreen)
+	_apply_display_mode(index)
+	save_store.set_window_mode(index)
 	save_store.save_data()
 
 
 func _toggle_display_mode() -> void:
-	var enable_fullscreen := DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_WINDOWED
-	display_mode_option.select(1 if enable_fullscreen else 0)
-	_on_display_mode_selected(display_mode_option.selected)
+	var next_mode := 1 if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN else 2
+	display_mode_option.select(next_mode)
+	_on_display_mode_selected(next_mode)
 
 
 func _apply_master_volume(value: float) -> void:
@@ -287,10 +287,19 @@ func _apply_master_volume(value: float) -> void:
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(value))
 
 
-func _apply_fullscreen(enabled: bool) -> void:
-	var desired_mode := DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED
-	if DisplayServer.window_get_mode() != desired_mode:
-		DisplayServer.window_set_mode(desired_mode)
+func _apply_display_mode(mode: int) -> void:
+	match mode:
+		0:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			var window_size := Vector2i(1280, 720)
+			DisplayServer.window_set_size(window_size)
+			var screen := DisplayServer.window_get_current_screen()
+			var usable_rect := DisplayServer.screen_get_usable_rect(screen)
+			DisplayServer.window_set_position(usable_rect.position + (usable_rect.size - window_size) / 2)
+		1:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		2:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 
 func _show_only(page: Control) -> void:

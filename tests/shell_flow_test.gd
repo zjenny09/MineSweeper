@@ -184,7 +184,8 @@ func _test_return_to_main_menu(shell) -> void:
 func _test_volume_setting(shell) -> void:
 	var slider := shell.get_node("%VolumeSlider") as HSlider
 	var display_mode := shell.get_node("%DisplayModeOption") as OptionButton
-	_expect(display_mode.item_count == 2 and display_mode.get_item_text(0) == "窗口模式", "Settings provides explicit window and fullscreen modes.")
+	_expect(display_mode.item_count == 3, "Settings provides windowed, maximized, and borderless modes.")
+	_expect(display_mode.selected == 1 and display_mode.get_item_text(1) == "最大化窗口", "A new install defaults to a maximized window.")
 	shell.show_settings()
 	slider.value = 0.44
 	shell.call("_close_settings")

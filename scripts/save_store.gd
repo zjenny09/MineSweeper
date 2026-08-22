@@ -3,6 +3,9 @@ extends RefCounted
 
 const SCHEMA_VERSION := 1
 const DEFAULT_SAVE_PATH := "user://save_v1.json"
+const WINDOW_MODE_WINDOWED := 0
+const WINDOW_MODE_MAXIMIZED := 1
+const WINDOW_MODE_FULLSCREEN := 2
 
 var _save_path: String
 var _data: Dictionary
@@ -125,15 +128,25 @@ func set_master_volume(value: float) -> void:
 
 
 func set_fullscreen(value: bool) -> void:
-	_data["settings"]["fullscreen"] = value
+	set_window_mode(WINDOW_MODE_FULLSCREEN if value else WINDOW_MODE_MAXIMIZED)
+
+
+func set_window_mode(value: int) -> void:
+	var mode := value if value >= WINDOW_MODE_WINDOWED and value <= WINDOW_MODE_FULLSCREEN else WINDOW_MODE_MAXIMIZED
+	_data["settings"]["window_mode"] = mode
+	_data["settings"]["fullscreen"] = mode == WINDOW_MODE_FULLSCREEN
 
 
 func get_master_volume() -> float:
 	return float(_data["settings"]["master_volume"])
 
 
+func get_window_mode() -> int:
+	return int(_data["settings"]["window_mode"])
+
+
 func is_fullscreen() -> bool:
-	return bool(_data["settings"]["fullscreen"])
+	return get_window_mode() == WINDOW_MODE_FULLSCREEN
 
 
 func _read_normalized_file(path: String) -> Dictionary:
@@ -164,6 +177,7 @@ func _make_default_data() -> Dictionary:
 		"settings": {
 			"master_volume": 1.0,
 			"fullscreen": false,
+			"window_mode": WINDOW_MODE_MAXIMIZED,
 		},
 	}
 
@@ -193,9 +207,12 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 		var volume = source_settings.get("master_volume")
 		if (typeof(volume) == TYPE_INT or typeof(volume) == TYPE_FLOAT) and is_finite(float(volume)):
 			normalized["settings"]["master_volume"] = clampf(float(volume), 0.0, 1.0)
-		var fullscreen = source_settings.get("fullscreen")
-		if fullscreen is bool:
-			normalized["settings"]["fullscreen"] = fullscreen
+		var mode := _normalized_int(source_settings.get("window_mode"), -1)
+		if mode < WINDOW_MODE_WINDOWED or mode > WINDOW_MODE_FULLSCREEN:
+			var legacy_fullscreen = source_settings.get("fullscreen")
+			mode = WINDOW_MODE_FULLSCREEN if legacy_fullscreen is bool and legacy_fullscreen else WINDOW_MODE_MAXIMIZED
+		normalized["settings"]["window_mode"] = mode
+		normalized["settings"]["fullscreen"] = mode == WINDOW_MODE_FULLSCREEN
 
 	return normalized
 
@@ -234,7 +251,13 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		return false
 	if not is_finite(float(volume)) or float(volume) < 0.0 or float(volume) > 1.0:
 		return false
-	return settings.get("fullscreen") is bool
+	if not settings.get("fullscreen") is bool:
+		return false
+	if settings.has("window_mode"):
+		var mode := _normalized_int(settings.get("window_mode"), -1)
+		if mode < WINDOW_MODE_WINDOWED or mode > WINDOW_MODE_FULLSCREEN:
+			return false
+	return true
 
 
 func _normalized_int(value: Variant, fallback: int) -> int:
