@@ -20,6 +20,12 @@ const START_TREE_COLORS := [
 	Color("72c6d3"),
 ]
 
+enum Reaction {
+	NEUTRAL,
+	HAPPY,
+	SAD,
+}
+
 @export_range(0, 6) var environment_number := 0:
 	set(value):
 		environment_number = clampi(value, 0, 6)
@@ -31,6 +37,7 @@ const START_TREE_COLORS := [
 		queue_redraw()
 
 var _animation_time := 0.0
+var reaction: int = Reaction.NEUTRAL
 
 
 func _ready() -> void:
@@ -40,10 +47,25 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if environment_number != 0 or not is_visible_in_tree():
+	if not is_visible_in_tree():
+		return
+	if environment_number != 0 and (not compact or reaction == Reaction.NEUTRAL):
 		return
 	_animation_time += delta
 	queue_redraw()
+
+
+func set_reaction(value: int) -> void:
+	var next_reaction := value if value >= Reaction.NEUTRAL and value <= Reaction.SAD else Reaction.NEUTRAL
+	if reaction == next_reaction:
+		return
+	reaction = next_reaction
+	_animation_time = 0.0
+	queue_redraw()
+
+
+func get_reaction() -> int:
+	return reaction
 
 
 func set_environment(level_number: int) -> void:
@@ -62,34 +84,26 @@ func _draw() -> void:
 
 
 func _draw_abstract_preview() -> void:
-	_draw_blob(
-		Vector2(size.x * 0.72, size.y * 0.60),
-		Vector2(size.x * 0.38, size.y * 0.46),
-		LIGHT_GREEN,
-		0.8
-	)
-	_draw_blob(
-		Vector2(size.x * 0.13, size.y * 0.70),
-		Vector2(size.x * 0.30, size.y * 0.43),
-		GREEN,
-		1.7
-	)
-	_draw_blob(
-		Vector2(size.x * 0.48, size.y * 0.96),
-		Vector2(size.x * 0.36, size.y * 0.39),
-		YELLOW,
-		2.8
-	)
-	_draw_blob(
-		Vector2(size.x * 0.95, size.y * 0.90),
-		Vector2(size.x * 0.18, size.y * 0.31),
-		GREEN,
-		4.1
-	)
-	_draw_face(Vector2(size.x * 0.18, size.y * 0.60), GREEN)
-	_draw_face(Vector2(size.x * 0.68, size.y * 0.46), LIGHT_GREEN)
-	_draw_face(Vector2(size.x * 0.50, size.y * 0.80), YELLOW)
+	var vertical_offset := 0.0
+	if compact and reaction == Reaction.HAPPY:
+		vertical_offset = -absf(sin(_animation_time * 4.2)) * 5.0
+	elif compact and reaction == Reaction.SAD:
+		vertical_offset = 4.0 + sin(_animation_time * 1.5) * 1.5
+	draw_set_transform(Vector2(0.0, vertical_offset), 0.0, Vector2.ONE)
+	var preview_green := _reaction_color(GREEN)
+	var preview_light := _reaction_color(LIGHT_GREEN)
+	var preview_yellow := _reaction_color(YELLOW)
+	_draw_blob(Vector2(size.x * 0.72, size.y * 0.60), Vector2(size.x * 0.38, size.y * 0.46), preview_light, 0.8)
+	_draw_blob(Vector2(size.x * 0.13, size.y * 0.70), Vector2(size.x * 0.30, size.y * 0.43), preview_green, 1.7)
+	_draw_blob(Vector2(size.x * 0.48, size.y * 0.96), Vector2(size.x * 0.36, size.y * 0.39), preview_yellow, 2.8)
+	_draw_blob(Vector2(size.x * 0.95, size.y * 0.90), Vector2(size.x * 0.18, size.y * 0.31), preview_green, 4.1)
+	_draw_face(Vector2(size.x * 0.18, size.y * 0.60), preview_green)
+	_draw_face(Vector2(size.x * 0.68, size.y * 0.46), preview_light)
+	_draw_face(Vector2(size.x * 0.50, size.y * 0.80), preview_yellow)
 	_draw_environment_motif()
+	if compact and reaction == Reaction.HAPPY:
+		_draw_happy_sparkles()
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _draw_start_landscape() -> void:
@@ -315,14 +329,46 @@ func _get_blob_top_y(
 	return top_y
 
 
+func _reaction_color(color: Color) -> Color:
+	if not compact or reaction != Reaction.SAD:
+		return color
+	if color == GREEN:
+		return Color("b99dcb", color.a)
+	if color == LIGHT_GREEN:
+		return Color("e7dced", color.a)
+	if color == YELLOW:
+		return Color("e2c672", color.a)
+	return color
+
+
+func _draw_happy_sparkles() -> void:
+	for index in 5:
+		var phase := _animation_time * 2.4 + float(index) * 1.3
+		var center := Vector2(
+			size.x * (0.16 + 0.17 * float(index)),
+			size.y * (0.22 + 0.05 * sin(phase))
+		)
+		draw_circle(center, minf(size.x, size.y) * 0.015, Color(YELLOW, 0.82))
+
+
 func _draw_face(position: Vector2, background_color: Color) -> void:
 	var radius := minf(size.x, size.y) * (0.010 if compact else 0.008)
 	var spacing := radius * 2.4
 	var eye_color := INK
 	if background_color == GREEN:
 		eye_color = Color("14231a")
-	draw_circle(position - Vector2(spacing, 0.0), radius, eye_color)
-	draw_circle(position + Vector2(spacing, 0.0), radius, eye_color)
+	if compact and reaction == Reaction.SAD:
+		draw_line(position - Vector2(spacing + radius, radius), position - Vector2(spacing - radius, -radius * 0.2), eye_color, 1.5, true)
+		draw_line(position + Vector2(spacing - radius, -radius * 0.2), position + Vector2(spacing + radius, -radius), eye_color, 1.5, true)
+		draw_arc(position + Vector2(0.0, radius * 3.0), radius * 2.0, PI + 0.3, TAU - 0.3, 10, eye_color, 1.5, true)
+		draw_circle(position + Vector2(spacing + radius * 1.4, radius * 2.0), radius * 0.75, Color("70cbdc"))
+	elif compact and reaction == Reaction.HAPPY:
+		draw_arc(position - Vector2(spacing, 0.0), radius, PI, TAU, 8, eye_color, 1.5, true)
+		draw_arc(position + Vector2(spacing, 0.0), radius, PI, TAU, 8, eye_color, 1.5, true)
+		draw_arc(position + Vector2(0.0, radius), radius * 2.2, 0.2, PI - 0.2, 10, eye_color, 1.5, true)
+	else:
+		draw_circle(position - Vector2(spacing, 0.0), radius, eye_color)
+		draw_circle(position + Vector2(spacing, 0.0), radius, eye_color)
 
 
 func _draw_environment_motif() -> void:

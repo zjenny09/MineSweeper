@@ -20,6 +20,7 @@ func _run_tests() -> void:
 
 	_test_menu_columns(shell)
 	await _test_settings_layout(shell)
+	await _test_first_guide_layout(shell)
 	await _test_game_columns(shell)
 	await _test_steam_deck_height(shell)
 
@@ -51,6 +52,28 @@ func _test_settings_layout(shell) -> void:
 	_expect(_inside_viewport(operation_mode), "The operation-mode selector fits inside 1280x720 settings.")
 	_expect(_inside_viewport(back_button), "The enlarged settings panel keeps its back button inside 1280x720.")
 	shell.show_main_menu()
+
+
+func _test_first_guide_layout(shell) -> void:
+	shell.start_cli_level(1)
+	await process_frame
+	await process_frame
+	var game = shell.get_active_game()
+	var guide = game.get_node("%FirstMoveGuide")
+	var board := game.get_node("%Board") as MinesweeperBoard
+	var bubble_rect: Rect2 = guide.get_stable_bubble_rect()
+	var target_center: Vector2 = guide.get_target_center()
+	var target_size: Vector2 = board.cell_nodes[board.guide_cell_index].size
+	var target_rect := Rect2(target_center - target_size * 0.5, target_size)
+	var vertical_gap := minf(
+		absf(target_rect.position.y - bubble_rect.end.y),
+		absf(bubble_rect.position.y - target_rect.end.y)
+	)
+	_expect(guide.visible and guide.target_cell_index == board.guide_cell_index, "The level-1 guide targets the suggested cell.")
+	_expect(Rect2(Vector2.ZERO, guide.size).encloses(bubble_rect), "The stable guide bubble remains inside the board panel at 1280x720.")
+	_expect(not bubble_rect.intersects(target_rect), "The guide bubble does not cover the suggested cell.")
+	_expect(vertical_gap <= 13.0, "The guide bubble floats directly beside the suggested cell without a long connector.")
+	_expect(board.custom_minimum_size == Vector2(422.0, 422.0), "The guide overlay does not change the level-1 board size.")
 
 
 func _test_game_columns(shell) -> void:
@@ -89,6 +112,11 @@ func _test_steam_deck_height(shell) -> void:
 	shell.show_settings()
 	await process_frame
 	_expect(_inside_viewport(shell.get_node("%OperationModeOption") as Control), "The operation selector remains inside the 1280x800 settings page.")
+	shell.start_cli_level(1)
+	await process_frame
+	await process_frame
+	var guide = shell.get_active_game().get_node("%FirstMoveGuide")
+	_expect(Rect2(Vector2.ZERO, guide.size).encloses(guide.get_stable_bubble_rect()), "The first-move guide remains inside the board panel at 1280x800.")
 
 
 func _inside_viewport(control: Control) -> bool:

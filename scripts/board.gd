@@ -9,6 +9,8 @@ const TRIANGLE_BOARD_VIEW_SCRIPT: Script = preload("res://scripts/triangle_board
 const SQUARE_TOPOLOGY := "square"
 const TRIANGLE_TOPOLOGY := "triangle"
 const TRIANGLE_BOARD_SIZE := Vector2(620.0, 460.0)
+const POLLUTION_STEP_DELAY := 0.22
+const POLLUTION_CELL_DURATION := 0.95
 
 
 enum OperationMode {
@@ -41,6 +43,10 @@ var revealed_safe_count := 0
 var interaction_enabled := true
 var operation_mode: int = OperationMode.MOUSE
 var keyboard_cell_index := -1
+var pollution_tint_progress := 0.0
+var _pollution_animation_active := false
+var _pollution_elapsed := 0.0
+var _pollution_origin_index := -1
 
 var mines: Array[bool] = []
 var revealed: Array[bool] = []
@@ -55,6 +61,61 @@ var _triangle_view
 
 func _ready() -> void:
 	_random.randomize()
+	set_process(false)
+
+
+func _process(delta: float) -> void:
+	advance_pollution_animation(delta)
+
+
+func advance_pollution_animation(delta: float) -> void:
+	if not _pollution_animation_active:
+		set_process(false)
+		return
+	_pollution_elapsed += maxf(0.0, delta)
+	var origin_row := int(_pollution_origin_index / column_count)
+	var origin_column := _pollution_origin_index % column_count
+	var all_complete := true
+	for cell_index in cell_nodes.size():
+		var row := int(cell_index / column_count)
+		var column := cell_index % column_count
+		var distance: int = absi(row - origin_row) + absi(column - origin_column)
+		var local_progress := clampf(
+			(_pollution_elapsed - float(distance) * POLLUTION_STEP_DELAY)
+			/ POLLUTION_CELL_DURATION,
+			0.0,
+			1.0
+		)
+		cell_nodes[cell_index].set_pollution_progress(local_progress)
+		if local_progress < 1.0:
+			all_complete = false
+	var max_distance := maxi(row_count - 1, 0) + maxi(column_count - 1, 0)
+	var total_duration := float(max_distance) * POLLUTION_STEP_DELAY + POLLUTION_CELL_DURATION
+	pollution_tint_progress = clampf(_pollution_elapsed / total_duration, 0.0, 1.0)
+	if all_complete:
+		_pollution_animation_active = false
+		set_process(false)
+
+
+func _start_pollution_animation(origin_index: int) -> void:
+	pollution_tint_progress = 0.0
+	_pollution_elapsed = 0.0
+	_pollution_origin_index = origin_index
+	_pollution_animation_active = true
+	for cell in cell_nodes:
+		cell.set_pollution_progress(0.0)
+	set_process(true)
+
+
+func _reset_pollution_animation() -> void:
+	pollution_tint_progress = 0.0
+	_pollution_elapsed = 0.0
+	_pollution_origin_index = -1
+	_pollution_animation_active = false
+	modulate = Color.WHITE
+	for cell in cell_nodes:
+		cell.set_pollution_progress(0.0)
+	set_process(false)
 
 
 func _input(event: InputEvent) -> void:
@@ -129,10 +190,13 @@ func load_level(level: Dictionary) -> void:
 
 
 func new_game() -> void:
+	_reset_pollution_animation()
 	game_state = GameState.READY
 	used_flags = 0
 	revealed_safe_count = 0
 	guide_cell_index = -1
+	for cell in cell_nodes:
+		cell.reset_transient_visuals()
 	_reset_array(mines, false)
 	_reset_array(revealed, false)
 	_reset_array(flagged, false)
@@ -164,6 +228,10 @@ func reveal_cell(cell_index: int) -> void:
 	if mines[cell_index]:
 		revealed[cell_index] = true
 		game_state = GameState.LOST
+		if level_number == 1:
+			_start_pollution_animation(cell_index)
+			for cell in cell_nodes:
+				cell.begin_loss_wilt_if_visible()
 		_refresh_all_cells()
 		state_changed.emit(game_state)
 		return
@@ -339,7 +407,7 @@ func _create_square_cells() -> void:
 		var cell := CELL_SCENE.instantiate() as MineCell
 		cell.custom_minimum_size = Vector2(cell_size, cell_size)
 		cell.focus_mode = Control.FOCUS_NONE
-		cell.setup(cell_index)
+		cell.setup(cell_index, level_number)
 		cell.reveal_requested.connect(reveal_cell)
 		cell.flag_requested.connect(toggle_flag)
 		cell.chord_requested.connect(chord_cell)

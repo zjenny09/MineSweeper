@@ -19,6 +19,7 @@ signal pause_changed(is_paused: bool)
 @onready var flags_label: Label = %FlagsLabel
 @onready var timer_label: Label = %TimerLabel
 @onready var instructions_label: Label = %InstructionsLabel
+@onready var first_move_guide = %FirstMoveGuide
 @onready var restart_button: Button = %RestartButton
 @onready var pause_button: Button = %PauseButton
 @onready var pause_overlay: Control = %PauseOverlay
@@ -92,6 +93,7 @@ func start_level(level_index: int) -> void:
 		board.level_name,
 	]
 	_refresh_instructions()
+	_refresh_first_move_guide()
 	visible = true
 	level_started.emit(board.level_number)
 
@@ -108,6 +110,7 @@ func set_operation_mode(mode: int) -> void:
 	_operation_mode = 1 if mode == 1 else 0
 	board.set_operation_mode(_operation_mode)
 	_refresh_instructions()
+	_refresh_first_move_guide()
 
 
 func get_operation_mode() -> int:
@@ -118,7 +121,7 @@ func _refresh_instructions() -> void:
 	if not is_instance_valid(instructions_label) or not is_instance_valid(board):
 		return
 	var guide_text := (
-		"绿色箭头为安全建议"
+		"小芽指向黄色安全建议格"
 		if board.first_move_guide_enabled
 		else "无安全提示 · 首点可能污染"
 	)
@@ -135,6 +138,27 @@ func _refresh_instructions() -> void:
 			+ "\n左键净化 · 右键标记"
 			+ "\n双击数字快速展开"
 		)
+
+
+func _refresh_first_move_guide() -> void:
+	if not is_instance_valid(first_move_guide) or not is_instance_valid(board):
+		return
+	var guide_index := board.guide_cell_index
+	var should_show := (
+		board.level_number == 1
+		and board.first_move_guide_enabled
+		and board.game_state == MinesweeperBoard.GameState.READY
+		and guide_index >= 0
+		and guide_index < board.cell_nodes.size()
+	)
+	if not should_show:
+		first_move_guide.hide_guide()
+		return
+	first_move_guide.show_for_cell(
+		board.cell_nodes[guide_index],
+		guide_index,
+		_operation_mode == 1
+	)
 
 
 func set_session_paused(paused: bool) -> void:
@@ -170,18 +194,21 @@ func _on_state_changed(state: int) -> void:
 	_advance_available = false
 	match state:
 		MinesweeperBoard.GameState.READY:
+			eco_showcase.call("set_reaction", 0)
 			_reset_timer()
-			status_label.text = "点击绿色箭头试试（也可自由选择）" if board.first_move_guide_enabled else "选择第一块净化区域"
+			status_label.text = "跟着小芽从黄色格开始（也可自由选择）" if board.first_move_guide_enabled else "选择第一块净化区域"
 			restart_button.text = "重新生成"
 			pause_button.text = "暂停  ·  Esc"
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.PLAYING:
+			eco_showcase.call("set_reaction", 0)
 			_start_timer()
 			status_label.text = "净化进行中"
 			restart_button.text = "重新开始"
 			pause_button.text = "暂停  ·  Esc"
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.WON:
+			eco_showcase.call("set_reaction", 1)
 			_pause_timer()
 			pause_button.text = "菜单  ·  Esc"
 			pause_button.disabled = false
@@ -196,11 +223,13 @@ func _on_state_changed(state: int) -> void:
 				_completion_emitted = true
 				level_completed.emit(board.level_number, get_elapsed_ms())
 		MinesweeperBoard.GameState.LOST:
+			eco_showcase.call("set_reaction", 2)
 			_pause_timer()
 			pause_button.text = "菜单  ·  Esc"
 			pause_button.disabled = false
 			status_label.text = "触碰污染核心，请重新开始"
 			restart_button.text = "重新开始"
+	_refresh_first_move_guide()
 
 
 func _on_flags_changed(used_flags: int, max_flags: int) -> void:

@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/board.gd" id="2_board"]
 [ext_resource type="Script" path="res://scripts/eco_showcase.gd" id="3_eco"]
 [ext_resource type="Theme" path="res://themes/crayon_ui_theme.tres" id="4_theme"]
 [ext_resource type="Script" path="res://scripts/paper_background.gd" id="5_paper"]
+[ext_resource type="Script" path="res://scripts/first_move_guide.gd" id="6_guide"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
 bg_color = Color(1, 1, 1, 1)
@@ -144,6 +145,13 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("2_board")
+
+[node name="FirstMoveGuide" type="Control" parent="PageMargin/Columns/BoardPanel"]
+unique_name_in_owner = true
+z_index = 4
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("6_guide")
 
 [node name="HudPanel" type="PanelContainer" parent="PageMargin/Columns"]
 unique_name_in_owner = true

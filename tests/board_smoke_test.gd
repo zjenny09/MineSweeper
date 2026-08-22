@@ -15,7 +15,7 @@ func _run_tests() -> void:
 	var board := main_scene.get_node("%Board") as MinesweeperBoard
 
 	_test_level_setup(board)
-	_test_guide_behavior(board)
+	_test_guide_behavior(main_scene, board)
 	_test_rebellious_first_click(board)
 	_test_random_layouts(board)
 	_test_flags_win_and_restart(board)
@@ -25,6 +25,7 @@ func _run_tests() -> void:
 	_test_land_level_data(main_scene, board)
 	_test_chord_behavior(main_scene, board)
 	_test_keyboard_controls(main_scene, board)
+	_test_level_one_visuals(main_scene, board)
 
 	main_scene.queue_free()
 	if failures == 0:
@@ -48,14 +49,29 @@ func _test_level_setup(board: MinesweeperBoard) -> void:
 	_validate_numbers(board)
 
 
-func _test_guide_behavior(board: MinesweeperBoard) -> void:
+func _test_guide_behavior(main_scene: Node, board: MinesweeperBoard) -> void:
+	var guide = main_scene.get_node("%FirstMoveGuide")
 	for trial in 40:
 		board._random.seed = 1000 + trial
 		board.new_game()
 		var guide_index := board.guide_cell_index
 		_expect(guide_index >= 0, "Level 1 provides a suggested first cell.")
 		_expect(not board.mines[guide_index], "The suggested cell is truly safe.")
-		_expect(board.cell_nodes[guide_index].text == "↓", "The suggested cell displays a green arrow.")
+		_expect(board.cell_nodes[guide_index].text.is_empty(), "The guided cell no longer relies on an unexplained arrow glyph.")
+		_expect(guide.visible and guide.target_cell_index == guide_index, "The sprout guide points at the current safe suggestion.")
+		_expect(guide.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The guide overlay never blocks cell input.")
+		if trial == 0:
+			main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.KEYBOARD)
+			_expect(guide.is_keyboard_mode() and guide.get_action_text().contains("按 Z"), "Keyboard mode gives a clear Z instruction.")
+			_expect(board.get_keyboard_cell_index() == guide_index, "Keyboard selection starts on the suggested cell.")
+			board._input(_key_event(KEY_RIGHT))
+			_expect(guide.visible, "Moving the keyboard cursor does not dismiss the first-move guide.")
+			var selected_index := board.get_keyboard_cell_index()
+			board.toggle_flag(selected_index)
+			_expect(guide.visible, "Marking a cell does not dismiss the first-move guide.")
+			board.toggle_flag(selected_index)
+			main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.MOUSE)
+			_expect(not guide.is_keyboard_mode() and guide.get_action_text().contains("点这里"), "Mouse mode gives a clear click instruction.")
 
 		var has_zero := false
 		for cell_index in board.cell_count:
@@ -68,6 +84,7 @@ func _test_guide_behavior(board: MinesweeperBoard) -> void:
 		var expected := _expected_opening(board, guide_index)
 		board.reveal_cell(guide_index)
 		_expect(board.guide_cell_index == -1, "The guide disappears after the first click.")
+		_expect(not guide.visible, "The animated guide hides after the first valid reveal.")
 		_expect(board.revealed == expected, "Following the guide uses the classic number-or-zero opening rule.")
 		_expect(not _any_arrow_visible(board), "No guide arrow remains after play begins.")
 	board._random.randomize()
@@ -137,7 +154,7 @@ func _test_player_facing_terms(main_scene: Node, board: MinesweeperBoard) -> voi
 	var flags_label := main_scene.get_node("%FlagsLabel") as Label
 	var status_label := main_scene.get_node("%StatusLabel") as Label
 	_expect(flags_label.text == "标记：0/5", "The counter uses marking terminology.")
-	_expect(status_label.text.contains("绿色箭头"), "The initial status explains the optional guide.")
+	_expect(status_label.text.contains("小芽"), "The initial status explains the optional sprout guide.")
 	_expect(board.cell_nodes[board.guide_cell_index].tooltip_text.contains("也可以忽略"), "The guide explicitly remains optional.")
 
 
@@ -162,7 +179,8 @@ func _test_level_2(main_scene: Node, board: MinesweeperBoard) -> void:
 	_expect(board.cell_nodes.size() == 36, "Level 2 creates 36 cells.")
 	_expect(board.core_count == 8 and board.safe_cell_count == 28, "Level 2 uses eight pollution cores.")
 	_expect(not board.first_move_guide_enabled and board.guide_cell_index == -1, "Level 2 removes first-move guidance.")
-	_expect(not _any_arrow_visible(board), "Level 2 shows no safe arrow.")
+	_expect(not _any_arrow_visible(board), "Level 2 shows no obsolete safe arrow.")
+	_expect(not main_scene.get_node("%FirstMoveGuide").visible, "Level 2 never shows the first-move sprout guide.")
 	_expect(board.mines.count(true) == 8 and board.revealed.count(true) == 0, "Level 2 starts as a complete closed random board.")
 	var status_label := main_scene.get_node("%StatusLabel") as Label
 	var instructions_label := main_scene.get_node("%InstructionsLabel") as Label
@@ -319,6 +337,89 @@ func _test_keyboard_controls(main_scene: Node, board: MinesweeperBoard) -> void:
 	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
 	_expect(board.get_keyboard_cell_index() == -1, "Returning to mouse mode clears the keyboard cursor.")
 	_expect(not board.cell_nodes[mouse_target]._is_keyboard_selected, "Mouse mode removes the square selection outline.")
+	board._random.randomize()
+
+
+func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
+	main_scene.call("_load_level", 0)
+	var eco_showcase = main_scene.get_node("%EcoShowcase")
+	board._random.seed = 8400
+	board.new_game()
+	var marked_index := 0
+	var marked_cell := board.cell_nodes[marked_index]
+	_expect(marked_cell.uses_level_one_art(), "Level 1 cells enable the biosensor theme.")
+
+	var right_click := InputEventMouseButton.new()
+	right_click.button_index = MOUSE_BUTTON_RIGHT
+	right_click.pressed = true
+	marked_cell._gui_input(right_click)
+	_expect(board.flagged[marked_index], "Right-click still marks a Level 1 cell.")
+	_expect(marked_cell.procedural_visual == MineCell.ProceduralVisual.BIOSENSOR and marked_cell.text.is_empty(), "Level 1 marking uses a seed instead of an exclamation mark.")
+	marked_cell.advance_biosensor_animation(1.0)
+	_expect(is_equal_approx(marked_cell.biosensor_progress, 1.0), "The detection seed can complete its sprouting animation.")
+	board.toggle_flag(marked_index)
+	marked_cell.advance_biosensor_animation(1.0)
+	_expect(marked_cell.procedural_visual == MineCell.ProceduralVisual.NONE and is_zero_approx(marked_cell.biosensor_progress), "Removing a mark reverses and clears the sprout.")
+
+	board.set_operation_mode(MinesweeperBoard.OperationMode.KEYBOARD)
+	var keyboard_index := 1
+	board._set_keyboard_cursor(keyboard_index)
+	board._input(_key_event(0, KEY_X))
+	_expect(board.flagged[keyboard_index] and board.cell_nodes[keyboard_index].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR, "Keyboard X starts the same seed animation.")
+	board.cell_nodes[keyboard_index].advance_biosensor_animation(1.0)
+	board.new_game()
+	_expect(board.cell_nodes[keyboard_index].procedural_visual == MineCell.ProceduralVisual.NONE and is_zero_approx(board.cell_nodes[keyboard_index].biosensor_progress), "Restart clears all seed animation state immediately.")
+
+	var safe_index := board.mines.find(false)
+	board.toggle_flag(safe_index)
+	board.cell_nodes[safe_index].advance_biosensor_animation(1.0)
+	var flagged_core := board.mines.find(true)
+	board.toggle_flag(flagged_core)
+	board.cell_nodes[flagged_core].advance_biosensor_animation(1.0)
+	var core_index := -1
+	for candidate in board.cell_count:
+		if board.mines[candidate] and candidate != flagged_core:
+			core_index = candidate
+			break
+	board.reveal_cell(core_index)
+	_expect(board.cell_nodes[core_index].procedural_visual == MineCell.ProceduralVisual.SLUDGE_CORE and board.cell_nodes[core_index].text.is_empty(), "A hit Level 1 core becomes an animated sludge creature instead of a dot.")
+	_expect(eco_showcase.get_reaction() == 2, "The compact ecology illustration becomes sad after a loss.")
+	_expect(board.cell_nodes[safe_index].text == "X" and board.cell_nodes[safe_index].is_sprout_wilting(), "A wrong marked sprout visibly wilts while retaining the error X.")
+	_expect(board.cell_nodes[flagged_core].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR and board.cell_nodes[flagged_core].is_sprout_wilting(), "A correctly marked core keeps its sprout and begins wilting on loss.")
+	board.advance_pollution_animation(4.0)
+	board.cell_nodes[safe_index].advance_biosensor_animation(1.0)
+	board.cell_nodes[flagged_core].advance_biosensor_animation(1.0)
+	_expect(is_equal_approx(board.pollution_tint_progress, 1.0) and board.modulate == Color.WHITE, "A Level 1 loss changes individual cells instead of applying one board overlay.")
+	for polluted_cell in board.cell_nodes:
+		_expect(is_equal_approx(polluted_cell.pollution_progress, 1.0), "Pollution eventually reaches every Level 1 cell.")
+	_expect(is_equal_approx(board.cell_nodes[safe_index].sprout_wilt_progress, 1.0) and is_equal_approx(board.cell_nodes[flagged_core].sprout_wilt_progress, 1.0), "Visible sprouts complete their wilt animation.")
+
+	board.new_game()
+	_expect(eco_showcase.get_reaction() == 0, "Restart returns the compact ecology illustration to neutral.")
+	_expect(board.modulate == Color.WHITE and is_zero_approx(board.pollution_tint_progress), "Restart immediately restores the clean board colors.")
+	_expect(not board.cell_nodes[safe_index].is_sprout_wilting() and is_zero_approx(board.cell_nodes[safe_index].sprout_wilt_progress), "Restart clears every wilt state.")
+	for cell_index in board.cell_count:
+		if board.game_state == MinesweeperBoard.GameState.WON:
+			break
+		if not board.mines[cell_index] and not board.revealed[cell_index]:
+			board.reveal_cell(cell_index)
+	_expect(board.game_state == MinesweeperBoard.GameState.WON, "Level 1 can still be completed with procedural markers.")
+	_expect(eco_showcase.get_reaction() == 1, "The compact ecology illustration becomes happy after a win.")
+	for mine_index in board.cell_count:
+		if board.mines[mine_index]:
+			_expect(board.cell_nodes[mine_index].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR and is_equal_approx(board.cell_nodes[mine_index].biosensor_progress, 1.0), "Every solved Level 1 core becomes a completed sprout.")
+
+	main_scene.call("_load_level", 1)
+	var classic_cell := board.cell_nodes[0]
+	_expect(not classic_cell.uses_level_one_art(), "Level 2 keeps its classic visual theme for now.")
+	board.toggle_flag(0)
+	_expect(classic_cell.text == "!" and classic_cell.procedural_visual == MineCell.ProceduralVisual.NONE, "Level 2 temporarily retains the classic flag symbol.")
+	board.new_game()
+	core_index = board.mines.find(true)
+	board.reveal_cell(core_index)
+	_expect(board.cell_nodes[core_index].text == "●", "Level 2 temporarily retains the classic pollution dot.")
+	_expect(board.modulate == Color.WHITE and is_zero_approx(board.pollution_tint_progress), "Later levels do not use the Level 1 pollution tint.")
+	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
 	board._random.randomize()
 
 
