@@ -3,6 +3,9 @@ extends Control
 
 signal state_changed(state: int)
 signal flags_changed(used_flags: int, max_flags: int)
+signal reveal_completed(cell_index: int, newly_revealed_count: int)
+signal flag_completed(cell_index: int, is_flagged: bool)
+signal chord_completed(cell_index: int, newly_revealed_count: int)
 
 const CELL_SCENE: PackedScene = preload("res://scenes/cell.tscn")
 const TRIANGLE_BOARD_VIEW_SCRIPT: Script = preload("res://scripts/triangle_board_view.gd")
@@ -234,13 +237,16 @@ func reveal_cell(cell_index: int) -> void:
 				cell.begin_loss_wilt_if_visible()
 		_refresh_all_cells()
 		state_changed.emit(game_state)
+		reveal_completed.emit(cell_index, 0)
 		return
 
+	var previous_revealed_count := revealed_safe_count
 	_reveal_area(cell_index)
 	if revealed_safe_count == safe_cell_count:
 		game_state = GameState.WON
 		state_changed.emit(game_state)
 	_refresh_all_cells()
+	reveal_completed.emit(cell_index, revealed_safe_count - previous_revealed_count)
 
 
 func toggle_flag(cell_index: int) -> void:
@@ -263,6 +269,7 @@ func toggle_flag(cell_index: int) -> void:
 
 	_refresh_cell(cell_index)
 	flags_changed.emit(used_flags, core_count)
+	flag_completed.emit(cell_index, flagged[cell_index])
 
 
 func chord_cell(cell_index: int) -> void:
@@ -294,6 +301,7 @@ func chord_cell(cell_index: int) -> void:
 		state_changed.emit(game_state)
 	if revealed_safe_count != previous_revealed_count:
 		_refresh_all_cells()
+		chord_completed.emit(cell_index, revealed_safe_count - previous_revealed_count)
 
 
 func set_interaction_enabled(enabled: bool) -> void:
@@ -366,6 +374,19 @@ func _refresh_keyboard_cursor() -> void:
 
 func get_triangle_view():
 	return _triangle_view
+
+
+func get_neighbor_indices(cell_index: int) -> Array[int]:
+	if not _is_valid_index(cell_index):
+		return []
+	return _get_neighbors(cell_index)
+
+
+func clear_guide_cell() -> void:
+	var previous_index := guide_cell_index
+	guide_cell_index = -1
+	if _is_valid_index(previous_index):
+		_refresh_cell(previous_index)
 
 
 func _clear_cells() -> void:
@@ -528,14 +549,16 @@ func _get_triangle_neighbors(cell_index: int) -> Array[int]:
 	var row := int(cell_index / column_count)
 	var column := cell_index % column_count
 
-	if column > 0:
-		neighbors.append(cell_index - 1)
-	if column + 1 < column_count:
-		neighbors.append(cell_index + 1)
-
-	var vertical_row := row + 1 if (row + column) % 2 == 0 else row - 1
-	if vertical_row >= 0 and vertical_row < row_count:
-		neighbors.append(vertical_row * column_count + column)
+	# A triangle counts the three cells sharing an edge and the nearest
+	# cell across each vertex: four horizontal positions and two vertical.
+	for column_offset in [-2, -1, 1, 2]:
+		var neighbor_column: int = column + int(column_offset)
+		if neighbor_column >= 0 and neighbor_column < column_count:
+			neighbors.append(row * column_count + neighbor_column)
+	for row_offset in [-1, 1]:
+		var neighbor_row: int = row + int(row_offset)
+		if neighbor_row >= 0 and neighbor_row < row_count:
+			neighbors.append(neighbor_row * column_count + column)
 	return neighbors
 
 

@@ -11,10 +11,10 @@ const HIDDEN_UP_COLOR := Color("ffffff")
 const HIDDEN_DOWN_COLOR := Color("f4fbf5")
 const REVEALED_COLOR := Color("a3e086")
 const GRID_LINE_COLOR := Color("469d65")
-const FLAG_COLOR := Color("fadf3c")
-const CORE_COLOR := Color("1b2d22")
 const KEYBOARD_CURSOR_COLOR := Color("fadf3c")
 const WRONG_COLOR := Color("9b423d")
+const SPROUT_TEXTURE: Texture2D = preload("res://assets/gameplay/markers/sprout_marker.png")
+const SLIME_TEXTURE: Texture2D = preload("res://assets/gameplay/markers/pollution_slime.png")
 const NUMBER_COLORS := {
 	1: Color("315f8a"),
 	2: Color("3d7547"),
@@ -205,30 +205,25 @@ func _draw_number(center: Vector2, number: int) -> void:
 
 
 func _draw_flag(center: Vector2) -> void:
-	var scale := maxf(4.0, _side_length * 0.18)
-	draw_line(center + Vector2(-scale * 0.45, scale), center + Vector2(-scale * 0.45, -scale), FLAG_COLOR, 2.0)
-	draw_colored_polygon(PackedVector2Array([
-		center + Vector2(-scale * 0.35, -scale),
-		center + Vector2(scale, -scale * 0.45),
-		center + Vector2(-scale * 0.35, scale * 0.05),
-	]), FLAG_COLOR)
+	_draw_marker_texture(center, SPROUT_TEXTURE, 0.64)
 
 
 func _draw_core(center: Vector2) -> void:
-	var radius := maxf(4.5, _side_length * 0.16)
-	var crystal := PackedVector2Array([
-		center + Vector2(-radius * 0.85, -radius * 0.20),
-		center + Vector2(-radius * 0.30, -radius),
-		center + Vector2(radius * 0.55, -radius * 0.72),
-		center + Vector2(radius, radius * 0.12),
-		center + Vector2(radius * 0.25, radius),
-		center + Vector2(-radius * 0.72, radius * 0.62),
-	])
-	draw_colored_polygon(crystal, CORE_COLOR)
-	var outline := PackedVector2Array(crystal)
-	outline.append(crystal[0])
-	draw_polyline(outline, Color("ffffff"), 1.4, true)
-	draw_circle(center, radius * 0.22, Color("fadf3c"))
+	_draw_marker_texture(center, SLIME_TEXTURE, 0.70)
+
+
+func _draw_marker_texture(center: Vector2, texture: Texture2D, size_factor: float) -> void:
+	var available_size := Vector2(
+		_side_length * size_factor,
+		_triangle_height * size_factor
+	)
+	var texture_size := texture.get_size()
+	var scale := minf(
+		available_size.x / texture_size.x,
+		available_size.y / texture_size.y
+	)
+	var marker_size := texture_size * scale
+	draw_texture_rect(texture, Rect2(center - marker_size * 0.5, marker_size), false)
 
 
 func _draw_wrong_mark(center: Vector2) -> void:

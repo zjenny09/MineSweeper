@@ -45,6 +45,8 @@ func _test_level_setup(main_scene: Node, board: MinesweeperBoard, triangle_view)
 	_expect(board.cell_nodes.is_empty(), "Triangle topology does not create rectangular buttons.")
 	_expect(triangle_view != null and triangle_view.cell_count == 216, "The unified triangle view contains every cell.")
 	_expect(board.revealed.count(true) == 0 and board.guide_cell_index == -1, "Level 6 starts closed and unguided.")
+	_expect(TriangleBoardView.SPROUT_TEXTURE.resource_path == "res://assets/gameplay/markers/sprout_marker.png", "Triangle marks use the shared sprout texture.")
+	_expect(TriangleBoardView.SLIME_TEXTURE.resource_path == "res://assets/gameplay/markers/pollution_slime.png", "Triangle cores use the shared slime texture.")
 	var subtitle := main_scene.get_node("%SubtitleLabel") as Label
 	_expect(subtitle.text.contains("第6关 · 山脉"), "The header identifies the mountain level.")
 	var summary := main_scene.get_node("%LevelSummaryLabel") as Label
@@ -54,6 +56,7 @@ func _test_level_setup(main_scene: Node, board: MinesweeperBoard, triangle_view)
 func _test_topology(board: MinesweeperBoard) -> void:
 	var upward_count := 0
 	var degree_sum := 0
+	var six_neighbor_cells := 0
 	for cell_index in board.cell_count:
 		var row := int(cell_index / board.column_count)
 		var column := cell_index % board.column_count
@@ -61,7 +64,9 @@ func _test_topology(board: MinesweeperBoard) -> void:
 			upward_count += 1
 		var neighbors := board._get_neighbors(cell_index)
 		degree_sum += neighbors.size()
-		_expect(neighbors.size() <= 3, "Triangle cell %d has at most three neighbors." % cell_index)
+		if neighbors.size() == 6:
+			six_neighbor_cells += 1
+		_expect(neighbors.size() <= 6, "Triangle cell %d has at most six nearby neighbors." % cell_index)
 		var unique_neighbors: Dictionary = {}
 		for neighbor in neighbors:
 			_expect(neighbor >= 0 and neighbor < board.cell_count, "Triangle neighbors stay inside the board.")
@@ -70,10 +75,12 @@ func _test_topology(board: MinesweeperBoard) -> void:
 			_expect(board._get_neighbors(neighbor).has(cell_index), "Triangle adjacency is bidirectional.")
 		_expect(unique_neighbors.size() == neighbors.size(), "Triangle neighbors contain no duplicates.")
 	_expect(upward_count == 108, "The board contains 108 upward and 108 downward triangles.")
-	_expect(degree_sum / 2 == 303, "The complete triangle grid has 303 shared edges.")
-	_expect(not board._get_neighbors(0).has(25), "Triangles touching only at a vertex are not neighbors.")
+	_expect(six_neighbor_cells == 140, "Every non-edge triangle has six nearby neighbors.")
+	_expect(degree_sum / 2 == 597, "The complete triangle grid has the expected six-neighbor links.")
+	_expect(board._get_neighbors(108) == [106, 107, 109, 110, 84, 132], "An interior triangle counts four horizontal and two vertical neighbors.")
+	_expect(board._get_neighbors(0) == [1, 2, 24], "A corner triangle naturally has fewer than six neighbors.")
 	for adjacent_count in board.adjacent_counts:
-		_expect(adjacent_count >= 0 and adjacent_count <= 3, "Triangle numbers stay in the 0-3 range.")
+		_expect(adjacent_count >= 0 and adjacent_count <= 6, "Triangle numbers stay in the 0-6 range.")
 
 
 func _test_geometry(triangle_view) -> void:
@@ -110,6 +117,7 @@ func _test_input_hit(board: MinesweeperBoard, triangle_view) -> void:
 	right_click.position = triangle_view.get_triangle_center(core_index)
 	triangle_view._gui_input(right_click)
 	_expect(board.flagged[core_index], "Right-clicking a triangle center marks that triangle.")
+	_expect(triangle_view.flagged_states[core_index], "The marked triangle renders the shared sprout state.")
 
 	var revealed_before := board.revealed_safe_count
 	var outside_click := InputEventMouseButton.new()
@@ -162,7 +170,7 @@ func _test_triangle_opening(board: MinesweeperBoard) -> void:
 	if zero_index >= 0:
 		var expected := _expected_opening(board, zero_index)
 		board.reveal_cell(zero_index)
-		_expect(board.revealed == expected, "Zero expansion follows only shared triangle edges.")
+		_expect(board.revealed == expected, "Zero expansion follows the six-neighbor triangle topology.")
 	board._random.randomize()
 
 
@@ -215,8 +223,10 @@ func _test_triangle_chord(board: MinesweeperBoard) -> void:
 func _test_end_states(main_scene: Node, board: MinesweeperBoard) -> void:
 	board._random.seed = 9062
 	board.new_game()
-	board.reveal_cell(board.mines.find(true))
+	var core_index := board.mines.find(true)
+	board.reveal_cell(core_index)
 	_expect(board.game_state == MinesweeperBoard.GameState.LOST, "A triangle core causes a loss.")
+	_expect(board.get_triangle_view().core_visible_states[core_index], "A revealed triangle core renders the shared slime state.")
 	board.new_game()
 	_expect(board.game_state == MinesweeperBoard.GameState.READY and board.revealed.count(true) == 0, "Restart closes the complete triangle board.")
 	for cell_index in board.cell_count:

@@ -36,6 +36,11 @@ enum Reaction {
 		compact = value
 		queue_redraw()
 
+@export var gameplay_full_bleed := false:
+	set(value):
+		gameplay_full_bleed = value
+		queue_redraw()
+
 var _animation_time := 0.0
 var reaction: int = Reaction.NEUTRAL
 
@@ -49,8 +54,11 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not is_visible_in_tree():
 		return
-	if environment_number != 0 and (not compact or reaction == Reaction.NEUTRAL):
-		return
+	if environment_number != 0:
+		if gameplay_full_bleed and reaction == Reaction.NEUTRAL:
+			return
+		if not gameplay_full_bleed and (not compact or reaction == Reaction.NEUTRAL):
+			return
 	_animation_time += delta
 	queue_redraw()
 
@@ -78,9 +86,80 @@ func _draw() -> void:
 	if environment_number == 0:
 		draw_rect(Rect2(Vector2.ZERO, size), START_BACKGROUND)
 		_draw_start_landscape()
+	elif gameplay_full_bleed:
+		_draw_gameplay_background()
 	else:
 		draw_rect(Rect2(Vector2.ZERO, size), WHITE)
 		_draw_abstract_preview()
+
+
+func _draw_gameplay_background() -> void:
+	draw_rect(Rect2(Vector2.ZERO, size), START_BACKGROUND)
+	var soft_green := _reaction_color(LIGHT_GREEN).lerp(WHITE, 0.68)
+	var soft_leaf := _reaction_color(GREEN).lerp(WHITE, 0.78)
+	var soft_yellow := _reaction_color(YELLOW).lerp(WHITE, 0.64)
+
+	# Organic side fields keep text readable without recreating separate cards.
+	_draw_blob(Vector2(size.x * 0.06, size.y * 0.45), Vector2(size.x * 0.27, size.y * 0.55), soft_green, 0.8)
+	_draw_blob(Vector2(size.x * 0.96, size.y * 0.48), Vector2(size.x * 0.25, size.y * 0.54), soft_yellow, 2.1)
+	_draw_blob(Vector2(size.x * 0.51, size.y * 0.48), Vector2(size.x * 0.43, size.y * 0.53), Color("fffefcf2"), 3.4)
+	_draw_blob(Vector2(size.x * 0.50, size.y * 1.08), Vector2(size.x * 0.72, size.y * 0.22), soft_leaf, 4.2)
+
+	var vertical_offset := 0.0
+	if reaction == Reaction.HAPPY:
+		vertical_offset = -absf(sin(_animation_time * 4.0)) * 4.0
+	elif reaction == Reaction.SAD:
+		vertical_offset = 2.0 + sin(_animation_time * 1.4)
+	draw_set_transform(Vector2(0.0, vertical_offset), 0.0, Vector2.ONE)
+	_draw_gameplay_edge_motifs()
+	if reaction == Reaction.HAPPY:
+		_draw_gameplay_sparkles()
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+func _draw_gameplay_edge_motifs() -> void:
+	var unit := minf(size.x, size.y) * 0.042
+	match environment_number:
+		1:
+			_draw_sprout(Vector2(size.x * 0.10, size.y * 0.27), unit * 1.15)
+			_draw_sprout(Vector2(size.x * 0.91, size.y * 0.76), unit * 0.72)
+			_draw_sprout(Vector2(size.x * 0.05, size.y * 0.82), unit * 0.62)
+		2:
+			_draw_shrub(Vector2(size.x * 0.10, size.y * 0.29), unit * 1.10)
+			_draw_shrub(Vector2(size.x * 0.94, size.y * 0.75), unit * 0.76)
+		3:
+			var water_color := Color("72c6d3").lerp(WHITE, 0.52)
+			for band in 3:
+				var y := size.y * (0.82 + float(band) * 0.045)
+				draw_arc(Vector2(size.x * 0.50, y), size.x * (0.43 + float(band) * 0.035), PI, TAU, 48, water_color, 3.0, true)
+			_draw_reeds(Vector2(size.x * 0.09, size.y * 0.31), unit)
+			_draw_reeds(Vector2(size.x * 0.93, size.y * 0.72), unit * 0.70)
+		4:
+			_draw_grass(Vector2(size.x * 0.09, size.y * 0.31), unit)
+			_draw_grass(Vector2(size.x * 0.91, size.y * 0.74), unit * 0.72)
+			_draw_grass(Vector2(size.x * 0.26, size.y * 0.92), unit * 0.58)
+		5:
+			_draw_tree(Vector2(size.x * 0.09, size.y * 0.28), unit * 0.95)
+			_draw_tree(Vector2(size.x * 0.93, size.y * 0.69), unit * 0.72)
+			_draw_tree(Vector2(size.x * 0.05, size.y * 0.77), unit * 0.58)
+		6:
+			_draw_mountains(Vector2(size.x * 0.10, size.y * 0.30), unit * 1.05)
+			_draw_mountains(Vector2(size.x * 0.91, size.y * 0.70), unit * 0.78)
+
+
+func _draw_gameplay_sparkles() -> void:
+	var sparkle_positions := [
+		Vector2(0.04, 0.16),
+		Vector2(0.17, 0.10),
+		Vector2(0.88, 0.14),
+		Vector2(0.96, 0.34),
+		Vector2(0.84, 0.87),
+	]
+	var radius := minf(size.x, size.y) * 0.010
+	for index in sparkle_positions.size():
+		var position: Vector2 = sparkle_positions[index] * size
+		position.y += sin(_animation_time * 2.5 + float(index)) * 4.0
+		draw_circle(position, radius * (0.75 + 0.12 * float(index % 2)), Color(YELLOW, 0.76))
 
 
 func _draw_abstract_preview() -> void:
@@ -330,7 +409,7 @@ func _get_blob_top_y(
 
 
 func _reaction_color(color: Color) -> Color:
-	if not compact or reaction != Reaction.SAD:
+	if reaction != Reaction.SAD or (not compact and not gameplay_full_bleed):
 		return color
 	if color == GREEN:
 		return Color("b99dcb", color.a)
@@ -376,6 +455,10 @@ func _draw_environment_motif() -> void:
 		return
 	var center := Vector2(size.x * 0.50, size.y * 0.62)
 	var unit := minf(size.x, size.y) * (0.055 if compact else 0.045)
+	_draw_environment_motif_at(center, unit)
+
+
+func _draw_environment_motif_at(center: Vector2, unit: float) -> void:
 	match environment_number:
 		1:
 			_draw_sprout(center, unit)
@@ -393,8 +476,8 @@ func _draw_environment_motif() -> void:
 
 func _draw_sprout(center: Vector2, unit: float) -> void:
 	draw_line(center + Vector2(0.0, unit), center - Vector2(0.0, unit), INK, 3.0)
-	draw_circle(center - Vector2(unit * 0.55, unit * 0.55), unit * 0.48, GREEN)
-	draw_circle(center + Vector2(unit * 0.55, -unit * 0.30), unit * 0.48, LIGHT_GREEN)
+	draw_circle(center - Vector2(unit * 0.55, unit * 0.55), unit * 0.48, _reaction_color(GREEN))
+	draw_circle(center + Vector2(unit * 0.55, -unit * 0.30), unit * 0.48, _reaction_color(LIGHT_GREEN))
 
 
 func _draw_shrub(center: Vector2, unit: float) -> void:
@@ -402,15 +485,15 @@ func _draw_shrub(center: Vector2, unit: float) -> void:
 		Vector2(-0.8, 0.2), Vector2(-0.35, -0.35),
 		Vector2(0.25, -0.45), Vector2(0.75, 0.10), Vector2(0.0, 0.25)
 	]:
-		draw_circle(center + offset * unit, unit * 0.58, GREEN)
+		draw_circle(center + offset * unit, unit * 0.58, _reaction_color(GREEN))
 
 
 func _draw_reeds(center: Vector2, unit: float) -> void:
 	for index in 5:
 		var x := center.x + (float(index) - 2.0) * unit * 0.42
 		var top := center.y - unit * (0.9 + 0.20 * float(index % 2))
-		draw_line(Vector2(x, center.y + unit), Vector2(x, top), GREEN, 3.0)
-		draw_circle(Vector2(x, top), unit * 0.18, YELLOW)
+		draw_line(Vector2(x, center.y + unit), Vector2(x, top), _reaction_color(GREEN), 3.0)
+		draw_circle(Vector2(x, top), unit * 0.18, _reaction_color(YELLOW))
 
 
 func _draw_grass(center: Vector2, unit: float) -> void:
@@ -420,16 +503,16 @@ func _draw_grass(center: Vector2, unit: float) -> void:
 		draw_line(
 			Vector2(x, center.y + unit),
 			Vector2(x + lean, center.y - unit * (0.55 + 0.08 * index)),
-			GREEN,
+			_reaction_color(GREEN),
 			3.0
 		)
 
 
 func _draw_tree(center: Vector2, unit: float) -> void:
 	draw_rect(Rect2(center.x - unit * 0.12, center.y, unit * 0.24, unit * 1.1), INK)
-	draw_circle(center - Vector2(0.0, unit * 0.32), unit * 0.85, GREEN)
-	draw_circle(center - Vector2(unit * 0.62, 0.0), unit * 0.60, LIGHT_GREEN)
-	draw_circle(center + Vector2(unit * 0.62, 0.0), unit * 0.60, GREEN)
+	draw_circle(center - Vector2(0.0, unit * 0.32), unit * 0.85, _reaction_color(GREEN))
+	draw_circle(center - Vector2(unit * 0.62, 0.0), unit * 0.60, _reaction_color(LIGHT_GREEN))
+	draw_circle(center + Vector2(unit * 0.62, 0.0), unit * 0.60, _reaction_color(GREEN))
 
 
 func _draw_mountains(center: Vector2, unit: float) -> void:
@@ -443,5 +526,5 @@ func _draw_mountains(center: Vector2, unit: float) -> void:
 		center + Vector2(unit * 0.70, -unit * 1.20),
 		center + Vector2(unit * 2.0, unit),
 	])
-	draw_colored_polygon(back, LIGHT_GREEN)
-	draw_colored_polygon(front, GREEN)
+	draw_colored_polygon(back, _reaction_color(LIGHT_GREEN))
+	draw_colored_polygon(front, _reaction_color(GREEN))

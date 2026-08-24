@@ -50,43 +50,67 @@ func _test_level_setup(board: MinesweeperBoard) -> void:
 
 
 func _test_guide_behavior(main_scene: Node, board: MinesweeperBoard) -> void:
+	main_scene.call("_load_level", 0)
+	board._random.seed = 1000
+	main_scene.call("restart_level")
 	var guide = main_scene.get_node("%FirstMoveGuide")
-	for trial in 40:
-		board._random.seed = 1000 + trial
-		board.new_game()
-		var guide_index := board.guide_cell_index
-		_expect(guide_index >= 0, "Level 1 provides a suggested first cell.")
-		_expect(not board.mines[guide_index], "The suggested cell is truly safe.")
-		_expect(board.cell_nodes[guide_index].text.is_empty(), "The guided cell no longer relies on an unexplained arrow glyph.")
-		_expect(guide.visible and guide.target_cell_index == guide_index, "The sprout guide points at the current safe suggestion.")
-		_expect(guide.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The guide overlay never blocks cell input.")
-		if trial == 0:
-			main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.KEYBOARD)
-			_expect(guide.is_keyboard_mode() and guide.get_action_text().contains("按 Z"), "Keyboard mode gives a clear Z instruction.")
-			_expect(board.get_keyboard_cell_index() == guide_index, "Keyboard selection starts on the suggested cell.")
-			board._input(_key_event(KEY_RIGHT))
-			_expect(guide.visible, "Moving the keyboard cursor does not dismiss the first-move guide.")
-			var selected_index := board.get_keyboard_cell_index()
-			board.toggle_flag(selected_index)
-			_expect(guide.visible, "Marking a cell does not dismiss the first-move guide.")
-			board.toggle_flag(selected_index)
-			main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.MOUSE)
-			_expect(not guide.is_keyboard_mode() and guide.get_action_text().contains("点这里"), "Mouse mode gives a clear click instruction.")
+	var next_button := main_scene.get_node("%TutorialNextButton") as Button
+	var exit_button := main_scene.get_node("%TutorialExitButton") as Button
+	var guide_index := board.guide_cell_index
+	_expect(guide_index >= 0 and not board.mines[guide_index], "Level 1 starts with a genuinely safe suggestion.")
+	_expect(guide.visible and guide.target_cell_index == guide_index, "The continuous tutorial starts at the safe suggestion.")
+	_expect(guide.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The tutorial overlay never blocks board input.")
+	_expect(exit_button.visible and exit_button.mouse_filter == Control.MOUSE_FILTER_STOP, "Only the tutorial exit button captures its own clicks.")
+	_expect(not next_button.visible, "The action-led opening step does not need a next button.")
 
-		var has_zero := false
-		for cell_index in board.cell_count:
-			if not board.mines[cell_index] and board.adjacent_counts[cell_index] == 0:
-				has_zero = true
-				break
-		if has_zero:
-			_expect(board.adjacent_counts[guide_index] == 0, "The guide prefers a zero cell when one exists.")
+	main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.KEYBOARD)
+	_expect(guide.is_keyboard_mode() and guide.get_action_text().contains("Z"), "Keyboard mode explains the Z reveal action.")
+	_expect(board.get_keyboard_cell_index() == guide_index, "Keyboard selection starts on the suggested cell.")
+	board._input(_key_event(KEY_RIGHT))
+	_expect(guide.visible, "Moving the keyboard cursor does not dismiss the tutorial.")
+	main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.MOUSE)
+	_expect(not guide.is_keyboard_mode() and guide.get_action_text().contains("左键"), "Mouse mode explains the left-click reveal action.")
 
-		var expected := _expected_opening(board, guide_index)
-		board.reveal_cell(guide_index)
-		_expect(board.guide_cell_index == -1, "The guide disappears after the first click.")
-		_expect(not guide.visible, "The animated guide hides after the first valid reveal.")
-		_expect(board.revealed == expected, "Following the guide uses the classic number-or-zero opening rule.")
-		_expect(not _any_arrow_visible(board), "No guide arrow remains after play begins.")
+	var reveal_events: Array = []
+	board.reveal_completed.connect(func(index: int, count: int) -> void: reveal_events.append([index, count]), CONNECT_ONE_SHOT)
+	var expected := _expected_opening(board, guide_index)
+	board.reveal_cell(guide_index)
+	_expect(board.revealed == expected, "Following the guide uses the classic number-or-zero opening rule.")
+	_expect(reveal_events.size() == 1 and reveal_events[0][0] == guide_index and reveal_events[0][1] > 0, "A valid reveal emits one post-action tutorial event.")
+	_expect(board.guide_cell_index == -1, "The initial yellow suggestion clears after the first reveal.")
+	_expect(guide.visible and next_button.visible, "The tutorial continues with the numbered-cell explanation.")
+	var number_index: int = main_scene.get("_tutorial_number_index")
+	_expect(number_index >= 0 and board.revealed[number_index] and board.adjacent_counts[number_index] > 0, "The explanation points at a revealed frontier number.")
+	_expect(guide.target_cell_index == number_index, "The bubble moves next to the number it explains.")
+
+	main_scene.call("_on_tutorial_next_requested")
+	_expect(guide.visible and not next_button.visible, "Next advances from explanation to an operation step.")
+	var core_neighbors: Array[int] = []
+	for neighbor in board.get_neighbor_indices(number_index):
+		if board.mines[neighbor]:
+			core_neighbors.append(neighbor)
+	for core_index in core_neighbors:
+		if not board.flagged[core_index]:
+			board.toggle_flag(core_index)
+	_expect(guide.visible and guide.target_cell_index == number_index, "After all required seeds are placed, the guide returns to the number.")
+	_expect(guide.get_action_text().contains("双击"), "Mouse mode explains quick expansion with a double-click.")
+	var chord_events: Array = []
+	board.chord_completed.connect(func(index: int, count: int) -> void: chord_events.append([index, count]), CONNECT_ONE_SHOT)
+	board.chord_cell(number_index)
+	_expect(chord_events.size() == 1 and chord_events[0][0] == number_index and chord_events[0][1] > 0, "A successful quick expansion emits a post-action tutorial event.")
+	_expect(not guide.visible, "The tutorial hides after quick expansion is learned.")
+
+	main_scene.call("restart_level")
+	_expect(not guide.visible and board.guide_cell_index == -1, "A completed tutorial stays dismissed when the same level restarts.")
+	main_scene.call("_load_level", 1)
+	_expect(not guide.visible, "Later levels do not show the Level 1 tutorial.")
+	main_scene.call("_load_level", 0)
+	_expect(guide.visible and board.guide_cell_index >= 0, "Entering Level 1 again starts a fresh tutorial session.")
+	main_scene.call("_on_tutorial_exit_requested")
+	_expect(not guide.visible and board.guide_cell_index == -1, "Exit hides the tutorial and clears the yellow suggestion immediately.")
+	main_scene.call("restart_level")
+	_expect(not guide.visible and board.guide_cell_index == -1, "An exited tutorial stays dismissed across restart.")
+	main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.MOUSE)
 	board._random.randomize()
 
 
@@ -150,11 +174,11 @@ func _test_flags_win_and_restart(board: MinesweeperBoard) -> void:
 
 
 func _test_player_facing_terms(main_scene: Node, board: MinesweeperBoard) -> void:
-	board.new_game()
+	main_scene.call("_load_level", 0)
 	var flags_label := main_scene.get_node("%FlagsLabel") as Label
 	var status_label := main_scene.get_node("%StatusLabel") as Label
 	_expect(flags_label.text == "标记：0/5", "The counter uses marking terminology.")
-	_expect(status_label.text.contains("小芽"), "The initial status explains the optional sprout guide.")
+	_expect(status_label.text.contains("清扫者"), "The initial status presents the main character as the optional guide.")
 	_expect(board.cell_nodes[board.guide_cell_index].tooltip_text.contains("也可以忽略"), "The guide explicitly remains optional.")
 
 
@@ -343,6 +367,7 @@ func _test_keyboard_controls(main_scene: Node, board: MinesweeperBoard) -> void:
 func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 	main_scene.call("_load_level", 0)
 	var eco_showcase = main_scene.get_node("%EcoShowcase")
+	_expect(eco_showcase.get("gameplay_full_bleed") and eco_showcase.environment_number == 1, "Level 1 uses one full-bleed ecology background.")
 	board._random.seed = 8400
 	board.new_game()
 	var marked_index := 0
@@ -383,7 +408,7 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 			break
 	board.reveal_cell(core_index)
 	_expect(board.cell_nodes[core_index].procedural_visual == MineCell.ProceduralVisual.SLUDGE_CORE and board.cell_nodes[core_index].text.is_empty(), "A hit Level 1 core becomes an animated sludge creature instead of a dot.")
-	_expect(eco_showcase.get_reaction() == 2, "The compact ecology illustration becomes sad after a loss.")
+	_expect(eco_showcase.get_reaction() == 2, "The full-bleed ecology background becomes sad after a loss.")
 	_expect(board.cell_nodes[safe_index].text == "X" and board.cell_nodes[safe_index].is_sprout_wilting(), "A wrong marked sprout visibly wilts while retaining the error X.")
 	_expect(board.cell_nodes[flagged_core].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR and board.cell_nodes[flagged_core].is_sprout_wilting(), "A correctly marked core keeps its sprout and begins wilting on loss.")
 	board.advance_pollution_animation(4.0)
@@ -404,21 +429,23 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 		if not board.mines[cell_index] and not board.revealed[cell_index]:
 			board.reveal_cell(cell_index)
 	_expect(board.game_state == MinesweeperBoard.GameState.WON, "Level 1 can still be completed with procedural markers.")
-	_expect(eco_showcase.get_reaction() == 1, "The compact ecology illustration becomes happy after a win.")
+	_expect(eco_showcase.get_reaction() == 1, "The full-bleed ecology background becomes happy after a win.")
 	for mine_index in board.cell_count:
 		if board.mines[mine_index]:
 			_expect(board.cell_nodes[mine_index].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR and is_equal_approx(board.cell_nodes[mine_index].biosensor_progress, 1.0), "Every solved Level 1 core becomes a completed sprout.")
 
-	main_scene.call("_load_level", 1)
-	var classic_cell := board.cell_nodes[0]
-	_expect(not classic_cell.uses_level_one_art(), "Level 2 keeps its classic visual theme for now.")
-	board.toggle_flag(0)
-	_expect(classic_cell.text == "!" and classic_cell.procedural_visual == MineCell.ProceduralVisual.NONE, "Level 2 temporarily retains the classic flag symbol.")
-	board.new_game()
-	core_index = board.mines.find(true)
-	board.reveal_cell(core_index)
-	_expect(board.cell_nodes[core_index].text == "●", "Level 2 temporarily retains the classic pollution dot.")
-	_expect(board.modulate == Color.WHITE and is_zero_approx(board.pollution_tint_progress), "Later levels do not use the Level 1 pollution tint.")
+	for level_index in range(1, 5):
+		main_scene.call("_load_level", level_index)
+		var marker_cell := board.cell_nodes[0]
+		_expect(not marker_cell.uses_level_one_art(), "Levels 2–5 keep Level-1-only ecology effects disabled.")
+		board.toggle_flag(0)
+		_expect(marker_cell.text.is_empty() and marker_cell.procedural_visual == MineCell.ProceduralVisual.BIOSENSOR, "Every square level uses the shared sprout marker instead of an exclamation mark.")
+		board.new_game()
+		core_index = board.mines.find(true)
+		board.reveal_cell(core_index)
+		_expect(board.cell_nodes[core_index].text.is_empty() and board.cell_nodes[core_index].procedural_visual == MineCell.ProceduralVisual.SLUDGE_CORE, "Every square level uses the shared slime instead of a pollution dot.")
+		_expect(board.modulate == Color.WHITE and is_zero_approx(board.pollution_tint_progress), "Later levels do not use the Level 1 pollution tint.")
+	_expect(eco_showcase.environment_number == 5, "The unified ecology background follows the active square level.")
 	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
 	board._random.randomize()
 

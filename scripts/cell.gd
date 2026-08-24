@@ -14,16 +14,12 @@ enum ProceduralVisual {
 
 const BIOSENSOR_SPEED := 2.7
 const WILT_SPEED := 1.8
-const SEED_COLOR := Color("8b6f45")
+const SPROUT_TEXTURE: Texture2D = preload("res://assets/gameplay/markers/sprout_marker.png")
+const SLIME_TEXTURE: Texture2D = preload("res://assets/gameplay/markers/pollution_slime.png")
 
 const DEFAULT_COLOR := Color("1b2d22")
-const FLAG_COLOR := Color("469d65")
 const GUIDE_COLOR := Color("1b2d22")
 const MINE_COLOR := Color("1b2d22")
-const GREEN := Color("469d65")
-const YELLOW := Color("fadf3c")
-const LIGHT_GREEN := Color("a3e086")
-const INK := Color("1b2d22")
 const NUMBER_COLORS := {
 	0: Color("777264"),
 	1: Color("315f8a"),
@@ -91,20 +87,10 @@ func render_state(
 		text = "X"
 		_set_text_color(MINE_COLOR)
 	elif mine_visible:
-		if _uses_level_one_art():
-			if not _sprout_wilting:
-				_show_sludge_core()
-		else:
-			_clear_procedural_visual()
-			text = "●"
-			_set_text_color(MINE_COLOR)
+		if not _sprout_wilting:
+			_show_sludge_core()
 	elif solved_mine or is_flagged:
-		if _uses_level_one_art():
-			_set_biosensor_target(true, solved_mine)
-		else:
-			_clear_procedural_visual()
-			text = "!"
-			_set_text_color(FLAG_COLOR)
+		_set_biosensor_target(true, solved_mine)
 	elif is_revealed and adjacent_count > 0:
 		_clear_procedural_visual()
 		text = str(adjacent_count)
@@ -123,8 +109,8 @@ func render_state(
 	disabled = input_locked
 	_apply_visual_style()
 	queue_redraw()
-	if _uses_level_one_art() and is_flagged:
-		tooltip_text = "检测种子已标记疑似污染源"
+	if is_flagged:
+		tooltip_text = "小芽已标记疑似污染源"
 	elif is_guided:
 		tooltip_text = "建议从这里开始（也可以忽略）"
 	elif is_revealed and adjacent_count == 0:
@@ -245,9 +231,6 @@ func _process(delta: float) -> void:
 
 
 func _set_biosensor_target(visible_target: bool, snap_complete: bool = false) -> void:
-	if not _uses_level_one_art():
-		_clear_procedural_visual()
-		return
 	if visible_target:
 		procedural_visual = ProceduralVisual.BIOSENSOR
 		_biosensor_target_visible = true
@@ -384,8 +367,6 @@ func _make_style(background: Color, border: Color, border_width: int = 1) -> Sty
 
 
 func _draw() -> void:
-	if not _uses_level_one_art():
-		return
 	match procedural_visual:
 		ProceduralVisual.BIOSENSOR:
 			_draw_biosensor()
@@ -395,207 +376,45 @@ func _draw() -> void:
 
 func _draw_biosensor() -> void:
 	var unit := minf(size.x, size.y)
-	if unit <= 1.0:
-		return
 	var progress := clampf(biosensor_progress, 0.0, 1.0)
-	var center_x := size.x * 0.5
-	var soil_y := size.y * 0.68
-	var drop_progress := clampf(progress / 0.30, 0.0, 1.0)
-	var drop_eased := 1.0 - pow(1.0 - drop_progress, 3.0)
-	var bounce := sin(drop_progress * TAU) * (1.0 - drop_progress) * unit * 0.045
-	var seed_y := lerpf(size.y * 0.24, soil_y, drop_eased) + bounce
-	if progress >= 0.30:
-		seed_y = soil_y
-
-	var stem_progress := clampf((progress - 0.26) / 0.46, 0.0, 1.0)
+	if unit <= 1.0 or progress <= 0.0:
+		return
+	var eased := 1.0 - pow(1.0 - progress, 3.0)
 	var wilt := clampf(sprout_wilt_progress, 0.0, 1.0)
-	var idle_sway := (
-		sin(_idle_time * 2.5 + float(cell_index) * 0.7)
-		* unit
-		* 0.025
-		* stem_progress
-		* (1.0 - wilt)
+	var texture_ratio := float(SPROUT_TEXTURE.get_width()) / float(SPROUT_TEXTURE.get_height())
+	var marker_size := Vector2(unit * 0.72 * texture_ratio, unit * 0.72)
+	var sway := sin(_idle_time * 2.5 + float(cell_index) * 0.7) * 0.055 * (1.0 - wilt)
+	var rotation := sway + wilt * 0.30
+	var center := Vector2(size.x * 0.5, size.y * 0.54)
+	center += Vector2(unit * 0.10 * wilt, marker_size.y * (1.0 - eased) * 0.5)
+	var tint := Color.WHITE.lerp(Color("8b826d"), wilt * 0.72)
+	draw_set_transform(
+		center,
+		rotation,
+		Vector2(lerpf(0.78, 1.0, eased), maxf(0.04, eased))
 	)
-	var stem_top := Vector2(
-		center_x + idle_sway + unit * 0.18 * wilt,
-		lerpf(soil_y - unit * 0.02, size.y * 0.34, stem_progress) + unit * 0.20 * wilt
-	)
-	var wilt_color := Color("77705d")
-	var stem_color := GREEN.lerp(wilt_color, wilt)
-	if stem_progress > 0.0:
-		draw_line(
-			Vector2(center_x, soil_y),
-			stem_top,
-			stem_color,
-			maxf(2.0, unit * 0.045),
-			true
-		)
-
-	var left_progress := clampf((progress - 0.56) / 0.24, 0.0, 1.0)
-	var right_progress := clampf((progress - 0.68) / 0.24, 0.0, 1.0)
-	var stem_base := Vector2(center_x, soil_y)
-	if left_progress > 0.01:
-		var left_attach := stem_base.lerp(stem_top, 0.70)
-		var left_center := left_attach + Vector2(
-			-unit * (0.075 - 0.020 * wilt),
-			unit * (0.010 + 0.045 * wilt)
-		)
-		draw_line(left_attach, left_center, stem_color, maxf(1.3, unit * 0.022), true)
-		_draw_cell_leaf(
-			left_center,
-			Vector2(unit * 0.23, unit * 0.13) * left_progress * (1.0 - 0.16 * wilt),
-			lerpf(-0.52, 0.34, wilt) + idle_sway / maxf(1.0, unit) * 0.8,
-			LIGHT_GREEN.lerp(wilt_color, wilt)
-		)
-	if right_progress > 0.01:
-		var right_attach := stem_base.lerp(stem_top, 0.80)
-		var right_center := right_attach + Vector2(
-			unit * (0.080 - 0.018 * wilt),
-			unit * (0.012 + 0.050 * wilt)
-		)
-		draw_line(right_attach, right_center, stem_color, maxf(1.3, unit * 0.022), true)
-		_draw_cell_leaf(
-			right_center,
-			Vector2(unit * 0.22, unit * 0.12) * right_progress * (1.0 - 0.16 * wilt),
-			lerpf(0.48, -0.34, wilt) + idle_sway / maxf(1.0, unit) * 0.8,
-			GREEN.lerp(wilt_color, wilt)
-		)
-
-	var seed_points := _ellipse_points(
-		Vector2(center_x, seed_y),
-		Vector2(unit * 0.105, unit * 0.070),
-		-0.18
-	)
-	draw_colored_polygon(seed_points, SEED_COLOR.lerp(wilt_color, wilt * 0.55))
-	_draw_closed_outline(seed_points, INK, maxf(1.3, unit * 0.020))
-	draw_circle(
-		Vector2(center_x - unit * 0.018, seed_y - unit * 0.010),
-		unit * 0.014,
-		YELLOW
-	)
+	draw_texture_rect(SPROUT_TEXTURE, Rect2(-marker_size * 0.5, marker_size), false, tint)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _draw_sludge_core() -> void:
 	var unit := minf(size.x, size.y)
 	if unit <= 1.0:
 		return
-	var appear := clampf(_oil_time / 0.55, 0.18, 1.0)
-	var center := size * 0.5 + Vector2(0.0, unit * 0.08)
-	var breathe := 1.0 + sin(_oil_time * 3.2 + float(cell_index)) * 0.035
-	var body := PackedVector2Array()
-	for index in 30:
-		var angle := TAU * float(index) / 30.0
-		var wobble := 1.0 + 0.055 * sin(angle * 3.0 + 0.8)
-		body.append(center + Vector2(
-			cos(angle) * unit * 0.27 * wobble * breathe * appear,
-			sin(angle) * unit * 0.22 * wobble / breathe * appear
-		))
-	var body_color := Color("916fbbb8")
-	var outline_color := Color("795a96dc")
-	draw_colored_polygon(body, body_color)
-	_draw_closed_outline(body, outline_color, maxf(1.7, unit * 0.025))
-
-	# Soft highlights make the creature read as translucent jelly.
-	draw_arc(
-		center - Vector2(unit * 0.075, unit * 0.070),
-		unit * 0.105,
-		3.65,
-		5.15,
-		12,
-		Color("fff8ff9c"),
-		maxf(1.7, unit * 0.025),
-		true
+	var appear := clampf(_oil_time / 0.42, 0.08, 1.0)
+	var eased := 1.0 - pow(1.0 - appear, 3.0)
+	var breathe := 1.0 + sin(_oil_time * 3.2 + float(cell_index)) * 0.030
+	var texture_ratio := float(SLIME_TEXTURE.get_width()) / float(SLIME_TEXTURE.get_height())
+	var marker_size := Vector2(unit * 0.76, unit * 0.76 / texture_ratio)
+	var center := size * 0.5 + Vector2(0.0, unit * 0.035)
+	draw_set_transform(center, 0.0, Vector2.ONE * eased * breathe)
+	draw_texture_rect(
+		SLIME_TEXTURE,
+		Rect2(-marker_size * 0.5, marker_size),
+		false,
+		Color(1.0, 1.0, 1.0, eased)
 	)
-	draw_circle(
-		center + Vector2(unit * 0.13, unit * 0.095),
-		unit * 0.030,
-		Color("d8c2e973")
-	)
-
-	var blink := 0.18 if fmod(_oil_time, 4.0) > 3.72 else 1.0
-	var eye_y := center.y - unit * 0.025
-	for eye_x in [center.x - unit * 0.075, center.x + unit * 0.075]:
-		_draw_sludge_eye(eye_x, eye_y, unit, blink)
-	draw_arc(
-		center + Vector2(0.0, unit * 0.055),
-		unit * 0.065,
-		0.30,
-		PI - 0.30,
-		12,
-		Color("65437e"),
-		maxf(1.4, unit * 0.019),
-		true
-	)
-
-	for bubble_index in 3:
-		var phase := _oil_time * (1.4 + 0.22 * float(bubble_index)) + float(bubble_index) * 1.7
-		var bubble_center := center + Vector2(
-			unit * (-0.24 + 0.24 * float(bubble_index)) + sin(phase) * unit * 0.025,
-			-unit * (0.20 + 0.08 * fmod(phase, 1.0))
-		)
-		var bubble_radius := unit * (0.025 + 0.008 * float(bubble_index % 2))
-		draw_circle(bubble_center, bubble_radius, Color("cbb2df70"))
-		draw_arc(bubble_center, bubble_radius, 0.0, TAU, 16, Color("8c6aa4b8"), 1.1, true)
-
-
-func _draw_sludge_eye(eye_x: float, eye_y: float, unit: float, blink: float) -> void:
-	var eye_center := Vector2(eye_x, eye_y)
-	var eye := _ellipse_points(
-		eye_center,
-		Vector2(unit * 0.040, unit * 0.050 * blink),
-		0.0
-	)
-	draw_colored_polygon(eye, Color("ee6f72e8"))
-	_draw_closed_outline(eye, Color("874a6bc8"), maxf(1.0, unit * 0.012))
-	if blink > 0.5:
-		draw_circle(eye_center + Vector2(0.0, unit * 0.007), unit * 0.018, Color("a93651"))
-		draw_circle(eye_center - Vector2(unit * 0.007, unit * 0.006), unit * 0.006, Color("fff6f0e8"))
-
-	# Slanted brows keep the transparent slime playfully fierce.
-	var side := -1.0 if eye_x < size.x * 0.5 else 1.0
-	var outer := eye_center + Vector2(side * unit * 0.045, -unit * 0.058)
-	var inner := eye_center + Vector2(-side * unit * 0.030, -unit * 0.030)
-	draw_line(outer, inner, Color("68427fd8"), maxf(1.2, unit * 0.017), true)
-
-
-func _draw_cell_leaf(
-	center: Vector2,
-	leaf_size: Vector2,
-	rotation: float,
-	color: Color
-) -> void:
-	var points := _ellipse_points(center, leaf_size * 0.5, rotation)
-	draw_colored_polygon(points, color)
-	_draw_closed_outline(points, INK, maxf(1.2, minf(size.x, size.y) * 0.018))
-
-
-func _ellipse_points(
-	center: Vector2,
-	radius: Vector2,
-	rotation: float
-) -> PackedVector2Array:
-	var points := PackedVector2Array()
-	for index in 24:
-		var angle := TAU * float(index) / 24.0
-		var local_point := Vector2(cos(angle) * radius.x, sin(angle) * radius.y)
-		points.append(center + local_point.rotated(rotation))
-	return points
-
-
-func _rotated_cell_point(local_point: Vector2, center: Vector2, rotation: float) -> Vector2:
-	return center + local_point.rotated(rotation)
-
-
-func _draw_closed_outline(
-	points: PackedVector2Array,
-	color: Color,
-	width: float
-) -> void:
-	if points.size() < 2:
-		return
-	var outline := PackedVector2Array(points)
-	outline.append(points[0])
-	draw_polyline(outline, color, width, true)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _set_text_color(color: Color) -> void:

@@ -38,20 +38,27 @@ func _run_tests() -> void:
 func _test_menu_columns(shell) -> void:
 	var menu_panel := shell.get_node("%MenuPanel") as Control
 	var showcase_panel := shell.get_node("%ShowcasePanel") as Control
+	var welcome_artwork := shell.get_node("%EcoShowcase") as Control
 	_expect(_inside_viewport(menu_panel), "The floating menu stays inside 1280x720.")
 	_expect(_inside_viewport(showcase_panel), "The full-screen ecology artwork stays inside 1280x720.")
 	_expect(showcase_panel.get_global_rect().encloses(menu_panel.get_global_rect()), "The title and actions float over the ecology artwork.")
 	_expect(showcase_panel.size.x >= 1279.0 and showcase_panel.size.y >= 719.0, "The welcome artwork fills the 1280x720 viewport.")
+	_expect(welcome_artwork is WelcomeShowcase and welcome_artwork.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The layered welcome artwork fills the background without intercepting input.")
+	_expect(welcome_artwork.is_processing(), "Welcome animation runs while the main menu is visible.")
 
 
 func _test_settings_layout(shell) -> void:
+	var welcome_artwork := shell.get_node("%EcoShowcase") as Control
 	shell.show_settings()
 	await process_frame
 	var operation_mode := shell.get_node("%OperationModeOption") as Control
 	var back_button := shell.get_node("%SettingsBackButton") as Control
 	_expect(_inside_viewport(operation_mode), "The operation-mode selector fits inside 1280x720 settings.")
 	_expect(_inside_viewport(back_button), "The enlarged settings panel keeps its back button inside 1280x720.")
+	_expect(not welcome_artwork.is_processing(), "Welcome animation pauses while its page is hidden.")
 	shell.show_main_menu()
+	await process_frame
+	_expect(welcome_artwork.is_processing(), "Welcome animation resumes with the main menu.")
 
 
 func _test_first_guide_layout(shell) -> void:
@@ -60,6 +67,8 @@ func _test_first_guide_layout(shell) -> void:
 	await process_frame
 	var game = shell.get_active_game()
 	var guide = game.get_node("%FirstMoveGuide")
+	var next_button := game.get_node("%TutorialNextButton") as Button
+	var exit_button := game.get_node("%TutorialExitButton") as Button
 	var board := game.get_node("%Board") as MinesweeperBoard
 	var bubble_rect: Rect2 = guide.get_stable_bubble_rect()
 	var target_center: Vector2 = guide.get_target_center()
@@ -69,7 +78,11 @@ func _test_first_guide_layout(shell) -> void:
 		absf(target_rect.position.y - bubble_rect.end.y),
 		absf(bubble_rect.position.y - target_rect.end.y)
 	)
-	_expect(guide.visible and guide.target_cell_index == board.guide_cell_index, "The level-1 guide targets the suggested cell.")
+	_expect(guide.visible and guide.target_cell_index == board.guide_cell_index, "The Level-1 tutorial targets the suggested cell.")
+	_expect(guide.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The tutorial drawing remains click-through.")
+	_expect(exit_button.visible and exit_button.mouse_filter == Control.MOUSE_FILTER_STOP, "The exit control alone captures its own mouse area.")
+	_expect(bubble_rect.encloses(Rect2(exit_button.position, exit_button.size)), "The exit button stays inside the tutorial bubble.")
+	_expect(not next_button.visible and next_button.mouse_filter == Control.MOUSE_FILTER_STOP, "The next button is reserved for explanation steps.")
 	_expect(Rect2(Vector2.ZERO, guide.size).encloses(bubble_rect), "The stable guide bubble remains inside the board panel at 1280x720.")
 	_expect(not bubble_rect.intersects(target_rect), "The guide bubble does not cover the suggested cell.")
 	_expect(vertical_gap <= 13.0, "The guide bubble floats directly beside the suggested cell without a long connector.")
@@ -80,10 +93,15 @@ func _test_game_columns(shell) -> void:
 	shell.start_cli_level(5)
 	await process_frame
 	var game = shell.get_active_game()
+	var eco_showcase := game.get_node("%EcoShowcase") as Control
 	var environment_panel := game.get_node("%EnvironmentPanel") as Control
 	var board_panel := game.get_node("%BoardPanel") as Control
 	var hud_panel := game.get_node("%HudPanel") as Control
-	_expect(_inside_viewport(environment_panel) and _inside_viewport(board_panel) and _inside_viewport(hud_panel), "All three gameplay columns stay inside the viewport.")
+	_expect(_inside_viewport(environment_panel) and _inside_viewport(board_panel) and _inside_viewport(hud_panel), "All gameplay regions stay inside the viewport.")
+	_expect(eco_showcase.get_global_rect() == Rect2(Vector2.ZERO, Vector2(root.size)), "One ecology background fills the complete gameplay viewport.")
+	_expect(eco_showcase.get_global_rect().encloses(environment_panel.get_global_rect()) and eco_showcase.get_global_rect().encloses(board_panel.get_global_rect()) and eco_showcase.get_global_rect().encloses(hud_panel.get_global_rect()), "The ecology background visually unifies every gameplay region.")
+	_expect(eco_showcase.get("gameplay_full_bleed") and eco_showcase.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The full-bleed ecology scene remains input-transparent.")
+	_expect(environment_panel.get_theme_stylebox("panel") is StyleBoxEmpty and board_panel.get_theme_stylebox("panel") is StyleBoxEmpty and hud_panel.get_theme_stylebox("panel") is StyleBoxEmpty, "Gameplay regions no longer render as three separate cards.")
 	_expect(environment_panel.global_position.x + environment_panel.size.x < board_panel.global_position.x, "The environment column sits left of the board.")
 	_expect(board_panel.global_position.x + board_panel.size.x < hud_panel.global_position.x, "The HUD column sits right of the board.")
 	var board := game.get_node("%Board") as MinesweeperBoard
@@ -115,7 +133,10 @@ func _test_steam_deck_height(shell) -> void:
 	shell.start_cli_level(1)
 	await process_frame
 	await process_frame
-	var guide = shell.get_active_game().get_node("%FirstMoveGuide")
+	var game = shell.get_active_game()
+	var game_background := game.get_node("%EcoShowcase") as Control
+	var guide = game.get_node("%FirstMoveGuide")
+	_expect(game_background.get_global_rect() == Rect2(Vector2.ZERO, Vector2(root.size)), "The unified gameplay background expands to 1280x800.")
 	_expect(Rect2(Vector2.ZERO, guide.size).encloses(guide.get_stable_bubble_rect()), "The first-move guide remains inside the board panel at 1280x800.")
 
 
