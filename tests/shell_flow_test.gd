@@ -47,6 +47,8 @@ func _run_tests() -> void:
 
 func _test_initial_menu(shell) -> void:
 	_expect(shell.get_node("%MainMenu").visible, "A normal launch opens the main menu.")
+	_expect(not shell.get_node("%ContinueButton").visible, "The welcome menu keeps Continue out of the primary action list.")
+	_expect(shell.get_node("%ChooseLevelButton").visible, "The welcome menu exposes level selection as a primary action.")
 	_expect(not shell.get_node("%GameHost").visible, "No game is created before the player chooses one.")
 	_expect(shell.get_node("%ContinueButton").disabled, "Continue is disabled for a new save.")
 	_expect(shell.get_node("%VolumeValueLabel").text == "72%", "Saved volume updates the settings percentage on startup.")

@@ -66,10 +66,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_top = 42
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_bottom = 42
+theme_override_constants/margin_left = 80
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
 
 [node name="Columns" type="HBoxContainer" parent="MainMenu/PageMargin"]
 layout_mode = 2
@@ -77,45 +77,57 @@ theme_override_constants/separation = 28
 
 [node name="MenuPanel" type="PanelContainer" parent="MainMenu/PageMargin/Columns"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(410, 0)
+custom_minimum_size = Vector2(392, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_menu_overlay")
 
 [node name="Margin" type="MarginContainer" parent="MainMenu/PageMargin/Columns/MenuPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 38
-theme_override_constants/margin_top = 38
-theme_override_constants/margin_right = 38
-theme_override_constants/margin_bottom = 34
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 22
 
 [node name="VBox" type="VBoxContainer" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
+theme_override_constants/separation = 10
+alignment = 0
 
 [node name="Title" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
+theme_override_colors/font_color = Color(0.122, 0.337, 0.196, 1)
+theme_override_colors/font_outline_color = Color(0.055, 0.188, 0.102, 0.42)
+theme_override_colors/font_shadow_color = Color(0.075, 0.231, 0.129, 0.2)
+theme_override_constants/outline_size = 1
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 38
-text = "GREEN\nSWEEPER"
+text = "GREEN SWEEPER"
 horizontal_alignment = 1
 
 [node name="ChineseTitle" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.2745, 0.5657, 0.3661, 1)
+theme_override_colors/font_shadow_color = Color(0.075, 0.231, 0.129, 0.16)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 22
 text = "绿色清扫者"
 horizontal_alignment = 1
 
 [node name="Tagline" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.1059, 0.2078, 0.1451, 1)
-theme_override_font_sizes/font_size = 13
-text = "从第一株萌芽开始，\n让沉寂的土地重新呼吸。"
+theme_override_colors/font_color = Color(0.145, 0.349, 0.216, 0.95)
+theme_override_colors/font_shadow_color = Color(1, 0.961, 0.725, 0.48)
+theme_override_constants/line_spacing = 5
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 17
+text = "从一株萌芽出发，\n让沉寂的土地重新呼吸。"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 8)
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
@@ -123,46 +135,62 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0.996, 0.953, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 17
-text = "开始游戏"
+text = "开始新旅程"
 
 [node name="ContinueButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0.996, 0.953, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 17
 text = "继续游戏"
 
 [node name="ChooseLevelButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.176, 0.431, 0.259, 1)
+theme_override_colors/font_hover_color = Color(0.1059, 0.302, 0.176, 1)
+theme_override_colors/font_pressed_color = Color(0.1059, 0.302, 0.176, 1)
+theme_override_font_sizes/font_size = 16
 text = "关卡选择"
 
 [node name="SettingsButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_override_font_sizes/font_size = 17
-text = "设置"
+theme_override_colors/font_color = Color(0.176, 0.431, 0.259, 1)
+theme_override_colors/font_hover_color = Color(0.1059, 0.302, 0.176, 1)
+theme_override_colors/font_pressed_color = Color(0.1059, 0.302, 0.176, 1)
+theme_override_font_sizes/font_size = 16
+text = "游戏设置"
 
 [node name="ExitButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.298, 0.439, 0.329, 0.9)
+theme_override_colors/font_hover_color = Color(0.1059, 0.302, 0.176, 1)
+theme_override_colors/font_pressed_color = Color(0.1059, 0.302, 0.176, 1)
+theme_override_font_sizes/font_size = 16
 text = "退出游戏"
 
 [node name="VersionLabel" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 0.72)
-theme_override_font_sizes/font_size = 12
-text = "v0.3.3 · 陆地篇"
+theme_override_colors/font_color = Color(0.2745, 0.5157, 0.3561, 0.66)
+theme_override_font_sizes/font_size = 11
+text = "v0.3.3  ·  陆地篇"
 horizontal_alignment = 1
 
 [node name="ShowcasePanel" type="Control" parent="MainMenu"]
