@@ -102,7 +102,7 @@ func _apply_menu_button_art() -> void:
 		primary_pressed,
 		Color(1.0, 1.0, 1.0),
 		Color(0.04, 0.16, 0.08, 0.72),
-		19
+		18
 	)
 	_apply_button_styles(
 		continue_button,
@@ -111,7 +111,7 @@ func _apply_menu_button_art() -> void:
 		primary_pressed,
 		Color(1.0, 1.0, 1.0),
 		Color(0.04, 0.16, 0.08, 0.72),
-		19
+		18
 	)
 	for button in [choose_level_button, settings_button, exit_button]:
 		_apply_button_styles(
@@ -121,7 +121,7 @@ func _apply_menu_button_art() -> void:
 			paper_pressed,
 			Color(0.1059, 0.302, 0.176),
 			Color(1.0, 0.98, 0.87, 0.88),
-			18
+			17
 		)
 
 
