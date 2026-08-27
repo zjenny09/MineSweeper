@@ -17,6 +17,7 @@ func _run_tests() -> void:
 	_test_defaults()
 	_test_save_and_load()
 	_test_legacy_display_migration()
+	_test_removed_level_migration()
 	_test_backup_recovery()
 	_test_structural_corruption_uses_backup()
 	_test_corrupt_file_falls_back()
@@ -39,8 +40,9 @@ func _test_defaults() -> void:
 	var data: Dictionary = store.get_data()
 	_check(data["schema_version"] == 1, "default schema version should be 1")
 	_check(store.get_last_played_level() == 0, "default last played level should be 0")
-	_check(data["levels"].size() == 6, "defaults should contain all six levels")
-	for number in range(1, 7):
+	_check(not store.has_seen_first_move_guide(), "new saves should show the first-move guide")
+	_check(data["levels"].size() == 5, "defaults should contain all five levels")
+	for number in range(1, 6):
 		_check(not store.is_level_completed(number), "level %d should default to incomplete" % number)
 		_check(store.get_best_time_ms(number) == -1, "level %d should default to no best time" % number)
 	_check(is_equal_approx(store.get_master_volume(), 1.0), "default volume should be 1")
@@ -54,6 +56,7 @@ func _test_save_and_load() -> void:
 	store.mark_level_started(2)
 	store.record_completion(1, 4200)
 	store.mark_level_started(2)
+	store.mark_first_move_guide_seen()
 	store.set_master_volume(0.35)
 	store.set_fullscreen(true)
 	store.set_operation_mode(1)
@@ -62,6 +65,7 @@ func _test_save_and_load() -> void:
 	var loaded = SaveStore.new(TEST_PATH)
 	loaded.load_data()
 	_check(loaded.get_last_played_level() == 2, "last played level should persist")
+	_check(loaded.has_seen_first_move_guide(), "first-move guide state should persist")
 	_check(loaded.is_level_completed(1), "completion should persist")
 	_check(loaded.get_best_time_ms(1) == 4200, "best time should persist")
 	_check(is_equal_approx(loaded.get_master_volume(), 0.35), "volume should persist")
@@ -90,6 +94,27 @@ func _test_legacy_display_migration() -> void:
 	file.close()
 	loaded.load_data()
 	_check(loaded.get_window_mode() == 2, "legacy fullscreen saves should migrate to borderless fullscreen")
+	_cleanup()
+
+
+func _test_removed_level_migration() -> void:
+	_cleanup()
+	var legacy_store = SaveStore.new(TEST_PATH)
+	var legacy_data: Dictionary = legacy_store.get_data()
+	legacy_data["last_played_level"] = 6
+	legacy_data.erase("first_move_guide_seen")
+	legacy_data["levels"]["6"] = {
+		"completed": true,
+		"best_time_ms": 7200,
+	}
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(legacy_data))
+	file.close()
+	var loaded = SaveStore.new(TEST_PATH)
+	loaded.load_data()
+	_check(loaded.get_last_played_level() == 0, "removed level 6 should not remain the continue target")
+	_check(loaded.has_seen_first_move_guide(), "legacy play progress should keep the guide dismissed")
+	_check(loaded.get_data()["levels"].size() == 5, "removed level 6 should be discarded from legacy saves")
 	_cleanup()
 
 
@@ -157,7 +182,7 @@ func _test_unlocking() -> void:
 	_check(store.is_level_unlocked(2), "completing level 1 should unlock level 2")
 	_check(not store.is_level_unlocked(3), "level 3 should remain locked")
 	_check(not store.is_level_unlocked(0), "invalid level should not be unlocked")
-	_check(not store.is_level_unlocked(7), "out-of-range level should not be unlocked")
+	_check(not store.is_level_unlocked(6), "out-of-range level should not be unlocked")
 
 
 func _test_best_time_only_improves() -> void:

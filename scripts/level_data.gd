@@ -41,16 +41,7 @@ const LEVEL_5 := {
 	"first_move_guide": false,
 }
 
-const LEVEL_6 := {
-	"number": 6,
-	"name": "山脉",
-	"size": Vector2i(24, 9),
-	"core_count": 80,
-	"first_move_guide": false,
-	"topology": "triangle",
-}
-
-const LEVELS := [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_6]
+const LEVELS := [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5]
 
 
 static func is_valid_level_number(level_number: int) -> bool:

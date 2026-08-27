@@ -1,3 +1,4 @@
+@tool
 extends Control
 
 signal level_started(level_number: int)
@@ -8,7 +9,65 @@ signal settings_requested
 signal exit_game_requested
 signal pause_changed(is_paused: bool)
 
+const ART := preload("res://scripts/art_catalog.gd")
+
+const LEVEL_ONE_BACKGROUND_PATH := ART.LEVEL_01_LAND_BACKGROUND
+const LEVEL_ONE_BACKGROUND_SOURCE_REGION := Rect2i(0, 0, 2848, 1600)
+const LEVEL_ONE_BOARD_TRAY_PATH := ART.LEVEL_01_BOARD_TRAY
+const LEVEL_ONE_STATUS_NOTE_PATH := ART.LEVEL_01_NOTE_CURVED
+const LEVEL_ONE_STRAIGHT_NOTE_PATH := ART.LEVEL_01_NOTE_STRAIGHT
+const LEVEL_ONE_PAUSE_MENU_FRAME_PATH := ART.LEVEL_01_PAUSE_MENU_FRAME
+const LEVEL_ONE_ROUND_BUTTON_PATH := ART.LEVEL_01_ROUND_ACTION_NORMAL
+const LEVEL_ONE_ROUND_BUTTON_SELECTED_PATH := ART.LEVEL_01_ROUND_ACTION_HOVER
+const LEVEL_ONE_SEED_STICKER_PATH := ART.LEVEL_01_DECOR_BACKGROUND_SEED
+const LEVEL_ONE_BUD_SPROUT_PATH := ART.LEVEL_01_DECOR_STATUS_NOTE_BUD
+const LEVEL_ONE_LEAF_SPROUT_PATH := ART.LEVEL_01_DECOR_BACKGROUND_LEAF_SPROUT
+const LAND_DECORATIVE_HEALTHY_PATHS := [
+	ART.LEVEL_01_DECOR_LEFT_SPROUT_HEALTHY,
+	ART.LEVEL_02_DECOR_SHRUB_HEALTHY,
+	ART.LEVEL_03_DECOR_WETLAND_HEALTHY,
+	ART.LEVEL_04_DECOR_GRASS_HEALTHY,
+	ART.LEVEL_05_DECOR_TREE_HEALTHY,
+]
+const LAND_DECORATIVE_FAILED_PATHS := [
+	ART.LEVEL_01_DECOR_LEFT_SPROUT_WILTED,
+	ART.LEVEL_02_DECOR_SHRUB_WILTED,
+	ART.LEVEL_03_DECOR_WETLAND_POLLUTED,
+	ART.LEVEL_04_DECOR_GRASS_WILTED,
+	ART.LEVEL_05_DECOR_TREE_WILTED,
+]
+const LAND_STICKER_PATHS := [
+	[
+		ART.LEVEL_01_DECOR_BACKGROUND_SEED,
+		ART.LEVEL_01_DECOR_BACKGROUND_SEED,
+		ART.LEVEL_01_DECOR_BACKGROUND_LEAF_SPROUT,
+		ART.LEVEL_01_DECOR_STATUS_NOTE_BUD,
+	],
+	[ART.LEVEL_02_STICKER_01, ART.LEVEL_02_STICKER_02, "", ""],
+	[ART.LEVEL_03_STICKER_01, ART.LEVEL_03_STICKER_02, "", ""],
+	[ART.LEVEL_04_STICKER_01, ART.LEVEL_04_STICKER_02, ART.LEVEL_04_STICKER_03, ""],
+	[ART.LEVEL_05_STICKER_01, ART.LEVEL_05_STICKER_02, ART.LEVEL_05_STICKER_03, ""],
+]
+const LAND_DECORATIVE_CENTER_X := 218.0
+const LAND_DECORATIVE_BASELINE_Y := 648.0
+const LAND_DECORATIVE_MAX_SIZE := Vector2(68.0, 56.0)
+const LEVEL_ONE_SIDE_GUARDIAN_A_PATH := ART.LEVEL_01_GUARDIAN_RIGHT_YELLOW_STANDING
+const LEVEL_ONE_SIDE_GUARDIAN_B_PATH := ART.LEVEL_01_GUARDIAN_RIGHT_WHITE_SITTING
+const LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH := ART.LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_RIGHT
+const LEVEL_ONE_SPROUT_GUARDIAN_RIGHT_PATH := ART.LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_LEFT
+const FAILURE_LEFT_GUARDIAN_PATH := ART.LAND_GUARDIAN_LEFT_CRYING
+const FAILURE_RIGHT_YELLOW_GUARDIAN_PATH := ART.LAND_GUARDIAN_RIGHT_YELLOW_CRYING
+const FAILURE_RIGHT_WHITE_GUARDIAN_PATH := ART.LAND_GUARDIAN_RIGHT_WHITE_CRYING
+const HANDMADE_FONT_PATH := ART.UI_FONT
+const PAPER_BUTTON_PATH := ART.TUTORIAL_GUIDE_BUTTON_SECONDARY
+const PAPER_BUTTON_SELECTED_PATH := ART.TUTORIAL_GUIDE_BUTTON_SECONDARY
+const PAPER_BUTTON_PRESSED_PATH := ART.TUTORIAL_GUIDE_BUTTON_SECONDARY
+const GREEN_BUTTON_PATH := ART.TUTORIAL_GUIDE_BUTTON_PRIMARY
+const GREEN_BUTTON_SELECTED_PATH := ART.TUTORIAL_GUIDE_BUTTON_PRIMARY
+const GREEN_BUTTON_PRESSED_PATH := ART.TUTORIAL_GUIDE_BUTTON_PRIMARY
+
 @export var auto_start := true
+@export var editor_preview_pause_menu := false
 
 
 enum TutorialStep {
@@ -23,6 +82,31 @@ enum TutorialStep {
 
 @onready var board: MinesweeperBoard = %Board
 @onready var eco_showcase: Control = %EcoShowcase
+@onready var level_one_background: TextureRect = %LevelOneBackground
+@onready var bud_sprout_decoration_a: TextureRect = %BudSproutDecorationA
+@onready var leaf_sprout_decoration_a: TextureRect = \
+		$LevelOneBackground/LevelOneDecorations/LeafSproutDecorationA
+@onready var seed_decoration_a: TextureRect = \
+		$LevelOneBackground/LevelOneDecorations/SeedDecorationA
+@onready var seed_decoration_b: TextureRect = \
+		$LevelOneBackground/LevelOneDecorations/SeedDecorationB
+@onready var environment_panel: Control = %EnvironmentPanel
+@onready var hud_panel: PanelContainer = %HudPanel
+@onready var info_note_artwork: TextureRect = %InfoNoteArtwork
+@onready var info_back_artwork: TextureRect = %InfoBackArtwork
+@onready var status_note_artwork: TextureRect = %StatusNoteArtwork
+@onready var board_tray: TextureRect = %BoardTray
+@onready var board_shadow: Panel = %BoardShadow
+@onready var victory_animation_player: AnimationPlayer = %LevelOneAnimationPlayer
+@onready var left_decorative_sprout: TextureRect = %LeftDecorativeSprout
+@onready var right_guardian_a: TextureRect = %RightGuardianA
+@onready var right_guardian_b: TextureRect = %RightGuardianB
+@onready var left_sprout_guardian_left: TextureRect = %LeftSproutGuardianLeft
+@onready var left_sprout_guardian_right: TextureRect = %LeftSproutGuardianRight
+@onready var right_guardian_a_shadow: Control = %RightGuardianAShadow
+@onready var right_guardian_b_shadow: Control = %RightGuardianBShadow
+@onready var left_sprout_guardian_left_shadow: Control = %LeftSproutGuardianLeftShadow
+@onready var left_sprout_guardian_right_shadow: Control = %LeftSproutGuardianRightShadow
 @onready var subtitle_label: Label = %SubtitleLabel
 @onready var level_summary_label: Label = %LevelSummaryLabel
 @onready var objective_label: Label = %ObjectiveLabel
@@ -30,10 +114,14 @@ enum TutorialStep {
 @onready var flags_label: Label = %FlagsLabel
 @onready var timer_label: Label = %TimerLabel
 @onready var instructions_label: Label = %InstructionsLabel
+@onready var quick_buttons: HBoxContainer = %QuickButtons
+@onready var pause_button: TextureButton = %PauseButton
+@onready var restart_button: TextureButton = %RestartButton
+@onready var pause_button_label: Label = %PauseButtonLabel
+@onready var restart_button_label: Label = %RestartButtonLabel
 @onready var first_move_guide = %FirstMoveGuide
-@onready var restart_button: Button = %RestartButton
-@onready var pause_button: Button = %PauseButton
 @onready var pause_overlay: Control = %PauseOverlay
+@onready var pause_menu_frame_artwork: NinePatchRect = %PauseMenuFrameArtwork
 @onready var resume_button: Button = %ResumeButton
 @onready var pause_restart_button: Button = %PauseRestartButton
 @onready var level_select_button: Button = %LevelSelectButton
@@ -49,14 +137,20 @@ var _elapsed_before_segment_ms := 0
 var _segment_started_ms := 0
 var _timer_running := false
 var _operation_mode := 0
+var _first_move_guide_enabled := true
 var _tutorial_step: int = TutorialStep.INACTIVE
 var _tutorial_dismissed_for_session := false
 var _tutorial_number_index := -1
 var _tutorial_target_index := -1
 var _tutorial_last_revealed_index := -1
+var _runtime_texture_cache: Dictionary = {}
 
 
 func _ready() -> void:
+	_apply_handmade_interface()
+	if Engine.is_editor_hint():
+		pause_overlay.visible = editor_preview_pause_menu
+		return
 	board.state_changed.connect(_on_state_changed)
 	board.flags_changed.connect(_on_flags_changed)
 	board.reveal_completed.connect(_on_reveal_completed)
@@ -77,6 +171,281 @@ func _ready() -> void:
 	else:
 		visible = false
 	set_process(true)
+
+
+func _apply_handmade_interface() -> void:
+	level_one_background.texture = _load_runtime_texture_region(
+		LEVEL_ONE_BACKGROUND_PATH,
+		LEVEL_ONE_BACKGROUND_SOURCE_REGION
+	)
+	board_tray.texture = _load_runtime_texture(LEVEL_ONE_BOARD_TRAY_PATH)
+	_apply_land_decorative_texture(LAND_DECORATIVE_HEALTHY_PATHS[0])
+	right_guardian_a.texture = _load_runtime_texture(LEVEL_ONE_SIDE_GUARDIAN_B_PATH)
+	right_guardian_b.texture = _load_runtime_texture(LEVEL_ONE_SIDE_GUARDIAN_A_PATH)
+	left_sprout_guardian_left.texture = _load_runtime_texture(
+		LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH
+	)
+	left_sprout_guardian_right.texture = _load_runtime_texture(
+		LEVEL_ONE_SPROUT_GUARDIAN_RIGHT_PATH
+	)
+	var seed_texture := _load_runtime_texture(LEVEL_ONE_SEED_STICKER_PATH)
+	seed_decoration_a.texture = seed_texture
+	seed_decoration_b.texture = seed_texture
+	var bud_sprout_texture := _load_runtime_texture(LEVEL_ONE_BUD_SPROUT_PATH)
+	bud_sprout_decoration_a.texture = bud_sprout_texture
+	var leaf_sprout_texture := _load_runtime_texture(LEVEL_ONE_LEAF_SPROUT_PATH)
+	leaf_sprout_decoration_a.texture = leaf_sprout_texture
+	var curved_note_texture := _load_runtime_texture(LEVEL_ONE_STATUS_NOTE_PATH)
+	info_note_artwork.texture = curved_note_texture
+	status_note_artwork.texture = curved_note_texture
+	info_back_artwork.texture = _load_runtime_texture(LEVEL_ONE_STRAIGHT_NOTE_PATH)
+	pause_menu_frame_artwork.texture = _load_runtime_texture(
+		LEVEL_ONE_PAUSE_MENU_FRAME_PATH
+	)
+	var round_normal_texture := _load_runtime_texture(LEVEL_ONE_ROUND_BUTTON_PATH)
+	var round_selected_texture := _load_runtime_texture(
+		LEVEL_ONE_ROUND_BUTTON_SELECTED_PATH
+	)
+	if round_normal_texture != null and round_selected_texture != null:
+		for button in [pause_button, restart_button]:
+			_apply_round_texture_button(
+				button,
+				round_normal_texture,
+				round_selected_texture
+			)
+	_apply_handmade_typography()
+	var paper_normal := _load_texture_style(PAPER_BUTTON_PATH)
+	var paper_selected := _load_texture_style(PAPER_BUTTON_SELECTED_PATH)
+	var paper_pressed := _load_texture_style(PAPER_BUTTON_PRESSED_PATH)
+	var green_normal := _load_texture_style(GREEN_BUTTON_PATH)
+	var green_selected := _load_texture_style(GREEN_BUTTON_SELECTED_PATH)
+	var green_pressed := _load_texture_style(GREEN_BUTTON_PRESSED_PATH)
+	if paper_normal != null and paper_selected != null and paper_pressed != null:
+		for button in [
+			pause_restart_button,
+			level_select_button,
+			pause_settings_button,
+			main_menu_button,
+			exit_game_button,
+		]:
+			_apply_paper_button(button, paper_normal, paper_selected, paper_pressed)
+	if green_normal != null and green_selected != null and green_pressed != null:
+		for button in [resume_button]:
+			_apply_paper_button(button, green_normal, green_selected, green_pressed)
+
+
+func _apply_handmade_typography() -> void:
+	var font := load(HANDMADE_FONT_PATH) as FontFile
+	if font == null:
+		push_error("Level interface font could not be loaded: %s" % HANDMADE_FONT_PATH)
+		return
+	_apply_font_to_tree(environment_panel, font)
+	_apply_font_to_tree(hud_panel, font)
+	_apply_font_to_tree(quick_buttons, font)
+	_apply_font_to_tree(pause_overlay, font)
+
+
+func _apply_font_to_tree(node: Node, font: Font) -> void:
+	if node is Label or node is Button:
+		(node as Control).add_theme_font_override("font", font)
+	for child in node.get_children():
+		_apply_font_to_tree(child, font)
+
+
+func _load_runtime_texture(path: String) -> Texture2D:
+	if _runtime_texture_cache.has(path):
+		return _runtime_texture_cache[path] as Texture2D
+	var texture := load(path) as Texture2D
+	if texture == null:
+		push_error("Level interface artwork could not be loaded: %s" % path)
+		return null
+	_runtime_texture_cache[path] = texture
+	return texture
+
+
+func _apply_land_decorative_texture(path: String) -> void:
+	var texture := _load_runtime_texture(path)
+	if texture == null:
+		return
+	left_decorative_sprout.texture = texture
+	var texture_size := texture.get_size()
+	var scale_factor := minf(
+		LAND_DECORATIVE_MAX_SIZE.x / texture_size.x,
+		LAND_DECORATIVE_MAX_SIZE.y / texture_size.y
+	)
+	var display_size := texture_size * scale_factor
+	left_decorative_sprout.position = Vector2(
+		LAND_DECORATIVE_CENTER_X - display_size.x * 0.5,
+		LAND_DECORATIVE_BASELINE_Y - display_size.y
+	)
+	left_decorative_sprout.size = display_size
+	left_decorative_sprout.pivot_offset = Vector2(
+		display_size.x * 0.5,
+		display_size.y * 0.91
+	)
+
+
+func _apply_land_stickers(state: int) -> void:
+	if current_level_index < 0 or current_level_index >= LAND_STICKER_PATHS.size():
+		return
+	var sticker_nodes: Array[TextureRect] = [
+		seed_decoration_a,
+		seed_decoration_b,
+		leaf_sprout_decoration_a,
+		bud_sprout_decoration_a,
+	]
+	var layouts := _land_sticker_layout(current_level_index)
+	var paths: Array = LAND_STICKER_PATHS[current_level_index]
+	for slot in sticker_nodes.size():
+		var sticker := sticker_nodes[slot]
+		var path := str(paths[slot])
+		if path.is_empty():
+			sticker.texture = null
+			sticker.visible = false
+			continue
+		var layout: Dictionary = layouts[slot]
+		sticker.texture = _load_runtime_texture(path)
+		sticker.position = layout["position"]
+		sticker.size = layout["size"]
+		sticker.rotation = float(layout["rotation"])
+		sticker.pivot_offset = sticker.size * 0.5
+		sticker.z_index = 2 if current_level_index > 0 else 0
+		sticker.visible = true
+	if current_level_index == 0:
+		leaf_sprout_decoration_a.visible = state == MinesweeperBoard.GameState.WON
+
+
+func _land_sticker_layout(level_index: int) -> Array[Dictionary]:
+	match level_index:
+		0:
+			return [
+				{"position": Vector2(300, 110), "size": Vector2(22.5, 29.25), "rotation": -0.32},
+				{"position": Vector2(850, 46), "size": Vector2(42, 54.75), "rotation": 0.20},
+				{"position": Vector2(1080, 610), "size": Vector2(48, 48), "rotation": -0.38},
+				{"position": Vector2(195, 120), "size": Vector2(46, 44), "rotation": -0.38},
+			]
+		1:
+			return [
+				{"position": Vector2(340, 18), "size": Vector2(58, 54), "rotation": -0.10},
+				{"position": Vector2(865, 16), "size": Vector2(46, 46), "rotation": 0.14},
+				{"position": Vector2.ZERO, "size": Vector2.ZERO, "rotation": 0.0},
+				{"position": Vector2.ZERO, "size": Vector2.ZERO, "rotation": 0.0},
+			]
+		2:
+			return [
+				{"position": Vector2(330, 20), "size": Vector2(74, 49), "rotation": -0.07},
+				{"position": Vector2(875, 14), "size": Vector2(30, 58), "rotation": 0.13},
+				{"position": Vector2.ZERO, "size": Vector2.ZERO, "rotation": 0.0},
+				{"position": Vector2.ZERO, "size": Vector2.ZERO, "rotation": 0.0},
+			]
+		3:
+			return [
+				{"position": Vector2(338, 20), "size": Vector2(60, 47), "rotation": -0.08},
+				{"position": Vector2(622, 12), "size": Vector2(28, 58), "rotation": 0.11},
+				{"position": Vector2(878, 16), "size": Vector2(48, 56), "rotation": -0.14},
+				{"position": Vector2.ZERO, "size": Vector2.ZERO, "rotation": 0.0},
+			]
+		_:
+			return [
+				{"position": Vector2(338, 12), "size": Vector2(54, 56), "rotation": -0.06},
+				{"position": Vector2(622, 10), "size": Vector2(30, 58), "rotation": 0.10},
+				{"position": Vector2(866, 8), "size": Vector2(74, 76), "rotation": -0.12},
+				{"position": Vector2.ZERO, "size": Vector2.ZERO, "rotation": 0.0},
+			]
+
+
+func _load_runtime_texture_region(path: String, region: Rect2i) -> Texture2D:
+	var texture := _load_runtime_texture(path)
+	if texture == null:
+		return null
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		push_error("Level interface artwork image is unavailable: %s" % path)
+		return null
+	var source_rect := Rect2i(Vector2i.ZERO, image.get_size())
+	if not source_rect.encloses(region):
+		push_error("Level interface artwork crop is outside the source image: %s" % path)
+		return null
+	return ImageTexture.create_from_image(image.get_region(region))
+
+
+func _load_texture_style(path: String) -> StyleBoxTexture:
+	var texture := _load_runtime_texture(path)
+	if texture == null:
+		return null
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.content_margin_left = 14.0
+	style.content_margin_top = 8.0
+	style.content_margin_right = 14.0
+	style.content_margin_bottom = 8.0
+	return style
+
+
+func _apply_paper_button(
+	button: Button,
+	normal_style: StyleBoxTexture,
+	hover_style: StyleBoxTexture,
+	pressed_style: StyleBoxTexture
+) -> void:
+	button.add_theme_stylebox_override("normal", normal_style)
+	button.add_theme_stylebox_override("hover", hover_style)
+	button.add_theme_stylebox_override("pressed", pressed_style)
+	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	button.add_theme_color_override("font_outline_color", Color(1.0, 0.98, 0.88, 0.72))
+	button.add_theme_constant_override("outline_size", 1)
+
+
+func _apply_round_texture_button(
+	button: TextureButton,
+	normal_texture: Texture2D,
+	selected_texture: Texture2D
+) -> void:
+	button.texture_normal = normal_texture
+	button.texture_hover = selected_texture
+	button.texture_pressed = selected_texture
+	button.texture_focused = selected_texture
+
+
+func _apply_guardian_state(state: int) -> void:
+	var is_failure := state == MinesweeperBoard.GameState.LOST
+	left_sprout_guardian_left.texture = _load_runtime_texture(
+		FAILURE_LEFT_GUARDIAN_PATH
+		if is_failure
+		else LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH
+	)
+	left_sprout_guardian_right.texture = _load_runtime_texture(
+		FAILURE_LEFT_GUARDIAN_PATH
+		if is_failure
+		else LEVEL_ONE_SPROUT_GUARDIAN_RIGHT_PATH
+	)
+	right_guardian_a.texture = _load_runtime_texture(
+		FAILURE_RIGHT_WHITE_GUARDIAN_PATH
+		if is_failure
+		else LEVEL_ONE_SIDE_GUARDIAN_B_PATH
+	)
+	right_guardian_b.texture = _load_runtime_texture(
+		FAILURE_RIGHT_YELLOW_GUARDIAN_PATH
+		if is_failure
+		else LEVEL_ONE_SIDE_GUARDIAN_A_PATH
+	)
+
+
+func _set_level_one_reaction(state: int) -> void:
+	victory_animation_player.play(&"RESET")
+	victory_animation_player.advance(0.0)
+	_apply_guardian_state(state)
+	seed_decoration_a.visible = true
+	seed_decoration_b.visible = true
+	leaf_sprout_decoration_a.visible = false
+	if current_level_index >= 5:
+		return
+	match state:
+		MinesweeperBoard.GameState.WON:
+			leaf_sprout_decoration_a.visible = true
+			victory_animation_player.play(&"victory")
+		MinesweeperBoard.GameState.LOST:
+			victory_animation_player.play(&"failure")
 
 
 func _process(_delta: float) -> void:
@@ -104,15 +473,42 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func start_level(level_index: int) -> void:
 	current_level_index = clampi(level_index, 0, GreenSweeperLevels.LEVELS.size() - 1)
+	var uses_level_one_stage := current_level_index < 5
+	level_one_background.visible = uses_level_one_stage
+	eco_showcase.visible = not uses_level_one_stage
+	board_tray.visible = uses_level_one_stage
+	board_shadow.visible = uses_level_one_stage
+	left_decorative_sprout.visible = uses_level_one_stage
+	bud_sprout_decoration_a.visible = uses_level_one_stage
+	right_guardian_a.visible = uses_level_one_stage
+	right_guardian_b.visible = uses_level_one_stage
+	left_sprout_guardian_left.visible = uses_level_one_stage
+	left_sprout_guardian_right.visible = uses_level_one_stage
+	right_guardian_a_shadow.visible = uses_level_one_stage
+	right_guardian_b_shadow.visible = uses_level_one_stage
+	left_sprout_guardian_left_shadow.visible = uses_level_one_stage
+	left_sprout_guardian_right_shadow.visible = uses_level_one_stage
+	_set_level_one_reaction(MinesweeperBoard.GameState.READY)
+	if uses_level_one_stage:
+		_apply_land_decorative_texture(
+			LAND_DECORATIVE_HEALTHY_PATHS[current_level_index]
+		)
+		_apply_land_stickers(MinesweeperBoard.GameState.READY)
 	_tutorial_dismissed_for_session = false
-	_tutorial_step = TutorialStep.FIRST_REVEAL if current_level_index == 0 else TutorialStep.INACTIVE
+	_tutorial_step = (
+		TutorialStep.FIRST_REVEAL
+		if current_level_index == 0 and _first_move_guide_enabled
+		else TutorialStep.INACTIVE
+	)
 	_tutorial_number_index = -1
 	_tutorial_target_index = -1
 	_tutorial_last_revealed_index = -1
 	_completion_emitted = false
 	set_session_paused(false)
 	_reset_timer()
-	var level: Dictionary = GreenSweeperLevels.LEVELS[current_level_index]
+	var level: Dictionary = GreenSweeperLevels.LEVELS[current_level_index].duplicate(true)
+	level["first_move_guide"] = bool(level.get("first_move_guide", false)) \
+			and _first_move_guide_enabled
 	board.load_level(level)
 	board.set_interaction_enabled(true)
 	eco_showcase.call("set_environment", board.level_number)
@@ -120,15 +516,12 @@ func start_level(level_index: int) -> void:
 		board.level_number,
 		board.level_name,
 	]
-	level_summary_label.text = "%d列 × %d排\n%d个随机污染核心" % [
+	level_summary_label.text = "%d × %d 棋盘\n污染核心 %d" % [
 		board.column_count,
 		board.row_count,
 		board.core_count,
 	]
-	objective_label.text = "打开全部%d个安全区域，恢复%s生态。" % [
-		board.safe_cell_count,
-		board.level_name,
-	]
+	objective_label.text = "清除所有污染核心\n恢复%s生态" % board.level_name
 	_refresh_instructions()
 	_refresh_first_move_guide()
 	visible = true
@@ -140,7 +533,9 @@ func restart_level() -> void:
 	set_session_paused(false)
 	_reset_timer()
 	board.set_interaction_enabled(true)
-	if board.level_number == 1 and not _tutorial_dismissed_for_session:
+	if board.level_number == 1 \
+			and _first_move_guide_enabled \
+			and not _tutorial_dismissed_for_session:
 		_tutorial_step = TutorialStep.FIRST_REVEAL
 	else:
 		_tutorial_step = TutorialStep.INACTIVE
@@ -165,6 +560,10 @@ func get_operation_mode() -> int:
 	return _operation_mode
 
 
+func set_first_move_guide_enabled(enabled: bool) -> void:
+	_first_move_guide_enabled = enabled
+
+
 func _refresh_instructions() -> void:
 	if not is_instance_valid(instructions_label) or not is_instance_valid(board):
 		return
@@ -174,21 +573,15 @@ func _refresh_instructions() -> void:
 		and _tutorial_step != TutorialStep.INACTIVE
 		and _tutorial_step != TutorialStep.COMPLETE
 	)
-	var guide_text := (
-		"清扫者正在进行连续操作引导"
-		if tutorial_active
-		else "无安全提示 · 首点可能污染"
-	)
 	if _operation_mode == 1:
 		instructions_label.text = (
-			guide_text
-			+ "\n方向键/WASD移动"
-			+ "\nZ净化/展开 · X标记"
-			+ "\n鼠标操作仍可使用"
+			"方向键/WASD 移动"
+			+ "\nZ 净化 · X 标记"
+			+ "\n鼠标仍可使用"
 		)
 	else:
 		instructions_label.text = (
-			guide_text
+			("引导进行中" if tutorial_active else "首点可能污染")
 			+ "\n左键净化 · 右键标记"
 			+ "\n双击数字快速展开"
 		)
@@ -219,7 +612,7 @@ func _refresh_first_move_guide() -> void:
 		TutorialStep.FIRST_REVEAL:
 			if board.game_state == MinesweeperBoard.GameState.READY:
 				target_index = board.guide_cell_index
-				title = "先认识棋盘"
+				title = "小芽带你认识棋盘"
 				action = "移动到这里按 Z 翻开" if _operation_mode == 1 else "左键翻开这个安全建议格"
 				hint = "白色=未净化 · 黄色=安全建议"
 			else:
@@ -305,10 +698,21 @@ func _on_chord_completed(_cell_index: int, newly_revealed_count: int) -> void:
 
 
 func _on_tutorial_next_requested() -> void:
-	if _tutorial_step != TutorialStep.NUMBER_INFO or _tutorial_dismissed_for_session:
+	if _tutorial_dismissed_for_session:
 		return
-	_revalidate_tutorial_frontier()
-	_refresh_first_move_guide()
+	match _tutorial_step:
+		TutorialStep.FIRST_REVEAL:
+			if board.guide_cell_index >= 0:
+				board.reveal_cell(board.guide_cell_index)
+		TutorialStep.NUMBER_INFO:
+			_revalidate_tutorial_frontier()
+			_refresh_first_move_guide()
+		TutorialStep.MARK_CORE:
+			if _tutorial_target_index >= 0:
+				board.toggle_flag(_tutorial_target_index)
+		TutorialStep.CHORD:
+			if _tutorial_number_index >= 0:
+				board.chord_cell(_tutorial_number_index)
 
 
 func _on_tutorial_exit_requested() -> void:
@@ -322,7 +726,7 @@ func _on_tutorial_exit_requested() -> void:
 	first_move_guide.hide_guide()
 	_refresh_instructions()
 	if board.game_state in [MinesweeperBoard.GameState.READY, MinesweeperBoard.GameState.PLAYING]:
-		status_label.text = "引导已退出，可以自由净化"
+		status_label.text = "自由净化"
 
 
 func _ensure_number_target() -> void:
@@ -438,7 +842,7 @@ func _complete_tutorial() -> void:
 	first_move_guide.hide_guide()
 	_refresh_instructions()
 	if board.game_state == MinesweeperBoard.GameState.PLAYING:
-		status_label.text = "引导完成，可以自由净化"
+		status_label.text = "引导完成"
 
 
 func set_session_paused(paused: bool) -> void:
@@ -472,6 +876,15 @@ func _load_level(level_index: int) -> void:
 
 func _on_state_changed(state: int) -> void:
 	_advance_available = false
+	_set_level_one_reaction(state)
+	_apply_land_stickers(state)
+	if current_level_index < LAND_DECORATIVE_HEALTHY_PATHS.size():
+		var decorative_sprout_path: String = (
+			LAND_DECORATIVE_FAILED_PATHS[current_level_index]
+			if state == MinesweeperBoard.GameState.LOST
+			else LAND_DECORATIVE_HEALTHY_PATHS[current_level_index]
+		)
+		_apply_land_decorative_texture(decorative_sprout_path)
 	match state:
 		MinesweeperBoard.GameState.READY:
 			eco_showcase.call("set_reaction", 0)
@@ -481,44 +894,44 @@ func _on_state_changed(state: int) -> void:
 				and not _tutorial_dismissed_for_session
 				and _tutorial_step == TutorialStep.FIRST_REVEAL
 			)
-			status_label.text = "跟着清扫者认识棋盘（也可自由选择）" if tutorial_ready else "选择第一块净化区域"
-			restart_button.text = "重新生成"
-			pause_button.text = "暂停  ·  Esc"
+			status_label.text = "引导中" if tutorial_ready else "准备中"
+			restart_button_label.text = "重新\n生成"
+			pause_button_label.text = "暂停\nEsc"
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.PLAYING:
 			eco_showcase.call("set_reaction", 0)
 			_start_timer()
-			status_label.text = "净化进行中"
-			restart_button.text = "重新开始"
-			pause_button.text = "暂停  ·  Esc"
+			status_label.text = "净化中"
+			restart_button_label.text = "重新\n开始"
+			pause_button_label.text = "暂停\nEsc"
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.WON:
 			eco_showcase.call("set_reaction", 1)
 			_pause_timer()
-			pause_button.text = "菜单  ·  Esc"
+			pause_button_label.text = "菜单\nEsc"
 			pause_button.disabled = false
 			if current_level_index + 1 < GreenSweeperLevels.LEVELS.size():
-				status_label.text = "净化完成！新的陆地区域已解锁"
-				restart_button.text = "进入下一关"
+				status_label.text = "净化完成"
+				restart_button_label.text = "下一关"
 				_advance_available = true
 			else:
 				status_label.text = "%s净化完成！" % board.level_name
-				restart_button.text = "再来一局"
+				restart_button_label.text = "再来一局"
 			if not _completion_emitted:
 				_completion_emitted = true
 				level_completed.emit(board.level_number, get_elapsed_ms())
 		MinesweeperBoard.GameState.LOST:
 			eco_showcase.call("set_reaction", 2)
 			_pause_timer()
-			pause_button.text = "菜单  ·  Esc"
+			pause_button_label.text = "菜单\nEsc"
 			pause_button.disabled = false
-			status_label.text = "触碰污染核心，请重新开始"
-			restart_button.text = "重新开始"
+			status_label.text = "污染触发"
+			restart_button_label.text = "重新\n开始"
 	_refresh_first_move_guide()
 
 
 func _on_flags_changed(used_flags: int, max_flags: int) -> void:
-	flags_label.text = "标记：%d/%d" % [used_flags, max_flags]
+	flags_label.text = "%d/%d" % [used_flags, max_flags]
 
 
 func _on_primary_button_pressed() -> void:
@@ -600,6 +1013,10 @@ func _update_timer_label() -> void:
 func _requested_level_index() -> int:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--level="):
-			var requested_level := int(argument.trim_prefix("--level="))
-			return requested_level - 1
+			var raw_value := argument.trim_prefix("--level=")
+			if not raw_value.is_valid_int():
+				return 0
+			var requested_level := int(raw_value)
+			var level_index := GreenSweeperLevels.level_index_from_number(requested_level)
+			return level_index if level_index >= 0 else 0
 	return 0

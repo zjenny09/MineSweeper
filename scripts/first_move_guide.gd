@@ -1,3 +1,4 @@
+@tool
 class_name FirstMoveGuide
 extends Control
 
@@ -7,12 +8,18 @@ signal next_requested
 const GREEN := Color("469d65")
 const YELLOW := Color("fadf3c")
 const INK := Color("1b2d22")
-const WHITE := Color("ffffff")
-const BUBBLE_SIZE := Vector2(350.0, 122.0)
 const PANEL_PADDING := 16.0
 const TARGET_GAP := 12.0
-const MASCOT_TEXTURE: Texture2D = preload("res://assets/ui/tutorial/guide_robot_avatar.png")
 
+@export var editor_preview := true
+
+@onready var bubble_root: Control = %GuideBubbleRoot
+@onready var mascot: TextureRect = %GuideMascot
+@onready var title_label: Label = %GuideTitle
+@onready var action_label: Label = %GuideAction
+@onready var hint_label: Label = %GuideHint
+@onready var next_button_artwork: TextureRect = %NextButtonArtwork
+@onready var exit_button_artwork: TextureRect = %ExitButtonArtwork
 @onready var next_button: Button = %TutorialNextButton
 @onready var exit_button: Button = %TutorialExitButton
 
@@ -20,41 +27,69 @@ var target_cell_index := -1
 var _target_cell: Control
 var _keyboard_mode := false
 var _animation_time := 0.0
-var _bubble_style: StyleBoxFlat
 var _title_text := ""
 var _action_text := ""
 var _hint_text := ""
-var _show_next_button := false
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	focus_mode = Control.FOCUS_NONE
-	visible = false
-	_bubble_style = StyleBoxFlat.new()
-	_bubble_style.bg_color = Color(WHITE, 0.97)
-	_bubble_style.border_color = Color(GREEN, 0.92)
-	_bubble_style.set_border_width_all(3)
-	_bubble_style.set_corner_radius_all(22)
-	_bubble_style.shadow_color = Color(INK, 0.15)
-	_bubble_style.shadow_size = 7
-	for button in [next_button, exit_button]:
-		button.mouse_filter = Control.MOUSE_FILTER_STOP
-		button.focus_mode = Control.FOCUS_NONE
-		button.add_theme_font_size_override("font_size", 12)
+	_apply_text_styles()
+	_apply_button_styles()
 	next_button.pressed.connect(_on_next_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	resized.connect(_on_resized)
+	if Engine.is_editor_hint():
+		_title_text = "小芽带你到安全起点啦！"
+		_action_text = "点这里开始第一次净化"
+		_hint_text = "这是安全建议，也可以选择别处"
+		visible = editor_preview
+		_refresh_copy()
+		call_deferred("_update_bubble_position")
+		return
+	visible = false
+
+
+func _apply_text_styles() -> void:
+	title_label.add_theme_color_override("font_color", GREEN)
+	title_label.add_theme_font_size_override("font_size", 17)
+	action_label.add_theme_color_override("font_color", INK)
+	action_label.add_theme_font_size_override("font_size", 14)
+	hint_label.add_theme_color_override("font_color", Color(INK, 0.68))
+	hint_label.add_theme_font_size_override("font_size", 11)
+
+
+func _apply_button_styles() -> void:
+	var empty_style := StyleBoxEmpty.new()
+	for button in [next_button, exit_button]:
+		button.mouse_filter = Control.MOUSE_FILTER_STOP
+		button.focus_mode = Control.FOCUS_NONE
+		button.add_theme_font_size_override("font_size", 14)
+		button.add_theme_stylebox_override("normal", empty_style)
+		button.add_theme_stylebox_override("hover", empty_style)
+		button.add_theme_stylebox_override("pressed", empty_style)
+		button.add_theme_stylebox_override("disabled", empty_style)
+		button.add_theme_stylebox_override("focus", empty_style)
+	next_button.add_theme_color_override("font_color", Color("315f36"))
+	next_button.add_theme_color_override("font_hover_color", Color("315f36"))
+	next_button.add_theme_color_override("font_pressed_color", Color("315f36"))
+	exit_button.add_theme_color_override("font_color", Color("5b4935"))
+	exit_button.add_theme_color_override("font_hover_color", Color("5b4935"))
+	exit_button.add_theme_color_override("font_pressed_color", Color("5b4935"))
 
 
 func _process(delta: float) -> void:
 	if not visible:
 		return
+	if Engine.is_editor_hint():
+		_update_bubble_position()
+		return
 	if not is_instance_valid(_target_cell):
 		hide_guide()
 		return
 	_animation_time += delta
-	_update_button_layout()
+	_update_bubble_position()
 	queue_redraw()
 
 
@@ -65,7 +100,7 @@ func show_for_cell(
 	title_text: String = "",
 	action_text: String = "",
 	hint_text: String = "",
-	show_next_button: bool = false
+	_show_next_button: bool = false
 ) -> void:
 	if not is_instance_valid(cell):
 		hide_guide()
@@ -76,10 +111,10 @@ func show_for_cell(
 	_title_text = title_text
 	_action_text = action_text
 	_hint_text = hint_text
-	_show_next_button = show_next_button
 	_animation_time = 0.0
 	visible = true
-	_update_button_layout()
+	_refresh_copy()
+	_update_bubble_position()
 	queue_redraw()
 
 
@@ -87,8 +122,6 @@ func hide_guide() -> void:
 	visible = false
 	_target_cell = null
 	target_cell_index = -1
-	next_button.visible = false
-	exit_button.visible = false
 	queue_redraw()
 
 
@@ -96,7 +129,7 @@ func set_keyboard_mode(enabled: bool) -> void:
 	if _keyboard_mode == enabled:
 		return
 	_keyboard_mode = enabled
-	queue_redraw()
+	_refresh_copy()
 
 
 func is_keyboard_mode() -> bool:
@@ -110,25 +143,30 @@ func get_action_text() -> String:
 
 
 func get_stable_bubble_rect() -> Rect2:
-	if not is_instance_valid(_target_cell) or size.x <= 1.0 or size.y <= 1.0:
+	if not is_instance_valid(bubble_root) or size.x <= 1.0 or size.y <= 1.0:
+		return Rect2()
+	var bubble_size := bubble_root.size
+	if Engine.is_editor_hint():
+		return Rect2((size - bubble_size) * 0.5, bubble_size)
+	if not is_instance_valid(_target_cell):
 		return Rect2()
 	var target_rect := _control_rect_in_guide(_target_cell)
 	var bubble_x := clampf(
-		target_rect.get_center().x - BUBBLE_SIZE.x * 0.5,
+		target_rect.get_center().x - bubble_size.x * 0.5,
 		PANEL_PADDING,
-		maxf(PANEL_PADDING, size.x - BUBBLE_SIZE.x - PANEL_PADDING)
+		maxf(PANEL_PADDING, size.x - bubble_size.x - PANEL_PADDING)
 	)
-	var above_y := target_rect.position.y - BUBBLE_SIZE.y - TARGET_GAP
+	var above_y := target_rect.position.y - bubble_size.y - TARGET_GAP
 	var below_y := target_rect.end.y + TARGET_GAP
 	var bubble_y := above_y
-	if above_y < PANEL_PADDING and below_y + BUBBLE_SIZE.y <= size.y - PANEL_PADDING:
+	if above_y < PANEL_PADDING and below_y + bubble_size.y <= size.y - PANEL_PADDING:
 		bubble_y = below_y
 	bubble_y = clampf(
 		bubble_y,
 		PANEL_PADDING,
-		maxf(PANEL_PADDING, size.y - BUBBLE_SIZE.y - PANEL_PADDING)
+		maxf(PANEL_PADDING, size.y - bubble_size.y - PANEL_PADDING)
 	)
-	return Rect2(Vector2(bubble_x, bubble_y), BUBBLE_SIZE)
+	return Rect2(Vector2(bubble_x, bubble_y), bubble_size)
 
 
 func get_target_center() -> Vector2:
@@ -137,18 +175,35 @@ func get_target_center() -> Vector2:
 	return _control_rect_in_guide(_target_cell).get_center()
 
 
-func _draw() -> void:
-	if not visible or not is_instance_valid(_target_cell):
-		return
+func _update_bubble_position() -> void:
 	var bubble_rect := get_stable_bubble_rect()
-	var target_rect := _control_rect_in_guide(_target_cell)
-	if bubble_rect.size == Vector2.ZERO or target_rect.size == Vector2.ZERO:
+	if bubble_rect.size == Vector2.ZERO:
 		return
+	bubble_root.position = bubble_rect.position
 
-	draw_style_box(_bubble_style, bubble_rect)
+
+func _refresh_copy() -> void:
+	var title := _title_text
+	if title.is_empty():
+		title = "小芽带你到安全起点啦！" if _keyboard_mode else "小芽找到安全起点啦！"
+	title_label.text = title
+	action_label.text = get_action_text()
+	hint_label.text = _hint_text if not _hint_text.is_empty() else "这是安全建议，也可以选择别处"
+	next_button.visible = true
+	next_button.disabled = false
+	exit_button.visible = true
+	next_button_artwork.visible = true
+	exit_button_artwork.visible = true
+
+
+func _draw() -> void:
+	if Engine.is_editor_hint() or not visible or not is_instance_valid(_target_cell):
+		return
+	var bubble_rect := Rect2(bubble_root.position, bubble_root.size)
+	var target_rect := _control_rect_in_guide(_target_cell)
+	if target_rect.size == Vector2.ZERO:
+		return
 	_draw_pointer(bubble_rect, target_rect)
-	_draw_mascot(bubble_rect)
-	_draw_copy(bubble_rect)
 
 
 func _draw_pointer(bubble_rect: Rect2, target_rect: Rect2) -> void:
@@ -173,54 +228,8 @@ func _draw_pointer(bubble_rect: Rect2, target_rect: Rect2) -> void:
 	draw_polyline(outline, GREEN, 2.0, true)
 
 
-func _draw_mascot(bubble_rect: Rect2) -> void:
-	var bob := sin(_animation_time * 2.4) * 2.5
-	var mascot_size := Vector2(68.0, 77.0)
-	var mascot_center := Vector2(
-		bubble_rect.position.x + 47.0,
-		bubble_rect.position.y + 53.0 + bob
-	)
-	draw_texture_rect(
-		MASCOT_TEXTURE,
-		Rect2(mascot_center - mascot_size * 0.5, mascot_size),
-		false
-	)
-
-
-func _draw_copy(bubble_rect: Rect2) -> void:
-	var font := get_theme_default_font()
-	var text_x := bubble_rect.position.x + 82.0
-	var title_y := bubble_rect.position.y + 26.0
-	var action_y := bubble_rect.position.y + 49.0
-	var hint_y := bubble_rect.position.y + 70.0
-	var title := _title_text
-	if title.is_empty():
-		title = "清扫者带你到安全起点啦！" if _keyboard_mode else "清扫者找到安全起点啦！"
-	var hint := _hint_text if not _hint_text.is_empty() else "这是安全建议，也可以选择别处"
-	draw_string(font, Vector2(text_x, title_y), title, HORIZONTAL_ALIGNMENT_LEFT, 250.0, 16, GREEN)
-	draw_string(font, Vector2(text_x, action_y), get_action_text(), HORIZONTAL_ALIGNMENT_LEFT, 250.0, 14, INK)
-	draw_string(font, Vector2(text_x, hint_y), hint, HORIZONTAL_ALIGNMENT_LEFT, 250.0, 11, Color(INK, 0.68))
-
-
-func _update_button_layout() -> void:
-	if not visible or not is_instance_valid(_target_cell):
-		next_button.visible = false
-		exit_button.visible = false
-		return
-	var bubble_rect := get_stable_bubble_rect()
-	if bubble_rect.size == Vector2.ZERO:
-		return
-	var button_y := bubble_rect.end.y - 34.0
-	exit_button.position = Vector2(bubble_rect.end.x - 91.0, button_y)
-	exit_button.size = Vector2(76.0, 25.0)
-	exit_button.visible = true
-	next_button.position = Vector2(bubble_rect.end.x - 169.0, button_y)
-	next_button.size = Vector2(70.0, 25.0)
-	next_button.visible = _show_next_button
-
-
 func _on_resized() -> void:
-	_update_button_layout()
+	_update_bubble_position()
 	queue_redraw()
 
 

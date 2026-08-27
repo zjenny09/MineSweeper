@@ -8,10 +8,22 @@ signal flag_completed(cell_index: int, is_flagged: bool)
 signal chord_completed(cell_index: int, newly_revealed_count: int)
 
 const CELL_SCENE: PackedScene = preload("res://scenes/cell.tscn")
-const TRIANGLE_BOARD_VIEW_SCRIPT: Script = preload("res://scripts/triangle_board_view.gd")
-const SQUARE_TOPOLOGY := "square"
-const TRIANGLE_TOPOLOGY := "triangle"
-const TRIANGLE_BOARD_SIZE := Vector2(620.0, 460.0)
+const LEVEL_ONE_BOARD_SIZE := Vector2(620.0, 587.0)
+const LEVEL_ONE_CELL_SLOT_FILL := 0.98
+const LEVEL_ONE_CELL_ROTATIONS := [
+	-0.9, 0.35, -0.45, 0.70, -0.25,
+	0.45, -0.55, 0.20, -0.75, 0.55,
+	-0.30, 0.65, -0.15, 0.35, -0.60,
+	0.70, -0.20, 0.50, -0.40, 0.20,
+	-0.55, 0.30, -0.70, 0.55, -0.15,
+]
+const LEVEL_ONE_CELL_OFFSETS := [
+	Vector2(-0.010, -0.006), Vector2(0.004, 0.006), Vector2(-0.004, -0.002), Vector2(0.007, 0.004), Vector2(-0.005, -0.006),
+	Vector2(0.006, 0.002), Vector2(-0.007, 0.005), Vector2(0.003, -0.004), Vector2(-0.006, 0.003), Vector2(0.006, -0.002),
+	Vector2(-0.003, 0.005), Vector2(0.006, -0.003), Vector2.ZERO, Vector2(-0.004, 0.004), Vector2(0.005, -0.005),
+	Vector2(0.005, -0.003), Vector2(-0.006, 0.002), Vector2(0.004, 0.005), Vector2(-0.005, -0.004), Vector2(0.003, 0.003),
+	Vector2(-0.006, 0.004), Vector2(0.004, -0.005), Vector2(-0.003, 0.003), Vector2(0.006, -0.002), Vector2(-0.004, -0.004),
+]
 const POLLUTION_STEP_DELAY := 0.22
 const POLLUTION_CELL_DURATION := 0.95
 
@@ -38,7 +50,6 @@ var cell_count := 0
 var safe_cell_count := 0
 var first_move_guide_enabled := false
 var guide_cell_index := -1
-var topology := SQUARE_TOPOLOGY
 
 var game_state: int = GameState.READY
 var used_flags := 0
@@ -58,12 +69,12 @@ var adjacent_counts: Array[int] = []
 var cell_nodes: Array[MineCell] = []
 
 var _random := RandomNumberGenerator.new()
-var _square_grid: GridContainer
-var _triangle_view
+var _handmade_surface: Control
 
 
 func _ready() -> void:
 	_random.randomize()
+	resized.connect(_layout_handmade_cells)
 	set_process(false)
 
 
@@ -185,7 +196,6 @@ func load_level(level: Dictionary) -> void:
 	core_count = level.core_count
 	safe_cell_count = cell_count - core_count
 	first_move_guide_enabled = level.get("first_move_guide", false)
-	topology = level.get("topology", SQUARE_TOPOLOGY)
 
 	_clear_cells()
 	_create_cells()
@@ -231,10 +241,8 @@ func reveal_cell(cell_index: int) -> void:
 	if mines[cell_index]:
 		revealed[cell_index] = true
 		game_state = GameState.LOST
-		if level_number == 1:
+		if level_number >= 1 and level_number <= 5:
 			_start_pollution_animation(cell_index)
-			for cell in cell_nodes:
-				cell.begin_loss_wilt_if_visible()
 		_refresh_all_cells()
 		state_changed.emit(game_state)
 		reveal_completed.emit(cell_index, 0)
@@ -368,12 +376,6 @@ func _refresh_keyboard_cursor() -> void:
 	var selected_index := keyboard_cell_index if operation_mode == OperationMode.KEYBOARD else -1
 	for cell_index in cell_nodes.size():
 		cell_nodes[cell_index].set_keyboard_selected(cell_index == selected_index)
-	if is_instance_valid(_triangle_view):
-		_triangle_view.set_keyboard_cursor(selected_index)
-
-
-func get_triangle_view():
-	return _triangle_view
 
 
 func get_neighbor_indices(cell_index: int) -> Array[int]:
@@ -390,61 +392,134 @@ func clear_guide_cell() -> void:
 
 
 func _clear_cells() -> void:
+	for cell in cell_nodes:
+		if is_instance_valid(cell):
+			var parent := cell.get_parent()
+			if parent != null:
+				parent.remove_child(cell)
+			cell.free()
 	cell_nodes.clear()
-	if is_instance_valid(_square_grid):
-		remove_child(_square_grid)
-		_square_grid.free()
-	_square_grid = null
-	if is_instance_valid(_triangle_view):
-		remove_child(_triangle_view)
-		_triangle_view.free()
-	_triangle_view = null
+	var handmade_surface := get_node_or_null("CellSurfaceHost") as Control
+	if is_instance_valid(handmade_surface):
+		handmade_surface.visible = false
+	_handmade_surface = null
 
 
 func _create_cells() -> void:
-	if topology == TRIANGLE_TOPOLOGY:
-		_create_triangle_view()
-	else:
-		_create_square_cells()
+	_create_square_cells()
 
 
 func _create_square_cells() -> void:
-	var cell_size := clampf(480.0 / max(row_count, column_count), 34.0, 82.0)
-	var separation := 3.0
-	var grid_size := Vector2(
-		float(column_count) * cell_size + float(column_count - 1) * separation,
-		float(row_count) * cell_size + float(row_count - 1) * separation
-	)
-	custom_minimum_size = grid_size
+	_create_handmade_cells()
 
-	_square_grid = GridContainer.new()
-	_square_grid.columns = column_count
-	_square_grid.custom_minimum_size = grid_size
-	_square_grid.add_theme_constant_override("h_separation", int(separation))
-	_square_grid.add_theme_constant_override("v_separation", int(separation))
-	add_child(_square_grid)
+
+func _create_handmade_cells() -> void:
+	_validate_handmade_geometry()
+	custom_minimum_size = LEVEL_ONE_BOARD_SIZE
+
+	_handmade_surface = get_node_or_null("CellSurfaceHost") as Control
+	assert(
+		is_instance_valid(_handmade_surface),
+		"The handmade board requires an editable CellSurfaceHost child."
+	)
+	_handmade_surface.visible = true
 
 	for cell_index in cell_count:
-		var cell := CELL_SCENE.instantiate() as MineCell
-		cell.custom_minimum_size = Vector2(cell_size, cell_size)
-		cell.focus_mode = Control.FOCUS_NONE
-		cell.setup(cell_index, level_number)
-		cell.reveal_requested.connect(reveal_cell)
-		cell.flag_requested.connect(toggle_flag)
-		cell.chord_requested.connect(chord_cell)
-		_square_grid.add_child(cell)
-		cell_nodes.append(cell)
+		var cell := _make_square_cell(cell_index)
+		cell.custom_minimum_size = Vector2.ZERO
+		_handmade_surface.add_child(cell)
+
+	_layout_handmade_cells()
+	call_deferred("_layout_handmade_cells")
 
 
-func _create_triangle_view() -> void:
-	custom_minimum_size = TRIANGLE_BOARD_SIZE
-	_triangle_view = TRIANGLE_BOARD_VIEW_SCRIPT.new()
-	add_child(_triangle_view)
-	_triangle_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_triangle_view.setup(row_count, column_count)
-	_triangle_view.reveal_requested.connect(reveal_cell)
-	_triangle_view.flag_requested.connect(toggle_flag)
-	_triangle_view.chord_requested.connect(chord_cell)
+func _make_square_cell(cell_index: int) -> MineCell:
+	var cell := CELL_SCENE.instantiate() as MineCell
+	cell.focus_mode = Control.FOCUS_NONE
+	cell.setup(cell_index, level_number)
+	cell.reveal_requested.connect(reveal_cell)
+	cell.flag_requested.connect(toggle_flag)
+	cell.chord_requested.connect(chord_cell)
+	cell_nodes.append(cell)
+	return cell
+
+
+func _validate_handmade_geometry() -> void:
+	assert(row_count > 0 and column_count > 0, "The handmade board requires a non-empty grid.")
+	if level_number == 1:
+		assert(
+			LEVEL_ONE_CELL_ROTATIONS.size() == cell_count
+			and LEVEL_ONE_CELL_OFFSETS.size() == cell_count,
+			"The 5x5 opening board needs one placement variation per cell."
+		)
+	var surface := get_node_or_null("CellSurfaceHost") as Control
+	assert(is_instance_valid(surface), "The handmade board requires CellSurfaceHost.")
+	assert(
+		Rect2(Vector2.ZERO, LEVEL_ONE_BOARD_SIZE).encloses(
+			Rect2(surface.position, surface.size)
+		),
+		"CellSurfaceHost must stay inside the board tray."
+	)
+
+
+func _layout_handmade_cells() -> void:
+	if not is_instance_valid(_handmade_surface):
+		return
+	if cell_nodes.size() != row_count * column_count or size.x <= 0.0 or size.y <= 0.0:
+		return
+
+	var play_rect := Rect2(Vector2.ZERO, _handmade_surface.size)
+	var slot_size := play_rect.size / Vector2(column_count, row_count)
+	for cell_index in cell_nodes.size():
+		var row := int(cell_index / column_count)
+		var column := cell_index % column_count
+		var slot_rect := Rect2(
+			play_rect.position + Vector2(column, row) * slot_size,
+			slot_size
+		)
+		var side := minf(slot_rect.size.x, slot_rect.size.y) * LEVEL_ONE_CELL_SLOT_FILL
+		var cell_size := Vector2(side, side)
+		var placement_offset := Vector2.ZERO
+		var rotation_degrees := 0.0
+		if level_number == 1:
+			placement_offset = LEVEL_ONE_CELL_OFFSETS[cell_index] * slot_size
+			rotation_degrees = LEVEL_ONE_CELL_ROTATIONS[cell_index]
+		var cell := cell_nodes[cell_index]
+		cell.position = slot_rect.position + (slot_rect.size - cell_size) * 0.5 + placement_offset
+		cell.size = cell_size
+		cell.pivot_offset = cell_size * 0.5
+		cell.rotation = deg_to_rad(rotation_degrees)
+		cell.add_theme_font_size_override("font_size", clampi(roundi(side * 0.42), 10, 30))
+		cell.add_theme_constant_override("outline_size", clampi(roundi(side * 0.04), 1, 3))
+	queue_redraw()
+
+
+func _handmade_play_rect() -> Rect2:
+	if not is_instance_valid(_handmade_surface):
+		return Rect2()
+	return Rect2(_handmade_surface.position, _handmade_surface.size)
+
+
+func _draw() -> void:
+	if level_number < 1 or level_number > 5 or row_count <= 0 or column_count <= 0:
+		return
+	var play_rect := _handmade_play_rect()
+	var slot_size := play_rect.size / Vector2(column_count, row_count)
+	var crease_light := Color(1.0, 0.98, 0.88, 0.42)
+	var pencil := Color(0.30, 0.27, 0.20, 0.24)
+	for column in range(1, column_count):
+		var x := play_rect.position.x + slot_size.x * column
+		var line_start := Vector2(x, play_rect.position.y + 3.0)
+		var line_end := Vector2(x, play_rect.end.y - 3.0)
+		draw_line(line_start - Vector2(0.8, 0.0), line_end - Vector2(0.8, 0.0), crease_light, 2.2, true)
+		draw_dashed_line(line_start, line_end, pencil, 1.1, 5.5, true, true)
+	for row in range(1, row_count):
+		var y := play_rect.position.y + slot_size.y * row
+		var line_start := Vector2(play_rect.position.x + 3.0, y)
+		var line_end := Vector2(play_rect.end.x - 3.0, y)
+		draw_line(line_start - Vector2(0.0, 0.8), line_end - Vector2(0.0, 0.8), crease_light, 2.2, true)
+		draw_dashed_line(line_start, line_end, pencil, 1.1, 5.5, true, true)
+	draw_rect(play_rect.grow(-1.5), Color(0.28, 0.25, 0.19, 0.18), false, 1.0, true)
 
 
 func _place_random_cores() -> void:
@@ -519,8 +594,6 @@ func _reveal_area(start_index: int) -> void:
 
 
 func _get_neighbors(cell_index: int) -> Array[int]:
-	if topology == TRIANGLE_TOPOLOGY:
-		return _get_triangle_neighbors(cell_index)
 	return _get_square_neighbors(cell_index)
 
 
@@ -544,24 +617,6 @@ func _get_square_neighbors(cell_index: int) -> Array[int]:
 	return neighbors
 
 
-func _get_triangle_neighbors(cell_index: int) -> Array[int]:
-	var neighbors: Array[int] = []
-	var row := int(cell_index / column_count)
-	var column := cell_index % column_count
-
-	# A triangle counts the three cells sharing an edge and the nearest
-	# cell across each vertex: four horizontal positions and two vertical.
-	for column_offset in [-2, -1, 1, 2]:
-		var neighbor_column: int = column + int(column_offset)
-		if neighbor_column >= 0 and neighbor_column < column_count:
-			neighbors.append(row * column_count + neighbor_column)
-	for row_offset in [-1, 1]:
-		var neighbor_row: int = row + int(row_offset)
-		if neighbor_row >= 0 and neighbor_row < row_count:
-			neighbors.append(neighbor_row * column_count + column)
-	return neighbors
-
-
 func _refresh_all_cells() -> void:
 	for cell_index in cell_count:
 		_refresh_cell(cell_index)
@@ -573,18 +628,7 @@ func _refresh_cell(cell_index: int) -> void:
 	var core_visible := game_state == GameState.LOST and mines[cell_index]
 	var wrong_flag := game_state == GameState.LOST and flagged[cell_index] and not mines[cell_index]
 	var solved_core := game_state == GameState.WON and mines[cell_index]
-	if is_instance_valid(_triangle_view):
-		_triangle_view.render_state(
-			cell_index,
-			revealed[cell_index],
-			flagged[cell_index],
-			core_visible,
-			adjacent_counts[cell_index],
-			game_finished,
-			wrong_flag,
-			solved_core
-		)
-	elif not cell_nodes.is_empty():
+	if not cell_nodes.is_empty():
 		cell_nodes[cell_index].render_state(
 			revealed[cell_index],
 			flagged[cell_index],

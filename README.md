@@ -2,7 +2,15 @@
 
 使用 Godot 4.7.2 Standard 和 GDScript 制作的生态主题关卡制扫雷游戏。
 
-## 当前版本：v0.3.3
+## 当前版本：v0.3.4
+
+### v0.3.4 更新
+
+- 第一关引导改为仅首次游玩显示
+- 第1–5关统一手绘桌面与棋盘表现，并加入各关独立装饰、贴纸和失败状态
+- 新增地图式“陆地探险”关卡选择页面与关卡状态信息
+- 移除原第6关和三角棋盘
+- 优化运行素材尺寸与纹理缓存，减少界面切换卡顿
 
 ## 正式游戏外壳
 
@@ -13,7 +21,7 @@
 - 游戏内支持计时、暂停、继续、重开和返回选关
 - 设置包含主音量、窗口模式、最大化窗口和无边框全屏
 - 进度保存在 `user://save_v1.json`；“继续游戏”会重新生成上次关卡，不恢复中途棋盘
-- `--level=1` 至 `--level=6` 可绕过菜单直接测试，且不写入关卡进度
+- `--level=1` 至 `--level=5` 可绕过菜单直接测试，且不写入关卡进度
 
 ## 横屏桌面原型
 
@@ -21,14 +29,14 @@
 - 首次启动默认使用最大化窗口，在高分辨率显示器上自动利用可用空间
 - 主菜单采用左侧操作、右侧程序化生态展示
 - 游戏页面采用左侧环境目标、中间棋盘、右侧HUD三栏布局
-- 方格棋盘扩大到约480像素目标范围，三角棋盘扩大到 `620 × 460`
+- 方格棋盘根据关卡尺寸自动缩放到桌面纸托范围
 - 当前横屏版本面向桌面展示，暂未制作复杂窄窗口响应式重排
 
 ### 第一关“萌芽”
 
 - `5 × 5` 棋盘、每局随机生成5个污染核心
 - 开局时立即生成完整随机棋盘，但所有格子保持关闭
-- 第一关会从真实安全格中选择一个绿色箭头建议点，优先选择0格
+- 仅首次游玩会显示安全格引导；后台已有游玩记录时不再显示
 - 跟随箭头必然安全；箭头只是建议，玩家可以点击任意格
 - 点击其他格不受保护，可能直接触碰污染核心
 - 第一次点击任意格后，箭头引导立即消失
@@ -51,21 +59,15 @@
 - 第三关“湿地”：`8 × 8 / 14个污染核心`
 - 第四关“草原”：`10 × 10 / 23个污染核心`
 - 第五关“森林”：`12 × 12 / 35个污染核心`
-- 三关均无安全箭头、无首点保护
+- 第2–5关复用第一关的桌面、纸托、装饰、格子美术和反馈动画
+- 每关只按自身尺寸重绘棋盘格，并保留各自的污染核心数量
+- 四关均无安全箭头、无首点保护
 - 继续使用方格8邻接、标记和数字双击展开
 
-### 第六关“山脉”
-
-- `24列 × 9排`，共216个真正的上下交替三角格
-- 每局随机生成80个污染核心，无安全箭头、无首点保护
-- 每个三角格只计算共享整条边的最多3个邻居
-- 棋盘保持完整宽幅，以多个程序化山峰表现山脉环境
-- 继续支持经典0区域展开、右键标记和严格数字双击展开
-
-## 01—06 陆地主题
+## 01—05 陆地主题
 
 ```text
-萌芽 → 灌木 → 湿地 → 草原 → 森林 → 山脉
+萌芽 → 灌木 → 湿地 → 草原 → 森林
 ```
 
 ## 数字双击展开
@@ -106,7 +108,6 @@ build/     导出产物（不提交到 Git）
 
 ```text
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/board_smoke_test.gd
-D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/triangle_board_test.gd
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/save_store_test.gd
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/shell_flow_test.gd
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/desktop_layout_test.gd

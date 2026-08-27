@@ -122,6 +122,14 @@ func get_last_played_level() -> int:
 	return int(_data["last_played_level"])
 
 
+func has_seen_first_move_guide() -> bool:
+	return bool(_data["first_move_guide_seen"])
+
+
+func mark_first_move_guide_seen() -> void:
+	_data["first_move_guide_seen"] = true
+
+
 func set_master_volume(value: float) -> void:
 	if is_finite(value):
 		_data["settings"]["master_volume"] = clampf(value, 0.0, 1.0)
@@ -184,6 +192,7 @@ func _make_default_data() -> Dictionary:
 	return {
 		"schema_version": SCHEMA_VERSION,
 		"last_played_level": 0,
+		"first_move_guide_seen": false,
 		"levels": levels,
 		"settings": {
 			"master_volume": 1.0,
@@ -200,6 +209,14 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 	var last_played := _normalized_int(source.get("last_played_level"), 0)
 	if last_played == 0 or _is_valid_level(last_played):
 		normalized["last_played_level"] = last_played
+
+	var guide_seen = source.get("first_move_guide_seen")
+	if guide_seen is bool:
+		normalized["first_move_guide_seen"] = guide_seen
+	else:
+		# Older saves predate this field. Any recorded play means the guide
+		# must stay dismissed after upgrading.
+		normalized["first_move_guide_seen"] = last_played != 0
 
 	var source_levels = source.get("levels")
 	if source_levels is Dictionary:
@@ -244,7 +261,10 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		return false
 
 	var last_played := _normalized_int(serialized.get("last_played_level"), -1)
-	if last_played != 0 and not _is_valid_level(last_played):
+	if last_played != 0 and not _is_valid_level(last_played) and last_played != 6:
+		return false
+	if serialized.has("first_move_guide_seen") \
+			and not serialized.get("first_move_guide_seen") is bool:
 		return false
 
 	var levels = serialized.get("levels")

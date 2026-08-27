@@ -56,20 +56,21 @@ func _test_initial_menu(shell) -> void:
 
 func _test_level_argument_parser(shell) -> void:
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=1"])) == 1, "CLI accepts level 1.")
-	_expect(shell.parse_level_argument(PackedStringArray(["--level=6"])) == 6, "CLI accepts level 6.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=5"])) == 5, "CLI accepts level 5.")
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=0"])) == -1, "CLI rejects level 0.")
-	_expect(shell.parse_level_argument(PackedStringArray(["--level=7"])) == -1, "CLI rejects unavailable levels.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=6"])) == -1, "CLI rejects unavailable levels.")
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=forest"])) == -1, "CLI rejects non-numeric levels.")
 	_expect(shell.parse_level_argument(PackedStringArray()) == 0, "No CLI level keeps the menu flow.")
 
 
 func _test_locked_level_cards(shell) -> void:
 	shell.show_level_select()
-	var cards: Array = shell.get_node("%LevelGrid").get_children()
-	_expect(cards.size() == 6, "Level select builds one card for each land level.")
-	_expect(not cards[0].disabled, "Level 1 is unlocked for a new save.")
-	for index in range(1, cards.size()):
-		_expect(cards[index].disabled, "Later levels begin locked.")
+	var markers: Array = shell.get_node("%LevelGrid").get_children()
+	_expect(markers.size() == 5, "Level select builds one marker for each land level.")
+	_expect(not markers[0].get_node("LevelButton01").disabled, "Level 1 is unlocked for a new save.")
+	for index in range(1, markers.size()):
+		var button := markers[index].get_node("LevelButton%02d" % (index + 1)) as Button
+		_expect(button.disabled, "Later levels begin locked.")
 
 
 func _test_start_pause_and_restart(shell) -> void:
@@ -78,6 +79,7 @@ func _test_start_pause_and_restart(shell) -> void:
 	_expect(game != null and shell.get_node("%GameHost").visible, "Start creates the game page.")
 	_expect(game.board.level_number == 1, "Start begins at level 1.")
 	_expect(shell.save_store.get_last_played_level() == 1, "Starting records the continue target.")
+	_expect(shell.save_store.has_seen_first_move_guide(), "Starting the first game persists the guide state.")
 
 	var number_index := -1
 	for cell_index in game.board.cell_count:
@@ -124,10 +126,13 @@ func _test_completion_and_unlock(shell) -> void:
 	game.set_session_paused(false)
 
 	shell.show_level_select()
-	var cards: Array = shell.get_node("%LevelGrid").get_children()
-	_expect(not cards[1].disabled, "The newly unlocked level is selectable immediately.")
-	_expect(cards[2].disabled, "Level 3 remains locked until level 2 is complete.")
-	_expect(cards[0].text.contains("已净化"), "Completed cards display their status.")
+	var markers: Array = shell.get_node("%LevelGrid").get_children()
+	var level_one_button := markers[0].get_node("LevelButton01") as Button
+	var level_two_button := markers[1].get_node("LevelButton02") as Button
+	var level_three_button := markers[2].get_node("LevelButton03") as Button
+	_expect(not level_two_button.disabled, "The newly unlocked level is selectable immediately.")
+	_expect(level_three_button.disabled, "Level 3 remains locked until level 2 is complete.")
+	_expect(level_one_button.modulate != Color.WHITE, "Completed markers display their completed state color.")
 
 
 func _test_continue(shell) -> void:
@@ -137,20 +142,21 @@ func _test_continue(shell) -> void:
 	continue_button.emit_signal("pressed")
 	_expect(shell.get_active_game() != null and shell.get_active_game().board.level_number == 1, "Continue regenerates the last played level.")
 	_expect(shell.get_active_game().board.revealed.count(true) == 0, "Continue does not restore an old board snapshot.")
+	_expect(not shell.get_active_game().get_node("%FirstMoveGuide").visible, "Returning players do not see the first-move guide again.")
 
 
 func _test_cli_read_only(shell) -> void:
 	var last_level_before: int = shell.save_store.get_last_played_level()
-	shell.start_cli_level(6)
+	shell.start_cli_level(5)
 	var game = shell.get_active_game()
-	_expect(shell.is_cli_read_only() and game.board.level_number == 6, "CLI mode can bypass locks and enter level 6.")
+	_expect(shell.is_cli_read_only() and game.board.level_number == 5, "CLI mode can bypass locks and enter level 5.")
 	for cell_index in game.board.cell_count:
 		if game.board.game_state == MinesweeperBoard.GameState.WON:
 			break
 		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
 			game.board.reveal_cell(cell_index)
 	_expect(game.board.game_state == MinesweeperBoard.GameState.WON, "A CLI session remains fully playable.")
-	_expect(not shell.save_store.is_level_completed(6), "CLI completion does not write progress.")
+	_expect(not shell.save_store.is_level_completed(5), "CLI completion does not write progress.")
 	_expect(shell.save_store.get_last_played_level() == last_level_before, "CLI sessions do not replace Continue progress.")
 
 
@@ -158,8 +164,10 @@ func _test_return_to_level_select(shell) -> void:
 	shell.start_normal_level(1)
 	var game = shell.get_active_game()
 	game.level_select_requested.emit()
-	_expect(shell.get_active_game() == null, "Returning to level select releases the old game instance.")
-	_expect(shell.get_node("%LevelSelect").visible, "The level-select page appears after leaving a game.")
+	_expect(shell.get_active_game() == game, "Opening the level map preserves the current game instance.")
+	_expect(shell.get_node("%LevelSelect").visible, "The level-select page appears over a retained game.")
+	shell.call("_on_level_back_pressed")
+	_expect(shell.get_node("%GameHost").visible and shell.get_active_game() == game, "Return to level restores the retained game.")
 
 
 func _test_pause_settings_round_trip(shell) -> void:
@@ -191,10 +199,10 @@ func _test_operation_mode_setting(shell) -> void:
 	var reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
 	reloaded.load_data()
 	_expect(reloaded.get_operation_mode() == 1, "Keyboard operation mode persists on disk.")
-	shell.start_cli_level(6)
+	shell.start_cli_level(5)
 	var cli_game = shell.get_active_game()
 	_expect(cli_game.board.get_operation_mode() == MinesweeperBoard.OperationMode.KEYBOARD, "CLI games receive the saved operation mode.")
-	_expect(cli_game.board.get_triangle_view().get_keyboard_cursor() >= 0, "The triangle board shows a keyboard selection cursor.")
+	_expect(cli_game.board.get_keyboard_cell_index() >= 0, "The square board shows a keyboard selection cursor.")
 
 
 func _test_return_to_main_menu(shell) -> void:

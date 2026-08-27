@@ -367,7 +367,9 @@ func _test_keyboard_controls(main_scene: Node, board: MinesweeperBoard) -> void:
 func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 	main_scene.call("_load_level", 0)
 	var eco_showcase = main_scene.get_node("%EcoShowcase")
-	_expect(eco_showcase.get("gameplay_full_bleed") and eco_showcase.environment_number == 1, "Level 1 uses one full-bleed ecology background.")
+	var level_background = main_scene.get_node("%LevelOneBackground")
+	var board_tray = main_scene.get_node("%BoardTray")
+	_expect(level_background.visible and board_tray.visible and not eco_showcase.visible, "Level 1 uses the handmade desktop stage.")
 	board._random.seed = 8400
 	board.new_game()
 	var marked_index := 0
@@ -437,15 +439,16 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 	for level_index in range(1, 5):
 		main_scene.call("_load_level", level_index)
 		var marker_cell := board.cell_nodes[0]
-		_expect(not marker_cell.uses_level_one_art(), "Levels 2–5 keep Level-1-only ecology effects disabled.")
+		_expect(marker_cell.uses_level_one_art(), "Levels 2–5 reuse the Level-1 cell artwork.")
+		_expect(level_background.visible and board_tray.visible and not eco_showcase.visible, "Levels 2–5 reuse the Level-1 desktop stage.")
 		board.toggle_flag(0)
 		_expect(marker_cell.text.is_empty() and marker_cell.procedural_visual == MineCell.ProceduralVisual.BIOSENSOR, "Every square level uses the shared sprout marker instead of an exclamation mark.")
 		board.new_game()
 		core_index = board.mines.find(true)
 		board.reveal_cell(core_index)
 		_expect(board.cell_nodes[core_index].text.is_empty() and board.cell_nodes[core_index].procedural_visual == MineCell.ProceduralVisual.SLUDGE_CORE, "Every square level uses the shared slime instead of a pollution dot.")
-		_expect(board.modulate == Color.WHITE and is_zero_approx(board.pollution_tint_progress), "Later levels do not use the Level 1 pollution tint.")
-	_expect(eco_showcase.environment_number == 5, "The unified ecology background follows the active square level.")
+		board.advance_pollution_animation(10.0)
+		_expect(is_equal_approx(board.pollution_tint_progress, 1.0), "Every square level uses the shared pollution spread.")
 	board.set_operation_mode(MinesweeperBoard.OperationMode.MOUSE)
 	board._random.randomize()
 

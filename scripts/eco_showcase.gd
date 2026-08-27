@@ -26,9 +26,9 @@ enum Reaction {
 	SAD,
 }
 
-@export_range(0, 6) var environment_number := 0:
+@export_range(0, 5) var environment_number := 0:
 	set(value):
-		environment_number = clampi(value, 0, 6)
+		environment_number = clampi(value, 0, 5)
 		queue_redraw()
 
 @export var compact := false:
@@ -77,7 +77,7 @@ func get_reaction() -> int:
 
 
 func set_environment(level_number: int) -> void:
-	environment_number = clampi(level_number, 0, 6)
+	environment_number = clampi(level_number, 0, 5)
 
 
 func _draw() -> void:
@@ -142,9 +142,6 @@ func _draw_gameplay_edge_motifs() -> void:
 			_draw_tree(Vector2(size.x * 0.09, size.y * 0.28), unit * 0.95)
 			_draw_tree(Vector2(size.x * 0.93, size.y * 0.69), unit * 0.72)
 			_draw_tree(Vector2(size.x * 0.05, size.y * 0.77), unit * 0.58)
-		6:
-			_draw_mountains(Vector2(size.x * 0.10, size.y * 0.30), unit * 1.05)
-			_draw_mountains(Vector2(size.x * 0.91, size.y * 0.70), unit * 0.78)
 
 
 func _draw_gameplay_sparkles() -> void:
@@ -470,8 +467,6 @@ func _draw_environment_motif_at(center: Vector2, unit: float) -> void:
 			_draw_grass(center, unit)
 		5:
 			_draw_tree(center, unit)
-		6:
-			_draw_mountains(center, unit)
 
 
 func _draw_sprout(center: Vector2, unit: float) -> void:
@@ -513,18 +508,3 @@ func _draw_tree(center: Vector2, unit: float) -> void:
 	draw_circle(center - Vector2(0.0, unit * 0.32), unit * 0.85, _reaction_color(GREEN))
 	draw_circle(center - Vector2(unit * 0.62, 0.0), unit * 0.60, _reaction_color(LIGHT_GREEN))
 	draw_circle(center + Vector2(unit * 0.62, 0.0), unit * 0.60, _reaction_color(GREEN))
-
-
-func _draw_mountains(center: Vector2, unit: float) -> void:
-	var back := PackedVector2Array([
-		center + Vector2(-unit * 2.0, unit),
-		center + Vector2(-unit * 0.65, -unit),
-		center + Vector2(unit * 0.35, unit),
-	])
-	var front := PackedVector2Array([
-		center + Vector2(-unit * 0.35, unit),
-		center + Vector2(unit * 0.70, -unit * 1.20),
-		center + Vector2(unit * 2.0, unit),
-	])
-	draw_colored_polygon(back, _reaction_color(LIGHT_GREEN))
-	draw_colored_polygon(front, _reaction_color(GREEN))

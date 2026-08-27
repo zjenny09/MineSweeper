@@ -26,27 +26,28 @@ const HEAD_SPROUT_HEIGHT := 76.0
 const PLANTED_SPROUT_HEIGHT := 90.0
 const SLIME_HEIGHT := 135.0
 
-const BACKGROUND_PATH := "res://assets/ui/welcome/layers/background_clean.png"
-const SUN_PATH := "res://assets/ui/welcome/layers/sun.png"
-const POLLEN_PATH := "res://assets/ui/welcome/layers/pollen.png"
-const WATER_GLINT_PATH := "res://assets/ui/welcome/layers/water_glint.png"
-const SPROUT_PATH := "res://assets/gameplay/markers/sprout_marker.png"
-const HEAD_SPROUT_PATH := "res://assets/ui/welcome/actors/head_sprout.png"
-const ROBOT_FRONT_PATH := "res://assets/ui/welcome/actors/robot_front_cardboard.png"
-const ROBOT_BACK_PATH := "res://assets/ui/welcome/actors/robot_back_cardboard.png"
-const ROBOT_RIGHT_PATH := "res://assets/ui/welcome/actors/robot_right_cardboard.png"
-const ROBOT_PLANT_PATH := "res://assets/ui/welcome/actors/robot_plant_body_cardboard.png"
-const ROBOT_FRONT_SMILE_PATH := "res://assets/ui/welcome/actors/robot_front_smile_cardboard.png"
-const ROBOT_CHASE_BODY_PATH := "res://assets/ui/welcome/actors/robot_chase_body_cardboard.png"
-const ROBOT_ARM_LEFT_PATH := "res://assets/ui/welcome/actors/robot_arm_left_cardboard.png"
-const ROBOT_ARM_RIGHT_PATH := "res://assets/ui/welcome/actors/robot_arm_right_cardboard.png"
-const ROBOT_SHOULDER_JOINT_LEFT_PATH := "res://assets/ui/welcome/actors/robot_shoulder_joint_left.png"
-const SLIME_FRONT_PATH := "res://assets/ui/welcome/actors/slime_front.png"
-const SLIME_BACK_PATH := "res://assets/ui/welcome/actors/slime_back.png"
-const SLIME_RIGHT_PATH := "res://assets/ui/welcome/actors/slime_right.png"
-const SLIME_SQUASHED_PATH := "res://assets/ui/welcome/actors/slime_squashed.png"
-const SLIME_CHASE_SHELL_PATH := "res://assets/ui/welcome/actors/slime_chase_shell.png"
-const SLIME_CHASE_CONTENTS_PATH := "res://assets/ui/welcome/actors/slime_chase_contents.png"
+const ART := preload("res://scripts/art_catalog.gd")
+const BACKGROUND_PATH := ART.WELCOME_LANDSCAPE_BASE
+const SUN_PATH := ART.WELCOME_SUN_GLOW
+const POLLEN_PATH := ART.WELCOME_POLLEN_PARTICLES
+const WATER_GLINT_PATH := ART.WELCOME_WATER_GLINT
+const SPROUT_PATH := ART.MARKER_FLAG_SPROUT_HEALTHY
+const HEAD_SPROUT_PATH := ART.WELCOME_ROBOT_HEAD_SPROUT
+const ROBOT_FRONT_PATH := ART.WELCOME_ROBOT_FRONT
+const ROBOT_BACK_PATH := ART.WELCOME_ROBOT_BACK
+const ROBOT_RIGHT_PATH := ART.WELCOME_ROBOT_RIGHT
+const ROBOT_PLANT_PATH := ART.WELCOME_ROBOT_PLANTING
+const ROBOT_FRONT_SMILE_PATH := ART.WELCOME_ROBOT_FRONT_SMILING
+const ROBOT_CHASE_BODY_PATH := ART.WELCOME_ROBOT_CHASING
+const ROBOT_ARM_LEFT_PATH := ART.WELCOME_ROBOT_ARM_LEFT
+const ROBOT_ARM_RIGHT_PATH := ART.WELCOME_ROBOT_ARM_RIGHT
+const ROBOT_SHOULDER_JOINT_LEFT_PATH := ART.WELCOME_ROBOT_SHOULDER_LEFT
+const SLIME_FRONT_PATH := ART.WELCOME_SLIME_FRONT
+const SLIME_BACK_PATH := ART.WELCOME_SLIME_BACK
+const SLIME_RIGHT_PATH := ART.WELCOME_SLIME_RIGHT
+const SLIME_SQUASHED_PATH := ART.WELCOME_SLIME_SQUASHED
+const SLIME_CHASE_SHELL_PATH := ART.WELCOME_SLIME_CHASE_SHELL
+const SLIME_CHASE_CONTENTS_PATH := ART.WELCOME_SLIME_CHASE_CONTENTS
 
 const STATE_STARTS := [
 	0.0,
@@ -308,8 +309,7 @@ func _load_textures() -> void:
 	_robot_chase_body = _load_runtime_texture(ROBOT_CHASE_BODY_PATH)
 	_robot_arm_left = _load_runtime_texture(ROBOT_ARM_LEFT_PATH)
 	_robot_arm_right = _load_runtime_texture(ROBOT_ARM_RIGHT_PATH)
-	var shoulder_joint_image := Image.load_from_file(ProjectSettings.globalize_path(ROBOT_SHOULDER_JOINT_LEFT_PATH))
-	_robot_shoulder_joint_left = ImageTexture.create_from_image(shoulder_joint_image) if not shoulder_joint_image.is_empty() else null
+	_robot_shoulder_joint_left = _load_runtime_texture(ROBOT_SHOULDER_JOINT_LEFT_PATH)
 	_slime_front = load(SLIME_FRONT_PATH) as Texture2D
 	_slime_back = load(SLIME_BACK_PATH) as Texture2D
 	_slime_right = load(SLIME_RIGHT_PATH) as Texture2D
@@ -319,11 +319,10 @@ func _load_textures() -> void:
 
 
 func _load_runtime_texture(path: String) -> Texture2D:
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-	if image.is_empty():
+	var texture := load(path) as Texture2D
+	if texture == null:
 		push_error("Welcome artwork could not be loaded: %s" % path)
-		return null
-	return ImageTexture.create_from_image(image)
+	return texture
 
 
 func _generate_motes() -> void:
