@@ -126,13 +126,14 @@ const LAND_GUARDIAN_RIGHT_WHITE_CRYING := \
 
 const LEVEL_SELECT_DESKTOP_BACKGROUND := \
 		"res://assets/art/level_select/desktop_background.png"
-const LEVEL_SELECT_LAND_MAP := "res://assets/art/level_select/land_map.png"
+const LEVEL_SELECT_LAND_MAP := \
+		"res://assets/art/level_select/land_map_tilted_shadow.png"
 const LEVEL_SELECT_BOTTOM_INFO_BAR := \
 		"res://assets/art/level_select/bottom_info_bar.png"
 const LEVEL_SELECT_MARKER_BUTTON := \
 		"res://assets/art/level_select/level_marker_button.png"
 const LEVEL_SELECT_SHORTCUT_BUTTON := \
-		"res://assets/art/level_select/shortcut_button.png"
+		"res://assets/art/level_select/shortcut_button_dark.png"
 
 const WELCOME_LANDSCAPE_BASE := "res://assets/art/welcome/background/landscape_base.png"
 const WELCOME_SUN_GLOW := "res://assets/art/welcome/effects/sun_glow.png"

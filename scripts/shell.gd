@@ -17,11 +17,11 @@ const LEVEL_SELECT_INFO_PATH := ART.LEVEL_SELECT_BOTTOM_INFO_BAR
 const LEVEL_SELECT_MARKER_PATH := ART.LEVEL_SELECT_MARKER_BUTTON
 const LEVEL_SELECT_SHORTCUT_PATH := ART.LEVEL_SELECT_SHORTCUT_BUTTON
 const LEVEL_MARKER_POSITIONS := [
-	Vector2(156, 330),
-	Vector2(330, 266),
-	Vector2(500, 316),
-	Vector2(672, 242),
-	Vector2(824, 252),
+	Vector2(111, 316),
+	Vector2(317, 234),
+	Vector2(478, 225),
+	Vector2(638, 178),
+	Vector2(814, 146),
 ]
 
 @export var save_path := "user://save_v1.json"
@@ -158,20 +158,21 @@ func _apply_level_select_art() -> void:
 	for button in [level_back_button, level_welcome_button]:
 		var style := StyleBoxTexture.new()
 		style.texture = shortcut_texture
-		style.content_margin_left = 16.0
-		style.content_margin_top = 8.0
-		style.content_margin_right = 16.0
-		style.content_margin_bottom = 8.0
+		style.content_margin_left = 8.0
+		style.content_margin_top = 4.0
+		style.content_margin_right = 8.0
+		style.content_margin_bottom = 4.0
 		button.add_theme_stylebox_override("normal", style)
 		button.add_theme_stylebox_override("hover", style.duplicate())
 		button.add_theme_stylebox_override("pressed", style.duplicate())
 		button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 		button.add_theme_color_override("font_color", Color("fff7df"))
+		button.add_theme_color_override("font_focus_color", Color("fff7df"))
 		button.add_theme_color_override("font_hover_color", Color.WHITE)
 		button.add_theme_color_override("font_pressed_color", Color("e8f2d8"))
 		button.add_theme_color_override("font_outline_color", Color(0.12, 0.08, 0.04, 0.65))
 		button.add_theme_constant_override("outline_size", 1)
-		button.add_theme_font_size_override("font_size", 14)
+		button.add_theme_font_size_override("font_size", 12)
 
 
 func _load_runtime_texture(path: String) -> Texture2D:
@@ -427,6 +428,7 @@ func _create_level_marker(level: Dictionary) -> void:
 	marker_root.position = LEVEL_MARKER_POSITIONS[level_number - 1] - Vector2(52.0, 52.0)
 	marker_root.size = Vector2(104.0, 104.0)
 	marker_root.pivot_offset = marker_root.size * 0.5
+	marker_root.rotation = deg_to_rad(4.5)
 	marker_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	level_grid.add_child(marker_root)
 
