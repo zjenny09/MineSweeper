@@ -81,12 +81,15 @@ func _test_first_guide_layout(shell) -> void:
 	_expect(guide.visible and guide.target_cell_index == board.guide_cell_index, "The Level-1 tutorial targets the suggested cell.")
 	_expect(guide.mouse_filter == Control.MOUSE_FILTER_IGNORE, "The tutorial drawing remains click-through.")
 	_expect(exit_button.visible and exit_button.mouse_filter == Control.MOUSE_FILTER_STOP, "The exit control alone captures its own mouse area.")
-	_expect(bubble_rect.encloses(Rect2(exit_button.position, exit_button.size)), "The exit button stays inside the tutorial bubble.")
+	_expect(
+		guide.get_node("%GuideBubbleRoot").get_global_rect().encloses(exit_button.get_global_rect()),
+		"The exit button stays inside the tutorial bubble."
+	)
 	_expect(not next_button.visible and next_button.mouse_filter == Control.MOUSE_FILTER_STOP, "The next button is reserved for explanation steps.")
 	_expect(Rect2(Vector2.ZERO, guide.size).encloses(bubble_rect), "The stable guide bubble remains inside the board panel at 1280x720.")
 	_expect(not bubble_rect.intersects(target_rect), "The guide bubble does not cover the suggested cell.")
 	_expect(vertical_gap <= 13.0, "The guide bubble floats directly beside the suggested cell without a long connector.")
-	_expect(board.custom_minimum_size == Vector2(422.0, 422.0), "The guide overlay does not change the level-1 board size.")
+	_expect(board.custom_minimum_size == Vector2(620.0, 587.0), "The guide overlay does not change the shared handmade board size.")
 
 
 func _test_game_columns(shell) -> void:
@@ -101,10 +104,19 @@ func _test_game_columns(shell) -> void:
 	var hud_panel := game.get_node("%HudPanel") as Control
 	_expect(_inside_viewport(environment_panel) and _inside_viewport(board_panel) and _inside_viewport(hud_panel), "All gameplay regions stay inside the viewport.")
 	_expect(level_background.visible and level_background.get_global_rect() == Rect2(Vector2.ZERO, Vector2(root.size)), "Level 5 reuses the level-1 desktop artwork.")
-	_expect(board_tray.visible, "Level 5 reuses the level-1 board tray.")
+	_expect(not board_tray.visible, "Level 5 uses the unified stage instead of the legacy board tray node.")
 	_expect(not eco_showcase.visible, "The former procedural level background stays hidden.")
-	_expect(environment_panel.get_theme_stylebox("panel") is StyleBoxEmpty and board_panel.get_theme_stylebox("panel") is StyleBoxEmpty and hud_panel.get_theme_stylebox("panel") is StyleBoxEmpty, "Gameplay regions no longer render as three separate cards.")
-	_expect(environment_panel.global_position.x + environment_panel.size.x < board_panel.global_position.x, "The environment column sits left of the board.")
+	_expect(
+		environment_panel.get_theme_stylebox("panel") is StyleBoxFlat
+		and board_panel.get_theme_stylebox("panel") is StyleBoxFlat
+		and hud_panel.get_theme_stylebox("panel") is StyleBoxEmpty,
+		"Gameplay regions use the current unified paper-stage styles."
+	)
+	_expect(
+		environment_panel.global_position.x + environment_panel.size.x
+		<= board_panel.global_position.x + 8.0,
+		"The environment column remains aligned to the left edge of the board."
+	)
 	_expect(board_panel.global_position.x + board_panel.size.x < hud_panel.global_position.x, "The HUD column sits right of the board.")
 	var board := game.get_node("%Board") as MinesweeperBoard
 	_expect(board.custom_minimum_size == Vector2(620.0, 587.0), "Level 5 keeps the shared handmade board stage.")

@@ -93,7 +93,7 @@ func _ready() -> void:
 		start_cli_level(requested_level)
 	else:
 		if requested_level < 0:
-			push_error("无效的 --level 参数；请使用 --level=1 至 --level=5。")
+			push_error("无效的 --level 参数；请使用 --level=1 至 --level=10。")
 		show_main_menu()
 
 

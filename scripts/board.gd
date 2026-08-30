@@ -10,6 +10,11 @@ signal chord_completed(cell_index: int, newly_revealed_count: int)
 const CELL_SCENE: PackedScene = preload("res://scenes/cell.tscn")
 const LEVEL_ONE_BOARD_SIZE := Vector2(620.0, 587.0)
 const LEVEL_ONE_CELL_SLOT_FILL := 0.98
+const LAND_BOARD_PAPER_MARGIN := 28.0
+const LAND_BOARD_PAPER_COLOR := Color(0.94, 0.91, 0.80, 1.0)
+const LAND_BOARD_PAPER_EDGE := Color(0.25, 0.43, 0.24, 0.38)
+const LAND_BOARD_CREASE_LIGHT := Color(1.0, 0.98, 0.90, 0.58)
+const LAND_BOARD_CREASE_GREEN := Color(0.18, 0.38, 0.19, 0.42)
 const LEVEL_ONE_CELL_ROTATIONS := [
 	-0.9, 0.35, -0.45, 0.70, -0.25,
 	0.45, -0.55, 0.20, -0.75, 0.55,
@@ -26,11 +31,21 @@ const LEVEL_ONE_CELL_OFFSETS := [
 ]
 const POLLUTION_STEP_DELAY := 0.22
 const POLLUTION_CELL_DURATION := 0.95
+const HEX_TOPOLOGY := &"hex_pointy_odd_r"
+const HEX_HORIZONTAL_FACTOR := 1.7320508
+const HEX_CELL_FILL := 0.94
 
 
 enum OperationMode {
 	MOUSE,
 	KEYBOARD,
+}
+
+
+enum OpeningAssist {
+	NONE,
+	SAFE_FIRST,
+	OPEN_REGION,
 }
 
 
@@ -48,12 +63,16 @@ var column_count := 0
 var core_count := 0
 var cell_count := 0
 var safe_cell_count := 0
+var topology: StringName = &"square"
 var first_move_guide_enabled := false
 var guide_cell_index := -1
 
 var game_state: int = GameState.READY
 var used_flags := 0
 var revealed_safe_count := 0
+var move_count := 0
+var reveal_action_count := 0
+var opening_assist_mode: int = OpeningAssist.NONE
 var interaction_enabled := true
 var operation_mode: int = OperationMode.MOUSE
 var keyboard_cell_index := -1
@@ -74,7 +93,7 @@ var _handmade_surface: Control
 
 func _ready() -> void:
 	_random.randomize()
-	resized.connect(_layout_handmade_cells)
+	resized.connect(_layout_cells)
 	set_process(false)
 
 
@@ -195,6 +214,7 @@ func load_level(level: Dictionary) -> void:
 	cell_count = row_count * column_count
 	core_count = level.core_count
 	safe_cell_count = cell_count - core_count
+	topology = StringName(level.get("topology", &"square"))
 	first_move_guide_enabled = level.get("first_move_guide", false)
 
 	_clear_cells()
@@ -207,6 +227,8 @@ func new_game() -> void:
 	game_state = GameState.READY
 	used_flags = 0
 	revealed_safe_count = 0
+	move_count = 0
+	reveal_action_count = 0
 	guide_cell_index = -1
 	for cell in cell_nodes:
 		cell.reset_transient_visuals()
@@ -224,6 +246,10 @@ func new_game() -> void:
 	flags_changed.emit(used_flags, core_count)
 
 
+func set_opening_assist_mode(mode: int) -> void:
+	opening_assist_mode = clampi(mode, OpeningAssist.NONE, OpeningAssist.OPEN_REGION)
+
+
 func reveal_cell(cell_index: int) -> void:
 	if not interaction_enabled or not _is_valid_index(cell_index):
 		return
@@ -233,7 +259,14 @@ func reveal_cell(cell_index: int) -> void:
 	if revealed[cell_index] or flagged[cell_index]:
 		return
 
+	move_count += 1
+	reveal_action_count += 1
 	if game_state == GameState.READY:
+		if topology == HEX_TOPOLOGY:
+			_prepare_hex_first_reveal(cell_index)
+		elif opening_assist_mode != OpeningAssist.NONE:
+			_apply_opening_assist(cell_index)
+		opening_assist_mode = OpeningAssist.NONE
 		guide_cell_index = -1
 		game_state = GameState.PLAYING
 		state_changed.emit(game_state)
@@ -275,6 +308,7 @@ func toggle_flag(cell_index: int) -> void:
 	else:
 		return
 
+	move_count += 1
 	_refresh_cell(cell_index)
 	flags_changed.emit(used_flags, core_count)
 	flag_completed.emit(cell_index, flagged[cell_index])
@@ -299,6 +333,7 @@ func chord_cell(cell_index: int) -> void:
 	if correctly_flagged_cores != adjacent_counts[cell_index]:
 		return
 
+	move_count += 1
 	var previous_revealed_count := revealed_safe_count
 	for neighbor in neighbors:
 		if not mines[neighbor] and not flagged[neighbor] and not revealed[neighbor]:
@@ -406,10 +441,6 @@ func _clear_cells() -> void:
 
 
 func _create_cells() -> void:
-	_create_square_cells()
-
-
-func _create_square_cells() -> void:
 	_create_handmade_cells()
 
 
@@ -425,18 +456,18 @@ func _create_handmade_cells() -> void:
 	_handmade_surface.visible = true
 
 	for cell_index in cell_count:
-		var cell := _make_square_cell(cell_index)
+		var cell := _make_cell(cell_index)
 		cell.custom_minimum_size = Vector2.ZERO
 		_handmade_surface.add_child(cell)
 
-	_layout_handmade_cells()
-	call_deferred("_layout_handmade_cells")
+	_layout_cells()
+	call_deferred("_layout_cells")
 
 
-func _make_square_cell(cell_index: int) -> MineCell:
+func _make_cell(cell_index: int) -> MineCell:
 	var cell := CELL_SCENE.instantiate() as MineCell
 	cell.focus_mode = Control.FOCUS_NONE
-	cell.setup(cell_index, level_number)
+	cell.setup(cell_index, level_number, topology)
 	cell.reveal_requested.connect(reveal_cell)
 	cell.flag_requested.connect(toggle_flag)
 	cell.chord_requested.connect(chord_cell)
@@ -460,6 +491,13 @@ func _validate_handmade_geometry() -> void:
 		),
 		"CellSurfaceHost must stay inside the board tray."
 	)
+
+
+func _layout_cells() -> void:
+	if topology == HEX_TOPOLOGY:
+		_layout_hex_cells()
+	else:
+		_layout_handmade_cells()
 
 
 func _layout_handmade_cells() -> void:
@@ -494,6 +532,48 @@ func _layout_handmade_cells() -> void:
 	queue_redraw()
 
 
+func _layout_hex_cells() -> void:
+	if not is_instance_valid(_handmade_surface):
+		return
+	if cell_nodes.size() != row_count * column_count:
+		return
+	var surface_size := _handmade_surface.size
+	if surface_size.x <= 0.0 or surface_size.y <= 0.0:
+		return
+
+	var width_factor := HEX_HORIZONTAL_FACTOR * (
+		float(column_count) + (0.5 if row_count > 1 else 0.0)
+	)
+	var height_factor := 2.0 + 1.5 * float(maxi(row_count - 1, 0))
+	var radius := minf(surface_size.x / width_factor, surface_size.y / height_factor)
+	var hex_size := Vector2(HEX_HORIZONTAL_FACTOR * radius, 2.0 * radius)
+	var used_size := Vector2(
+		width_factor * radius,
+		height_factor * radius
+	)
+	var origin := (surface_size - used_size) * 0.5
+
+	for cell_index in cell_nodes.size():
+		var row := int(cell_index / column_count)
+		var column := cell_index % column_count
+		var row_shift := hex_size.x * 0.5 if row % 2 == 1 else 0.0
+		var cell := cell_nodes[cell_index]
+		cell.position = origin + Vector2(
+			float(column) * hex_size.x + row_shift,
+			float(row) * radius * 1.5
+		)
+		cell.size = hex_size
+		cell.pivot_offset = hex_size * 0.5
+		cell.rotation = 0.0
+		cell.set_hex_fill_ratio(HEX_CELL_FILL)
+		cell.add_theme_font_size_override(
+			"font_size",
+			clampi(roundi(radius * 0.72), 11, 30)
+		)
+		cell.add_theme_constant_override("outline_size", 2)
+	queue_redraw()
+
+
 func _handmade_play_rect() -> Rect2:
 	if not is_instance_valid(_handmade_surface):
 		return Rect2()
@@ -504,22 +584,172 @@ func _draw() -> void:
 	if level_number < 1 or level_number > 5 or row_count <= 0 or column_count <= 0:
 		return
 	var play_rect := _handmade_play_rect()
+	var paper_rect := play_rect.grow(LAND_BOARD_PAPER_MARGIN)
+	draw_rect(paper_rect, LAND_BOARD_PAPER_COLOR, true)
+	draw_dashed_line(
+		paper_rect.position,
+		Vector2(paper_rect.end.x, paper_rect.position.y),
+		LAND_BOARD_PAPER_EDGE,
+		1.6,
+		7.0,
+		true,
+		true
+	)
+	draw_dashed_line(
+		Vector2(paper_rect.end.x, paper_rect.position.y),
+		paper_rect.end,
+		LAND_BOARD_PAPER_EDGE,
+		1.6,
+		7.0,
+		true,
+		true
+	)
+	draw_dashed_line(
+		paper_rect.end,
+		Vector2(paper_rect.position.x, paper_rect.end.y),
+		LAND_BOARD_PAPER_EDGE,
+		1.6,
+		7.0,
+		true,
+		true
+	)
+	draw_dashed_line(
+		Vector2(paper_rect.position.x, paper_rect.end.y),
+		paper_rect.position,
+		LAND_BOARD_PAPER_EDGE,
+		1.6,
+		7.0,
+		true,
+		true
+	)
 	var slot_size := play_rect.size / Vector2(column_count, row_count)
-	var crease_light := Color(1.0, 0.98, 0.88, 0.42)
-	var pencil := Color(0.30, 0.27, 0.20, 0.24)
 	for column in range(1, column_count):
 		var x := play_rect.position.x + slot_size.x * column
 		var line_start := Vector2(x, play_rect.position.y + 3.0)
 		var line_end := Vector2(x, play_rect.end.y - 3.0)
-		draw_line(line_start - Vector2(0.8, 0.0), line_end - Vector2(0.8, 0.0), crease_light, 2.2, true)
-		draw_dashed_line(line_start, line_end, pencil, 1.1, 5.5, true, true)
+		draw_line(
+			line_start - Vector2(0.9, 0.0),
+			line_end - Vector2(0.9, 0.0),
+			LAND_BOARD_CREASE_LIGHT,
+			2.2,
+			true
+		)
+		draw_dashed_line(
+			line_start,
+			line_end,
+			LAND_BOARD_CREASE_GREEN,
+			1.3,
+			5.5,
+			true,
+			true
+		)
 	for row in range(1, row_count):
 		var y := play_rect.position.y + slot_size.y * row
 		var line_start := Vector2(play_rect.position.x + 3.0, y)
 		var line_end := Vector2(play_rect.end.x - 3.0, y)
-		draw_line(line_start - Vector2(0.0, 0.8), line_end - Vector2(0.0, 0.8), crease_light, 2.2, true)
-		draw_dashed_line(line_start, line_end, pencil, 1.1, 5.5, true, true)
-	draw_rect(play_rect.grow(-1.5), Color(0.28, 0.25, 0.19, 0.18), false, 1.0, true)
+		draw_line(
+			line_start - Vector2(0.0, 0.9),
+			line_end - Vector2(0.0, 0.9),
+			LAND_BOARD_CREASE_LIGHT,
+			2.2,
+			true
+		)
+		draw_dashed_line(
+			line_start,
+			line_end,
+			LAND_BOARD_CREASE_GREEN,
+			1.3,
+			5.5,
+			true,
+			true
+		)
+	draw_rect(play_rect.grow(-1.5), LAND_BOARD_PAPER_EDGE, false, 1.2, true)
+
+
+func _apply_opening_assist(cell_index: int) -> void:
+	var protected_cells: Array[int] = [cell_index]
+	if opening_assist_mode == OpeningAssist.OPEN_REGION:
+		protected_cells.append_array(_get_neighbors(cell_index))
+
+	var relocated_core_count := 0
+	for protected_index in protected_cells:
+		if mines[protected_index]:
+			mines[protected_index] = false
+			relocated_core_count += 1
+	if relocated_core_count == 0:
+		return
+
+	var relocation_candidates: Array[int] = []
+	for candidate_index in cell_count:
+		if not mines[candidate_index] and not protected_cells.has(candidate_index):
+			relocation_candidates.append(candidate_index)
+	for index in range(relocation_candidates.size() - 1, 0, -1):
+		var swap_index := _random.randi_range(0, index)
+		var temporary := relocation_candidates[index]
+		relocation_candidates[index] = relocation_candidates[swap_index]
+		relocation_candidates[swap_index] = temporary
+	assert(
+		relocation_candidates.size() >= relocated_core_count,
+		"Opening assistance requires enough unprotected cells for relocated cores."
+	)
+	for index in relocated_core_count:
+		mines[relocation_candidates[index]] = true
+	_reset_array(adjacent_counts, 0)
+	_calculate_adjacent_counts()
+	assert(mines.count(true) == core_count, "Opening assistance must preserve the core count.")
+
+
+func _prepare_hex_first_reveal(cell_index: int) -> void:
+	for attempt in 64:
+		if not mines[cell_index] and adjacent_counts[cell_index] == 0:
+			var preview_count := _count_preview_reveal(cell_index)
+			if preview_count > 1 and preview_count < safe_cell_count:
+				return
+		_reset_array(mines, false)
+		_reset_array(adjacent_counts, 0)
+		_place_random_cores()
+		_calculate_adjacent_counts()
+
+	# A dense fallback still guarantees that the first click is safe and cannot win instantly.
+	if mines[cell_index]:
+		for replacement_index in cell_count:
+			if replacement_index != cell_index and not mines[replacement_index]:
+				mines[cell_index] = false
+				mines[replacement_index] = true
+				break
+	_reset_array(adjacent_counts, 0)
+	_calculate_adjacent_counts()
+	if adjacent_counts[cell_index] == 0:
+		var neighbors := _get_neighbors(cell_index)
+		for neighbor in neighbors:
+			if mines[neighbor]:
+				return
+			for source_index in cell_count:
+				if mines[source_index] and source_index != cell_index:
+					mines[source_index] = false
+					mines[neighbor] = true
+					_reset_array(adjacent_counts, 0)
+					_calculate_adjacent_counts()
+					return
+
+
+func _count_preview_reveal(start_index: int) -> int:
+	var queue: Array[int] = [start_index]
+	var visited: Array[bool] = []
+	_reset_array(visited, false)
+	var reveal_count := 0
+	while not queue.is_empty():
+		var current: int = queue.pop_front()
+		if visited[current] or mines[current]:
+			continue
+		visited[current] = true
+		reveal_count += 1
+		if adjacent_counts[current] > 0:
+			continue
+		for neighbor in _get_neighbors(current):
+			if not visited[neighbor] and not mines[neighbor]:
+				queue.push_back(neighbor)
+	return reveal_count
 
 
 func _place_random_cores() -> void:
@@ -594,7 +824,38 @@ func _reveal_area(start_index: int) -> void:
 
 
 func _get_neighbors(cell_index: int) -> Array[int]:
+	if topology == HEX_TOPOLOGY:
+		return _get_hex_neighbors(cell_index)
 	return _get_square_neighbors(cell_index)
+
+
+func _get_hex_neighbors(cell_index: int) -> Array[int]:
+	var neighbors: Array[int] = []
+	var row := int(cell_index / column_count)
+	var column := cell_index % column_count
+	var offsets: Array = (
+		[
+			Vector2i(-1, -1), Vector2i(0, -1),
+			Vector2i(-1, 0), Vector2i(1, 0),
+			Vector2i(-1, 1), Vector2i(0, 1),
+		]
+		if row % 2 == 0
+		else [
+			Vector2i(0, -1), Vector2i(1, -1),
+			Vector2i(-1, 0), Vector2i(1, 0),
+			Vector2i(0, 1), Vector2i(1, 1),
+		]
+	)
+	for offset_value in offsets:
+		var offset: Vector2i = offset_value
+		var neighbor_column: int = column + offset.x
+		var neighbor_row: int = row + offset.y
+		if neighbor_row < 0 or neighbor_row >= row_count:
+			continue
+		if neighbor_column < 0 or neighbor_column >= column_count:
+			continue
+		neighbors.append(neighbor_row * column_count + neighbor_column)
+	return neighbors
 
 
 func _get_square_neighbors(cell_index: int) -> Array[int]:

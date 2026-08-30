@@ -58,7 +58,9 @@ func _test_level_argument_parser(shell) -> void:
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=1"])) == 1, "CLI accepts level 1.")
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=5"])) == 5, "CLI accepts level 5.")
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=0"])) == -1, "CLI rejects level 0.")
-	_expect(shell.parse_level_argument(PackedStringArray(["--level=6"])) == -1, "CLI rejects unavailable levels.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=6"])) == 6, "CLI accepts ocean level 6.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=10"])) == 10, "CLI accepts ocean level 10.")
+	_expect(shell.parse_level_argument(PackedStringArray(["--level=11"])) == -1, "CLI rejects levels beyond the ocean prototype.")
 	_expect(shell.parse_level_argument(PackedStringArray(["--level=forest"])) == -1, "CLI rejects non-numeric levels.")
 	_expect(shell.parse_level_argument(PackedStringArray()) == 0, "No CLI level keeps the menu flow.")
 
@@ -147,16 +149,21 @@ func _test_continue(shell) -> void:
 
 func _test_cli_read_only(shell) -> void:
 	var last_level_before: int = shell.save_store.get_last_played_level()
-	shell.start_cli_level(5)
+	shell.start_cli_level(10)
 	var game = shell.get_active_game()
-	_expect(shell.is_cli_read_only() and game.board.level_number == 5, "CLI mode can bypass locks and enter level 5.")
+	_expect(
+		shell.is_cli_read_only()
+		and game.board.level_number == 10
+		and game.board.topology == &"hex_pointy_odd_r",
+		"CLI mode can bypass locks and enter ocean level 10."
+	)
 	for cell_index in game.board.cell_count:
 		if game.board.game_state == MinesweeperBoard.GameState.WON:
 			break
 		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
 			game.board.reveal_cell(cell_index)
 	_expect(game.board.game_state == MinesweeperBoard.GameState.WON, "A CLI session remains fully playable.")
-	_expect(not shell.save_store.is_level_completed(5), "CLI completion does not write progress.")
+	_expect(not shell.save_store.is_level_completed(5), "Ocean CLI completion does not change land progress.")
 	_expect(shell.save_store.get_last_played_level() == last_level_before, "CLI sessions do not replace Continue progress.")
 
 
@@ -193,7 +200,11 @@ func _test_operation_mode_setting(shell) -> void:
 	_expect(shell.save_store.get_operation_mode() == 1, "Keyboard operation is stored immediately.")
 	_expect(game.get_operation_mode() == 1, "A retained paused game receives the new operation mode.")
 	_expect(game.board.get_operation_mode() == MinesweeperBoard.OperationMode.KEYBOARD, "The board enters keyboard mode without restarting.")
-	_expect(game.get_node("%InstructionsLabel").text.contains("Z净化/展开") and game.get_node("%InstructionsLabel").text.contains("X标记"), "Keyboard mode displays the selected Z/X controls.")
+	_expect(
+		game.get_node("%InstructionsLabel").text.contains("Z 净化")
+		and game.get_node("%InstructionsLabel").text.contains("X 标记"),
+		"Keyboard mode displays the selected Z/X controls."
+	)
 	shell.call("_close_settings")
 	_expect(game.is_session_paused(), "Changing operation mode preserves the paused game.")
 	var reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)

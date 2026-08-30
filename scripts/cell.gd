@@ -28,6 +28,13 @@ const LEVEL_ONE_TILE_REVEALED_PATH := ART.LEVEL_01_CELL_REVEALED
 const LEVEL_ONE_TILE_POLLUTED_PATH := ART.LEVEL_01_CELL_POLLUTED
 const LEVEL_ONE_FONT_PATH := ART.UI_FONT
 const LEVEL_ONE_FONT_SIZE := 30
+const HEX_TOPOLOGY := &"hex_pointy_odd_r"
+const HEX_HORIZONTAL_FACTOR := 1.7320508
+const HEX_HIDDEN_COLOR := Color("79c9d8")
+const HEX_HOVER_COLOR := Color("a4e3e7")
+const HEX_REVEALED_COLOR := Color("d9f1ea")
+const HEX_GUIDE_COLOR := Color("f3d56a")
+const HEX_BORDER_COLOR := Color("286f7b")
 
 const DEFAULT_COLOR := Color("1b2d22")
 const GUIDE_COLOR := Color("1b2d22")
@@ -70,6 +77,8 @@ var _polluted_style: StyleBox
 var _is_keyboard_selected := false
 var _is_guided := false
 var _level_number := 0
+var _is_hex := false
+var _hex_fill_ratio := 0.94
 var procedural_visual: int = ProceduralVisual.NONE
 var biosensor_progress := 0.0
 var _biosensor_target_visible := false
@@ -99,9 +108,15 @@ func _ready() -> void:
 	set_process(false)
 
 
-func setup(index: int, level_number: int = 0) -> void:
+func setup(index: int, level_number: int = 0, topology: StringName = &"square") -> void:
 	cell_index = index
 	_level_number = level_number
+	_is_hex = topology == HEX_TOPOLOGY
+
+
+func set_hex_fill_ratio(value: float) -> void:
+	_hex_fill_ratio = clampf(value, 0.75, 1.0)
+	queue_redraw()
 
 
 func render_state(
@@ -359,6 +374,9 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _configure_styles() -> void:
+	if _is_hex:
+		_configure_hex_styles()
+		return
 	if _uses_level_one_art():
 		_configure_level_one_styles()
 		return
@@ -375,6 +393,21 @@ func _configure_styles() -> void:
 	add_theme_stylebox_override("hover", _hover_style)
 	add_theme_stylebox_override("pressed", _pressed_style)
 	add_theme_stylebox_override("disabled", _hidden_style)
+
+
+func _configure_hex_styles() -> void:
+	var empty_style := StyleBoxEmpty.new()
+	_hidden_style = empty_style
+	_hover_style = empty_style
+	_pressed_style = empty_style
+	_revealed_style = empty_style
+	_guide_style = empty_style
+	_guide_hover_style = empty_style
+	_selected_hidden_style = empty_style
+	_selected_revealed_style = empty_style
+	_selected_guide_style = empty_style
+	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+		add_theme_stylebox_override(state, empty_style)
 
 
 func _configure_level_one_styles() -> void:
@@ -499,7 +532,48 @@ func _make_style(
 	return style
 
 
+func _has_point(point: Vector2) -> bool:
+	if not _is_hex:
+		return Rect2(Vector2.ZERO, size).has_point(point)
+	return Geometry2D.is_point_in_polygon(point, _hex_points())
+
+
+func _hex_points() -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var center := size * 0.5
+	var radius := minf(size.y * 0.5, size.x / HEX_HORIZONTAL_FACTOR) * _hex_fill_ratio
+	for point_index in 6:
+		var angle := deg_to_rad(-90.0 + float(point_index) * 60.0)
+		points.append(center + Vector2(cos(angle), sin(angle)) * radius)
+	return points
+
+
+func _draw_hex_cell() -> void:
+	if not _is_hex:
+		return
+	var fill_color := HEX_HIDDEN_COLOR
+	var border_color := HEX_BORDER_COLOR
+	var border_width := maxf(1.5, minf(size.x, size.y) * 0.035)
+	if _is_revealed:
+		fill_color = HEX_REVEALED_COLOR
+		border_color = Color("65a9aa")
+	elif _is_guided:
+		fill_color = HEX_GUIDE_COLOR
+		border_color = Color("8d7a32")
+	elif is_hovered():
+		fill_color = HEX_HOVER_COLOR
+	if _is_keyboard_selected:
+		border_color = Color("f4ce45")
+		border_width = maxf(3.0, minf(size.x, size.y) * 0.06)
+	var points := _hex_points()
+	draw_colored_polygon(points, fill_color)
+	var outline := points.duplicate()
+	outline.append(points[0])
+	draw_polyline(outline, border_color, border_width, true)
+
+
 func _draw() -> void:
+	_draw_hex_cell()
 	_draw_focus_outline()
 	match procedural_visual:
 		ProceduralVisual.BIOSENSOR:
@@ -510,6 +584,33 @@ func _draw() -> void:
 			_draw_static_sprout(_wilted_sprout_texture, 0.78)
 		ProceduralVisual.UPROOTED_SPROUT:
 			_draw_static_sprout(_uprooted_sprout_texture, 0.86)
+	_draw_hex_number()
+
+
+func _draw_hex_number() -> void:
+	if not _is_hex or text.is_empty():
+		return
+	var font := get_theme_font("font")
+	var font_size := get_theme_font_size("font_size")
+	var text_size := font.get_string_size(
+		text,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1.0,
+		font_size
+	)
+	var baseline := Vector2(
+		(size.x - text_size.x) * 0.5,
+		(size.y - font.get_height(font_size)) * 0.5 + font.get_ascent(font_size)
+	)
+	draw_string(
+		font,
+		baseline,
+		text,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1.0,
+		font_size,
+		get_theme_color("font_color")
+	)
 
 
 func _draw_focus_outline() -> void:

@@ -177,8 +177,8 @@ func _test_player_facing_terms(main_scene: Node, board: MinesweeperBoard) -> voi
 	main_scene.call("_load_level", 0)
 	var flags_label := main_scene.get_node("%FlagsLabel") as Label
 	var status_label := main_scene.get_node("%StatusLabel") as Label
-	_expect(flags_label.text == "标记：0/5", "The counter uses marking terminology.")
-	_expect(status_label.text.contains("清扫者"), "The initial status presents the main character as the optional guide.")
+	_expect(flags_label.text == "0/5", "The counter shows used and available marks.")
+	_expect(status_label.text in ["引导中", "准备中"], "The initial status reports the ready tutorial state.")
 	_expect(board.cell_nodes[board.guide_cell_index].tooltip_text.contains("也可以忽略"), "The guide explicitly remains optional.")
 
 
@@ -191,8 +191,8 @@ func _test_level_transition(main_scene: Node, board: MinesweeperBoard) -> void:
 		if not board.mines[cell_index] and not board.revealed[cell_index]:
 			board.reveal_cell(cell_index)
 	_expect(board.game_state == MinesweeperBoard.GameState.WON, "Level 1 can be completed before advancing.")
-	var primary_button := main_scene.get_node("%RestartButton") as Button
-	_expect(primary_button.text == "进入下一关", "Finishing level 1 offers the next level.")
+	var primary_button_label := main_scene.get_node("%RestartButtonLabel") as Label
+	_expect(primary_button_label.text == "下一关", "Finishing level 1 offers the next level.")
 	main_scene.call("_on_primary_button_pressed")
 	_expect(board.level_number == 2 and board.level_name == "灌木", "The next-level button loads Shrubland.")
 
@@ -208,7 +208,7 @@ func _test_level_2(main_scene: Node, board: MinesweeperBoard) -> void:
 	_expect(board.mines.count(true) == 8 and board.revealed.count(true) == 0, "Level 2 starts as a complete closed random board.")
 	var status_label := main_scene.get_node("%StatusLabel") as Label
 	var instructions_label := main_scene.get_node("%InstructionsLabel") as Label
-	_expect(status_label.text == "选择第一块净化区域", "Level 2 asks the player to choose freely.")
+	_expect(status_label.text == "准备中", "Level 2 starts in the ready state.")
 	_expect(instructions_label.text.contains("首点可能污染"), "Level 2 warns that the first choice is unprotected.")
 
 	board._random.seed = 6202
@@ -229,9 +229,9 @@ func _test_level_2(main_scene: Node, board: MinesweeperBoard) -> void:
 
 func _test_land_level_data(main_scene: Node, board: MinesweeperBoard) -> void:
 	var expected_levels := [
-		{"index": 2, "number": 3, "name": "湿地", "size": 8, "cores": 14},
-		{"index": 3, "number": 4, "name": "草原", "size": 10, "cores": 23},
-		{"index": 4, "number": 5, "name": "森林", "size": 12, "cores": 35},
+		{"index": 2, "number": 3, "name": "湿地", "size": 8, "cores": 9},
+		{"index": 3, "number": 4, "name": "草原", "size": 10, "cores": 17},
+		{"index": 4, "number": 5, "name": "森林", "size": 12, "cores": 28},
 	]
 	for expected in expected_levels:
 		main_scene.call("_load_level", expected.index)
@@ -369,7 +369,7 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 	var eco_showcase = main_scene.get_node("%EcoShowcase")
 	var level_background = main_scene.get_node("%LevelOneBackground")
 	var board_tray = main_scene.get_node("%BoardTray")
-	_expect(level_background.visible and board_tray.visible and not eco_showcase.visible, "Level 1 uses the handmade desktop stage.")
+	_expect(level_background.visible and not board_tray.visible and not eco_showcase.visible, "Level 1 uses the unified handmade stage.")
 	board._random.seed = 8400
 	board.new_game()
 	var marked_index := 0
@@ -411,15 +411,25 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 	board.reveal_cell(core_index)
 	_expect(board.cell_nodes[core_index].procedural_visual == MineCell.ProceduralVisual.SLUDGE_CORE and board.cell_nodes[core_index].text.is_empty(), "A hit Level 1 core becomes an animated sludge creature instead of a dot.")
 	_expect(eco_showcase.get_reaction() == 2, "The full-bleed ecology background becomes sad after a loss.")
-	_expect(board.cell_nodes[safe_index].text == "X" and board.cell_nodes[safe_index].is_sprout_wilting(), "A wrong marked sprout visibly wilts while retaining the error X.")
-	_expect(board.cell_nodes[flagged_core].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR and board.cell_nodes[flagged_core].is_sprout_wilting(), "A correctly marked core keeps its sprout and begins wilting on loss.")
+	_expect(
+		board.cell_nodes[safe_index].procedural_visual == MineCell.ProceduralVisual.UPROOTED_SPROUT,
+		"A wrong mark becomes the uprooted-sprout failure state."
+	)
+	_expect(
+		board.cell_nodes[flagged_core].procedural_visual == MineCell.ProceduralVisual.WILTED_SPROUT,
+		"A correctly marked core becomes the wilted-sprout failure state."
+	)
 	board.advance_pollution_animation(4.0)
 	board.cell_nodes[safe_index].advance_biosensor_animation(1.0)
 	board.cell_nodes[flagged_core].advance_biosensor_animation(1.0)
 	_expect(is_equal_approx(board.pollution_tint_progress, 1.0) and board.modulate == Color.WHITE, "A Level 1 loss changes individual cells instead of applying one board overlay.")
 	for polluted_cell in board.cell_nodes:
 		_expect(is_equal_approx(polluted_cell.pollution_progress, 1.0), "Pollution eventually reaches every Level 1 cell.")
-	_expect(is_equal_approx(board.cell_nodes[safe_index].sprout_wilt_progress, 1.0) and is_equal_approx(board.cell_nodes[flagged_core].sprout_wilt_progress, 1.0), "Visible sprouts complete their wilt animation.")
+	_expect(
+		board.cell_nodes[safe_index].procedural_visual == MineCell.ProceduralVisual.UPROOTED_SPROUT
+		and board.cell_nodes[flagged_core].procedural_visual == MineCell.ProceduralVisual.WILTED_SPROUT,
+		"Visible failure sprouts retain their final static states."
+	)
 
 	board.new_game()
 	_expect(eco_showcase.get_reaction() == 0, "Restart returns the compact ecology illustration to neutral.")
@@ -440,7 +450,7 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 		main_scene.call("_load_level", level_index)
 		var marker_cell := board.cell_nodes[0]
 		_expect(marker_cell.uses_level_one_art(), "Levels 2–5 reuse the Level-1 cell artwork.")
-		_expect(level_background.visible and board_tray.visible and not eco_showcase.visible, "Levels 2–5 reuse the Level-1 desktop stage.")
+		_expect(level_background.visible and not board_tray.visible and not eco_showcase.visible, "Levels 2–5 reuse the unified handmade stage.")
 		board.toggle_flag(0)
 		_expect(marker_cell.text.is_empty() and marker_cell.procedural_visual == MineCell.ProceduralVisual.BIOSENSOR, "Every square level uses the shared sprout marker instead of an exclamation mark.")
 		board.new_game()

@@ -30,6 +30,7 @@ var _animation_time := 0.0
 var _title_text := ""
 var _action_text := ""
 var _hint_text := ""
+var _show_next_button := false
 
 
 func _ready() -> void:
@@ -100,7 +101,7 @@ func show_for_cell(
 	title_text: String = "",
 	action_text: String = "",
 	hint_text: String = "",
-	_show_next_button: bool = false
+	show_next_button: bool = false
 ) -> void:
 	if not is_instance_valid(cell):
 		hide_guide()
@@ -111,6 +112,7 @@ func show_for_cell(
 	_title_text = title_text
 	_action_text = action_text
 	_hint_text = hint_text
+	_show_next_button = show_next_button
 	_animation_time = 0.0
 	visible = true
 	_refresh_copy()
@@ -189,10 +191,10 @@ func _refresh_copy() -> void:
 	title_label.text = title
 	action_label.text = get_action_text()
 	hint_label.text = _hint_text if not _hint_text.is_empty() else "这是安全建议，也可以选择别处"
-	next_button.visible = true
-	next_button.disabled = false
+	next_button.visible = _show_next_button
+	next_button.disabled = not _show_next_button
 	exit_button.visible = true
-	next_button_artwork.visible = true
+	next_button_artwork.visible = _show_next_button
 	exit_button_artwork.visible = true
 
 

@@ -63,6 +63,20 @@ const LEVEL_01_DECOR_LEFT_SPROUT_HEALTHY := \
 const LEVEL_01_DECOR_LEFT_SPROUT_WILTED := \
 		"res://assets/art/level_01/decorations/left_panel_sprout_wilted.png"
 
+const LAND_UNIFIED_STAGE_BODY := \
+		"res://assets/art/land_levels/stage/unified_land_stage_body_grayblue.png"
+const LAND_UNIFIED_STAGE_SHADOW := \
+		"res://assets/art/land_levels/stage/unified_land_stage_shadow_grayblue.png"
+
+const LAND_PAUSE_NORMAL := "res://assets/art/land_levels/buttons/pause_normal.png"
+const LAND_PAUSE_HOVER := "res://assets/art/land_levels/buttons/pause_hover.png"
+const LAND_PAUSE_FOCUS := "res://assets/art/land_levels/buttons/pause_focus.png"
+const LAND_PAUSE_PRESSED := "res://assets/art/land_levels/buttons/pause_pressed.png"
+const LAND_REGENERATE_NORMAL := "res://assets/art/land_levels/buttons/regenerate_normal.png"
+const LAND_REGENERATE_HOVER := "res://assets/art/land_levels/buttons/regenerate_hover.png"
+const LAND_REGENERATE_FOCUS := "res://assets/art/land_levels/buttons/regenerate_focus.png"
+const LAND_REGENERATE_PRESSED := "res://assets/art/land_levels/buttons/regenerate_pressed.png"
+
 const LEVEL_02_DECOR_SHRUB_HEALTHY := \
 		"res://assets/art/land_levels/decorations/level_02_shrub_healthy.png"
 const LEVEL_02_DECOR_SHRUB_WILTED := \
@@ -113,6 +127,8 @@ const LEVEL_01_GUARDIAN_RIGHT_WHITE_SITTING := \
 		"res://assets/art/level_01/guardians/right_panel_guardian_white_sitting.png"
 const LEVEL_01_GUARDIAN_RIGHT_YELLOW_STANDING := \
 		"res://assets/art/level_01/guardians/right_panel_guardian_yellow_standing.png"
+const LEVEL_01_GUARDIAN_LEFT_ROBOT := \
+		"res://assets/art/land_levels/guardians/left_robot_guardian.png"
 const LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_RIGHT := \
 		"res://assets/art/level_01/guardians/left_sprout_guardian_facing_right.png"
 const LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_LEFT := \

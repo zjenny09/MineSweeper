@@ -21,7 +21,7 @@ const LEVEL_3 := {
 	"number": 3,
 	"name": "湿地",
 	"size": Vector2i(8, 8),
-	"core_count": 14,
+	"core_count": 9,
 	"first_move_guide": false,
 }
 
@@ -29,7 +29,7 @@ const LEVEL_4 := {
 	"number": 4,
 	"name": "草原",
 	"size": Vector2i(10, 10),
-	"core_count": 23,
+	"core_count": 17,
 	"first_move_guide": false,
 }
 
@@ -37,15 +37,70 @@ const LEVEL_5 := {
 	"number": 5,
 	"name": "森林",
 	"size": Vector2i(12, 12),
-	"core_count": 35,
+	"core_count": 28,
 	"first_move_guide": false,
 }
 
-const LEVELS := [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5]
+const OCEAN_LEVEL_1 := {
+	"number": 6,
+	"name": "潮池初醒",
+	"size": Vector2i(5, 5),
+	"core_count": 5,
+	"first_move_guide": false,
+	"topology": &"hex_pointy_odd_r",
+}
+
+const OCEAN_LEVEL_2 := {
+	"number": 7,
+	"name": "海草摇篮",
+	"size": Vector2i(6, 6),
+	"core_count": 7,
+	"first_move_guide": false,
+	"topology": &"hex_pointy_odd_r",
+}
+
+const OCEAN_LEVEL_3 := {
+	"number": 8,
+	"name": "珊瑚花园",
+	"size": Vector2i(7, 7),
+	"core_count": 10,
+	"first_move_guide": false,
+	"topology": &"hex_pointy_odd_r",
+}
+
+const OCEAN_LEVEL_4 := {
+	"number": 9,
+	"name": "海藻森林",
+	"size": Vector2i(8, 8),
+	"core_count": 14,
+	"first_move_guide": false,
+	"topology": &"hex_pointy_odd_r",
+}
+
+const OCEAN_LEVEL_5 := {
+	"number": 10,
+	"name": "深海鲸落",
+	"size": Vector2i(10, 9),
+	"core_count": 22,
+	"first_move_guide": false,
+	"topology": &"hex_pointy_odd_r",
+}
+
+const LAND_LEVELS := [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5]
+const OCEAN_LEVELS := [
+	OCEAN_LEVEL_1,
+	OCEAN_LEVEL_2,
+	OCEAN_LEVEL_3,
+	OCEAN_LEVEL_4,
+	OCEAN_LEVEL_5,
+]
+const PLAYABLE_LEVELS := LAND_LEVELS + OCEAN_LEVELS
+# Keep the existing land map and save schema limited to its five released levels.
+const LEVELS := LAND_LEVELS
 
 
 static func is_valid_level_number(level_number: int) -> bool:
-	return level_number >= 1 and level_number <= LEVELS.size()
+	return level_number >= 1 and level_number <= PLAYABLE_LEVELS.size()
 
 
 static func level_index_from_number(level_number: int) -> int:
@@ -53,9 +108,9 @@ static func level_index_from_number(level_number: int) -> int:
 
 
 static func level_number_from_index(level_index: int) -> int:
-	return level_index + 1 if level_index >= 0 and level_index < LEVELS.size() else -1
+	return level_index + 1 if level_index >= 0 and level_index < PLAYABLE_LEVELS.size() else -1
 
 
 static func get_level_by_number(level_number: int) -> Dictionary:
 	var level_index := level_index_from_number(level_number)
-	return LEVELS[level_index] if level_index >= 0 else {}
+	return PLAYABLE_LEVELS[level_index] if level_index >= 0 else {}
