@@ -43,7 +43,7 @@ const LEVEL_5 := {
 
 const OCEAN_LEVEL_1 := {
 	"number": 6,
-	"name": "潮池初醒",
+	"name": "潮池",
 	"size": Vector2i(5, 5),
 	"core_count": 5,
 	"first_move_guide": false,
@@ -52,7 +52,7 @@ const OCEAN_LEVEL_1 := {
 
 const OCEAN_LEVEL_2 := {
 	"number": 7,
-	"name": "海草摇篮",
+	"name": "海草",
 	"size": Vector2i(6, 6),
 	"core_count": 7,
 	"first_move_guide": false,
@@ -61,7 +61,7 @@ const OCEAN_LEVEL_2 := {
 
 const OCEAN_LEVEL_3 := {
 	"number": 8,
-	"name": "珊瑚花园",
+	"name": "珊瑚",
 	"size": Vector2i(7, 7),
 	"core_count": 10,
 	"first_move_guide": false,
@@ -70,7 +70,7 @@ const OCEAN_LEVEL_3 := {
 
 const OCEAN_LEVEL_4 := {
 	"number": 9,
-	"name": "海藻森林",
+	"name": "海藻",
 	"size": Vector2i(8, 8),
 	"core_count": 14,
 	"first_move_guide": false,
@@ -79,7 +79,7 @@ const OCEAN_LEVEL_4 := {
 
 const OCEAN_LEVEL_5 := {
 	"number": 10,
-	"name": "深海鲸落",
+	"name": "鲸落",
 	"size": Vector2i(10, 9),
 	"core_count": 22,
 	"first_move_guide": false,

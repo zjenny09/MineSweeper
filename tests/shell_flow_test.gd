@@ -28,6 +28,7 @@ func _run_tests() -> void:
 	_test_completion_and_unlock(shell)
 	_test_continue(shell)
 	_test_cli_read_only(shell)
+	_test_ocean_scan_persistence(shell)
 	_test_return_to_level_select(shell)
 	_test_pause_settings_round_trip(shell)
 	_test_operation_mode_setting(shell)
@@ -82,6 +83,11 @@ func _test_start_pause_and_restart(shell) -> void:
 	_expect(game.board.level_number == 1, "Start begins at level 1.")
 	_expect(shell.save_store.get_last_played_level() == 1, "Starting records the continue target.")
 	_expect(shell.save_store.has_seen_first_move_guide(), "Starting the first game persists the guide state.")
+	_expect(game.get_scan_energy() == 12, "The first normal level-one entry receives a full scan grant.")
+	_expect(shell.save_store.has_claimed_level_one_scan_grant(), "The level-one grant is marked claimed immediately.")
+	var grant_reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
+	grant_reloaded.load_data()
+	_expect(grant_reloaded.get_scan_energy() == 12, "The initial grant is persisted before play continues.")
 
 	var number_index := -1
 	for cell_index in game.board.cell_count:
@@ -89,6 +95,24 @@ func _test_start_pause_and_restart(shell) -> void:
 			number_index = cell_index
 			break
 	game.board.reveal_cell(number_index)
+	var mine_index := -1
+	for cell_index in game.board.cell_count:
+		if game.board.mines[cell_index] and not game.board.flagged[cell_index]:
+			mine_index = cell_index
+			break
+	game.call("_request_scan_mode")
+	game.call("_on_scan_target_requested", mine_index)
+	_expect(game.get_scan_energy() == 0, "A real scan consumes the granted energy.")
+	_expect(shell.save_store.get_scan_energy() == 0, "Scan consumption is saved immediately.")
+	var first_flag_target := -1
+	for cell_index in game.board.cell_count:
+		if not game.board.revealed[cell_index] and not game.board.flagged[cell_index]:
+			first_flag_target = cell_index
+			break
+	game.board.toggle_flag(first_flag_target)
+	_expect(game.get_scan_energy() == 1, "A first manual flag begins the next charge cycle.")
+	_expect(shell.save_store.get_scan_energy() == 1, "Earned scan energy is saved immediately.")
+	game.board.toggle_flag(first_flag_target)
 	await create_timer(0.08).timeout
 	game.set_session_paused(true)
 	var paused_elapsed: int = game.get_elapsed_ms()
@@ -109,6 +133,8 @@ func _test_start_pause_and_restart(shell) -> void:
 	_expect(game.board.interaction_enabled, "Resume restores board interaction.")
 	game.restart_level()
 	_expect(game.get_elapsed_ms() == 0 and game.board.revealed.count(true) == 0, "Pause-menu restart resets time and board state.")
+	_expect(game.get_scan_energy() == 1, "Restart keeps the shared scan energy.")
+	_expect(game.get_scan_phase() == game.ScanPhase.LOCKED_FIRST_REVEAL, "Restart restores the first-reveal scan lock.")
 
 
 func _test_completion_and_unlock(shell) -> void:
@@ -138,17 +164,21 @@ func _test_completion_and_unlock(shell) -> void:
 
 
 func _test_continue(shell) -> void:
+	shell.save_store.set_scan_energy(3)
+	shell.save_store.save_data()
 	shell.show_main_menu()
 	var continue_button := shell.get_node("%ContinueButton") as Button
 	_expect(not continue_button.disabled, "Continue is enabled after a normal level starts.")
 	continue_button.emit_signal("pressed")
 	_expect(shell.get_active_game() != null and shell.get_active_game().board.level_number == 1, "Continue regenerates the last played level.")
 	_expect(shell.get_active_game().board.revealed.count(true) == 0, "Continue does not restore an old board snapshot.")
+	_expect(shell.get_active_game().get_scan_energy() == 3, "Returning to level one does not grant scan energy twice.")
 	_expect(not shell.get_active_game().get_node("%FirstMoveGuide").visible, "Returning players do not see the first-move guide again.")
 
 
 func _test_cli_read_only(shell) -> void:
 	var last_level_before: int = shell.save_store.get_last_played_level()
+	var scan_energy_before: int = shell.save_store.get_scan_energy()
 	shell.start_cli_level(10)
 	var game = shell.get_active_game()
 	_expect(
@@ -165,6 +195,29 @@ func _test_cli_read_only(shell) -> void:
 	_expect(game.board.game_state == MinesweeperBoard.GameState.WON, "A CLI session remains fully playable.")
 	_expect(not shell.save_store.is_level_completed(5), "Ocean CLI completion does not change land progress.")
 	_expect(shell.save_store.get_last_played_level() == last_level_before, "CLI sessions do not replace Continue progress.")
+	_expect(shell.save_store.get_scan_energy() == scan_energy_before, "CLI sessions do not write shared scan energy.")
+
+
+func _test_ocean_scan_persistence(shell) -> void:
+	var last_level_before: int = shell.save_store.get_last_played_level()
+	shell.save_store.set_scan_energy(5)
+	shell.save_store.save_data()
+	shell.call("_start_level_number", 6, false, true)
+	var game = shell.get_active_game()
+	_expect(not shell.is_cli_read_only(), "Normal ocean selection persists scan state without becoming CLI mode.")
+	_expect(game.get_scan_energy() == 5, "Ocean play receives the shared saved energy.")
+	var ocean_opening := -1
+	for cell_index in game.board.cell_count:
+		if not game.board.mines[cell_index] and game.board.adjacent_counts[cell_index] > 0:
+			ocean_opening = cell_index
+			break
+	game.board.reveal_cell(ocean_opening)
+	_expect(game.get_scan_energy() == 6, "A valid ocean reveal adds one shared energy.")
+	_expect(shell.save_store.get_scan_energy() == 6, "Normal ocean charge is saved immediately.")
+	_expect(shell.save_store.get_last_played_level() == last_level_before, "Ocean scan persistence does not replace land Continue progress.")
+	var reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
+	reloaded.load_data()
+	_expect(reloaded.get_scan_energy() == 6, "Ocean scan energy survives a store reload.")
 
 
 func _test_return_to_level_select(shell) -> void:

@@ -821,7 +821,7 @@ text = "继续游戏"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.5157, 0.3561, 0.66)
 theme_override_font_sizes/font_size = 11
-text = "v0.3.5  ·  陆地篇 + 海洋篇原型"
+text = "v0.4.0  ·  陆地篇 + 海洋篇"
 horizontal_alignment = 1
 
 [node name="ShowcasePanel" type="Control" parent="MainMenu" unique_id=705723809]
@@ -1063,9 +1063,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -160.0
-offset_top = 103.0
+offset_top = 84.0
 offset_right = -84.0
-offset_bottom = 189.0
+offset_bottom = 208.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/separation = 10
@@ -1076,6 +1076,14 @@ custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
 text = "返回关卡"
+
+[node name="LevelNextChapterButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(76, 38)
+layout_mode = 2
+focus_mode = 1
+text = "下一章节"
+tooltip_text = "进入海洋篇"
 
 [node name="LevelWelcomeButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
 unique_name_in_owner = true

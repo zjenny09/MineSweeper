@@ -8,17 +8,18 @@ signal main_menu_requested
 signal settings_requested
 signal exit_game_requested
 signal pause_changed(is_paused: bool)
+signal scan_energy_changed(energy: int)
 
 const ART := preload("res://scripts/art_catalog.gd")
 
-const LAND_DESK_BACKGROUND_PATH := ART.LEVEL_01_LAND_BACKGROUND
-const LAND_DESK_BACKGROUND_SOURCE_REGION := Rect2i(0, 0, 2848, 1600)
+const LAND_DESK_BACKGROUND_PATH := ART.LAND_TABLETOP_BACKGROUND
+const OCEAN_DESK_BACKGROUND_PATH := ART.OCEAN_DESKTOP_BACKGROUND
+const OCEAN_BOARD_TRAY_FRAME_PATH := ART.OCEAN_BOARD_TRAY_FRAME
 const LEVEL_ONE_BACKGROUND_PATH := ART.LAND_UNIFIED_STAGE_BODY
 const LAND_UNIFIED_SHADOW_PATH := ART.LAND_UNIFIED_STAGE_SHADOW
 const LEVEL_ONE_BOARD_TRAY_PATH := ART.LEVEL_01_BOARD_TRAY
 const LEVEL_ONE_STATUS_NOTE_PATH := ART.LEVEL_01_NOTE_CURVED
 const LEVEL_ONE_STRAIGHT_NOTE_PATH := ART.LEVEL_01_NOTE_STRAIGHT
-const LEVEL_ONE_PAUSE_MENU_FRAME_PATH := ART.LEVEL_01_PAUSE_MENU_FRAME
 const LAND_PAUSE_NORMAL_PATH := ART.LAND_PAUSE_NORMAL
 const LAND_PAUSE_HOVER_PATH := ART.LAND_PAUSE_HOVER
 const LAND_PAUSE_FOCUS_PATH := ART.LAND_PAUSE_FOCUS
@@ -27,6 +28,14 @@ const LAND_REGENERATE_NORMAL_PATH := ART.LAND_REGENERATE_NORMAL
 const LAND_REGENERATE_HOVER_PATH := ART.LAND_REGENERATE_HOVER
 const LAND_REGENERATE_FOCUS_PATH := ART.LAND_REGENERATE_FOCUS
 const LAND_REGENERATE_PRESSED_PATH := ART.LAND_REGENERATE_PRESSED
+const OCEAN_PAUSE_NORMAL_PATH := ART.OCEAN_PAUSE_NORMAL
+const OCEAN_PAUSE_HOVER_PATH := ART.OCEAN_PAUSE_HOVER
+const OCEAN_PAUSE_FOCUS_PATH := ART.OCEAN_PAUSE_FOCUS
+const OCEAN_PAUSE_PRESSED_PATH := ART.OCEAN_PAUSE_PRESSED
+const OCEAN_REGENERATE_NORMAL_PATH := ART.OCEAN_REGENERATE_NORMAL
+const OCEAN_REGENERATE_HOVER_PATH := ART.OCEAN_REGENERATE_HOVER
+const OCEAN_REGENERATE_FOCUS_PATH := ART.OCEAN_REGENERATE_FOCUS
+const OCEAN_REGENERATE_PRESSED_PATH := ART.OCEAN_REGENERATE_PRESSED
 const LEVEL_ONE_SEED_STICKER_PATH := ART.LEVEL_01_DECOR_BACKGROUND_SEED
 const LEVEL_ONE_BUD_SPROUT_PATH := ART.LEVEL_01_DECOR_STATUS_NOTE_BUD
 const LEVEL_ONE_LEAF_SPROUT_PATH := ART.LEVEL_01_DECOR_BACKGROUND_LEAF_SPROUT
@@ -47,6 +56,18 @@ const LAND_DECORATIVE_FAILED_PATHS := [
 const LAND_DECORATIVE_CENTER_X := 218.0
 const LAND_DECORATIVE_BASELINE_Y := 648.0
 const LAND_DECORATIVE_MAX_SIZE := Vector2(68.0, 56.0)
+const LAND_INTERFACE_SCALE := 0.84
+const LAND_INTERFACE_DESIGN_WIDTH := 1280.0
+const LAND_INTERFACE_TOP_OFFSET := 25.0
+const OCEAN_INTERFACE_DESIGN_SIZE := Vector2(1280.0, 720.0)
+const BOARD_CENTER_VERTICAL_INSET := 20.0
+const OCEAN_BOARD_HORIZONTAL_SHIFT := -3.0
+const OCEAN_BOARD_VERTICAL_SHIFT := 2.0
+const OCEAN_BOARD_SCALE := 0.94
+const LAND_QUICK_BUTTON_POSITION := Vector2(-10.0, 458.0)
+const OCEAN_QUICK_BUTTON_POSITION := Vector2(-8.0, 446.0)
+const LAND_QUICK_BUTTON_LABEL_COLOR := Color("71371d")
+const OCEAN_QUICK_BUTTON_LABEL_COLOR := Color("123f5e")
 const LEVEL_ONE_SIDE_GUARDIAN_A_PATH := ART.LEVEL_01_GUARDIAN_RIGHT_YELLOW_STANDING
 const LEVEL_ONE_SIDE_GUARDIAN_B_PATH := ART.LEVEL_01_GUARDIAN_RIGHT_WHITE_SITTING
 const LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH := ART.LEVEL_01_GUARDIAN_LEFT_ROBOT
@@ -76,17 +97,36 @@ enum TutorialStep {
 }
 
 const ADAPTIVE_ASSIST_FIRST_LEVEL_INDEX := 0
-const FIRST_CLICK_MINE_STREAK_THRESHOLD := 3
+const FIRST_CLICK_MINE_STREAK_THRESHOLD := 2
 const EARLY_LOSS_STREAK_THRESHOLD := 3
 const EARLY_LOSS_MOVE_LIMIT := 5
+const SCAN_CAPACITY := 12
+
+
+enum ScanPhase {
+	INACTIVE,
+	LOCKED_FIRST_REVEAL,
+	CHARGING,
+	READY,
+	TARGETING,
+	RESOLVING,
+	USED,
+	FINISHED,
+}
 
 
 @onready var board: MinesweeperBoard = %Board
+@onready var board_center: CenterContainer = $PageMargin/Columns/BoardPanel/BoardCenter
+@onready var page_margin: MarginContainer = $PageMargin
 @onready var eco_showcase: Control = %EcoShowcase
+@onready var ocean_stage: Control = %OceanStage
+@onready var ocean_desk_background: TextureRect = %OceanDeskBackground
+@onready var ocean_board_tray_frame: TextureRect = %OceanBoardTrayFrame
 @onready var land_desk_background: TextureRect = %LandDeskBackground
 @onready var level_one_background: TextureRect = %LevelOneBackground
 @onready var land_unified_shadow: TextureRect = %LandUnifiedShadow
 @onready var land_sticker_sets: Control = %LandStickerSets
+@onready var land_tabletop_actors: LandTabletopActors = %LandTabletopActors
 @onready var bud_sprout_decoration_a: TextureRect = %BudSproutDecorationA
 @onready var leaf_sprout_decoration_a: TextureRect = \
 		$LevelOneBackground/LevelOneDecorations/LeafSproutDecorationA
@@ -118,6 +158,14 @@ const EARLY_LOSS_MOVE_LIMIT := 5
 @onready var flags_label: Label = %FlagsLabel
 @onready var timer_label: Label = %TimerLabel
 @onready var instructions_label: Label = %InstructionsLabel
+@onready var scan_fallback_row: HBoxContainer = %ScanFallbackRow
+@onready var scan_fallback_status: Label = %ScanFallbackStatus
+@onready var scan_fallback_button: Button = %ScanFallbackButton
+@onready var ocean_scan_dots: Array[Control] = [
+	%OceanScanDotA,
+	%OceanScanDotB,
+	%OceanScanDotC,
+]
 @onready var quick_buttons: HBoxContainer = %QuickButtons
 @onready var pause_button: TextureButton = %PauseButton
 @onready var restart_button: TextureButton = %RestartButton
@@ -150,10 +198,18 @@ var _tutorial_number_index := -1
 var _tutorial_target_index := -1
 var _tutorial_last_revealed_index := -1
 var _runtime_texture_cache: Dictionary = {}
+var _scan_phase: int = ScanPhase.INACTIVE
+var _scan_energy := 0
+var _scan_threshold := SCAN_CAPACITY
+var _ordinary_reveal_seen := false
+var _scan_target_index := -1
+var _scan_target_global_position := Vector2.ZERO
 
 
 func _ready() -> void:
 	_apply_handmade_interface()
+	resized.connect(_on_main_resized)
+	call_deferred("_apply_land_interface_transform")
 	if Engine.is_editor_hint():
 		pause_overlay.visible = editor_preview_pause_menu
 		return
@@ -162,6 +218,11 @@ func _ready() -> void:
 	board.reveal_completed.connect(_on_reveal_completed)
 	board.flag_completed.connect(_on_flag_completed)
 	board.chord_completed.connect(_on_chord_completed)
+	board.scan_target_requested.connect(_on_scan_target_requested)
+	board.scan_cancel_requested.connect(_cancel_scan_targeting)
+	board.scan_completed.connect(_on_scan_completed)
+	land_tabletop_actors.scan_activation_requested.connect(_request_scan_mode)
+	scan_fallback_button.pressed.connect(_request_scan_mode)
 	first_move_guide.exit_requested.connect(_on_tutorial_exit_requested)
 	first_move_guide.next_requested.connect(_on_tutorial_next_requested)
 	restart_button.pressed.connect(_on_primary_button_pressed)
@@ -180,10 +241,9 @@ func _ready() -> void:
 
 
 func _apply_handmade_interface() -> void:
-	land_desk_background.texture = _load_runtime_texture_region(
-		LAND_DESK_BACKGROUND_PATH,
-		LAND_DESK_BACKGROUND_SOURCE_REGION
-	)
+	land_desk_background.texture = _load_runtime_texture(LAND_DESK_BACKGROUND_PATH)
+	ocean_desk_background.texture = _load_runtime_texture(OCEAN_DESK_BACKGROUND_PATH)
+	ocean_board_tray_frame.texture = _load_runtime_texture(OCEAN_BOARD_TRAY_FRAME_PATH)
 	level_one_background.texture = _load_runtime_texture(LEVEL_ONE_BACKGROUND_PATH)
 	land_unified_shadow.texture = _load_runtime_texture(LAND_UNIFIED_SHADOW_PATH)
 	board_tray.texture = _load_runtime_texture(LEVEL_ONE_BOARD_TRAY_PATH)
@@ -207,9 +267,15 @@ func _apply_handmade_interface() -> void:
 	info_note_artwork.texture = curved_note_texture
 	status_note_artwork.texture = curved_note_texture
 	info_back_artwork.texture = _load_runtime_texture(LEVEL_ONE_STRAIGHT_NOTE_PATH)
-	pause_menu_frame_artwork.texture = _load_runtime_texture(
-		LEVEL_ONE_PAUSE_MENU_FRAME_PATH
-	)
+	pause_menu_frame_artwork.visible = false
+	var pause_panel := pause_menu_frame_artwork.get_parent() as PanelContainer
+	var pause_panel_style := StyleBoxFlat.new()
+	pause_panel_style.bg_color = Color("f3ead8")
+	pause_panel_style.border_color = Color(0.45, 0.40, 0.33, 0.48)
+	pause_panel_style.set_border_width_all(2)
+	pause_panel_style.set_corner_radius_all(28)
+	pause_panel_style.anti_aliasing = true
+	pause_panel.add_theme_stylebox_override("panel", pause_panel_style)
 	_apply_texture_button_states(
 		pause_button,
 		_load_runtime_texture(LAND_PAUSE_NORMAL_PATH),
@@ -228,11 +294,12 @@ func _apply_handmade_interface() -> void:
 	var paper_normal := _load_texture_style(PAPER_BUTTON_PATH)
 	var paper_selected := _load_texture_style(PAPER_BUTTON_SELECTED_PATH)
 	var paper_pressed := _load_texture_style(PAPER_BUTTON_PRESSED_PATH)
-	var green_normal := _load_texture_style(GREEN_BUTTON_PATH)
-	var green_selected := _load_texture_style(GREEN_BUTTON_SELECTED_PATH)
-	var green_pressed := _load_texture_style(GREEN_BUTTON_PRESSED_PATH)
 	if paper_normal != null and paper_selected != null and paper_pressed != null:
+		paper_normal.modulate_color = Color("fffaf0")
+		paper_selected.modulate_color = Color("ffe59a")
+		paper_pressed.modulate_color = Color("e7c96f")
 		for button in [
+			resume_button,
 			pause_restart_button,
 			level_select_button,
 			pause_settings_button,
@@ -240,9 +307,48 @@ func _apply_handmade_interface() -> void:
 			exit_game_button,
 		]:
 			_apply_paper_button(button, paper_normal, paper_selected, paper_pressed)
-	if green_normal != null and green_selected != null and green_pressed != null:
-		for button in [resume_button]:
-			_apply_paper_button(button, green_normal, green_selected, green_pressed)
+
+
+func _on_main_resized() -> void:
+	call_deferred("_apply_land_interface_transform")
+
+
+func _apply_land_interface_transform() -> void:
+	if not is_instance_valid(page_margin):
+		return
+	var uses_land_stage := current_level_index < GreenSweeperLevels.LAND_LEVELS.size()
+	var board_horizontal_shift := 0.0 if uses_land_stage else OCEAN_BOARD_HORIZONTAL_SHIFT
+	var board_vertical_shift := 0.0 if uses_land_stage else OCEAN_BOARD_VERTICAL_SHIFT
+	board_center.offset_left = board_horizontal_shift
+	board_center.offset_right = board_horizontal_shift
+	board_center.offset_top = BOARD_CENTER_VERTICAL_INSET + board_vertical_shift
+	board_center.offset_bottom = BOARD_CENTER_VERTICAL_INSET + board_vertical_shift
+	board_center.pivot_offset = board_center.size * 0.5
+	board_center.scale = (
+		Vector2.ONE
+		if uses_land_stage
+		else Vector2.ONE * OCEAN_BOARD_SCALE
+	)
+	if uses_land_stage:
+		var land_scale := LAND_INTERFACE_SCALE
+		var land_width := LAND_INTERFACE_DESIGN_WIDTH * land_scale
+		var land_offset := Vector2(
+			(size.x - land_width) * 0.5,
+			LAND_INTERFACE_TOP_OFFSET + maxf(size.y - 720.0, 0.0) * 0.5
+		)
+		for stage_control in [land_unified_shadow, level_one_background, page_margin]:
+			stage_control.scale = Vector2.ONE * land_scale
+			stage_control.position = land_offset
+		return
+
+	var ocean_scale := maxf(
+		size.x / OCEAN_INTERFACE_DESIGN_SIZE.x,
+		size.y / OCEAN_INTERFACE_DESIGN_SIZE.y
+	)
+	var ocean_offset := (size - OCEAN_INTERFACE_DESIGN_SIZE * ocean_scale) * 0.5
+	for stage_control in [ocean_stage, page_margin]:
+		stage_control.scale = Vector2.ONE * ocean_scale
+		stage_control.position = ocean_offset
 
 
 func _apply_handmade_typography() -> void:
@@ -275,6 +381,8 @@ func _load_runtime_texture(path: String) -> Texture2D:
 
 
 func _apply_land_decorative_texture(path: String) -> void:
+	if is_instance_valid(land_tabletop_actors):
+		land_tabletop_actors.set_plant_texture(path)
 	var texture := _load_runtime_texture(path)
 	if texture == null:
 		return
@@ -306,21 +414,6 @@ func _apply_land_stickers(state: int) -> void:
 	)
 
 
-func _load_runtime_texture_region(path: String, region: Rect2i) -> Texture2D:
-	var texture := _load_runtime_texture(path)
-	if texture == null:
-		return null
-	var image := texture.get_image()
-	if image == null or image.is_empty():
-		push_error("Level interface artwork image is unavailable: %s" % path)
-		return null
-	var source_rect := Rect2i(Vector2i.ZERO, image.get_size())
-	if not source_rect.encloses(region):
-		push_error("Level interface artwork crop is outside the source image: %s" % path)
-		return null
-	return ImageTexture.create_from_image(image.get_region(region))
-
-
 func _load_texture_style(path: String) -> StyleBoxTexture:
 	var texture := _load_runtime_texture(path)
 	if texture == null:
@@ -344,6 +437,10 @@ func _apply_paper_button(
 	button.add_theme_stylebox_override("hover", hover_style)
 	button.add_theme_stylebox_override("pressed", pressed_style)
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	button.add_theme_color_override("font_color", Color("403b34"))
+	button.add_theme_color_override("font_hover_color", Color("332f2a"))
+	button.add_theme_color_override("font_pressed_color", Color("332f2a"))
+	button.add_theme_color_override("font_focus_color", Color("332f2a"))
 	button.add_theme_color_override("font_outline_color", Color(1.0, 0.98, 0.88, 0.72))
 	button.add_theme_constant_override("outline_size", 1)
 
@@ -368,8 +465,50 @@ func _apply_texture_button_states(
 	button.texture_pressed = pressed_texture
 
 
+func _apply_chapter_quick_buttons(uses_land_stage: bool) -> void:
+	if uses_land_stage:
+		_apply_texture_button_states(
+			pause_button,
+			_load_runtime_texture(LAND_PAUSE_NORMAL_PATH),
+			_load_runtime_texture(LAND_PAUSE_HOVER_PATH),
+			_load_runtime_texture(LAND_PAUSE_FOCUS_PATH),
+			_load_runtime_texture(LAND_PAUSE_PRESSED_PATH)
+		)
+		_apply_texture_button_states(
+			restart_button,
+			_load_runtime_texture(LAND_REGENERATE_NORMAL_PATH),
+			_load_runtime_texture(LAND_REGENERATE_HOVER_PATH),
+			_load_runtime_texture(LAND_REGENERATE_FOCUS_PATH),
+			_load_runtime_texture(LAND_REGENERATE_PRESSED_PATH)
+		)
+		quick_buttons.position = LAND_QUICK_BUTTON_POSITION
+		pause_button_label.add_theme_color_override("font_color", LAND_QUICK_BUTTON_LABEL_COLOR)
+		restart_button_label.add_theme_color_override("font_color", LAND_QUICK_BUTTON_LABEL_COLOR)
+		return
+
+	_apply_texture_button_states(
+		pause_button,
+		_load_runtime_texture(OCEAN_PAUSE_NORMAL_PATH),
+		_load_runtime_texture(OCEAN_PAUSE_HOVER_PATH),
+		_load_runtime_texture(OCEAN_PAUSE_FOCUS_PATH),
+		_load_runtime_texture(OCEAN_PAUSE_PRESSED_PATH)
+	)
+	_apply_texture_button_states(
+		restart_button,
+		_load_runtime_texture(OCEAN_REGENERATE_NORMAL_PATH),
+		_load_runtime_texture(OCEAN_REGENERATE_HOVER_PATH),
+		_load_runtime_texture(OCEAN_REGENERATE_FOCUS_PATH),
+		_load_runtime_texture(OCEAN_REGENERATE_PRESSED_PATH)
+	)
+	quick_buttons.position = OCEAN_QUICK_BUTTON_POSITION
+	pause_button_label.add_theme_color_override("font_color", OCEAN_QUICK_BUTTON_LABEL_COLOR)
+	restart_button_label.add_theme_color_override("font_color", OCEAN_QUICK_BUTTON_LABEL_COLOR)
+
+
 func _apply_guardian_state(state: int) -> void:
 	var is_failure := state == MinesweeperBoard.GameState.LOST
+	if is_instance_valid(land_tabletop_actors):
+		land_tabletop_actors.set_failure(is_failure)
 	left_sprout_guardian_left.texture = _load_runtime_texture(
 		LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH
 	)
@@ -397,13 +536,11 @@ func _set_level_one_reaction(state: int) -> void:
 	seed_decoration_a.visible = false
 	seed_decoration_b.visible = false
 	leaf_sprout_decoration_a.visible = false
-	if current_level_index >= 5:
-		return
-	match state:
-		MinesweeperBoard.GameState.WON:
-			victory_animation_player.play(&"victory")
-		MinesweeperBoard.GameState.LOST:
-			victory_animation_player.play(&"failure")
+	if is_instance_valid(land_tabletop_actors):
+		land_tabletop_actors.play_reaction(
+			state == MinesweeperBoard.GameState.WON,
+			state == MinesweeperBoard.GameState.LOST
+		)
 
 
 func _process(_delta: float) -> void:
@@ -412,8 +549,27 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not visible:
+	if not is_visible_in_tree():
 		return
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if (
+			key_event.pressed
+			and not key_event.echo
+			and not key_event.ctrl_pressed
+			and not key_event.alt_pressed
+			and not key_event.meta_pressed
+		):
+			var keycode := key_event.physical_keycode
+			if keycode == 0:
+				keycode = key_event.keycode
+			if keycode == KEY_C:
+				if _scan_phase == ScanPhase.TARGETING:
+					_cancel_scan_targeting()
+				else:
+					_request_scan_mode()
+				get_viewport().set_input_as_handled()
+				return
 	if (
 		_operation_mode == 1
 		and _tutorial_step == TutorialStep.NUMBER_INFO
@@ -425,33 +581,45 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if not event.is_action_pressed("ui_cancel"):
 		return
-	set_session_paused(not _session_paused)
+	if _scan_phase == ScanPhase.TARGETING:
+		_cancel_scan_targeting()
+	else:
+		set_session_paused(not _session_paused)
 	get_viewport().set_input_as_handled()
 
 
-func start_level(level_index: int) -> void:
+func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
+	_clear_scan_ability()
+	if initial_scan_energy >= 0:
+		_scan_energy = clampi(initial_scan_energy, 0, SCAN_CAPACITY)
 	current_level_index = clampi(
 		level_index,
 		0,
 		GreenSweeperLevels.PLAYABLE_LEVELS.size() - 1
 	)
 	var uses_level_one_stage := current_level_index < GreenSweeperLevels.LAND_LEVELS.size()
+	call_deferred("_apply_land_interface_transform")
+	ocean_stage.visible = not uses_level_one_stage
 	land_desk_background.visible = uses_level_one_stage
 	level_one_background.visible = uses_level_one_stage
 	land_unified_shadow.visible = uses_level_one_stage
-	eco_showcase.visible = not uses_level_one_stage
+	eco_showcase.visible = false
 	board_tray.visible = false
 	board_shadow.visible = false
-	left_decorative_sprout.visible = uses_level_one_stage
+	land_tabletop_actors.visible = true
+	scan_fallback_row.visible = false
+	_apply_chapter_quick_buttons(uses_level_one_stage)
+	left_decorative_sprout.visible = false
 	bud_sprout_decoration_a.visible = false
-	right_guardian_a.visible = uses_level_one_stage
-	right_guardian_b.visible = uses_level_one_stage
-	left_sprout_guardian_left.visible = uses_level_one_stage
-	left_sprout_guardian_right.visible = uses_level_one_stage
-	right_guardian_a_shadow.visible = uses_level_one_stage
-	right_guardian_b_shadow.visible = uses_level_one_stage
-	left_sprout_guardian_left_shadow.visible = uses_level_one_stage
-	left_sprout_guardian_right_shadow.visible = uses_level_one_stage
+	right_guardian_a.visible = false
+	right_guardian_b.visible = false
+	left_sprout_guardian_left.visible = false
+	left_sprout_guardian_right.visible = false
+	right_guardian_a_shadow.visible = false
+	right_guardian_b_shadow.visible = false
+	left_sprout_guardian_left_shadow.visible = false
+	left_sprout_guardian_right_shadow.visible = false
+	land_tabletop_actors.configure_for_level(current_level_index + 1)
 	_set_level_one_reaction(MinesweeperBoard.GameState.READY)
 	if uses_level_one_stage:
 		_apply_land_decorative_texture(
@@ -475,7 +643,9 @@ func start_level(level_index: int) -> void:
 			and _first_move_guide_enabled
 	board.set_opening_assist_mode(_take_opening_assist_mode(current_level_index))
 	board.load_level(level)
+	board.scale = Vector2.ONE
 	board.set_interaction_enabled(true)
+	_initialize_scan_ability()
 	eco_showcase.call("set_environment", board.level_number)
 	subtitle_label.text = "第%d关 · %s" % [
 		board.level_number,
@@ -495,6 +665,7 @@ func start_level(level_index: int) -> void:
 
 
 func restart_level() -> void:
+	_clear_scan_ability()
 	_completion_emitted = false
 	set_session_paused(false)
 	_reset_timer()
@@ -510,6 +681,7 @@ func restart_level() -> void:
 	_tutorial_last_revealed_index = -1
 	board.set_opening_assist_mode(_take_opening_assist_mode(current_level_index))
 	board.new_game()
+	_initialize_scan_ability()
 	if _tutorial_dismissed_for_session:
 		board.clear_guide_cell()
 	_refresh_instructions()
@@ -517,10 +689,8 @@ func restart_level() -> void:
 
 
 func _take_opening_assist_mode(level_index: int) -> int:
-	if (
-		level_index < ADAPTIVE_ASSIST_FIRST_LEVEL_INDEX
-		or level_index >= GreenSweeperLevels.LAND_LEVELS.size()
-	):
+	if level_index < ADAPTIVE_ASSIST_FIRST_LEVEL_INDEX \
+			or level_index >= GreenSweeperLevels.PLAYABLE_LEVELS.size():
 		return MinesweeperBoard.OpeningAssist.NONE
 	var early_loss_streak := int(_early_loss_streaks.get(level_index, 0))
 	if early_loss_streak >= EARLY_LOSS_STREAK_THRESHOLD:
@@ -536,7 +706,7 @@ func _take_opening_assist_mode(level_index: int) -> int:
 func _record_adaptive_attempt_result(state: int) -> void:
 	if (
 		current_level_index < ADAPTIVE_ASSIST_FIRST_LEVEL_INDEX
-		or current_level_index >= GreenSweeperLevels.LAND_LEVELS.size()
+		or current_level_index >= GreenSweeperLevels.PLAYABLE_LEVELS.size()
 	):
 		return
 	if state == MinesweeperBoard.GameState.WON:
@@ -588,13 +758,13 @@ func _refresh_instructions() -> void:
 	if _operation_mode == 1:
 		instructions_label.text = (
 			"方向键/WASD 移动"
-			+ "\nZ 净化 · X 标记"
+			+ "\nZ 净化 · X 标记 · C 扫描"
 			+ "\n鼠标仍可使用"
 		)
 	else:
 		instructions_label.text = (
 			("引导进行中" if tutorial_active else "首点可能污染")
-			+ "\n左键净化 · 右键标记"
+			+ "\n左键净化 · 右键标记 · C扫描"
 			+ "\n双击数字快速展开"
 		)
 
@@ -673,6 +843,11 @@ func _refresh_first_move_guide() -> void:
 
 
 func _on_reveal_completed(cell_index: int, newly_revealed_count: int) -> void:
+	if not _ordinary_reveal_seen:
+		_ordinary_reveal_seen = true
+	if newly_revealed_count > 0:
+		_award_scan_energy()
+	_unlock_scan_after_first_reveal()
 	if _tutorial_dismissed_for_session or board.level_number != 1:
 		return
 	if board.game_state in [MinesweeperBoard.GameState.WON, MinesweeperBoard.GameState.LOST]:
@@ -691,7 +866,13 @@ func _on_reveal_completed(cell_index: int, newly_revealed_count: int) -> void:
 	_refresh_first_move_guide()
 
 
-func _on_flag_completed(_cell_index: int, _is_flagged: bool) -> void:
+func _on_flag_completed(
+	_cell_index: int,
+	is_flagged: bool,
+	is_first_placement: bool
+) -> void:
+	if is_flagged and is_first_placement:
+		_award_scan_energy()
 	if _tutorial_dismissed_for_session or board.level_number != 1:
 		return
 	if _tutorial_step in [TutorialStep.MARK_CORE, TutorialStep.CHORD]:
@@ -700,6 +881,8 @@ func _on_flag_completed(_cell_index: int, _is_flagged: bool) -> void:
 
 
 func _on_chord_completed(_cell_index: int, newly_revealed_count: int) -> void:
+	if newly_revealed_count > 0:
+		_award_scan_energy()
 	if _tutorial_dismissed_for_session or board.level_number != 1:
 		return
 	if _tutorial_step == TutorialStep.CHORD and newly_revealed_count > 0:
@@ -707,6 +890,236 @@ func _on_chord_completed(_cell_index: int, newly_revealed_count: int) -> void:
 	elif _tutorial_step in [TutorialStep.MARK_CORE, TutorialStep.CHORD]:
 		_revalidate_tutorial_frontier()
 		_refresh_first_move_guide()
+
+
+func _clear_scan_ability() -> void:
+	if is_instance_valid(board):
+		board.set_scan_target_mode(false)
+	_scan_phase = ScanPhase.INACTIVE
+	_scan_threshold = SCAN_CAPACITY
+	_ordinary_reveal_seen = false
+	_scan_target_index = -1
+	_scan_target_global_position = Vector2.ZERO
+	if is_instance_valid(land_tabletop_actors):
+		land_tabletop_actors.finish_scan_visuals()
+		land_tabletop_actors.set_scan_meter(
+			_scan_energy,
+			_scan_threshold,
+			true,
+			false
+		)
+		land_tabletop_actors.set_scan_activation_enabled(false, "扫描尚未准备")
+
+
+func _initialize_scan_ability() -> void:
+	_scan_threshold = SCAN_CAPACITY
+	_scan_energy = clampi(_scan_energy, 0, _scan_threshold)
+	_ordinary_reveal_seen = false
+	_scan_target_index = -1
+	_scan_phase = ScanPhase.LOCKED_FIRST_REVEAL
+	board.set_scan_target_mode(false)
+	_refresh_scan_ui()
+
+
+func _unlock_scan_after_first_reveal() -> void:
+	if (
+		not _ordinary_reveal_seen
+		or board.game_state != MinesweeperBoard.GameState.PLAYING
+		or _scan_phase in [ScanPhase.INACTIVE, ScanPhase.FINISHED]
+	):
+		return
+	_scan_phase = (
+		ScanPhase.READY
+		if _scan_energy >= _scan_threshold
+		else ScanPhase.CHARGING
+	)
+	_refresh_scan_ui()
+
+
+func _award_scan_energy() -> void:
+	if (
+		_scan_phase == ScanPhase.INACTIVE
+		or board.game_state == MinesweeperBoard.GameState.LOST
+		or _scan_energy >= _scan_threshold
+	):
+		return
+	_scan_energy += 1
+	scan_energy_changed.emit(_scan_energy)
+	if (
+		_ordinary_reveal_seen
+		and board.game_state == MinesweeperBoard.GameState.PLAYING
+		and _scan_phase in [
+			ScanPhase.LOCKED_FIRST_REVEAL,
+			ScanPhase.CHARGING,
+			ScanPhase.READY,
+		]
+	):
+		_scan_phase = (
+			ScanPhase.READY
+			if _scan_energy >= _scan_threshold
+			else ScanPhase.CHARGING
+		)
+	_refresh_scan_ui()
+
+
+func _request_scan_mode() -> void:
+	if (
+		_scan_phase != ScanPhase.READY
+		or _session_paused
+		or board.game_state != MinesweeperBoard.GameState.PLAYING
+	):
+		_refresh_scan_ui()
+		return
+	_scan_phase = ScanPhase.TARGETING
+	board.set_scan_target_mode(true)
+	if not board.scan_target_mode:
+		_scan_phase = ScanPhase.READY
+		_refresh_scan_ui()
+		return
+	land_tabletop_actors.begin_scan_targeting()
+	_refresh_scan_ui()
+
+
+func _on_scan_target_requested(cell_index: int) -> void:
+	if _scan_phase != ScanPhase.TARGETING or not board.is_scan_candidate(cell_index):
+		return
+	_scan_target_index = cell_index
+	_scan_target_global_position = board.cell_nodes[cell_index].get_global_rect().get_center()
+	_scan_phase = ScanPhase.RESOLVING
+	var previous_energy := _scan_energy
+	_scan_energy = 0
+	_refresh_scan_ui()
+	if not board.try_scan_cell(cell_index):
+		_scan_energy = previous_energy
+		_scan_phase = ScanPhase.TARGETING
+		_refresh_scan_ui()
+		return
+	scan_energy_changed.emit(_scan_energy)
+
+
+func _on_scan_completed(
+	cell_index: int,
+	result: int,
+	_newly_revealed_count: int
+) -> void:
+	if _scan_phase != ScanPhase.RESOLVING or cell_index != _scan_target_index:
+		return
+	_scan_phase = (
+		ScanPhase.FINISHED
+		if board.game_state in [
+			MinesweeperBoard.GameState.WON,
+			MinesweeperBoard.GameState.LOST,
+		]
+		else ScanPhase.CHARGING
+	)
+	_scan_target_index = -1
+	land_tabletop_actors.set_scan_meter(0, _scan_threshold, false, false)
+	land_tabletop_actors.play_scan_result(result, _scan_target_global_position)
+	_refresh_scan_ui()
+
+
+func _cancel_scan_targeting() -> void:
+	if _scan_phase != ScanPhase.TARGETING:
+		return
+	board.set_scan_target_mode(false)
+	_scan_phase = ScanPhase.READY
+	_scan_target_index = -1
+	land_tabletop_actors.cancel_scan_targeting()
+	_refresh_scan_ui()
+
+
+func _finish_scan_ability() -> void:
+	if _scan_phase == ScanPhase.INACTIVE:
+		return
+	board.set_scan_target_mode(false)
+	_scan_phase = ScanPhase.FINISHED
+	_scan_target_index = -1
+	land_tabletop_actors.finish_scan_visuals()
+	_refresh_scan_ui()
+
+
+func _refresh_scan_ui() -> void:
+	if not is_instance_valid(land_tabletop_actors):
+		return
+	var locked := _scan_phase == ScanPhase.LOCKED_FIRST_REVEAL
+	var finished := _scan_phase == ScanPhase.FINISHED
+	land_tabletop_actors.set_scan_meter(
+		_scan_energy,
+		_scan_threshold,
+		locked,
+		finished,
+		true
+	)
+	var activation_enabled := (
+		_scan_phase == ScanPhase.READY
+		and not _session_paused
+		and board.game_state == MinesweeperBoard.GameState.PLAYING
+	)
+	var tooltip := "扫描尚未准备"
+	match _scan_phase:
+		ScanPhase.LOCKED_FIRST_REVEAL:
+			tooltip = "先完成第一次净化，再启动生态扫描"
+		ScanPhase.CHARGING:
+			tooltip = "扫描充能 %d/%d" % [_scan_energy, _scan_threshold]
+		ScanPhase.READY:
+			tooltip = "点击机器人或按 C，选择一个格子扫描"
+		ScanPhase.TARGETING:
+			tooltip = "请选择隐藏格；Esc、右键或 C 取消"
+		ScanPhase.RESOLVING:
+			tooltip = "正在扫描"
+		ScanPhase.FINISHED:
+			tooltip = "本局已经结束"
+	land_tabletop_actors.set_scan_activation_enabled(
+		activation_enabled,
+		tooltip
+	)
+	if is_instance_valid(scan_fallback_row):
+		scan_fallback_row.visible = false
+		scan_fallback_button.disabled = not activation_enabled
+		scan_fallback_button.tooltip_text = tooltip
+		var fallback_text := "未启用"
+		match _scan_phase:
+			ScanPhase.LOCKED_FIRST_REVEAL:
+				fallback_text = "首翻后可用"
+			ScanPhase.CHARGING:
+				fallback_text = "%d/%d" % [_scan_energy, _scan_threshold]
+			ScanPhase.READY:
+				fallback_text = "扫描就绪"
+			ScanPhase.TARGETING:
+				fallback_text = "选择格子"
+			ScanPhase.RESOLVING:
+				fallback_text = "扫描中"
+			ScanPhase.FINISHED:
+				fallback_text = "本局结束"
+		scan_fallback_status.text = fallback_text
+		var filled_count := mini(
+			3,
+			int(floor(float(_scan_energy) * 3.0 / float(maxi(1, _scan_threshold))))
+		)
+		for dot_index in ocean_scan_dots.size():
+			var dot := ocean_scan_dots[dot_index]
+			if finished:
+				dot.modulate = Color(0.42, 0.47, 0.40, 0.22)
+			elif dot_index < filled_count:
+				dot.modulate = (
+					Color(0.62, 0.74, 0.66, 0.52)
+					if locked
+					else Color.WHITE
+				)
+			else:
+				dot.modulate = Color(0.42, 0.56, 0.47, 0.30)
+
+
+func get_scan_phase() -> int:
+	return _scan_phase
+
+
+func get_scan_energy() -> int:
+	return _scan_energy
+
+
+func get_scan_threshold() -> int:
+	return _scan_threshold
 
 
 func _on_tutorial_next_requested() -> void:
@@ -853,6 +1266,7 @@ func _complete_tutorial() -> void:
 	board.clear_guide_cell()
 	first_move_guide.hide_guide()
 	_refresh_instructions()
+	_refresh_scan_ui()
 	if board.game_state == MinesweeperBoard.GameState.PLAYING:
 		status_label.text = "引导完成"
 
@@ -866,7 +1280,9 @@ func set_session_paused(paused: bool) -> void:
 	else:
 		_resume_timer_if_playing()
 	board.set_interaction_enabled(not paused)
+	land_tabletop_actors.set_scan_paused(paused)
 	pause_overlay.visible = paused
+	_refresh_scan_ui()
 	if paused:
 		resume_button.grab_focus()
 	pause_changed.emit(paused)
@@ -888,6 +1304,8 @@ func _load_level(level_index: int) -> void:
 
 func _on_state_changed(state: int) -> void:
 	_advance_available = false
+	if state in [MinesweeperBoard.GameState.WON, MinesweeperBoard.GameState.LOST]:
+		_finish_scan_ability()
 	_record_adaptive_attempt_result(state)
 	_set_level_one_reaction(state)
 	_apply_land_stickers(state)
@@ -944,12 +1362,7 @@ func _on_state_changed(state: int) -> void:
 
 
 func _has_next_level_in_chapter() -> bool:
-	var next_index := current_level_index + 1
-	if next_index >= GreenSweeperLevels.PLAYABLE_LEVELS.size():
-		return false
-	var land_level_count := GreenSweeperLevels.LAND_LEVELS.size()
-	return current_level_index < land_level_count - 1 \
-			or current_level_index >= land_level_count
+	return current_level_index + 1 < GreenSweeperLevels.PLAYABLE_LEVELS.size()
 
 
 func _on_flags_changed(used_flags: int, max_flags: int) -> void:

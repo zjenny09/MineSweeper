@@ -4,6 +4,8 @@ extends Button
 signal reveal_requested(cell_index: int)
 signal flag_requested(cell_index: int)
 signal chord_requested(cell_index: int)
+signal scan_requested(cell_index: int)
+signal scan_cancel_requested
 
 
 enum ProceduralVisual {
@@ -21,11 +23,17 @@ const SPROUT_PATH := ART.MARKER_FLAG_SPROUT_HEALTHY
 const WILTED_SPROUT_PATH := ART.MARKER_FLAG_SPROUT_WILTED
 const UPROOTED_SPROUT_PATH := ART.MARKER_FLAG_SPROUT_UPROOTED
 const SLIME_PATH := ART.MARKER_POLLUTION_CORE_SLIME
+const OCEAN_CORAL_NORMAL_PATH := ART.OCEAN_MARKER_CORAL_NORMAL
+const OCEAN_CORAL_FAILED_PATH := ART.OCEAN_MARKER_CORAL_FAILED
+const OCEAN_CORAL_WRONG_PATH := ART.OCEAN_MARKER_CORAL_WRONG
 const LEVEL_ONE_TILE_PAPER_PATH := ART.LEVEL_01_CELL_HIDDEN
 const LEVEL_ONE_TILE_HOVER_PATH := ART.LEVEL_01_CELL_HOVER
 const LEVEL_ONE_TILE_KEYBOARD_PATH := ART.LEVEL_01_CELL_KEYBOARD_FOCUS
 const LEVEL_ONE_TILE_REVEALED_PATH := ART.LEVEL_01_CELL_REVEALED
 const LEVEL_ONE_TILE_POLLUTED_PATH := ART.LEVEL_01_CELL_POLLUTED
+const OCEAN_TILE_HIDDEN_PATH := ART.OCEAN_CELL_HIDDEN
+const OCEAN_TILE_REVEALED_PATH := ART.OCEAN_CELL_REVEALED
+const OCEAN_TILE_POLLUTED_PATH := ART.OCEAN_CELL_POLLUTED
 const LEVEL_ONE_FONT_PATH := ART.UI_FONT
 const LEVEL_ONE_FONT_SIZE := 30
 const HEX_TOPOLOGY := &"hex_pointy_odd_r"
@@ -35,6 +43,15 @@ const HEX_HOVER_COLOR := Color("a4e3e7")
 const HEX_REVEALED_COLOR := Color("d9f1ea")
 const HEX_GUIDE_COLOR := Color("f3d56a")
 const HEX_BORDER_COLOR := Color("286f7b")
+const OCEAN_HOVER_DASH_COLOR := Color("267f91")
+const OCEAN_KEYBOARD_DASH_COLOR := Color("54d7e8")
+const OCEAN_GUIDE_TINT := Color(0.96, 0.79, 0.31, 0.32)
+const SCAN_TARGET_COLOR := Color("39c8d4")
+const SCAN_SAFE_COLOR := Color("58d69a")
+const SCAN_MINE_COLOR := Color("efa94a")
+const SCAN_PULSE_DURATION := 0.62
+const SCAN_RESULT_SAFE := 0
+const SCAN_RESULT_MINE := 1
 
 const DEFAULT_COLOR := Color("1b2d22")
 const GUIDE_COLOR := Color("1b2d22")
@@ -60,6 +77,16 @@ const LEVEL_ONE_NUMBER_COLORS := {
 	7: Color("fff0bd"),
 	8: Color("f4eee0"),
 }
+const OCEAN_NUMBER_COLORS := {
+	1: Color("174f73"),
+	2: Color("24735f"),
+	3: Color("b5523f"),
+	4: Color("584b8f"),
+	5: Color("8e4654"),
+	6: Color("146f78"),
+	7: Color("263f58"),
+	8: Color("5d5965"),
+}
 
 var cell_index := -1
 var _is_revealed := false
@@ -76,6 +103,13 @@ var _selected_guide_style: StyleBox
 var _polluted_style: StyleBox
 var _is_keyboard_selected := false
 var _is_guided := false
+var _is_flagged := false
+var _is_confirmed := false
+var _adjacent_count := 0
+var _scan_target_mode := false
+var _scan_candidate := false
+var _scan_pulse_result := -1
+var _scan_pulse_progress := 1.0
 var _level_number := 0
 var _is_hex := false
 var _hex_fill_ratio := 0.94
@@ -94,6 +128,12 @@ var _slime_texture: Texture2D
 
 static var _level_one_texture_cache: Dictionary = {}
 static var _level_one_font: FontFile
+static var _ocean_hidden_texture: Texture2D
+static var _ocean_revealed_texture: Texture2D
+static var _ocean_polluted_texture: Texture2D
+static var _ocean_coral_normal_texture: Texture2D
+static var _ocean_coral_failed_texture: Texture2D
+static var _ocean_coral_wrong_texture: Texture2D
 
 
 func _ready() -> void:
@@ -127,12 +167,18 @@ func render_state(
 	input_locked: bool,
 	wrong_flag: bool = false,
 	solved_mine: bool = false,
-	is_guided: bool = false
+	is_guided: bool = false,
+	is_confirmed: bool = false
 ) -> void:
 	text = ""
 	_set_text_color(DEFAULT_COLOR)
 
-	if wrong_flag:
+	if is_confirmed:
+		if _is_hex and mine_visible:
+			_show_static_sprout(ProceduralVisual.WILTED_SPROUT)
+		else:
+			_set_biosensor_target(true, true)
+	elif wrong_flag:
 		_show_static_sprout(ProceduralVisual.UPROOTED_SPROUT)
 	elif mine_visible:
 		if is_flagged:
@@ -144,7 +190,11 @@ func render_state(
 	elif is_revealed and adjacent_count > 0:
 		_clear_procedural_visual()
 		text = str(adjacent_count)
-		var number_colors := LEVEL_ONE_NUMBER_COLORS if _uses_level_one_art() else NUMBER_COLORS
+		var number_colors := NUMBER_COLORS
+		if _uses_level_one_art():
+			number_colors = LEVEL_ONE_NUMBER_COLORS
+		elif _is_hex:
+			number_colors = OCEAN_NUMBER_COLORS
 		_set_text_color(number_colors.get(adjacent_count, DEFAULT_COLOR))
 	elif is_revealed:
 		_clear_procedural_visual()
@@ -155,21 +205,15 @@ func render_state(
 		_set_biosensor_target(false)
 
 	_is_revealed = is_revealed
+	_is_flagged = is_flagged
+	_is_confirmed = is_confirmed
+	_adjacent_count = adjacent_count
 	_input_locked = input_locked
 	_is_guided = is_guided
 	disabled = input_locked
 	_apply_visual_style()
+	_update_tooltip()
 	queue_redraw()
-	if is_flagged:
-		tooltip_text = "小芽已标记疑似污染源"
-	elif is_guided:
-		tooltip_text = "建议从这里开始（也可以忽略）"
-	elif is_revealed and adjacent_count == 0:
-		tooltip_text = "空白净化区"
-	elif is_revealed:
-		tooltip_text = "邻近污染核心：%d；双击可快速展开" % adjacent_count
-	else:
-		tooltip_text = "左键净化，右键标记污染核心"
 
 
 func set_keyboard_selected(selected: bool) -> void:
@@ -178,6 +222,45 @@ func set_keyboard_selected(selected: bool) -> void:
 	_is_keyboard_selected = selected
 	_apply_visual_style()
 	queue_redraw()
+
+
+func set_scan_target_mode(enabled: bool, candidate: bool) -> void:
+	_scan_target_mode = enabled
+	_scan_candidate = enabled and candidate
+	_update_tooltip()
+	queue_redraw()
+
+
+func play_scan_result(result: int) -> void:
+	_scan_pulse_result = SCAN_RESULT_MINE if result == SCAN_RESULT_MINE else SCAN_RESULT_SAFE
+	_scan_pulse_progress = 0.0
+	set_process(true)
+	queue_redraw()
+
+
+func _update_tooltip() -> void:
+	if _scan_target_mode:
+		tooltip_text = (
+			"点击扫描此格；右键取消"
+			if _scan_candidate
+			else "此格不可扫描；右键取消"
+		)
+	elif _is_confirmed:
+		tooltip_text = "机器人已确认这里存在污染核心"
+	elif _is_flagged:
+		tooltip_text = (
+			"珊瑚已标记疑似污染源"
+			if _is_hex
+			else "小芽已标记疑似污染源"
+		)
+	elif _is_guided:
+		tooltip_text = "建议从这里开始（也可以忽略）"
+	elif _is_revealed and _adjacent_count == 0:
+		tooltip_text = "空白净化区"
+	elif _is_revealed:
+		tooltip_text = "邻近污染核心：%d；双击可快速展开" % _adjacent_count
+	else:
+		tooltip_text = "左键净化，右键标记污染核心"
 
 
 func uses_level_one_art() -> bool:
@@ -199,6 +282,9 @@ func _update_polluted_styles() -> void:
 		return
 	if _uses_level_one_art():
 		_apply_visual_style()
+		return
+	if _is_hex:
+		queue_redraw()
 		return
 	var eased := 1.0 - pow(1.0 - pollution_progress, 2.0)
 	var hidden_style := _hidden_style as StyleBoxFlat
@@ -238,6 +324,10 @@ func reset_transient_visuals() -> void:
 	sprout_wilt_progress = 0.0
 	_sprout_wilting = false
 	_oil_time = 0.0
+	_scan_target_mode = false
+	_scan_candidate = false
+	_scan_pulse_result = -1
+	_scan_pulse_progress = 1.0
 	set_process(false)
 	queue_redraw()
 
@@ -287,11 +377,31 @@ func is_sprout_wilting() -> bool:
 
 
 func _process(delta: float) -> void:
+	var step := maxf(0.0, delta)
 	if procedural_visual == ProceduralVisual.SLUDGE_CORE:
-		_oil_time += maxf(0.0, delta)
+		_oil_time += step
 		queue_redraw()
-		return
-	advance_biosensor_animation(delta)
+	else:
+		advance_biosensor_animation(step)
+	if _scan_pulse_result >= 0:
+		_scan_pulse_progress = minf(
+			_scan_pulse_progress + step / SCAN_PULSE_DURATION,
+			1.0
+		)
+		queue_redraw()
+		if is_equal_approx(_scan_pulse_progress, 1.0):
+			_scan_pulse_result = -1
+	_refresh_processing()
+
+
+func _refresh_processing() -> void:
+	var procedural_active := procedural_visual == ProceduralVisual.SLUDGE_CORE
+	if procedural_visual == ProceduralVisual.BIOSENSOR:
+		procedural_active = (
+			(_sprout_wilting and sprout_wilt_progress < 1.0)
+			or (not _sprout_wilting and (_biosensor_target_visible or biosensor_progress > 0.0))
+		)
+	set_process(procedural_active or _scan_pulse_result >= 0)
 
 
 func _set_biosensor_target(visible_target: bool, snap_complete: bool = false) -> void:
@@ -356,7 +466,13 @@ func _uses_level_one_art() -> bool:
 
 
 func _on_pressed() -> void:
-	if not _input_locked and not _is_revealed:
+	if _input_locked:
+		return
+	if _scan_target_mode:
+		if _scan_candidate:
+			scan_requested.emit(cell_index)
+		return
+	if not _is_revealed:
 		reveal_requested.emit(cell_index)
 
 
@@ -365,6 +481,11 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
+		if _scan_target_mode:
+			if mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed:
+				scan_cancel_requested.emit()
+				accept_event()
+			return
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.double_click and mouse_event.pressed and _is_revealed:
 			chord_requested.emit(cell_index)
 			accept_event()
@@ -408,6 +529,30 @@ func _configure_hex_styles() -> void:
 	_selected_guide_style = empty_style
 	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 		add_theme_stylebox_override(state, empty_style)
+	if _ocean_hidden_texture == null:
+		_ocean_hidden_texture = _load_runtime_texture(OCEAN_TILE_HIDDEN_PATH)
+	if _ocean_revealed_texture == null:
+		_ocean_revealed_texture = _load_runtime_texture(OCEAN_TILE_REVEALED_PATH)
+	if _ocean_polluted_texture == null:
+		_ocean_polluted_texture = _load_runtime_texture(OCEAN_TILE_POLLUTED_PATH)
+	if _ocean_coral_normal_texture == null:
+		_ocean_coral_normal_texture = _load_runtime_texture(OCEAN_CORAL_NORMAL_PATH)
+	if _ocean_coral_failed_texture == null:
+		_ocean_coral_failed_texture = _load_runtime_texture(OCEAN_CORAL_FAILED_PATH)
+	if _ocean_coral_wrong_texture == null:
+		_ocean_coral_wrong_texture = _load_runtime_texture(OCEAN_CORAL_WRONG_PATH)
+	_configure_ocean_typography()
+
+
+func _configure_ocean_typography() -> void:
+	if _level_one_font == null:
+		_level_one_font = load(LEVEL_ONE_FONT_PATH) as FontFile
+		if _level_one_font == null:
+			push_error("Ocean cell font could not be loaded: %s" % LEVEL_ONE_FONT_PATH)
+			return
+	add_theme_font_override("font", _level_one_font)
+	add_theme_color_override("font_outline_color", Color(0.93, 0.98, 0.96, 0.82))
+	add_theme_constant_override("outline_size", 2)
 
 
 func _configure_level_one_styles() -> void:
@@ -548,42 +693,75 @@ func _hex_points() -> PackedVector2Array:
 	return points
 
 
+func _ocean_texture_for_state(state: StringName) -> Texture2D:
+	match state:
+		&"revealed":
+			return _ocean_revealed_texture
+		&"polluted":
+			return _ocean_polluted_texture
+		_:
+			return _ocean_hidden_texture
+
+
+func _ocean_base_texture() -> Texture2D:
+	return _ocean_texture_for_state(&"revealed" if _is_revealed else &"hidden")
+
+
+func _ocean_pollution_amount() -> float:
+	if _is_flagged:
+		return 0.0
+	if procedural_visual == ProceduralVisual.SLUDGE_CORE:
+		return 1.0
+	return clampf(pollution_progress, 0.0, 1.0)
+
+
 func _draw_hex_cell() -> void:
 	if not _is_hex:
 		return
-	var fill_color := HEX_HIDDEN_COLOR
-	var border_color := HEX_BORDER_COLOR
-	var border_width := maxf(1.5, minf(size.x, size.y) * 0.035)
-	if _is_revealed:
-		fill_color = HEX_REVEALED_COLOR
-		border_color = Color("65a9aa")
-	elif _is_guided:
-		fill_color = HEX_GUIDE_COLOR
-		border_color = Color("8d7a32")
-	elif is_hovered():
-		fill_color = HEX_HOVER_COLOR
-	if _is_keyboard_selected:
-		border_color = Color("f4ce45")
-		border_width = maxf(3.0, minf(size.x, size.y) * 0.06)
-	var points := _hex_points()
-	draw_colored_polygon(points, fill_color)
-	var outline := points.duplicate()
-	outline.append(points[0])
-	draw_polyline(outline, border_color, border_width, true)
+	var radius := minf(size.y * 0.5, size.x / HEX_HORIZONTAL_FACTOR) * _hex_fill_ratio
+	var texture_size := Vector2(HEX_HORIZONTAL_FACTOR * radius, radius * 2.0)
+	var texture_rect := Rect2((size - texture_size) * 0.5, texture_size)
+	var base_texture := _ocean_base_texture()
+	if base_texture != null:
+		draw_texture_rect(base_texture, texture_rect, false)
+	else:
+		draw_colored_polygon(_hex_points(), HEX_REVEALED_COLOR if _is_revealed else HEX_HIDDEN_COLOR)
+
+	var pollution_amount := _ocean_pollution_amount()
+	var polluted_texture := _ocean_texture_for_state(&"polluted")
+	if pollution_amount > 0.0 and polluted_texture != null:
+		var pollution_color := Color.WHITE
+		pollution_color.a = pollution_amount
+		draw_texture_rect(polluted_texture, texture_rect, false, pollution_color)
+	if _is_guided:
+		draw_colored_polygon(_hex_points(), OCEAN_GUIDE_TINT)
 
 
 func _draw() -> void:
 	_draw_hex_cell()
 	_draw_focus_outline()
+	_draw_scan_target()
 	match procedural_visual:
 		ProceduralVisual.BIOSENSOR:
-			_draw_biosensor()
+			if _is_hex:
+				_draw_ocean_coral(_ocean_marker_texture(&"normal"), biosensor_progress, true)
+			else:
+				_draw_biosensor()
 		ProceduralVisual.SLUDGE_CORE:
 			_draw_sludge_core()
 		ProceduralVisual.WILTED_SPROUT:
-			_draw_static_sprout(_wilted_sprout_texture, 0.78)
+			if _is_hex:
+				_draw_ocean_coral(_ocean_marker_texture(&"failed"))
+			else:
+				_draw_static_sprout(_wilted_sprout_texture, 0.78)
 		ProceduralVisual.UPROOTED_SPROUT:
-			_draw_static_sprout(_uprooted_sprout_texture, 0.86)
+			if _is_hex:
+				_draw_ocean_coral(_ocean_marker_texture(&"wrong"))
+			else:
+				_draw_static_sprout(_uprooted_sprout_texture, 0.86)
+	if _is_confirmed:
+		_draw_confirmed_badge()
+	_draw_scan_result_pulse()
 	_draw_hex_number()
 
 
@@ -613,8 +791,43 @@ func _draw_hex_number() -> void:
 	)
 
 
+func _draw_ocean_focus_outline() -> void:
+	var outline_color := Color.TRANSPARENT
+	var keyboard_outline := false
+	if _is_keyboard_selected:
+		outline_color = OCEAN_KEYBOARD_DASH_COLOR
+		keyboard_outline = true
+	elif is_hovered():
+		outline_color = OCEAN_HOVER_DASH_COLOR
+	else:
+		return
+	var points := _hex_points()
+	var center := size * 0.5
+	var inset_scale := 0.70 if keyboard_outline else 0.76
+	for point_index in points.size():
+		points[point_index] = center + (points[point_index] - center) * inset_scale
+	var unit := minf(size.x, size.y)
+	var line_width := maxf(2.4, unit * (0.052 if keyboard_outline else 0.038))
+	var dash_length := maxf(4.0, unit * (0.085 if keyboard_outline else 0.070))
+	for point_index in 6:
+		draw_dashed_line(
+			points[point_index],
+			points[(point_index + 1) % 6],
+			outline_color,
+			line_width,
+			dash_length,
+			true,
+			true
+		)
+
+
 func _draw_focus_outline() -> void:
-	if not _uses_level_one_art() or _input_locked:
+	if _input_locked:
+		return
+	if _is_hex:
+		_draw_ocean_focus_outline()
+		return
+	if not _uses_level_one_art():
 		return
 	var outline_color := Color.TRANSPARENT
 	var keyboard_outline := false
@@ -659,6 +872,115 @@ func _draw_focus_outline() -> void:
 		Vector2(left, bottom), Vector2(left, top),
 		outline_color, line_width, dash_length, true, antialiased
 	)
+
+
+func _draw_scan_target() -> void:
+	if not _scan_target_mode or not _scan_candidate or _input_locked:
+		return
+	var unit := minf(size.x, size.y)
+	var emphasized := is_hovered() or _is_keyboard_selected
+	var color := SCAN_TARGET_COLOR
+	color.a = 0.96 if emphasized else 0.48
+	var line_width := maxf(2.2, unit * (0.050 if emphasized else 0.034))
+	if _is_hex:
+		var points := _hex_points()
+		var outline := points.duplicate()
+		outline.append(points[0])
+		draw_polyline(outline, color, line_width, true)
+		return
+	var inset := unit * 0.14
+	var arm := unit * 0.16
+	var left := inset
+	var top := inset
+	var right := size.x - inset
+	var bottom := size.y - inset
+	for segment in [
+		[Vector2(left, top + arm), Vector2(left, top), Vector2(left + arm, top)],
+		[Vector2(right - arm, top), Vector2(right, top), Vector2(right, top + arm)],
+		[Vector2(right, bottom - arm), Vector2(right, bottom), Vector2(right - arm, bottom)],
+		[Vector2(left + arm, bottom), Vector2(left, bottom), Vector2(left, bottom - arm)],
+	]:
+		draw_polyline(PackedVector2Array(segment), color, line_width, true)
+
+
+func _draw_confirmed_badge() -> void:
+	var unit := minf(size.x, size.y)
+	if unit <= 1.0:
+		return
+	var center := Vector2(size.x * 0.77, size.y * 0.24)
+	var radius := maxf(4.0, unit * 0.105)
+	draw_circle(center, radius + 1.5, Color(0.05, 0.25, 0.28, 0.82))
+	draw_circle(center, radius, SCAN_TARGET_COLOR)
+	var check_color := Color(0.96, 1.0, 0.91, 1.0)
+	draw_line(
+		center + Vector2(-radius * 0.45, 0.0),
+		center + Vector2(-radius * 0.10, radius * 0.32),
+		check_color,
+		maxf(1.5, unit * 0.035),
+		true
+	)
+	draw_line(
+		center + Vector2(-radius * 0.10, radius * 0.32),
+		center + Vector2(radius * 0.50, -radius * 0.38),
+		check_color,
+		maxf(1.5, unit * 0.035),
+		true
+	)
+
+
+func _draw_scan_result_pulse() -> void:
+	if _scan_pulse_result < 0:
+		return
+	var unit := minf(size.x, size.y)
+	var progress := clampf(_scan_pulse_progress, 0.0, 1.0)
+	var color := SCAN_MINE_COLOR if _scan_pulse_result == SCAN_RESULT_MINE else SCAN_SAFE_COLOR
+	color.a = (1.0 - progress) * 0.92
+	var center := size * 0.5
+	var radius := lerpf(unit * 0.24, unit * 0.50, progress)
+	draw_arc(
+		center,
+		radius,
+		0.0,
+		TAU,
+		40,
+		color,
+		maxf(2.0, unit * 0.045),
+		true
+	)
+
+
+func _ocean_marker_texture(state: StringName) -> Texture2D:
+	match state:
+		&"failed":
+			return _ocean_coral_failed_texture
+		&"wrong":
+			return _ocean_coral_wrong_texture
+		_:
+			return _ocean_coral_normal_texture
+
+
+func _draw_ocean_coral(
+	texture: Texture2D,
+	progress: float = 1.0,
+	animated: bool = false
+) -> void:
+	var unit := minf(size.x, size.y)
+	var reveal := clampf(progress, 0.0, 1.0)
+	if texture == null or unit <= 1.0 or reveal <= 0.0:
+		return
+	var eased := 1.0 - pow(1.0 - reveal, 3.0)
+	var marker_size := Vector2.ONE * unit * 0.82
+	var center := size * 0.5 + Vector2(0.0, unit * 0.025)
+	var rotation := 0.0
+	if animated:
+		rotation = sin(_idle_time * 2.5 + float(cell_index) * 0.7) * 0.045
+	draw_set_transform(
+		center,
+		rotation,
+		Vector2(lerpf(0.82, 1.0, eased), maxf(0.06, eased))
+	)
+	draw_texture_rect(texture, Rect2(-marker_size * 0.5, marker_size), false)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _draw_biosensor() -> void:

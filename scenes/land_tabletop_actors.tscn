@@ -1,0 +1,272 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/land_tabletop_actors.gd" id="1_tabletop"]
+[ext_resource type="Script" path="res://scripts/guardian_ground_shadow.gd" id="2_shadow"]
+[ext_resource type="StyleBox" path="res://themes/victory_light_dot_style.tres" id="3_dot_style"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_scan_hint"]
+bg_color = Color(0.949, 0.906, 0.718, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.38, 0.22, 0.78)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+shadow_color = Color(0.12, 0.09, 0.04, 0.22)
+shadow_size = 2
+shadow_offset = Vector2(1, 2)
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_scan_hint_hover"]
+bg_color = Color(0.839, 0.925, 0.725, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.153, 0.49, 0.31, 0.95)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+shadow_color = Color(0.12, 0.09, 0.04, 0.25)
+shadow_size = 2
+shadow_offset = Vector2(1, 2)
+anti_aliasing = true
+
+[node name="LandTabletopActors" type="Control"]
+unique_name_in_owner = true
+z_index = 6
+z_as_relative = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_tabletop")
+
+[node name="DesignPlane" type="Node2D" parent="."]
+unique_name_in_owner = true
+y_sort_enabled = true
+
+[node name="ScanBeam" type="Line2D" parent="DesignPlane"]
+unique_name_in_owner = true
+visible = false
+z_index = 4
+width = 3.0
+default_color = Color(0.2235, 0.7843, 0.8314, 0.9)
+end_cap_mode = 2
+joint_mode = 2
+antialiased = true
+
+[node name="RobotSlot" type="Node2D" parent="DesignPlane"]
+unique_name_in_owner = true
+position = Vector2(570, 656)
+
+[node name="RobotShadow" type="Control" parent="DesignPlane/RobotSlot"]
+unique_name_in_owner = true
+z_index = -1
+offset_left = -42.0
+offset_top = -12.0
+offset_right = 42.0
+offset_bottom = 12.0
+pivot_offset = Vector2(42, 12)
+mouse_filter = 2
+script = ExtResource("2_shadow")
+center_y_ratio = 0.5
+width_ratio = 0.4
+height_ratio = 0.095
+opacity_multiplier = 0.74
+cast_offset = Vector2(7, 2)
+
+[node name="RobotMotion" type="Node2D" parent="DesignPlane/RobotSlot"]
+unique_name_in_owner = true
+
+[node name="RobotFailureMotion" type="Node2D" parent="DesignPlane/RobotSlot/RobotMotion"]
+unique_name_in_owner = true
+
+[node name="RobotScanMotion" type="Node2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFailureMotion"]
+unique_name_in_owner = true
+
+[node name="RobotSprite" type="Sprite2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFailureMotion/RobotScanMotion"]
+unique_name_in_owner = true
+
+[node name="RobotFallenPose" type="Node2D" parent="DesignPlane/RobotSlot/RobotMotion"]
+unique_name_in_owner = true
+visible = false
+
+[node name="RobotFailureLeftArm" type="Node2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFallenPose"]
+unique_name_in_owner = true
+
+[node name="RobotFailureLeftArmSprite" type="Sprite2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFallenPose/RobotFailureLeftArm"]
+unique_name_in_owner = true
+
+[node name="RobotFailureRightArm" type="Node2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFallenPose"]
+unique_name_in_owner = true
+
+[node name="RobotFailureRightArmSprite" type="Sprite2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFallenPose/RobotFailureRightArm"]
+unique_name_in_owner = true
+
+[node name="RobotFailureBody" type="Sprite2D" parent="DesignPlane/RobotSlot/RobotMotion/RobotFallenPose"]
+unique_name_in_owner = true
+
+[node name="RobotFailureSparks" type="Node2D" parent="DesignPlane/RobotSlot"]
+unique_name_in_owner = true
+visible = false
+z_index = 4
+
+[node name="RobotFailureSparkA" type="Line2D" parent="DesignPlane/RobotSlot/RobotFailureSparks"]
+unique_name_in_owner = true
+width = 1.8
+default_color = Color(0.49, 0.91, 0.94, 0.92)
+end_cap_mode = 2
+joint_mode = 2
+antialiased = true
+
+[node name="RobotFailureSparkB" type="Line2D" parent="DesignPlane/RobotSlot/RobotFailureSparks"]
+unique_name_in_owner = true
+width = 1.6
+default_color = Color(1, 0.89, 0.42, 0.94)
+end_cap_mode = 2
+joint_mode = 2
+antialiased = true
+
+[node name="RobotFailureSparkC" type="Line2D" parent="DesignPlane/RobotSlot/RobotFailureSparks"]
+unique_name_in_owner = true
+width = 1.4
+default_color = Color(0.9, 1, 1, 0.88)
+end_cap_mode = 2
+joint_mode = 2
+antialiased = true
+
+[node name="RobotHotspot" type="Button" parent="DesignPlane/RobotSlot"]
+unique_name_in_owner = true
+z_index = 5
+offset_left = -34.0
+offset_top = -96.0
+offset_right = 34.0
+offset_bottom = 4.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+flat = true
+tooltip_text = "完成首次净化后可使用生态扫描"
+
+[node name="ScanHintButton" type="Button" parent="DesignPlane/RobotSlot"]
+unique_name_in_owner = true
+visible = false
+z_index = 6
+offset_left = -50.0
+offset_top = -124.0
+offset_right = 50.0
+offset_bottom = -100.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.055, 0.255, 0.13, 1)
+theme_override_colors/font_hover_color = Color(0.03, 0.22, 0.11, 1)
+theme_override_colors/font_pressed_color = Color(0.03, 0.22, 0.11, 1)
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("StyleBox_scan_hint")
+theme_override_styles/hover = SubResource("StyleBox_scan_hint_hover")
+theme_override_styles/pressed = SubResource("StyleBox_scan_hint_hover")
+text = "点机器人扫描 · C"
+
+[node name="PlantSlot" type="Node2D" parent="DesignPlane"]
+unique_name_in_owner = true
+position = Vector2(640, 656)
+
+[node name="PlantShadow" type="Control" parent="DesignPlane/PlantSlot"]
+unique_name_in_owner = true
+z_index = -1
+offset_left = -29.0
+offset_top = -10.0
+offset_right = 29.0
+offset_bottom = 10.0
+pivot_offset = Vector2(29, 10)
+mouse_filter = 2
+script = ExtResource("2_shadow")
+center_y_ratio = 0.5
+width_ratio = 0.38
+height_ratio = 0.09
+opacity_multiplier = 0.66
+cast_offset = Vector2(4, 1)
+
+[node name="PlantMotion" type="Node2D" parent="DesignPlane/PlantSlot"]
+unique_name_in_owner = true
+
+[node name="PlantSprite" type="Sprite2D" parent="DesignPlane/PlantSlot/PlantMotion"]
+unique_name_in_owner = true
+
+[node name="VictoryDots" type="Node2D" parent="DesignPlane/PlantSlot"]
+unique_name_in_owner = true
+z_index = 2
+visible = false
+
+[node name="VictoryDotA" type="Panel" parent="DesignPlane/PlantSlot/VictoryDots"]
+unique_name_in_owner = true
+offset_right = 8.0
+offset_bottom = 8.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("3_dot_style")
+
+[node name="VictoryDotB" type="Panel" parent="DesignPlane/PlantSlot/VictoryDots"]
+unique_name_in_owner = true
+offset_right = 8.0
+offset_bottom = 8.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("3_dot_style")
+
+[node name="VictoryDotC" type="Panel" parent="DesignPlane/PlantSlot/VictoryDots"]
+unique_name_in_owner = true
+offset_right = 8.0
+offset_bottom = 8.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("3_dot_style")
+
+[node name="MonsterSlot" type="Node2D" parent="DesignPlane"]
+unique_name_in_owner = true
+position = Vector2(710, 648)
+
+[node name="MonsterShadow" type="Control" parent="DesignPlane/MonsterSlot"]
+unique_name_in_owner = true
+z_index = -1
+offset_left = -30.0
+offset_top = -10.0
+offset_right = 30.0
+offset_bottom = 10.0
+pivot_offset = Vector2(30, 10)
+mouse_filter = 2
+script = ExtResource("2_shadow")
+center_y_ratio = 0.5
+width_ratio = 0.4
+height_ratio = 0.095
+opacity_multiplier = 0.72
+cast_offset = Vector2(6, 1.5)
+
+[node name="MonsterMotion" type="Node2D" parent="DesignPlane/MonsterSlot"]
+unique_name_in_owner = true
+
+[node name="MonsterSprite" type="Sprite2D" parent="DesignPlane/MonsterSlot/MonsterMotion"]
+unique_name_in_owner = true
+
+[node name="MonsterTears" type="Node2D" parent="DesignPlane/MonsterSlot/MonsterMotion"]
+unique_name_in_owner = true
+visible = false
+z_index = 2
+
+[node name="MonsterTearLeft" type="Line2D" parent="DesignPlane/MonsterSlot/MonsterMotion/MonsterTears"]
+unique_name_in_owner = true
+width = 1.8
+default_color = Color(0.32, 0.75, 0.88, 0.92)
+end_cap_mode = 2
+antialiased = true
+
+[node name="MonsterTearRight" type="Line2D" parent="DesignPlane/MonsterSlot/MonsterMotion/MonsterTears"]
+unique_name_in_owner = true
+width = 1.8
+default_color = Color(0.32, 0.75, 0.88, 0.92)
+end_cap_mode = 2
+antialiased = true

@@ -16,6 +16,8 @@ func _run_tests() -> void:
 	_cleanup()
 	_test_defaults()
 	_test_save_and_load()
+	_test_schema_one_scan_migration()
+	_test_scan_limits_and_grant()
 	_test_legacy_display_migration()
 	_test_removed_level_migration()
 	_test_backup_recovery()
@@ -38,9 +40,11 @@ func _run_tests() -> void:
 func _test_defaults() -> void:
 	var store = SaveStore.new(TEST_PATH)
 	var data: Dictionary = store.get_data()
-	_check(data["schema_version"] == 1, "default schema version should be 1")
+	_check(data["schema_version"] == 2, "default schema version should be 2")
 	_check(store.get_last_played_level() == 0, "default last played level should be 0")
 	_check(not store.has_seen_first_move_guide(), "new saves should show the first-move guide")
+	_check(store.get_scan_energy() == 0, "new saves should start with empty scan energy")
+	_check(not store.has_claimed_level_one_scan_grant(), "new saves should not pre-claim the level-one grant")
 	_check(data["levels"].size() == 5, "defaults should contain all five levels")
 	for number in range(1, 6):
 		_check(not store.is_level_completed(number), "level %d should default to incomplete" % number)
@@ -57,6 +61,8 @@ func _test_save_and_load() -> void:
 	store.record_completion(1, 4200)
 	store.mark_level_started(2)
 	store.mark_first_move_guide_seen()
+	_check(store.claim_level_one_scan_grant(), "the first level-one grant claim should succeed")
+	store.set_scan_energy(7)
 	store.set_master_volume(0.35)
 	store.set_fullscreen(true)
 	store.set_operation_mode(1)
@@ -66,12 +72,47 @@ func _test_save_and_load() -> void:
 	loaded.load_data()
 	_check(loaded.get_last_played_level() == 2, "last played level should persist")
 	_check(loaded.has_seen_first_move_guide(), "first-move guide state should persist")
+	_check(loaded.get_scan_energy() == 7, "shared scan energy should persist")
+	_check(loaded.has_claimed_level_one_scan_grant(), "the one-time scan grant should persist")
 	_check(loaded.is_level_completed(1), "completion should persist")
 	_check(loaded.get_best_time_ms(1) == 4200, "best time should persist")
 	_check(is_equal_approx(loaded.get_master_volume(), 0.35), "volume should persist")
 	_check(loaded.is_fullscreen(), "fullscreen should persist")
 	_check(loaded.get_window_mode() == 2, "legacy fullscreen API should map to borderless fullscreen")
 	_check(loaded.get_operation_mode() == 1, "keyboard operation mode should persist")
+
+
+func _test_schema_one_scan_migration() -> void:
+	_cleanup()
+	var source_store = SaveStore.new(TEST_PATH)
+	var legacy_data: Dictionary = source_store.get_data()
+	legacy_data["schema_version"] = 1
+	legacy_data.erase("scan")
+	legacy_data["last_played_level"] = 2
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(legacy_data))
+	file.close()
+	var loaded = SaveStore.new(TEST_PATH)
+	var migrated: Dictionary = loaded.load_data()
+	_check(migrated["schema_version"] == 2, "schema-one saves should normalize to schema two")
+	_check(loaded.get_last_played_level() == 2, "schema migration should preserve progress")
+	_check(loaded.get_scan_energy() == 0, "schema-one saves should migrate with empty energy")
+	_check(not loaded.has_claimed_level_one_scan_grant(), "schema-one saves should leave the one-time grant available")
+	_cleanup()
+
+
+func _test_scan_limits_and_grant() -> void:
+	var store = SaveStore.new(TEST_PATH)
+	store.set_scan_energy(-4)
+	_check(store.get_scan_energy() == 0, "scan energy should clamp at zero")
+	store.set_scan_energy(30)
+	_check(store.get_scan_energy() == 12, "scan energy should clamp at twelve")
+	store.set_scan_energy(3)
+	_check(store.claim_level_one_scan_grant(), "the unclaimed grant should fill the meter")
+	_check(store.get_scan_energy() == 12, "claiming the grant should atomically fill twelve energy")
+	store.set_scan_energy(4)
+	_check(not store.claim_level_one_scan_grant(), "the level-one grant should only be claimable once")
+	_check(store.get_scan_energy() == 4, "a repeated grant claim should not refill energy")
 
 
 func _test_legacy_display_migration() -> void:

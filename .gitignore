@@ -9,3 +9,22 @@ build/
 Thumbs.db
 *.tmp
 *.bak
+__pycache__/
+
+# Local visual working files and source history
+.claude_*.png
+.claude_*.png.import
+design/
+docs/asset_reviews/
+docs/ui_history/
+docs/ocean_*.png
+docs/ocean_*.png.import
+docs/*.docx
+
+# Unused legacy visual exports
+assets/ui/level1/
+assets/art/land_levels/background/land_tabletop_background_clean.png*
+assets/art/land_levels/stage/unified_land_stage_body.png*
+assets/art/land_levels/stage/unified_land_stage_shadow.png*
+assets/gameplay/markers/uprooted_sprout.png*
+assets/gameplay/markers/wilted_sprout.png*

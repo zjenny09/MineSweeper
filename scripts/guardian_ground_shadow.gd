@@ -19,6 +19,14 @@ const SEGMENTS := 48
 	set(value):
 		opacity_multiplier = value
 		queue_redraw()
+@export var cast_offset := Vector2(6.0, 2.0):
+	set(value):
+		cast_offset = value
+		queue_redraw()
+@export_range(-0.40, 0.40, 0.01) var cast_rotation := 0.04:
+	set(value):
+		cast_rotation = value
+		queue_redraw()
 
 
 func _ready() -> void:
@@ -33,21 +41,21 @@ func _draw() -> void:
 		return
 	var center := Vector2(size.x * 0.5, size.y * center_y_ratio)
 	_draw_ellipse(
-		center,
-		Vector2(size.x * width_ratio, size.y * height_ratio),
-		Color(0.10, 0.07, 0.045, 0.10 * opacity_multiplier),
-		0.0
+		center + cast_offset,
+		Vector2(size.x * width_ratio * 1.08, size.y * height_ratio * 0.92),
+		Color(0.11, 0.09, 0.06, 0.09 * opacity_multiplier),
+		cast_rotation
+	)
+	_draw_ellipse(
+		center + cast_offset * 0.45,
+		Vector2(size.x * width_ratio * 0.78, size.y * height_ratio * 0.68),
+		Color(0.10, 0.075, 0.05, 0.15 * opacity_multiplier),
+		cast_rotation * 0.5
 	)
 	_draw_ellipse(
 		center,
-		Vector2(size.x * width_ratio * 0.81, size.y * height_ratio * 0.74),
-		Color(0.10, 0.07, 0.045, 0.16 * opacity_multiplier),
-		0.0
-	)
-	_draw_ellipse(
-		center,
-		Vector2(size.x * width_ratio * 0.56, size.y * height_ratio * 0.47),
-		Color(0.08, 0.055, 0.035, 0.24 * opacity_multiplier),
+		Vector2(size.x * width_ratio * 0.46, size.y * height_ratio * 0.42),
+		Color(0.075, 0.055, 0.04, 0.26 * opacity_multiplier),
 		0.0
 	)
 

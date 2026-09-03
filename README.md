@@ -2,7 +2,15 @@
 
 使用 Godot 4.7.2 Standard 和 GDScript 制作的生态主题关卡制扫雷游戏。
 
-## 当前版本：v0.3.5
+## 当前版本：v0.4.0
+
+### v0.4.0 更新
+
+- 第6–10关海洋篇正式接入主流程，统一六边形棋盘、生态角色和关卡推进
+- 第1–10关统一采用同关条件安全开局规则
+- 新增跨关卡、重开和应用重启保存的12格扫描充能，并支持同局重复扫描
+- 海洋关卡接入机器人、生态主体与纸片守护者的扫描、胜利和失败反馈
+- 统一陆地与海洋暂停菜单，并完成海洋棋盘托、角色比例和对齐调整
 
 ### v0.3.5 更新
 
@@ -70,9 +78,9 @@
 - 第2–5关复用第一关的桌面、纸托、装饰、格子美术和反馈动画
 - 每关只按自身尺寸重绘棋盘格，并保留各自的污染核心数量
 - 第二关仍无安全箭头和首点保护
-- 第1–5关默认仍可能首点踩雷；连续3局首点踩雷后，下一局首点必定安全
-- 第1–5关连续3局在第2–5步内失败后，下一局首点必定展开一片0格区域
-- 自适应保护只作用于触发后的下一局，并按关卡分别记录
+- 第1–10关默认均可能首点踩雷；同一关卡连续2局首点踩雷后，重开该关的下一局首点必定安全
+- 同一关卡连续3局在前5步内失败后，重开该关的下一局首点必定展开一片0格区域
+- 自适应保护只作用于触发后的同一关卡下一局，不会继承到下一关，并按关卡分别记录
 - 继续使用方格8邻接、标记和数字双击展开
 
 ## 01—05 陆地主题
@@ -81,7 +89,7 @@
 萌芽 → 灌木 → 湿地 → 草原 → 森林
 ```
 
-## 06—10 海洋篇原型
+## 06—10 海洋篇
 
 ```text
 潮池初醒 → 海草摇篮 → 珊瑚花园 → 海藻森林 → 深海鲸落
@@ -93,7 +101,8 @@
 - 关卡9：`8 × 8 / 14个污染核心`
 - 关卡10：`10 × 9 / 22个污染核心`
 - 使用尖顶六边形错行布局，每格最多连接六个邻格
-- 当前复用通用游戏外壳，正式海洋场景、地图和专属素材尚在制作
+- 使用海洋专属桌面、棋盘托、格子、标记、关卡地图与生态角色素材
+- 第5关胜利后可直接进入第6关，并保留共享扫描电量
 
 ## 数字双击展开
 
@@ -138,4 +147,5 @@ D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/desktop_layout_test.gd
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/adaptive_opening_assist_test.gd
 D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/ocean_levels_test.gd
+D:\GameDev\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe --headless --path D:\o!mygame\minesweeper --script res://tests/scan_ability_test.gd
 ```

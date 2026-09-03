@@ -4,8 +4,11 @@ extends Control
 signal state_changed(state: int)
 signal flags_changed(used_flags: int, max_flags: int)
 signal reveal_completed(cell_index: int, newly_revealed_count: int)
-signal flag_completed(cell_index: int, is_flagged: bool)
+signal flag_completed(cell_index: int, is_flagged: bool, is_first_placement: bool)
 signal chord_completed(cell_index: int, newly_revealed_count: int)
+signal scan_target_requested(cell_index: int)
+signal scan_cancel_requested
+signal scan_completed(cell_index: int, result: int, newly_revealed_count: int)
 
 const CELL_SCENE: PackedScene = preload("res://scenes/cell.tscn")
 const LEVEL_ONE_BOARD_SIZE := Vector2(620.0, 587.0)
@@ -34,6 +37,13 @@ const POLLUTION_CELL_DURATION := 0.95
 const HEX_TOPOLOGY := &"hex_pointy_odd_r"
 const HEX_HORIZONTAL_FACTOR := 1.7320508
 const HEX_CELL_FILL := 0.94
+const OCEAN_BOARD_PAPER_SAFE_RECT := Rect2(76.0, 36.0, 472.0, 428.0)
+const OCEAN_BOARD_PAPER_MARGIN := Vector2(16.0, 18.0)
+const OCEAN_BOARD_PAPER_MIN_SIZE := Vector2(456.0, 410.0)
+const OCEAN_BOARD_PAPER_COLOR := Color(0.973, 0.956, 0.851, 1.0)
+const OCEAN_BOARD_PAPER_EDGE := Color(0.35, 0.66, 0.72, 0.62)
+const OCEAN_BOARD_CREASE_COLOR := Color(0.36, 0.72, 0.80, 0.70)
+const OCEAN_BOARD_CORNER_CUT := 12.0
 
 
 enum OperationMode {
@@ -56,6 +66,12 @@ enum GameState {
 	LOST,
 }
 
+
+enum ScanResult {
+	SAFE,
+	MINE,
+}
+
 var level_number := 0
 var level_name := ""
 var row_count := 0
@@ -76,7 +92,11 @@ var opening_assist_mode: int = OpeningAssist.NONE
 var interaction_enabled := true
 var operation_mode: int = OperationMode.MOUSE
 var keyboard_cell_index := -1
+var scan_target_mode := false
 var pollution_tint_progress := 0.0
+var ocean_hex_bounds := Rect2()
+var ocean_paper_rect := Rect2()
+var ocean_shared_edge_count := 0
 var _pollution_animation_active := false
 var _pollution_elapsed := 0.0
 var _pollution_origin_index := -1
@@ -84,11 +104,14 @@ var _pollution_origin_index := -1
 var mines: Array[bool] = []
 var revealed: Array[bool] = []
 var flagged: Array[bool] = []
+var ever_flagged: Array[bool] = []
+var confirmed: Array[bool] = []
 var adjacent_counts: Array[int] = []
 var cell_nodes: Array[MineCell] = []
 
 var _random := RandomNumberGenerator.new()
 var _handmade_surface: Control
+var _ocean_shared_edges: Array[PackedVector2Array] = []
 
 
 func _ready() -> void:
@@ -198,10 +221,16 @@ func _input(event: InputEvent) -> void:
 	if action_key == 0:
 		action_key = key_event.keycode
 	if action_key == KEY_Z:
-		_keyboard_primary_action()
+		if scan_target_mode:
+			scan_target_requested.emit(keyboard_cell_index)
+		else:
+			_keyboard_primary_action()
 		get_viewport().set_input_as_handled()
 	elif action_key == KEY_X:
-		toggle_flag(keyboard_cell_index)
+		if scan_target_mode:
+			scan_cancel_requested.emit()
+		else:
+			toggle_flag(keyboard_cell_index)
 		get_viewport().set_input_as_handled()
 
 
@@ -229,12 +258,15 @@ func new_game() -> void:
 	revealed_safe_count = 0
 	move_count = 0
 	reveal_action_count = 0
+	scan_target_mode = false
 	guide_cell_index = -1
 	for cell in cell_nodes:
 		cell.reset_transient_visuals()
 	_reset_array(mines, false)
 	_reset_array(revealed, false)
 	_reset_array(flagged, false)
+	_reset_array(ever_flagged, false)
+	_reset_array(confirmed, false)
 	_reset_array(adjacent_counts, 0)
 	_place_random_cores()
 	_calculate_adjacent_counts()
@@ -262,9 +294,7 @@ func reveal_cell(cell_index: int) -> void:
 	move_count += 1
 	reveal_action_count += 1
 	if game_state == GameState.READY:
-		if topology == HEX_TOPOLOGY:
-			_prepare_hex_first_reveal(cell_index)
-		elif opening_assist_mode != OpeningAssist.NONE:
+		if opening_assist_mode != OpeningAssist.NONE:
 			_apply_opening_assist(cell_index)
 		opening_assist_mode = OpeningAssist.NONE
 		guide_cell_index = -1
@@ -274,8 +304,7 @@ func reveal_cell(cell_index: int) -> void:
 	if mines[cell_index]:
 		revealed[cell_index] = true
 		game_state = GameState.LOST
-		if level_number >= 1 and level_number <= 5:
-			_start_pollution_animation(cell_index)
+		_start_pollution_animation(cell_index)
 		_refresh_all_cells()
 		state_changed.emit(game_state)
 		reveal_completed.emit(cell_index, 0)
@@ -283,11 +312,78 @@ func reveal_cell(cell_index: int) -> void:
 
 	var previous_revealed_count := revealed_safe_count
 	_reveal_area(cell_index)
-	if revealed_safe_count == safe_cell_count:
+	var completed_game := revealed_safe_count == safe_cell_count
+	if completed_game:
 		game_state = GameState.WON
-		state_changed.emit(game_state)
 	_refresh_all_cells()
 	reveal_completed.emit(cell_index, revealed_safe_count - previous_revealed_count)
+	if completed_game:
+		state_changed.emit(game_state)
+
+
+func try_scan_cell(cell_index: int) -> bool:
+	if (
+		not interaction_enabled
+		or not scan_target_mode
+		or game_state != GameState.PLAYING
+		or reveal_action_count <= 0
+		or not is_scan_candidate(cell_index)
+	):
+		return false
+	_sync_keyboard_cursor(cell_index)
+	set_scan_target_mode(false)
+	move_count += 1
+
+	if mines[cell_index]:
+		flagged[cell_index] = true
+		confirmed[cell_index] = true
+		used_flags += 1
+		_refresh_cell(cell_index)
+		cell_nodes[cell_index].play_scan_result(ScanResult.MINE)
+		flags_changed.emit(used_flags, core_count)
+		scan_completed.emit(cell_index, ScanResult.MINE, 0)
+		return true
+
+	var previous_revealed_count := revealed_safe_count
+	_reveal_area(cell_index)
+	var completed_game := revealed_safe_count == safe_cell_count
+	if completed_game:
+		game_state = GameState.WON
+	_refresh_all_cells()
+	cell_nodes[cell_index].play_scan_result(ScanResult.SAFE)
+	scan_completed.emit(
+		cell_index,
+		ScanResult.SAFE,
+		revealed_safe_count - previous_revealed_count
+	)
+	if completed_game:
+		state_changed.emit(game_state)
+	return true
+
+
+func is_scan_candidate(cell_index: int) -> bool:
+	return (
+		_is_valid_index(cell_index)
+		and not revealed[cell_index]
+		and not flagged[cell_index]
+	)
+
+
+func set_scan_target_mode(enabled: bool) -> void:
+	var next_mode := (
+		enabled
+		and interaction_enabled
+		and game_state == GameState.PLAYING
+		and reveal_action_count > 0
+	)
+	if scan_target_mode == next_mode:
+		return
+	scan_target_mode = next_mode
+	for cell_index in cell_nodes.size():
+		cell_nodes[cell_index].set_scan_target_mode(
+			scan_target_mode,
+			is_scan_candidate(cell_index)
+		)
 
 
 func toggle_flag(cell_index: int) -> void:
@@ -296,22 +392,25 @@ func toggle_flag(cell_index: int) -> void:
 	_sync_keyboard_cursor(cell_index)
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
-	if revealed[cell_index]:
+	if revealed[cell_index] or confirmed[cell_index]:
 		return
 
+	var is_first_placement := false
 	if flagged[cell_index]:
 		flagged[cell_index] = false
 		used_flags -= 1
 	elif used_flags < core_count:
 		flagged[cell_index] = true
 		used_flags += 1
+		is_first_placement = not ever_flagged[cell_index]
+		ever_flagged[cell_index] = true
 	else:
 		return
 
 	move_count += 1
 	_refresh_cell(cell_index)
 	flags_changed.emit(used_flags, core_count)
-	flag_completed.emit(cell_index, flagged[cell_index])
+	flag_completed.emit(cell_index, flagged[cell_index], is_first_placement)
 
 
 func chord_cell(cell_index: int) -> void:
@@ -339,12 +438,14 @@ func chord_cell(cell_index: int) -> void:
 		if not mines[neighbor] and not flagged[neighbor] and not revealed[neighbor]:
 			_reveal_area(neighbor)
 
-	if revealed_safe_count == safe_cell_count:
+	var completed_game := revealed_safe_count == safe_cell_count
+	if completed_game:
 		game_state = GameState.WON
-		state_changed.emit(game_state)
 	if revealed_safe_count != previous_revealed_count:
 		_refresh_all_cells()
 		chord_completed.emit(cell_index, revealed_safe_count - previous_revealed_count)
+	if completed_game:
+		state_changed.emit(game_state)
 
 
 func set_interaction_enabled(enabled: bool) -> void:
@@ -434,6 +535,10 @@ func _clear_cells() -> void:
 				parent.remove_child(cell)
 			cell.free()
 	cell_nodes.clear()
+	ocean_hex_bounds = Rect2()
+	ocean_paper_rect = Rect2()
+	ocean_shared_edge_count = 0
+	_ocean_shared_edges.clear()
 	var handmade_surface := get_node_or_null("CellSurfaceHost") as Control
 	if is_instance_valid(handmade_surface):
 		handmade_surface.visible = false
@@ -471,8 +576,20 @@ func _make_cell(cell_index: int) -> MineCell:
 	cell.reveal_requested.connect(reveal_cell)
 	cell.flag_requested.connect(toggle_flag)
 	cell.chord_requested.connect(chord_cell)
+	cell.scan_requested.connect(_on_cell_scan_requested)
+	cell.scan_cancel_requested.connect(_on_cell_scan_cancel_requested)
 	cell_nodes.append(cell)
 	return cell
+
+
+func _on_cell_scan_requested(cell_index: int) -> void:
+	if scan_target_mode:
+		scan_target_requested.emit(cell_index)
+
+
+func _on_cell_scan_cancel_requested() -> void:
+	if scan_target_mode:
+		scan_cancel_requested.emit()
 
 
 func _validate_handmade_geometry() -> void:
@@ -571,7 +688,96 @@ func _layout_hex_cells() -> void:
 			clampi(roundi(radius * 0.72), 11, 30)
 		)
 		cell.add_theme_constant_override("outline_size", 2)
+	_update_ocean_paper_geometry()
 	queue_redraw()
+
+
+func _update_ocean_paper_geometry() -> void:
+	ocean_hex_bounds = Rect2()
+	ocean_paper_rect = Rect2()
+	ocean_shared_edge_count = 0
+	_ocean_shared_edges.clear()
+	if topology != HEX_TOPOLOGY or cell_nodes.is_empty() or not is_instance_valid(_handmade_surface):
+		return
+
+	var edge_records: Dictionary = {}
+	var has_bounds := false
+	for cell in cell_nodes:
+		var points := _full_hex_points(cell)
+		for point in points:
+			if not has_bounds:
+				ocean_hex_bounds = Rect2(point, Vector2.ZERO)
+				has_bounds = true
+			else:
+				ocean_hex_bounds = ocean_hex_bounds.expand(point)
+		for point_index in 6:
+			var edge_start := points[point_index]
+			var edge_end := points[(point_index + 1) % 6]
+			var key := _ocean_edge_key(edge_start, edge_end)
+			if edge_records.has(key):
+				var record: Dictionary = edge_records[key]
+				record["count"] = int(record["count"]) + 1
+				edge_records[key] = record
+			else:
+				edge_records[key] = {
+					"start": edge_start,
+					"end": edge_end,
+					"count": 1,
+				}
+
+	for record_value in edge_records.values():
+		var record: Dictionary = record_value
+		if int(record["count"]) != 2:
+			continue
+		var edge_start: Vector2 = record["start"]
+		var edge_end: Vector2 = record["end"]
+		_ocean_shared_edges.append(PackedVector2Array([edge_start, edge_end]))
+	ocean_shared_edge_count = _ocean_shared_edges.size()
+
+	var paper_size := Vector2(
+		maxf(
+			ocean_hex_bounds.size.x + OCEAN_BOARD_PAPER_MARGIN.x * 2.0,
+			OCEAN_BOARD_PAPER_MIN_SIZE.x
+		),
+		maxf(
+			ocean_hex_bounds.size.y + OCEAN_BOARD_PAPER_MARGIN.y * 2.0,
+			OCEAN_BOARD_PAPER_MIN_SIZE.y
+		)
+	)
+	paper_size.x = minf(paper_size.x, OCEAN_BOARD_PAPER_SAFE_RECT.size.x)
+	paper_size.y = minf(paper_size.y, OCEAN_BOARD_PAPER_SAFE_RECT.size.y)
+	var paper_position := ocean_hex_bounds.get_center() - paper_size * 0.5
+	paper_position.x = clampf(
+		paper_position.x,
+		OCEAN_BOARD_PAPER_SAFE_RECT.position.x,
+		OCEAN_BOARD_PAPER_SAFE_RECT.end.x - paper_size.x
+	)
+	paper_position.y = clampf(
+		paper_position.y,
+		OCEAN_BOARD_PAPER_SAFE_RECT.position.y,
+		OCEAN_BOARD_PAPER_SAFE_RECT.end.y - paper_size.y
+	)
+	ocean_paper_rect = Rect2(paper_position, paper_size)
+
+
+func _full_hex_points(cell: MineCell) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	var center := _handmade_surface.position + cell.position + cell.size * 0.5
+	var radius := minf(cell.size.y * 0.5, cell.size.x / HEX_HORIZONTAL_FACTOR)
+	for point_index in 6:
+		var angle := deg_to_rad(-90.0 + float(point_index) * 60.0)
+		points.append(center + Vector2(cos(angle), sin(angle)) * radius)
+	return points
+
+
+func _ocean_edge_key(edge_start: Vector2, edge_end: Vector2) -> String:
+	var start_key := Vector2i(roundi(edge_start.x * 10.0), roundi(edge_start.y * 10.0))
+	var end_key := Vector2i(roundi(edge_end.x * 10.0), roundi(edge_end.y * 10.0))
+	if start_key.x > end_key.x or (start_key.x == end_key.x and start_key.y > end_key.y):
+		var swap := start_key
+		start_key = end_key
+		end_key = swap
+	return "%d:%d|%d:%d" % [start_key.x, start_key.y, end_key.x, end_key.y]
 
 
 func _handmade_play_rect() -> Rect2:
@@ -580,8 +786,51 @@ func _handmade_play_rect() -> Rect2:
 	return Rect2(_handmade_surface.position, _handmade_surface.size)
 
 
+func _ocean_paper_points() -> PackedVector2Array:
+	var rect := ocean_paper_rect
+	var cut := minf(
+		OCEAN_BOARD_CORNER_CUT,
+		minf(rect.size.x, rect.size.y) * 0.16
+	)
+	return PackedVector2Array([
+		rect.position + Vector2(cut, 0.0),
+		Vector2(rect.end.x - cut, rect.position.y),
+		Vector2(rect.end.x, rect.position.y + cut),
+		Vector2(rect.end.x, rect.end.y - cut),
+		Vector2(rect.end.x - cut, rect.end.y),
+		Vector2(rect.position.x + cut, rect.end.y),
+		Vector2(rect.position.x, rect.end.y - cut),
+		Vector2(rect.position.x, rect.position.y + cut),
+	])
+
+
+func _draw_ocean_paper() -> void:
+	if ocean_paper_rect.size.x <= 0.0 or ocean_paper_rect.size.y <= 0.0:
+		return
+	var paper_points := _ocean_paper_points()
+	draw_colored_polygon(paper_points, OCEAN_BOARD_PAPER_COLOR)
+	var paper_outline := paper_points.duplicate()
+	paper_outline.append(paper_points[0])
+	draw_polyline(paper_outline, OCEAN_BOARD_PAPER_EDGE, 1.5, true)
+	for edge in _ocean_shared_edges:
+		draw_dashed_line(
+			edge[0],
+			edge[1],
+			OCEAN_BOARD_CREASE_COLOR,
+			1.5,
+			5.5,
+			true,
+			true
+		)
+
+
 func _draw() -> void:
-	if level_number < 1 or level_number > 5 or row_count <= 0 or column_count <= 0:
+	if row_count <= 0 or column_count <= 0:
+		return
+	if topology == HEX_TOPOLOGY:
+		_draw_ocean_paper()
+		return
+	if level_number < 1 or level_number > 5:
 		return
 	var play_rect := _handmade_play_rect()
 	var paper_rect := play_rect.grow(LAND_BOARD_PAPER_MARGIN)
@@ -697,59 +946,6 @@ func _apply_opening_assist(cell_index: int) -> void:
 	_reset_array(adjacent_counts, 0)
 	_calculate_adjacent_counts()
 	assert(mines.count(true) == core_count, "Opening assistance must preserve the core count.")
-
-
-func _prepare_hex_first_reveal(cell_index: int) -> void:
-	for attempt in 64:
-		if not mines[cell_index] and adjacent_counts[cell_index] == 0:
-			var preview_count := _count_preview_reveal(cell_index)
-			if preview_count > 1 and preview_count < safe_cell_count:
-				return
-		_reset_array(mines, false)
-		_reset_array(adjacent_counts, 0)
-		_place_random_cores()
-		_calculate_adjacent_counts()
-
-	# A dense fallback still guarantees that the first click is safe and cannot win instantly.
-	if mines[cell_index]:
-		for replacement_index in cell_count:
-			if replacement_index != cell_index and not mines[replacement_index]:
-				mines[cell_index] = false
-				mines[replacement_index] = true
-				break
-	_reset_array(adjacent_counts, 0)
-	_calculate_adjacent_counts()
-	if adjacent_counts[cell_index] == 0:
-		var neighbors := _get_neighbors(cell_index)
-		for neighbor in neighbors:
-			if mines[neighbor]:
-				return
-			for source_index in cell_count:
-				if mines[source_index] and source_index != cell_index:
-					mines[source_index] = false
-					mines[neighbor] = true
-					_reset_array(adjacent_counts, 0)
-					_calculate_adjacent_counts()
-					return
-
-
-func _count_preview_reveal(start_index: int) -> int:
-	var queue: Array[int] = [start_index]
-	var visited: Array[bool] = []
-	_reset_array(visited, false)
-	var reveal_count := 0
-	while not queue.is_empty():
-		var current: int = queue.pop_front()
-		if visited[current] or mines[current]:
-			continue
-		visited[current] = true
-		reveal_count += 1
-		if adjacent_counts[current] > 0:
-			continue
-		for neighbor in _get_neighbors(current):
-			if not visited[neighbor] and not mines[neighbor]:
-				queue.push_back(neighbor)
-	return reveal_count
 
 
 func _place_random_cores() -> void:
@@ -898,7 +1094,8 @@ func _refresh_cell(cell_index: int) -> void:
 			game_finished,
 			wrong_flag,
 			solved_core,
-			cell_index == guide_cell_index
+			cell_index == guide_cell_index,
+			confirmed[cell_index]
 		)
 
 

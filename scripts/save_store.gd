@@ -1,8 +1,10 @@
 class_name GreenSweeperSaveStore
 extends RefCounted
 
-const SCHEMA_VERSION := 1
+const SCHEMA_VERSION := 2
+const LEGACY_SCHEMA_VERSION := 1
 const DEFAULT_SAVE_PATH := "user://save_v1.json"
+const SCAN_CAPACITY := 12
 const WINDOW_MODE_WINDOWED := 0
 const WINDOW_MODE_MAXIMIZED := 1
 const WINDOW_MODE_FULLSCREEN := 2
@@ -130,6 +132,26 @@ func mark_first_move_guide_seen() -> void:
 	_data["first_move_guide_seen"] = true
 
 
+func get_scan_energy() -> int:
+	return int(_data["scan"]["energy"])
+
+
+func set_scan_energy(value: int) -> void:
+	_data["scan"]["energy"] = clampi(value, 0, SCAN_CAPACITY)
+
+
+func has_claimed_level_one_scan_grant() -> bool:
+	return bool(_data["scan"]["level_one_grant_claimed"])
+
+
+func claim_level_one_scan_grant() -> bool:
+	if has_claimed_level_one_scan_grant():
+		return false
+	_data["scan"]["level_one_grant_claimed"] = true
+	_data["scan"]["energy"] = SCAN_CAPACITY
+	return true
+
+
 func set_master_volume(value: float) -> void:
 	if is_finite(value):
 		_data["settings"]["master_volume"] = clampf(value, 0.0, 1.0)
@@ -193,6 +215,10 @@ func _make_default_data() -> Dictionary:
 		"schema_version": SCHEMA_VERSION,
 		"last_played_level": 0,
 		"first_move_guide_seen": false,
+		"scan": {
+			"energy": 0,
+			"level_one_grant_claimed": false,
+		},
 		"levels": levels,
 		"settings": {
 			"master_volume": 1.0,
@@ -217,6 +243,14 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 		# Older saves predate this field. Any recorded play means the guide
 		# must stay dismissed after upgrading.
 		normalized["first_move_guide_seen"] = last_played != 0
+
+	var source_scan = source.get("scan")
+	if source_scan is Dictionary:
+		var scan_energy := _normalized_int(source_scan.get("energy"), 0)
+		normalized["scan"]["energy"] = clampi(scan_energy, 0, SCAN_CAPACITY)
+		var grant_claimed = source_scan.get("level_one_grant_claimed")
+		if grant_claimed is bool:
+			normalized["scan"]["level_one_grant_claimed"] = grant_claimed
 
 	var source_levels = source.get("levels")
 	if source_levels is Dictionary:
@@ -257,7 +291,8 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	if not value is Dictionary:
 		return false
 	var serialized: Dictionary = value
-	if _normalized_int(serialized.get("schema_version"), -1) != SCHEMA_VERSION:
+	var schema_version := _normalized_int(serialized.get("schema_version"), -1)
+	if schema_version not in [LEGACY_SCHEMA_VERSION, SCHEMA_VERSION]:
 		return false
 
 	var last_played := _normalized_int(serialized.get("last_played_level"), -1)
@@ -266,6 +301,15 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	if serialized.has("first_move_guide_seen") \
 			and not serialized.get("first_move_guide_seen") is bool:
 		return false
+	if schema_version == SCHEMA_VERSION:
+		var scan = serialized.get("scan")
+		if not scan is Dictionary:
+			return false
+		var scan_energy := _normalized_int(scan.get("energy"), -1)
+		if scan_energy < 0 or scan_energy > SCAN_CAPACITY:
+			return false
+		if not scan.get("level_one_grant_claimed") is bool:
+			return false
 
 	var levels = serialized.get("levels")
 	if not levels is Dictionary:

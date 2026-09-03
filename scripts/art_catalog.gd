@@ -27,9 +27,27 @@ const MARKER_FLAG_SPROUT_UPROOTED := \
 		"res://assets/art/gameplay/markers/flag_sprout_uprooted.png"
 const MARKER_POLLUTION_CORE_SLIME := \
 		"res://assets/art/gameplay/markers/pollution_core_slime.png"
+const OCEAN_MARKER_CORAL_NORMAL := \
+		"res://assets/art/ocean_levels/markers/ocean_flag_coral_normal.png"
+const OCEAN_MARKER_CORAL_FAILED := \
+		"res://assets/art/ocean_levels/markers/ocean_flag_coral_failed.png"
+const OCEAN_MARKER_CORAL_WRONG := \
+		"res://assets/art/ocean_levels/markers/ocean_flag_coral_wrong.png"
 
 const LEVEL_01_LAND_BACKGROUND := \
 		"res://assets/art/level_01/background/land_paper_background.png"
+const LAND_TABLETOP_BACKGROUND := \
+		"res://assets/art/land_levels/background/land_tabletop_background5_clean.png"
+const OCEAN_DESKTOP_BACKGROUND := \
+		"res://assets/art/ocean_levels/background/ocean_desktop_clean.png"
+const OCEAN_BOARD_TRAY_FRAME := \
+		"res://assets/art/ocean_levels/stage/ocean_board_tray_frame.png"
+const OCEAN_CELL_HIDDEN := \
+		"res://assets/art/ocean_levels/board/cells/ocean_cell_hidden.png"
+const OCEAN_CELL_REVEALED := \
+		"res://assets/art/ocean_levels/board/cells/ocean_cell_revealed.png"
+const OCEAN_CELL_POLLUTED := \
+		"res://assets/art/ocean_levels/board/cells/ocean_cell_polluted.png"
 const LEVEL_01_BOARD_TRAY := "res://assets/art/level_01/board/board_tray.png"
 const LEVEL_01_BOARD_SHADOW := "res://assets/art/level_01/board/board_shadow.png"
 const LEVEL_01_CELL_HIDDEN := "res://assets/art/level_01/board/cells/cell_hidden.png"
@@ -76,6 +94,18 @@ const LAND_REGENERATE_NORMAL := "res://assets/art/land_levels/buttons/regenerate
 const LAND_REGENERATE_HOVER := "res://assets/art/land_levels/buttons/regenerate_hover.png"
 const LAND_REGENERATE_FOCUS := "res://assets/art/land_levels/buttons/regenerate_focus.png"
 const LAND_REGENERATE_PRESSED := "res://assets/art/land_levels/buttons/regenerate_pressed.png"
+const OCEAN_PAUSE_NORMAL := "res://assets/art/ocean_levels/buttons/ocean_pause_normal.png"
+const OCEAN_PAUSE_HOVER := "res://assets/art/ocean_levels/buttons/ocean_pause_hover.png"
+const OCEAN_PAUSE_FOCUS := "res://assets/art/ocean_levels/buttons/ocean_pause_focus.png"
+const OCEAN_PAUSE_PRESSED := "res://assets/art/ocean_levels/buttons/ocean_pause_pressed.png"
+const OCEAN_REGENERATE_NORMAL := \
+		"res://assets/art/ocean_levels/buttons/ocean_regenerate_normal.png"
+const OCEAN_REGENERATE_HOVER := \
+		"res://assets/art/ocean_levels/buttons/ocean_regenerate_hover.png"
+const OCEAN_REGENERATE_FOCUS := \
+		"res://assets/art/ocean_levels/buttons/ocean_regenerate_focus.png"
+const OCEAN_REGENERATE_PRESSED := \
+		"res://assets/art/ocean_levels/buttons/ocean_regenerate_pressed.png"
 
 const LEVEL_02_DECOR_SHRUB_HEALTHY := \
 		"res://assets/art/land_levels/decorations/level_02_shrub_healthy.png"
@@ -129,27 +159,73 @@ const LEVEL_01_GUARDIAN_RIGHT_YELLOW_STANDING := \
 		"res://assets/art/level_01/guardians/right_panel_guardian_yellow_standing.png"
 const LEVEL_01_GUARDIAN_LEFT_ROBOT := \
 		"res://assets/art/land_levels/guardians/left_robot_guardian.png"
+const LAND_TABLETOP_PAPER_MONSTER := \
+		"res://assets/art/land_levels/guardians/tabletop_paper_monster.png"
 const LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_RIGHT := \
 		"res://assets/art/level_01/guardians/left_sprout_guardian_facing_right.png"
 const LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_LEFT := \
 		"res://assets/art/level_01/guardians/left_sprout_guardian_facing_left.png"
 const LAND_GUARDIAN_LEFT_CRYING := \
 		"res://assets/art/land_levels/guardians/left_guardian_crying.png"
+const LAND_ROBOT_FAILURE_BODY := \
+		"res://assets/art/land_levels/guardians/robot_failure_body.png"
+const OCEAN_ACTOR_ANEMONE_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_06_anemone_healthy.png"
+const OCEAN_ACTOR_ANEMONE_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_06_anemone_wilted.png"
+const OCEAN_ACTOR_SEAGRASS_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_07_seagrass_healthy.png"
+const OCEAN_ACTOR_SEAGRASS_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_07_seagrass_wilted.png"
+const OCEAN_ACTOR_CORAL_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_08_coral_healthy.png"
+const OCEAN_ACTOR_CORAL_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_08_coral_wilted.png"
+const OCEAN_ACTOR_KELP_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_09_kelp_healthy.png"
+const OCEAN_ACTOR_KELP_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_09_kelp_wilted.png"
+const OCEAN_ACTOR_WHALE_FALL_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_10_whale_fall_healthy.png"
+const OCEAN_ACTOR_WHALE_FALL_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_10_whale_fall_wilted.png"
+const OCEAN_ACTOR_HEALTHY_PATHS := [
+	OCEAN_ACTOR_ANEMONE_HEALTHY,
+	OCEAN_ACTOR_SEAGRASS_HEALTHY,
+	OCEAN_ACTOR_CORAL_HEALTHY,
+	OCEAN_ACTOR_KELP_HEALTHY,
+	OCEAN_ACTOR_WHALE_FALL_HEALTHY,
+]
+const OCEAN_ACTOR_WILTED_PATHS := [
+	OCEAN_ACTOR_ANEMONE_WILTED,
+	OCEAN_ACTOR_SEAGRASS_WILTED,
+	OCEAN_ACTOR_CORAL_WILTED,
+	OCEAN_ACTOR_KELP_WILTED,
+	OCEAN_ACTOR_WHALE_FALL_WILTED,
+]
 const LAND_GUARDIAN_RIGHT_YELLOW_CRYING := \
 		"res://assets/art/land_levels/guardians/right_yellow_guardian_crying.png"
 const LAND_GUARDIAN_RIGHT_WHITE_CRYING := \
 		"res://assets/art/land_levels/guardians/right_white_guardian_crying.png"
 
 const LEVEL_SELECT_DESKTOP_BACKGROUND := \
-		"res://assets/art/level_select/desktop_background.png"
+		"res://assets/art/level_select/desktop_background2_clean.png"
 const LEVEL_SELECT_LAND_MAP := \
-		"res://assets/art/level_select/land_map_tilted_shadow.png"
+		"res://assets/art/level_select/land_map2_rebuilt.png"
 const LEVEL_SELECT_BOTTOM_INFO_BAR := \
 		"res://assets/art/level_select/bottom_info_bar.png"
 const LEVEL_SELECT_MARKER_BUTTON := \
 		"res://assets/art/level_select/level_marker_button.png"
 const LEVEL_SELECT_SHORTCUT_BUTTON := \
 		"res://assets/art/level_select/shortcut_button_dark.png"
+const OCEAN_LEVEL_SELECT_BACKGROUND := \
+		"res://assets/art/level_select/ocean_level_select_background_clean.png"
+const OCEAN_LEVEL_SELECT_MAP := \
+		"res://assets/art/level_select/ocean_level_map_rebuilt.png"
+const OCEAN_LEVEL_SELECT_MARKER := \
+		"res://assets/art/level_select/ocean_level_marker_star.png"
+const OCEAN_LEVEL_SELECT_FINAL_MARKER := \
+		"res://assets/art/level_select/ocean_level_marker_final.png"
 
 const WELCOME_LANDSCAPE_BASE := "res://assets/art/welcome/background/landscape_base.png"
 const WELCOME_SUN_GLOW := "res://assets/art/welcome/effects/sun_glow.png"

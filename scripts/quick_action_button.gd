@@ -1,8 +1,8 @@
 extends TextureButton
 
-@export var hover_lift := 3.0
+@export var hover_scale := 1.04
+@export var pressed_scale := 0.97
 
-var _rest_position := Vector2.ZERO
 var _hovered := false
 var _focused := false
 var _pressed := false
@@ -17,13 +17,13 @@ func _ready() -> void:
 	focus_exited.connect(_on_focus_exited)
 	button_down.connect(_on_button_down)
 	button_up.connect(_on_button_up)
-	call_deferred("_capture_rest_position")
+	call_deferred("_capture_visual_baseline")
 
 
-func _capture_rest_position() -> void:
-	_rest_position = position
+func _capture_visual_baseline() -> void:
 	_base_normal_texture = texture_normal
 	texture_focused = null
+	pivot_offset = size * 0.5
 	_apply_motion(false)
 
 
@@ -60,14 +60,17 @@ func _on_button_up() -> void:
 func _apply_motion(animate := true) -> void:
 	if _base_normal_texture != null:
 		texture_normal = texture_hover if _focused and not _pressed else _base_normal_texture
-	var lifted := (_hovered or _focused) and not _pressed
-	var target := _rest_position + Vector2(0.0, -hover_lift if lifted else 0.0)
+	var target_scale := Vector2.ONE
+	if _pressed:
+		target_scale = Vector2.ONE * pressed_scale
+	elif _hovered or _focused:
+		target_scale = Vector2.ONE * hover_scale
 	if is_instance_valid(_motion_tween):
 		_motion_tween.kill()
 	if not animate:
-		position = target
+		scale = target_scale
 		return
 	_motion_tween = create_tween()
 	_motion_tween.set_trans(Tween.TRANS_QUAD)
 	_motion_tween.set_ease(Tween.EASE_OUT)
-	_motion_tween.tween_property(self, "position", target, 0.08)
+	_motion_tween.tween_property(self, "scale", target_scale, 0.08)
