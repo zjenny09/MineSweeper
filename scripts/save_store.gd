@@ -1,8 +1,9 @@
 class_name GreenSweeperSaveStore
 extends RefCounted
 
-const SCHEMA_VERSION := 2
+const SCHEMA_VERSION := 3
 const LEGACY_SCHEMA_VERSION := 1
+const SCAN_SCHEMA_VERSION := 2
 const DEFAULT_SAVE_PATH := "user://save_v1.json"
 const SCAN_CAPACITY := 12
 const WINDOW_MODE_WINDOWED := 0
@@ -103,7 +104,7 @@ func record_completion(number: int, elapsed_ms: int) -> void:
 func is_level_unlocked(number: int) -> bool:
 	if not _is_valid_level(number):
 		return false
-	if number == 1:
+	if number == 1 or number >= 6:
 		return true
 	return is_level_completed(number - 1)
 
@@ -231,9 +232,18 @@ func _make_default_data() -> Dictionary:
 
 func _normalize_data(source: Dictionary) -> Dictionary:
 	var normalized := _make_default_data()
+	var source_schema := _normalized_int(
+		source.get("schema_version"),
+		LEGACY_SCHEMA_VERSION
+	)
 
 	var last_played := _normalized_int(source.get("last_played_level"), 0)
-	if last_played == 0 or _is_valid_level(last_played):
+	var can_restore_last_played := (
+		_is_valid_level(last_played)
+		if source_schema == SCHEMA_VERSION
+		else last_played >= 1 and last_played <= 5
+	)
+	if last_played == 0 or can_restore_last_played:
 		normalized["last_played_level"] = last_played
 
 	var guide_seen = source.get("first_move_guide_seen")
@@ -254,7 +264,12 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 
 	var source_levels = source.get("levels")
 	if source_levels is Dictionary:
-		for level in GreenSweeperLevels.LEVELS:
+		var migratable_levels := (
+			GreenSweeperLevels.PLAYABLE_LEVELS
+			if source_schema == SCHEMA_VERSION
+			else GreenSweeperLevels.LAND_LEVELS
+		)
+		for level in migratable_levels:
 			var key := str(int(level["number"]))
 			var source_level = source_levels.get(key)
 			if not source_level is Dictionary:
@@ -292,16 +307,25 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		return false
 	var serialized: Dictionary = value
 	var schema_version := _normalized_int(serialized.get("schema_version"), -1)
-	if schema_version not in [LEGACY_SCHEMA_VERSION, SCHEMA_VERSION]:
+	if schema_version not in [
+		LEGACY_SCHEMA_VERSION,
+		SCAN_SCHEMA_VERSION,
+		SCHEMA_VERSION,
+	]:
 		return false
 
 	var last_played := _normalized_int(serialized.get("last_played_level"), -1)
-	if last_played != 0 and not _is_valid_level(last_played) and last_played != 6:
+	var valid_last_played := (
+		last_played == 0 or _is_valid_level(last_played)
+		if schema_version == SCHEMA_VERSION
+		else last_played >= 0 and last_played <= 6
+	)
+	if not valid_last_played:
 		return false
 	if serialized.has("first_move_guide_seen") \
 			and not serialized.get("first_move_guide_seen") is bool:
 		return false
-	if schema_version == SCHEMA_VERSION:
+	if schema_version >= SCAN_SCHEMA_VERSION:
 		var scan = serialized.get("scan")
 		if not scan is Dictionary:
 			return false
@@ -314,7 +338,12 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	var levels = serialized.get("levels")
 	if not levels is Dictionary:
 		return false
-	for level in GreenSweeperLevels.LEVELS:
+	var required_levels := (
+		GreenSweeperLevels.PLAYABLE_LEVELS
+		if schema_version == SCHEMA_VERSION
+		else GreenSweeperLevels.LAND_LEVELS
+	)
+	for level in required_levels:
 		var key := str(int(level["number"]))
 		var entry = levels.get(key)
 		if not entry is Dictionary or not entry.get("completed") is bool:

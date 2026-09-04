@@ -193,19 +193,31 @@ func _test_cli_read_only(shell) -> void:
 		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
 			game.board.reveal_cell(cell_index)
 	_expect(game.board.game_state == MinesweeperBoard.GameState.WON, "A CLI session remains fully playable.")
-	_expect(not shell.save_store.is_level_completed(5), "Ocean CLI completion does not change land progress.")
+	_expect(not shell.save_store.is_level_completed(10), "Ocean CLI completion does not write ocean progress.")
+	_expect(shell.save_store.is_level_completed(1), "Ocean CLI completion does not change land progress.")
 	_expect(shell.save_store.get_last_played_level() == last_level_before, "CLI sessions do not replace Continue progress.")
 	_expect(shell.save_store.get_scan_energy() == scan_energy_before, "CLI sessions do not write shared scan energy.")
 
 
 func _test_ocean_scan_persistence(shell) -> void:
-	var last_level_before: int = shell.save_store.get_last_played_level()
+	shell.show_level_select()
+	shell.call("_on_next_chapter_pressed")
+	var level_grid := shell.get_node("%LevelGrid")
+	for level_number in range(6, 11):
+		var fresh_button := level_grid.get_node(
+			"LevelMarker%02d/LevelButton%02d" % [level_number, level_number]
+		) as Button
+		_expect(not fresh_button.disabled, "Every ocean level remains directly selectable.")
+	_expect(shell.get_node("%ProgressLabel").text == "已完成：0 / 5", "A fresh ocean map starts with no completions.")
 	shell.save_store.set_scan_energy(5)
 	shell.save_store.save_data()
-	shell.call("_start_level_number", 6, false, true)
+
+	shell.call("_on_level_back_pressed")
 	var game = shell.get_active_game()
-	_expect(not shell.is_cli_read_only(), "Normal ocean selection persists scan state without becoming CLI mode.")
+	_expect(not shell.is_cli_read_only(), "Normal ocean selection records progress and scan state.")
+	_expect(game.board.level_number == 6, "The ocean map opens its selected level.")
 	_expect(game.get_scan_energy() == 5, "Ocean play receives the shared saved energy.")
+	_expect(shell.save_store.get_last_played_level() == 6, "Normal ocean play becomes the Continue target.")
 	var ocean_opening := -1
 	for cell_index in game.board.cell_count:
 		if not game.board.mines[cell_index] and game.board.adjacent_counts[cell_index] > 0:
@@ -214,10 +226,34 @@ func _test_ocean_scan_persistence(shell) -> void:
 	game.board.reveal_cell(ocean_opening)
 	_expect(game.get_scan_energy() == 6, "A valid ocean reveal adds one shared energy.")
 	_expect(shell.save_store.get_scan_energy() == 6, "Normal ocean charge is saved immediately.")
-	_expect(shell.save_store.get_last_played_level() == last_level_before, "Ocean scan persistence does not replace land Continue progress.")
+
+	game.level_select_requested.emit()
+	shell.call("_on_level_marker_pressed", 7)
+	var level_six_button := level_grid.get_node("LevelMarker06/LevelButton06") as Button
+	_expect(level_six_button.modulate == Color(0.66, 0.94, 0.82, 1.0), "An unfinished ocean level uses the in-progress color.")
+	shell.call("_on_level_marker_pressed", 6)
+	shell.call("_on_level_back_pressed")
+	for cell_index in game.board.cell_count:
+		if game.board.game_state == MinesweeperBoard.GameState.WON:
+			break
+		if not game.board.mines[cell_index] and not game.board.revealed[cell_index]:
+			game.board.reveal_cell(cell_index)
+	_expect(shell.save_store.is_level_completed(6), "Ocean completion is persisted.")
+	_expect(shell.save_store.get_best_time_ms(6) >= 0, "Ocean completion records a best time.")
+
+	game.level_select_requested.emit()
+	shell.call("_on_level_marker_pressed", 7)
+	level_six_button = level_grid.get_node("LevelMarker06/LevelButton06") as Button
+	_expect(level_six_button.modulate == Color(0.72, 0.94, 0.58, 1.0), "A completed ocean level uses the completed color.")
+	_expect(shell.get_node("%ProgressLabel").text == "已完成：1 / 5", "Ocean progress counts completed levels.")
+	shell.call("_on_level_marker_pressed", 6)
+	_expect(shell.get_node("%SelectedLevelStatusLabel").text == "状态：已完成", "Ocean status reports completion.")
+	_expect(shell.get_node("%SelectedBestTimeLabel").text != "最佳时间：--:--.-", "Ocean status shows its best time.")
 	var reloaded: Variant = SAVE_STORE_SCRIPT.new(TEST_SAVE_PATH)
 	reloaded.load_data()
-	_expect(reloaded.get_scan_energy() == 6, "Ocean scan energy survives a store reload.")
+	_expect(reloaded.get_last_played_level() == 6, "Ocean Continue progress survives a store reload.")
+	_expect(reloaded.is_level_completed(6), "Ocean completion survives a store reload.")
+	_expect(reloaded.get_scan_energy() >= 6, "Ocean scan energy survives a store reload.")
 
 
 func _test_return_to_level_select(shell) -> void:

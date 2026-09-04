@@ -95,8 +95,7 @@ const OCEAN_LEVELS := [
 	OCEAN_LEVEL_5,
 ]
 const PLAYABLE_LEVELS := LAND_LEVELS + OCEAN_LEVELS
-# Keep the existing land map and save schema limited to its five released levels.
-const LEVELS := LAND_LEVELS
+const LEVELS := PLAYABLE_LEVELS
 
 
 static func is_valid_level_number(level_number: int) -> bool:

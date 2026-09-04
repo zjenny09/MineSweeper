@@ -541,16 +541,10 @@ func _rebuild_level_cards() -> void:
 
 	for level in chapter_levels:
 		_create_level_marker(level)
-	if _level_select_chapter == &"ocean":
-		progress_label.text = "已开放：%d / %d" % [
-			chapter_levels.size(),
-			chapter_levels.size(),
-		]
-	else:
-		progress_label.text = "已完成：%d / %d" % [
-			completed_count,
-			chapter_levels.size(),
-		]
+	progress_label.text = "已完成：%d / %d" % [
+		completed_count,
+		chapter_levels.size(),
+	]
 	_refresh_level_marker_states()
 	_update_level_selection_info()
 
@@ -580,19 +574,11 @@ func _is_level_in_current_chapter(level_number: int) -> bool:
 
 
 func _is_select_level_unlocked(level_number: int) -> bool:
-	return (
-		true
-		if _level_select_chapter == &"ocean"
-		else save_store.is_level_unlocked(level_number)
-	)
+	return save_store.is_level_unlocked(level_number)
 
 
 func _is_select_level_completed(level_number: int) -> bool:
-	return (
-		false
-		if _level_select_chapter == &"ocean"
-		else save_store.is_level_completed(level_number)
-	)
+	return save_store.is_level_completed(level_number)
 
 
 func _marker_texture_for_level(level_number: int) -> Texture2D:
@@ -680,8 +666,7 @@ func _refresh_level_marker_states() -> void:
 		var completed: bool = _is_select_level_completed(level_number)
 		var selected: bool = level_number == _selected_level_number
 		var in_progress: bool = (
-			_level_select_chapter == &"land"
-			and level_number == last_played
+			level_number == last_played
 			and not completed
 		)
 		button.disabled = not unlocked
@@ -691,12 +676,6 @@ func _refresh_level_marker_states() -> void:
 			button.modulate = Color(0.47, 0.45, 0.40, 0.82)
 			button.add_theme_color_override("font_color", Color("756f63"))
 			button.add_theme_color_override("font_disabled_color", Color("756f63"))
-		elif _level_select_chapter == &"ocean":
-			button.modulate = Color.WHITE
-			button.add_theme_color_override(
-				"font_color",
-				Color("103f52") if selected else Color("1a5265")
-			)
 		elif selected:
 			button.modulate = Color(1.0, 0.91, 0.48, 1.0)
 			button.add_theme_color_override("font_color", Color("195536"))
@@ -725,7 +704,7 @@ func _on_level_marker_pressed(level_number: int) -> void:
 	if _selected_level_number == level_number:
 		_start_level_number(
 			level_number,
-			_level_select_chapter == &"land",
+			true,
 			true
 		)
 		return
@@ -749,29 +728,23 @@ func _update_level_selection_info() -> void:
 	var unlocked: bool = _is_select_level_unlocked(_selected_level_number)
 	var completed: bool = _is_select_level_completed(_selected_level_number)
 	var in_progress: bool = (
-		_level_select_chapter == &"land"
-		and _selected_level_number == save_store.get_last_played_level()
+		_selected_level_number == save_store.get_last_played_level()
 		and not completed
 	)
 	var status: String = "未解锁"
-	if _level_select_chapter == &"ocean":
-		status = "已开放"
-	elif completed:
+	if completed:
 		status = "已完成"
 	elif in_progress:
 		status = "正在进行"
 	elif unlocked:
 		status = "已解锁"
 	selected_level_status_label.text = "状态：%s" % status
-	if _level_select_chapter == &"ocean":
-		selected_best_time_label.text = "棋盘：尖顶六边形"
-	else:
-		var best_time: int = save_store.get_best_time_ms(_selected_level_number)
-		selected_best_time_label.text = (
-			"最佳时间：%s" % _format_time(best_time)
-			if best_time >= 0
-			else "最佳时间：--:--.-"
-		)
+	var best_time: int = save_store.get_best_time_ms(_selected_level_number)
+	selected_best_time_label.text = (
+		"最佳时间：%s" % _format_time(best_time)
+		if best_time >= 0
+		else "最佳时间：--:--.-"
+	)
 
 
 func _on_next_chapter_pressed() -> void:
@@ -796,7 +769,7 @@ func _on_level_back_pressed() -> void:
 	if _is_select_level_unlocked(_selected_level_number):
 		_start_level_number(
 			_selected_level_number,
-			_level_select_chapter == &"land",
+			true,
 			true
 		)
 
