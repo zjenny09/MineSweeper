@@ -9,6 +9,10 @@ signal scan_energy_earned
 signal scan_target_requested(face_index: int)
 signal scan_cancel_requested
 signal scan_completed(face_index: int, result: int)
+signal breeze_assist_used(face_index: int, result: int, remaining_uses: int)
+signal storm_guard_used(face_index: int, remaining_uses: int)
+signal boss_eye_changed(face_index: int, eye_number: int, total_eyes: int)
+signal boss_eye_hit(face_index: int, cleared_eyes: int, total_eyes: int)
 
 const GRAPH_MODEL_SCRIPT := preload("res://scripts/sky_graph_board_model.gd")
 const STRUCTURE_DATA_PATH := "res://assets/data/sky_sphere_structures.json"
@@ -25,6 +29,11 @@ const MIN_LABEL_SIZE := 18
 const MAX_LABEL_SIZE := 32
 const DASH_LENGTH := 7.0
 const DASH_GAP := 4.5
+const BREEZE_EFFECT_DURATION := 1.25
+const BREEZE_WIND_DURATION := 0.62
+const BREEZE_TURN_DELAY := 0.24
+const CLOUD_SHIELD_EFFECT_DURATION := 1.05
+const BOSS_HIT_EFFECT_DURATION := 0.9
 
 const OUTLINE_COLOR := Color("667b85")
 const HOVER_COLOR := Color("fff0a8")
@@ -89,6 +98,26 @@ var _joy_rotation := Vector2.ZERO
 var _interaction_enabled := true
 var _scan_target_mode := false
 var _flagged_once := {}
+var _assist_face_index := -1
+var _assist_feedback_time := 0.0
+var _assist_feedback_color := Color("88e7c0")
+var _breeze_effect_active := false
+var _breeze_effect_time := 0.0
+var _breeze_start_rotation := Quaternion.IDENTITY
+var _breeze_target_rotation := Quaternion.IDENTITY
+var _breeze_pending_result := -1
+var _breeze_pending_remaining := 0
+var _cloud_shield_effect_active := false
+var _cloud_shield_effect_time := 0.0
+var _cloud_shield_face_index := -1
+var _cloud_shield_pending_remaining := 0
+var _boss_eye_face_index := -1
+var _boss_eye_number := 0
+var _boss_eye_total := 0
+var _boss_eye_time := 0.0
+var _boss_eye_neighbor_lookup := {}
+var _boss_hit_face_index := -1
+var _boss_hit_effect_time := 0.0
 var _instruction_label: Label
 
 
@@ -440,9 +469,21 @@ func _create_board_model() -> void:
 	)
 	_model.connect("state_changed", _on_model_state_changed)
 	_model.connect("first_reveal", func() -> void: first_reveal.emit())
+	_model.connect("breeze_assist_used", _on_breeze_assist_used)
+	_model.connect("storm_guard_used", _on_storm_guard_used)
+	_model.connect("boss_eye_changed", _on_boss_eye_changed)
+	_model.connect("boss_eye_hit", _on_boss_eye_hit)
 
 
-func configure_level(core_count: int, face_count: int = BASE_FACE_COUNT) -> void:
+func configure_level(
+	core_count: int,
+	face_count: int = BASE_FACE_COUNT,
+	breeze_uses: int = 0,
+	breeze_chance: float = 0.0,
+	storm_guard_uses: int = 0,
+	storm_guard_chance: float = 0.0,
+	boss_eye_count: int = 0
+) -> void:
 	if maxi(BASE_FACE_COUNT, face_count) != _active_face_count:
 		_rebuild_sphere(face_count)
 	_core_count = clampi(core_count, 1, _faces.size() - 1)
@@ -452,7 +493,16 @@ func configure_level(core_count: int, face_count: int = BASE_FACE_COUNT) -> void
 		for neighbor in face["neighbors"]:
 			face_neighbors.append(int(neighbor))
 		topology.append(face_neighbors)
-	_model.call("configure", topology, _core_count)
+	_model.call(
+		"configure",
+		topology,
+		_core_count,
+		breeze_uses if breeze_uses < 0 else maxi(0, breeze_uses),
+		clampf(breeze_chance, 0.0, 1.0),
+		storm_guard_uses if storm_guard_uses < 0 else maxi(0, storm_guard_uses),
+		clampf(storm_guard_chance, 0.0, 1.0),
+		maxi(0, boss_eye_count)
+	)
 	new_game()
 
 
@@ -464,6 +514,23 @@ func new_game() -> void:
 	_interaction_enabled = true
 	_scan_target_mode = false
 	_flagged_once.clear()
+	_assist_face_index = -1
+	_assist_feedback_time = 0.0
+	_breeze_effect_active = false
+	_breeze_effect_time = 0.0
+	_breeze_pending_result = -1
+	_breeze_pending_remaining = 0
+	_cloud_shield_effect_active = false
+	_cloud_shield_effect_time = 0.0
+	_cloud_shield_face_index = -1
+	_cloud_shield_pending_remaining = 0
+	_boss_eye_face_index = -1
+	_boss_eye_number = 0
+	_boss_eye_total = 0
+	_boss_eye_time = 0.0
+	_boss_eye_neighbor_lookup.clear()
+	_boss_hit_face_index = -1
+	_boss_hit_effect_time = 0.0
 	_dragging = false
 	_left_double_click_pending = false
 	_joy_rotation = Vector2.ZERO
@@ -507,8 +574,23 @@ func _draw_projected_board() -> void:
 	for record in visible_faces:
 		var face_index: int = record["index"]
 		var polygon: PackedVector2Array = record["polygon"]
+		if _boss_eye_neighbor_lookup.has(face_index):
+			_draw_closed_polyline(polygon, Color("8ddae5"), 2.2)
+		if face_index == _boss_eye_face_index:
+			_draw_closed_polyline(polygon, Color("4aafc2"), 4.4)
 		if face_index == _hovered_face:
 			_draw_closed_polyline(polygon, Color("f0af45"), 2.8)
+		if face_index == _assist_face_index and _assist_feedback_time > 0.0:
+			var assist_alpha := clampf(_assist_feedback_time / 0.9, 0.0, 1.0)
+			draw_colored_polygon(
+				polygon,
+				Color(_assist_feedback_color, assist_alpha * 0.32)
+			)
+			_draw_closed_polyline(
+				polygon,
+				Color(_assist_feedback_color, assist_alpha),
+				4.2
+			)
 		if face_index == _focused_face:
 			var focus_color := FOCUS_COLOR if has_focus() else Color("dfac58")
 			_draw_closed_polyline(polygon, focus_color, 4.0)
@@ -522,6 +604,175 @@ func _draw_projected_board() -> void:
 			adjacent_counts,
 			float(record["frontness"]),
 			record["polygon"]
+		)
+
+	if _boss_eye_face_index >= 0:
+		_draw_boss_storm_eye()
+	if _boss_hit_effect_time > 0.0:
+		_draw_boss_hit_effect()
+	if _breeze_effect_active:
+		_draw_breeze_effect()
+	if _cloud_shield_effect_active:
+		_draw_cloud_shield_effect()
+
+
+func _draw_boss_storm_eye() -> void:
+	if _boss_eye_face_index < 0:
+		return
+	if _face_frontness(_boss_eye_face_index) <= 0.10:
+		_draw_boss_eye_direction_hint()
+		return
+	var center := _project_face_center(_boss_eye_face_index)
+	var polygon := PackedVector2Array()
+	for vertex_value in _faces[_boss_eye_face_index]["vertices"]:
+		polygon.append(_project_point(Vector3(vertex_value)))
+	var nearest_vertex_distance := INF
+	for point in polygon:
+		nearest_vertex_distance = minf(nearest_vertex_distance, center.distance_to(point))
+	var radius := clampf(nearest_vertex_distance * 0.82, 10.0, 27.0)
+	var rotation_phase := _boss_eye_time * 1.75
+	draw_circle(center, radius * 0.42, Color(0.40, 0.77, 0.86, 0.18))
+	for ring_index in range(3):
+		var ring_radius := radius * (0.52 + float(ring_index) * 0.22)
+		var direction := 1.0 if ring_index % 2 == 0 else -1.0
+		for segment_index in range(2):
+			var arc_start := (
+				rotation_phase * direction
+				+ float(segment_index) * PI
+				+ float(ring_index) * 0.36
+			)
+			draw_arc(
+				center,
+				ring_radius,
+				arc_start,
+				arc_start + PI * 0.72,
+				18,
+				Color(0.72, 0.95, 1.0, 0.88 - float(ring_index) * 0.15),
+				2.6 - float(ring_index) * 0.35,
+				true
+			)
+
+
+func _draw_boss_eye_direction_hint() -> void:
+	var rotated_center := (
+		_rotation_basis() * Vector3(_faces[_boss_eye_face_index]["center"])
+	).normalized()
+	var direction := Vector2(rotated_center.x, -rotated_center.y)
+	if direction.length() < 0.05:
+		direction = Vector2.UP
+	direction = direction.normalized()
+	var board := _board_rect()
+	var hint_radius := minf(board.size.x, board.size.y) * 0.43
+	var hint_center := board.get_center() + direction * hint_radius
+	var sideways := direction.orthogonal()
+	var arrow := PackedVector2Array([
+		hint_center + direction * 11.0,
+		hint_center - direction * 9.0 + sideways * 8.0,
+		hint_center - direction * 5.0,
+		hint_center - direction * 9.0 - sideways * 8.0,
+	])
+	draw_colored_polygon(arrow, Color(0.42, 0.86, 0.94, 0.90))
+
+
+func _draw_boss_hit_effect() -> void:
+	if _boss_hit_face_index < 0:
+		return
+	var progress := 1.0 - clampf(
+		_boss_hit_effect_time / BOSS_HIT_EFFECT_DURATION,
+		0.0,
+		1.0
+	)
+	var center := _project_face_center(_boss_hit_face_index)
+	var radius := lerpf(16.0, 74.0, progress)
+	var alpha := 1.0 - progress
+	draw_circle(center, radius * 0.55, Color(0.73, 0.96, 1.0, alpha * 0.12))
+	draw_arc(
+		center,
+		radius,
+		0.0,
+		TAU,
+		48,
+		Color(0.93, 0.99, 1.0, alpha * 0.90),
+		4.0,
+		true
+	)
+
+
+func _draw_breeze_effect() -> void:
+	var wind_progress := clampf(_breeze_effect_time / BREEZE_WIND_DURATION, 0.0, 1.0)
+	if wind_progress >= 1.0:
+		return
+	var board := _board_rect()
+	var sweep_alpha := sin(wind_progress * PI)
+	var sweep_x := lerpf(
+		board.position.x - 110.0,
+		board.end.x + 110.0,
+		wind_progress
+	)
+	for lane_index in range(5):
+		var lane_offset := float(lane_index - 2) * 31.0
+		var line_length := 104.0 + float(lane_index % 2) * 34.0
+		var points := PackedVector2Array()
+		for point_index in range(9):
+			var point_progress := float(point_index) / 8.0
+			points.append(Vector2(
+				sweep_x - line_length + point_progress * line_length,
+				board.get_center().y + lane_offset
+					+ sin(point_progress * PI * 2.0 + float(lane_index)) * 5.0
+			))
+		draw_polyline(
+			points,
+			Color(0.76, 0.96, 1.0, sweep_alpha * 0.82),
+			2.2 + float(lane_index % 2) * 0.7,
+			true
+		)
+
+
+func _draw_cloud_shield_effect() -> void:
+	if _cloud_shield_face_index < 0:
+		return
+	var progress := clampf(
+		_cloud_shield_effect_time / CLOUD_SHIELD_EFFECT_DURATION,
+		0.0,
+		1.0
+	)
+	var pulse_alpha := sin(progress * PI)
+	var center := _project_face_center(_cloud_shield_face_index)
+	var shield_radius := 24.0 + sin(progress * PI) * 14.0
+	draw_circle(
+		center,
+		shield_radius,
+		Color(0.78, 0.95, 1.0, pulse_alpha * 0.18)
+	)
+	draw_arc(
+		center,
+		shield_radius,
+		0.0,
+		TAU,
+		48,
+		Color(0.90, 0.99, 1.0, pulse_alpha * 0.88),
+		3.2,
+		true
+	)
+	draw_arc(
+		center,
+		shield_radius + 7.0,
+		-progress * 1.8,
+		PI * 1.15 - progress * 1.8,
+		28,
+		Color(0.62, 0.88, 0.97, pulse_alpha * 0.72),
+		2.0,
+		true
+	)
+	for puff_index in range(9):
+		var angle := float(puff_index) * TAU / 9.0 + progress * 1.35
+		var orbit_radius := shield_radius + 6.0 + float(puff_index % 2) * 3.0
+		var puff_center := center + Vector2.RIGHT.rotated(angle) * orbit_radius
+		var puff_radius := 4.5 + float((puff_index + 1) % 3) * 1.4
+		draw_circle(
+			puff_center,
+			puff_radius,
+			Color(0.94, 0.99, 1.0, pulse_alpha * 0.78)
 		)
 
 
@@ -818,6 +1069,9 @@ func _draw_centered_text(
 
 
 func _gui_input(event: InputEvent) -> void:
+	if _breeze_effect_active or _cloud_shield_effect_active:
+		accept_event()
+		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
@@ -871,6 +1125,8 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _breeze_effect_active or _cloud_shield_effect_active:
+		return
 	if not is_visible_in_tree() or not has_focus():
 		return
 	if event is InputEventKey and event.pressed:
@@ -931,8 +1187,45 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	if has_focus() and _joy_rotation.length() > 0.2:
+	if _breeze_effect_active:
+		_breeze_effect_time += maxf(0.0, delta)
+		var turn_progress := clampf(
+			(_breeze_effect_time - BREEZE_TURN_DELAY)
+			/ (BREEZE_EFFECT_DURATION - BREEZE_TURN_DELAY),
+			0.0,
+			1.0
+		)
+		var turn_eased := turn_progress * turn_progress * (3.0 - 2.0 * turn_progress)
+		_rotation = _breeze_start_rotation.slerp(
+			_breeze_target_rotation,
+			turn_eased
+		).normalized()
+		if _breeze_effect_time >= BREEZE_EFFECT_DURATION:
+			_rotation = _breeze_target_rotation
+			_finish_breeze_effect()
+			_breeze_effect_active = false
+		queue_redraw()
+	elif _cloud_shield_effect_active:
+		_cloud_shield_effect_time += maxf(0.0, delta)
+		if _cloud_shield_effect_time >= CLOUD_SHIELD_EFFECT_DURATION:
+			_finish_cloud_shield_effect()
+			_cloud_shield_effect_active = false
+		queue_redraw()
+	elif has_focus() and _joy_rotation.length() > 0.2:
 		_rotate_ball(_joy_rotation * delta * 1.8)
+	if _assist_feedback_time > 0.0:
+		_assist_feedback_time = maxf(0.0, _assist_feedback_time - delta)
+		if _assist_feedback_time <= 0.0:
+			_assist_face_index = -1
+		queue_redraw()
+	if _boss_eye_face_index >= 0:
+		_boss_eye_time += maxf(0.0, delta)
+		queue_redraw()
+	if _boss_hit_effect_time > 0.0:
+		_boss_hit_effect_time = maxf(0.0, _boss_hit_effect_time - delta)
+		if _boss_hit_effect_time <= 0.0:
+			_boss_hit_face_index = -1
+		queue_redraw()
 
 
 func _rotate_arcball(from_position: Vector2, to_position: Vector2) -> void:
@@ -1081,6 +1374,144 @@ func _count_active(values: PackedByteArray) -> int:
 	for value in values:
 		count += int(value)
 	return count
+
+
+func _show_assist_feedback(face_index: int, color: Color) -> void:
+	_assist_face_index = face_index
+	_assist_feedback_color = color
+	_assist_feedback_time = 0.9
+	queue_redraw()
+
+
+func _start_breeze_effect(face_index: int) -> void:
+	_breeze_effect_active = true
+	_breeze_effect_time = 0.0
+	_breeze_start_rotation = _rotation
+	_breeze_target_rotation = _rotation
+	_focused_face = face_index
+	_dragging = false
+	_joy_rotation = Vector2.ZERO
+	var current_center := (
+		_rotation_basis() * Vector3(_faces[face_index]["center"])
+	).normalized()
+	var target_center := Vector3(0.0, 0.0, 1.0)
+	var alignment := clampf(current_center.dot(target_center), -1.0, 1.0)
+	if alignment < 0.9999:
+		var axis := current_center.cross(target_center)
+		if axis.length() < 0.001:
+			axis = Vector3.UP
+		_breeze_target_rotation = (
+			Quaternion(axis.normalized(), acos(alignment)) * _rotation
+		).normalized()
+
+
+func _on_breeze_assist_used(
+	face_index: int,
+	result: int,
+	remaining_uses: int
+) -> void:
+	_breeze_pending_result = result
+	_breeze_pending_remaining = remaining_uses
+	_start_breeze_effect(face_index)
+	status_changed.emit("随机助益触发 · 风正在吹向目标格")
+
+
+func _finish_breeze_effect() -> void:
+	var face_index := _focused_face
+	var result := _breeze_pending_result
+	var remaining_uses := _breeze_pending_remaining
+	var usage_text := (
+		"不限次数"
+		if remaining_uses < 0
+		else "剩余%d次" % remaining_uses
+	)
+	_breeze_pending_result = -1
+	_breeze_pending_remaining = 0
+	if result == 1:
+		_flagged_once[face_index] = true
+	_model.call("resolve_breeze_assist")
+	if result == 1:
+		_show_assist_feedback(face_index, Color("8edcf0"))
+		if int(_model.get("state")) < 2:
+			status_changed.emit(
+				"随机助益完成 · 污染核心已自动标记 · %s" % usage_text
+			)
+	else:
+		_show_assist_feedback(face_index, Color("72dfbb"))
+		if int(_model.get("state")) < 2:
+			status_changed.emit(
+				"随机助益完成 · 安全格已翻开 · %s" % usage_text
+			)
+	breeze_assist_used.emit(face_index, result, remaining_uses)
+
+
+func _on_storm_guard_used(face_index: int, remaining_uses: int) -> void:
+	_cloud_shield_effect_active = true
+	_cloud_shield_effect_time = 0.0
+	_cloud_shield_face_index = face_index
+	_cloud_shield_pending_remaining = remaining_uses
+	_dragging = false
+	_joy_rotation = Vector2.ZERO
+	status_changed.emit("云盾保护触发 · 云层正在包裹污染核心")
+	queue_redraw()
+
+
+func _finish_cloud_shield_effect() -> void:
+	var face_index := _cloud_shield_face_index
+	var remaining_uses := _cloud_shield_pending_remaining
+	_cloud_shield_face_index = -1
+	_cloud_shield_pending_remaining = 0
+	_flagged_once[face_index] = true
+	_model.call("resolve_storm_guard")
+	_show_assist_feedback(face_index, Color("ffe486"))
+	var usage_text := (
+		"不限次数"
+		if remaining_uses < 0
+		else "剩余%d次" % remaining_uses
+	)
+	status_changed.emit("云盾保护成功 · 污染核心已自动标记 · %s" % usage_text)
+	storm_guard_used.emit(face_index, remaining_uses)
+
+
+func _on_boss_eye_changed(
+	face_index: int,
+	eye_number: int,
+	total_eyes: int
+) -> void:
+	_boss_eye_face_index = face_index
+	_boss_eye_number = eye_number
+	_boss_eye_total = total_eyes
+	_boss_eye_time = 0.0
+	_boss_eye_neighbor_lookup.clear()
+	if face_index < 0:
+		if total_eyes > 0:
+			status_changed.emit("先翻开安全格，寻找第一道雷眼")
+		queue_redraw()
+		return
+	for neighbor in _faces[face_index]["neighbors"]:
+		_boss_eye_neighbor_lookup[int(neighbor)] = true
+	if eye_number > 1:
+		status_changed.emit(
+			"上一道雷眼已击破 · 寻找第%d/%d道雷眼" % [eye_number, total_eyes]
+		)
+	else:
+		status_changed.emit(
+			"第%d/%d道雷眼出现 · 标记周围污染后双击雷眼" % [eye_number, total_eyes]
+		)
+	boss_eye_changed.emit(face_index, eye_number, total_eyes)
+	queue_redraw()
+
+
+func _on_boss_eye_hit(
+	face_index: int,
+	cleared_eyes: int,
+	total_eyes: int
+) -> void:
+	_boss_hit_face_index = face_index
+	_boss_hit_effect_time = BOSS_HIT_EFFECT_DURATION
+	status_changed.emit("雷眼击破 · %d/%d" % [cleared_eyes, total_eyes])
+	boss_eye_hit.emit(face_index, cleared_eyes, total_eyes)
+	queue_redraw()
 
 
 func _on_model_state_changed(state: int) -> void:

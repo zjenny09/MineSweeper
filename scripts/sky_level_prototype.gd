@@ -179,6 +179,7 @@ func _mount_sky_sphere() -> void:
 	_sky_board.connect("scan_cancel_requested", _cancel_scan_targeting)
 	_sky_board.connect("scan_completed", _on_scan_completed)
 	_sky_board.connect("gameplay_state_changed", _on_gameplay_state_changed)
+	_sky_board.connect("boss_eye_hit", _on_boss_eye_hit)
 	board_host.queue_free()
 
 
@@ -193,6 +194,11 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	var core_count := int(level["core_count"])
 	var face_count := int(level.get("face_count", 32))
 	var structure_name := str(level.get("structure_name", "%d格云球" % face_count))
+	var breeze_uses := int(level.get("breeze_assists", 0))
+	var breeze_chance := float(level.get("breeze_trigger_chance", 0.0))
+	var storm_guard_uses := int(level.get("storm_guard_assists", 0))
+	var storm_guard_chance := float(level.get("storm_guard_trigger_chance", 0.0))
+	var boss_eye_count := int(level.get("boss_eye_count", 0))
 	_round_finished = false
 	_round_started = false
 	_gameplay_state = 0
@@ -202,7 +208,16 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	_reset_timer()
 	if initial_scan_energy >= 0:
 		_scan_energy = clampi(initial_scan_energy, 0, SCAN_CAPACITY)
-	_sky_board.call("configure_level", core_count, face_count)
+	_sky_board.call(
+		"configure_level",
+		core_count,
+		face_count,
+		breeze_uses,
+		breeze_chance,
+		storm_guard_uses,
+		storm_guard_chance,
+		boss_eye_count
+	)
 	subtitle_label.text = "第%d关 · %s" % [level_number, str(level["name"])]
 	level_summary_label.text = "%s · 共%d格\n污染核心 %d" % [
 		structure_name,
@@ -210,6 +225,12 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 		core_count,
 	]
 	objective_label.text = "旋转球面，净化全部安全面"
+	if boss_eye_count > 0:
+		objective_label.text = "追踪雷眼 · 正确标记周围污染并双击击破 0/%d" % boss_eye_count
+	elif storm_guard_uses != 0:
+		objective_label.text = "随机助益翻格或标雷 · 云盾保护概率拦截踩雷"
+	elif breeze_uses != 0:
+		objective_label.text = "净化时可能触发随机翻格或自动标雷"
 	flags_label.text = "0/%d" % core_count
 	status_label.text = "旋转球面，寻找安全起点"
 	restart_button_label.text = "重新生成"
@@ -250,6 +271,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			_set_paused(not _paused)
 		get_viewport().set_input_as_handled()
+
+
+func _on_boss_eye_hit(
+	_face_index: int,
+	cleared_eyes: int,
+	total_eyes: int
+) -> void:
+	objective_label.text = (
+		"追踪雷眼 · 正确标记周围污染并双击击破 %d/%d"
+		% [cleared_eyes, total_eyes]
+	)
 
 
 func _on_gameplay_state_changed(state: int) -> void:
@@ -297,6 +329,13 @@ func _restart_sky_board() -> void:
 	_gameplay_state = 0
 	tabletop_actors.call("play_reaction", false, false)
 	restart_button_label.text = "重新生成"
+	var level: Dictionary = LEVELS.PLAYABLE_LEVELS[current_level_index]
+	var boss_eye_count := int(level.get("boss_eye_count", 0))
+	if boss_eye_count > 0:
+		objective_label.text = (
+			"追踪雷眼 · 正确标记周围污染并双击击破 0/%d"
+			% boss_eye_count
+		)
 	_reset_timer()
 	_sky_board.call("new_game")
 	_initialize_scan_ability()

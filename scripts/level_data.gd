@@ -265,6 +265,8 @@ const SKY_LEVEL_3 := {
 	"face_count": 92,
 	"structure_name": "92格三频云球",
 	"topology": &"goldberg_92",
+	"breeze_assists": -1,
+	"breeze_trigger_chance": 0.20,
 }
 
 const SKY_LEVEL_4 := {
@@ -274,6 +276,8 @@ const SKY_LEVEL_4 := {
 	"face_count": 162,
 	"structure_name": "162格四频云球",
 	"topology": &"goldberg_162",
+	"breeze_assists": -1,
+	"breeze_trigger_chance": 0.20,
 }
 
 const SKY_LEVEL_5 := {
@@ -283,6 +287,10 @@ const SKY_LEVEL_5 := {
 	"face_count": 252,
 	"structure_name": "252格五频云球",
 	"topology": &"goldberg_252",
+	"breeze_assists": -1,
+	"breeze_trigger_chance": 0.20,
+	"storm_guard_assists": 1,
+	"storm_guard_trigger_chance": 0.70,
 }
 
 const SKY_LEVEL_6 := {
@@ -292,6 +300,10 @@ const SKY_LEVEL_6 := {
 	"face_count": 362,
 	"structure_name": "362格六频云球",
 	"topology": &"goldberg_362",
+	"breeze_assists": -1,
+	"breeze_trigger_chance": 0.20,
+	"storm_guard_assists": 1,
+	"storm_guard_trigger_chance": 0.70,
 }
 
 const SKY_LEVEL_7 := {
@@ -301,6 +313,11 @@ const SKY_LEVEL_7 := {
 	"face_count": 492,
 	"structure_name": "492格七频云球",
 	"topology": &"goldberg_492",
+	"breeze_assists": -1,
+	"breeze_trigger_chance": 0.20,
+	"storm_guard_assists": 1,
+	"storm_guard_trigger_chance": 0.70,
+	"boss_eye_count": 3,
 	"boss": true,
 }
 
