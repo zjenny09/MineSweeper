@@ -2,6 +2,7 @@
 extends Control
 
 const GAME_SCENE: PackedScene = preload("res://scenes/main.tscn")
+const SKY_GAME_SCENE: PackedScene = preload("res://scenes/sky_level_15_prototype.tscn")
 const SAVE_STORE_SCRIPT: Script = preload("res://scripts/save_store.gd")
 const OCEAN_ROUTE_SCRIPT: Script = preload("res://scripts/ocean_level_route.gd")
 const ART := preload("res://scripts/art_catalog.gd")
@@ -21,19 +22,34 @@ const OCEAN_LEVEL_SELECT_BACKGROUND_PATH := ART.OCEAN_LEVEL_SELECT_BACKGROUND
 const OCEAN_LEVEL_SELECT_MAP_PATH := ART.OCEAN_LEVEL_SELECT_MAP
 const OCEAN_LEVEL_SELECT_MARKER_PATH := ART.OCEAN_LEVEL_SELECT_MARKER
 const OCEAN_LEVEL_SELECT_FINAL_MARKER_PATH := ART.OCEAN_LEVEL_SELECT_FINAL_MARKER
+const SKY_LEVEL_SELECT_MAP_PATH := ART.SKY_LEVEL_SELECT_MAP
 const LAND_LEVEL_MARKER_POSITIONS := [
-	Vector2(111, 316),
-	Vector2(317, 234),
-	Vector2(478, 225),
-	Vector2(638, 178),
-	Vector2(814, 146),
+	Vector2(110, 325),
+	Vector2(230, 250),
+	Vector2(330, 270),
+	Vector2(410, 180),
+	Vector2(505, 245),
+	Vector2(610, 175),
+	Vector2(825, 145),
 ]
 const OCEAN_LEVEL_MARKER_POSITIONS := [
-	Vector2(145, 230),
-	Vector2(315, 128),
-	Vector2(490, 232),
-	Vector2(675, 130),
+	Vector2(105, 230),
+	Vector2(230, 135),
+	Vector2(355, 232),
+	Vector2(480, 130),
+	Vector2(605, 232),
+	Vector2(730, 135),
 	Vector2(855, 232),
+]
+
+const SKY_LEVEL_MARKER_POSITIONS := [
+	Vector2(92, 326),
+	Vector2(225, 248),
+	Vector2(360, 270),
+	Vector2(468, 184),
+	Vector2(575, 250),
+	Vector2(710, 178),
+	Vector2(842, 112),
 ]
 
 @export var save_path := "user://save_v1.json"
@@ -64,6 +80,7 @@ const OCEAN_LEVEL_MARKER_POSITIONS := [
 @onready var selected_level_status_label: Label = %SelectedLevelStatusLabel
 @onready var selected_best_time_label: Label = %SelectedBestTimeLabel
 @onready var level_back_button: Button = %LevelBackButton
+@onready var level_previous_chapter_button: Button = %LevelPreviousChapterButton
 @onready var level_next_chapter_button: Button = %LevelNextChapterButton
 @onready var level_welcome_button: Button = %LevelWelcomeButton
 @onready var volume_slider: HSlider = %VolumeSlider
@@ -81,7 +98,8 @@ var _level_select_return_to_game := false
 var _level_select_chapter := &"land"
 var _selected_level_number := 1
 var _selected_land_level_number := 1
-var _selected_ocean_level_number := 6
+var _selected_ocean_level_number := 8
+var _selected_sky_level_number := 15
 var _level_marker_buttons: Dictionary = {}
 var _level_marker_texture: Texture2D
 var _ocean_level_marker_texture: Texture2D
@@ -90,7 +108,9 @@ var _level_select_land_background: Texture2D
 var _level_select_land_map: Texture2D
 var _level_select_ocean_background: Texture2D
 var _level_select_ocean_map: Texture2D
+var _level_select_sky_map: Texture2D
 var _runtime_texture_cache: Dictionary = {}
+var _chapter_transition_running := false
 
 
 func _ready() -> void:
@@ -118,7 +138,7 @@ func _ready() -> void:
 		start_cli_level(requested_level)
 	else:
 		if requested_level < 0:
-			push_error("无效的 --level 参数；请使用 --level=1 至 --level=10。")
+			push_error("无效的 --level 参数；请使用 --level=1 至 --level=21。")
 		show_main_menu()
 
 
@@ -179,6 +199,7 @@ func _apply_level_select_art() -> void:
 		OCEAN_LEVEL_SELECT_BACKGROUND_PATH
 	)
 	_level_select_ocean_map = _load_runtime_texture(OCEAN_LEVEL_SELECT_MAP_PATH)
+	_level_select_sky_map = _load_runtime_texture(SKY_LEVEL_SELECT_MAP_PATH)
 	_level_marker_texture = _load_runtime_texture(LEVEL_SELECT_MARKER_PATH)
 	_ocean_level_marker_texture = _load_runtime_texture(
 		OCEAN_LEVEL_SELECT_MARKER_PATH
@@ -193,6 +214,7 @@ func _apply_level_select_art() -> void:
 		return
 	for button in [
 		level_back_button,
+		level_previous_chapter_button,
 		level_next_chapter_button,
 		level_welcome_button,
 	]:
@@ -217,35 +239,57 @@ func _apply_level_select_art() -> void:
 
 func _apply_level_select_chapter_art() -> void:
 	var ocean := _level_select_chapter == &"ocean"
+	var sky := _level_select_chapter == &"sky"
 	level_select_background.texture = (
 		_level_select_ocean_background
 		if ocean
 		else _level_select_land_background
 	)
-	level_map_artwork.texture = (
-		_level_select_ocean_map
-		if ocean
-		else _level_select_land_map
-	)
+	if sky:
+		level_map_artwork.texture = _level_select_sky_map
+	elif ocean:
+		level_map_artwork.texture = _level_select_ocean_map
+	else:
+		level_map_artwork.texture = _level_select_land_map
 	level_map_artwork.stretch_mode = (
 		TextureRect.STRETCH_SCALE
 		if ocean
 		else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	)
-	level_select_title.text = "海洋探险" if ocean else "陆地探险"
-	level_select_title.add_theme_color_override(
-		"font_color",
-		Color("175c70") if ocean else Color("1b4d2d")
-	)
-	level_next_chapter_button.text = "上一章节" if ocean else "下一章节"
-	level_next_chapter_button.tooltip_text = (
-		"返回陆地篇" if ocean else "进入海洋篇"
-	)
+	if sky:
+		level_select_title.text = "天空探险"
+		level_select_title.add_theme_color_override("font_color", Color("49658f"))
+		level_previous_chapter_button.text = "← 海洋篇"
+		level_previous_chapter_button.tooltip_text = "返回海洋篇"
+		level_next_chapter_button.text = "陆地篇 →"
+		level_next_chapter_button.tooltip_text = "进入陆地篇"
+	elif ocean:
+		level_select_title.text = "海洋探险"
+		level_select_title.add_theme_color_override("font_color", Color("175c70"))
+		level_previous_chapter_button.text = "← 陆地篇"
+		level_previous_chapter_button.tooltip_text = "返回陆地篇"
+		level_next_chapter_button.text = "天空篇 →"
+		level_next_chapter_button.tooltip_text = "进入天空篇"
+	else:
+		level_select_title.text = "陆地探险"
+		level_select_title.add_theme_color_override("font_color", Color("1b4d2d"))
+		level_previous_chapter_button.text = "← 天空篇"
+		level_previous_chapter_button.tooltip_text = "返回天空篇"
+		level_next_chapter_button.text = "海洋篇 →"
+		level_next_chapter_button.tooltip_text = "进入海洋篇"
 	if ocean:
 		level_select_title.offset_top = 96.0
 		level_select_title.offset_bottom = 152.0
 		level_map_root.offset_left = -490.0
 		level_map_root.offset_top = -210.0
+		level_map_root.offset_right = 490.0
+		level_map_root.offset_bottom = 225.0
+		level_map_root.rotation = deg_to_rad(-1.0)
+	elif sky:
+		level_select_title.offset_top = 108.0
+		level_select_title.offset_bottom = 164.0
+		level_map_root.offset_left = -490.0
+		level_map_root.offset_top = -205.0
 		level_map_root.offset_right = 490.0
 		level_map_root.offset_bottom = 225.0
 		level_map_root.rotation = deg_to_rad(-1.0)
@@ -348,15 +392,21 @@ func show_level_select(preserve_active_game: bool = false) -> void:
 	_level_select_return_to_game = preserve_active_game and is_instance_valid(active_game)
 	if _level_select_return_to_game:
 		var active_level_number := int(active_game.get("current_level_index")) + 1
-		_level_select_chapter = &"ocean" if active_level_number >= 6 else &"land"
+		if active_level_number >= 15:
+			_level_select_chapter = &"sky"
+		elif active_level_number >= 8:
+			_level_select_chapter = &"ocean"
+		else:
+			_level_select_chapter = &"land"
 	else:
 		_level_select_chapter = &"land"
 		_destroy_active_game()
-	_selected_level_number = (
-		_selected_ocean_level_number
-		if _level_select_chapter == &"ocean"
-		else _selected_land_level_number
-	)
+	if _level_select_chapter == &"sky":
+		_selected_level_number = _selected_sky_level_number
+	elif _level_select_chapter == &"ocean":
+		_selected_level_number = _selected_ocean_level_number
+	else:
+		_selected_level_number = _selected_land_level_number
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
 	_show_only(level_select)
@@ -413,12 +463,13 @@ func parse_level_argument(arguments: PackedStringArray) -> int:
 
 
 func _connect_controls() -> void:
-	start_button.pressed.connect(func() -> void: start_normal_level(1))
+	start_button.pressed.connect(_on_start_journey_pressed)
 	continue_button.pressed.connect(_on_continue_pressed)
 	choose_level_button.pressed.connect(show_level_select)
 	settings_button.pressed.connect(show_settings)
 	exit_button.pressed.connect(func() -> void: get_tree().quit())
 	level_back_button.pressed.connect(_on_level_back_pressed)
+	level_previous_chapter_button.pressed.connect(_on_previous_chapter_pressed)
 	level_next_chapter_button.pressed.connect(_on_next_chapter_pressed)
 	level_welcome_button.pressed.connect(show_main_menu)
 	settings_back_button.pressed.connect(_close_settings)
@@ -442,13 +493,15 @@ func _start_level_number(
 	_destroy_active_game()
 	_record_progress = record_progress
 	_persist_scan_state = persist_scan_state
-	active_game = GAME_SCENE.instantiate() as Control
+	var game_scene := SKY_GAME_SCENE if level_number >= 15 else GAME_SCENE
+	active_game = game_scene.instantiate() as Control
 	active_game.set("auto_start", false)
 	game_host.add_child(active_game)
 	active_game.level_started.connect(_on_game_level_started)
 	active_game.level_completed.connect(_on_game_level_completed)
 	active_game.scan_energy_changed.connect(_on_game_scan_energy_changed)
 	active_game.level_select_requested.connect(_on_game_level_select_requested)
+	active_game.chapter_advance_requested.connect(_on_game_chapter_advance_requested)
 	active_game.main_menu_requested.connect(show_main_menu)
 	active_game.settings_requested.connect(_on_game_settings_requested)
 	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
@@ -467,6 +520,13 @@ func _start_level_number(
 		initial_scan_energy
 	)
 	active_game.call("set_operation_mode", save_store.get_operation_mode())
+
+
+func _on_start_journey_pressed() -> void:
+	_selected_land_level_number = 1
+	_selected_level_number = 1
+	_level_select_chapter = &"land"
+	show_level_select()
 
 
 func _on_continue_pressed() -> void:
@@ -491,11 +551,113 @@ func _on_game_level_completed(level_number: int, elapsed_ms: int) -> void:
 	save_store.save_data()
 
 
+func _transition_to_ocean_chapter() -> void:
+	if _chapter_transition_running:
+		return
+	_chapter_transition_running = true
+	if not is_instance_valid(active_game):
+		_chapter_transition_running = false
+		return
+
+	_selected_land_level_number = 7
+	_selected_level_number = 7
+	_level_select_chapter = &"land"
+	_level_select_return_to_game = false
+	_destroy_active_game()
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	_show_only(level_select)
+	await get_tree().process_frame
+	level_select.pivot_offset = level_select.size * 0.5
+	level_select.scale = Vector2.ONE
+	level_select.rotation = 0.0
+	await get_tree().create_timer(0.45).timeout
+
+	var close_tween := create_tween()
+	close_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	close_tween.tween_property(level_select, "scale:x", 0.06, 0.34)
+	close_tween.parallel().tween_property(level_select, "rotation", deg_to_rad(-1.8), 0.34)
+	await close_tween.finished
+
+	_level_select_chapter = &"ocean"
+	_selected_ocean_level_number = 8
+	_selected_level_number = 8
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	level_select.rotation = deg_to_rad(1.8)
+
+	var open_tween := create_tween()
+	open_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	open_tween.tween_property(level_select, "scale:x", 1.0, 0.42)
+	open_tween.parallel().tween_property(level_select, "rotation", 0.0, 0.42)
+	await open_tween.finished
+	level_select.scale = Vector2.ONE
+	level_select.rotation = 0.0
+	_chapter_transition_running = false
+	level_next_chapter_button.grab_focus()
+
+
+func _transition_to_sky_chapter() -> void:
+	if _chapter_transition_running:
+		return
+	_chapter_transition_running = true
+	if not is_instance_valid(active_game):
+		_chapter_transition_running = false
+		return
+
+	_selected_ocean_level_number = 14
+	_selected_level_number = 14
+	_level_select_chapter = &"ocean"
+	_level_select_return_to_game = false
+	_destroy_active_game()
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	_show_only(level_select)
+	await get_tree().process_frame
+	level_select.pivot_offset = level_select.size * 0.5
+	level_select.scale = Vector2.ONE
+	level_select.rotation = 0.0
+	await get_tree().create_timer(0.85).timeout
+
+	var close_tween := create_tween()
+	close_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	close_tween.tween_property(level_select, "scale:x", 0.06, 0.34)
+	close_tween.parallel().tween_property(level_select, "rotation", deg_to_rad(-1.8), 0.34)
+	await close_tween.finished
+
+	_level_select_chapter = &"sky"
+	_selected_sky_level_number = 15
+	_selected_level_number = 15
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	level_select.rotation = deg_to_rad(1.8)
+
+	var open_tween := create_tween()
+	open_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	open_tween.tween_property(level_select, "scale:x", 1.0, 0.42)
+	open_tween.parallel().tween_property(level_select, "rotation", 0.0, 0.42)
+	await open_tween.finished
+	level_select.scale = Vector2.ONE
+	level_select.rotation = 0.0
+	_chapter_transition_running = false
+	level_next_chapter_button.grab_focus()
+
+
 func _on_game_scan_energy_changed(energy: int) -> void:
 	if not _persist_scan_state:
 		return
 	save_store.set_scan_energy(energy)
 	save_store.save_data()
+
+
+func _on_game_chapter_advance_requested() -> void:
+	if not is_instance_valid(active_game):
+		return
+	var level_number := int(active_game.get("current_level_index")) + 1
+	if level_number == 7 and save_store.is_level_completed(7):
+		call_deferred("_transition_to_ocean_chapter")
+	elif level_number == 14 and save_store.is_level_completed(14):
+		call_deferred("_transition_to_sky_chapter")
 
 
 func _on_game_level_select_requested() -> void:
@@ -528,16 +690,19 @@ func _rebuild_level_cards() -> void:
 
 	if not _is_level_in_current_chapter(_selected_level_number) \
 			or not _is_select_level_unlocked(_selected_level_number):
-		if _level_select_chapter == &"ocean":
-			_selected_level_number = 6
-		else:
-			var last_played: int = save_store.get_last_played_level()
-			_selected_level_number = (
-				last_played
-				if last_played >= 1 and last_played <= 5 \
-						and save_store.is_level_unlocked(last_played)
-				else 1
-			)
+		match _level_select_chapter:
+			&"sky":
+				_selected_level_number = 15
+			&"ocean":
+				_selected_level_number = 8
+			_:
+				var last_played: int = save_store.get_last_played_level()
+				_selected_level_number = (
+					last_played
+					if last_played >= 1 and last_played <= 7 \
+							and save_store.is_level_unlocked(last_played)
+					else 1
+				)
 
 	for level in chapter_levels:
 		_create_level_marker(level)
@@ -550,27 +715,30 @@ func _rebuild_level_cards() -> void:
 
 
 func _chapter_levels() -> Array:
-	return (
-		GreenSweeperLevels.OCEAN_LEVELS
-		if _level_select_chapter == &"ocean"
-		else GreenSweeperLevels.LAND_LEVELS
-	)
+	match _level_select_chapter:
+		&"sky":
+			return GreenSweeperLevels.SKY_LEVELS
+		&"ocean":
+			return GreenSweeperLevels.OCEAN_LEVELS
+	return GreenSweeperLevels.LAND_LEVELS
 
 
 func _chapter_marker_positions() -> Array:
-	return (
-		OCEAN_LEVEL_MARKER_POSITIONS
-		if _level_select_chapter == &"ocean"
-		else LAND_LEVEL_MARKER_POSITIONS
-	)
+	match _level_select_chapter:
+		&"sky":
+			return SKY_LEVEL_MARKER_POSITIONS
+		&"ocean":
+			return OCEAN_LEVEL_MARKER_POSITIONS
+	return LAND_LEVEL_MARKER_POSITIONS
 
 
 func _is_level_in_current_chapter(level_number: int) -> bool:
-	return (
-		level_number >= 6 and level_number <= 10
-		if _level_select_chapter == &"ocean"
-		else level_number >= 1 and level_number <= 5
-	)
+	match _level_select_chapter:
+		&"sky":
+			return level_number >= 15 and level_number <= 21
+		&"ocean":
+			return level_number >= 8 and level_number <= 14
+	return level_number >= 1 and level_number <= 7
 
 
 func _is_select_level_unlocked(level_number: int) -> bool:
@@ -585,7 +753,7 @@ func _marker_texture_for_level(level_number: int) -> Texture2D:
 	if _level_select_chapter == &"ocean":
 		return (
 			_ocean_final_marker_texture
-			if level_number == 10
+			if level_number == 14
 			else _ocean_level_marker_texture
 		)
 	return _level_marker_texture
@@ -596,34 +764,40 @@ func _create_level_marker(level: Dictionary) -> void:
 	var marker_root := Control.new()
 	marker_root.name = "LevelMarker%02d" % level_number
 	var marker_positions := _chapter_marker_positions()
-	var position_index := level_number - (6 if _level_select_chapter == &"ocean" else 1)
-	marker_root.position = marker_positions[position_index] - Vector2(52.0, 52.0)
-	marker_root.size = Vector2(104.0, 104.0)
+	var first_level_number := 1
+	if _level_select_chapter == &"ocean":
+		first_level_number = 8
+	elif _level_select_chapter == &"sky":
+		first_level_number = 15
+	var position_index := level_number - first_level_number
+	marker_root.position = marker_positions[position_index] - Vector2(44.0, 44.0)
+	marker_root.size = Vector2(88.0, 88.0)
 	marker_root.pivot_offset = marker_root.size * 0.5
-	marker_root.rotation = deg_to_rad(1.2 if _level_select_chapter == &"ocean" else 4.5)
+	var marker_rotation := 4.5 if _level_select_chapter == &"land" else 1.2
+	marker_root.rotation = deg_to_rad(marker_rotation)
 	marker_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	level_grid.add_child(marker_root)
 
 	var glow := Panel.new()
 	glow.name = "Glow"
-	glow.position = Vector2(-7.0, -7.0)
-	glow.size = Vector2(118.0, 118.0)
+	glow.position = Vector2(-6.0, -6.0)
+	glow.size = Vector2(100.0, 100.0)
 	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var glow_style := StyleBoxFlat.new()
 	glow_style.bg_color = Color(0.98, 0.84, 0.25, 0.30)
-	glow_style.corner_radius_top_left = 59
-	glow_style.corner_radius_top_right = 59
-	glow_style.corner_radius_bottom_left = 59
-	glow_style.corner_radius_bottom_right = 59
+	glow_style.corner_radius_top_left = 50
+	glow_style.corner_radius_top_right = 50
+	glow_style.corner_radius_bottom_left = 50
+	glow_style.corner_radius_bottom_right = 50
 	glow_style.shadow_color = Color(0.98, 0.84, 0.25, 0.48)
-	glow_style.shadow_size = 12
+	glow_style.shadow_size = 10
 	glow.add_theme_stylebox_override("panel", glow_style)
 	marker_root.add_child(glow)
 
 	var button := Button.new()
 	button.name = "LevelButton%02d" % level_number
 	button.position = Vector2(8.0, 8.0)
-	button.size = Vector2(88.0, 88.0)
+	button.size = Vector2(72.0, 72.0)
 	button.pivot_offset = button.size * 0.5
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -643,7 +817,7 @@ func _create_level_marker(level: Dictionary) -> void:
 		button.add_theme_stylebox_override("pressed", marker_style.duplicate())
 		button.add_theme_stylebox_override("disabled", marker_style.duplicate())
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	button.add_theme_font_size_override("font_size", 15)
+	button.add_theme_font_size_override("font_size", 13)
 	button.add_theme_constant_override("outline_size", 1)
 	button.pressed.connect(_on_level_marker_pressed.bind(level_number))
 	marker_root.add_child(button)
@@ -688,11 +862,11 @@ func _refresh_level_marker_states() -> void:
 		else:
 			button.modulate = Color(1.0, 0.98, 0.88, 1.0)
 			button.add_theme_color_override("font_color", Color("5b4935"))
-		var interaction_color := (
-			Color("0e5368")
-			if _level_select_chapter == &"ocean"
-			else Color("174d35")
-		)
+		var interaction_color := Color("174d35")
+		if _level_select_chapter == &"ocean":
+			interaction_color = Color("0e5368")
+		elif _level_select_chapter == &"sky":
+			interaction_color = Color("49658f")
 		button.add_theme_color_override("font_hover_color", interaction_color)
 		button.add_theme_color_override("font_pressed_color", interaction_color)
 		button.add_theme_color_override("font_outline_color", Color(1.0, 0.98, 0.88, 0.82))
@@ -709,7 +883,9 @@ func _on_level_marker_pressed(level_number: int) -> void:
 		)
 		return
 	_selected_level_number = level_number
-	if _level_select_chapter == &"ocean":
+	if _level_select_chapter == &"sky":
+		_selected_sky_level_number = level_number
+	elif _level_select_chapter == &"ocean":
 		_selected_ocean_level_number = level_number
 	else:
 		_selected_land_level_number = level_number
@@ -747,15 +923,39 @@ func _update_level_selection_info() -> void:
 	)
 
 
+func _on_previous_chapter_pressed() -> void:
+	match _level_select_chapter:
+		&"sky":
+			_selected_sky_level_number = _selected_level_number
+			_level_select_chapter = &"ocean"
+			_selected_level_number = _selected_ocean_level_number
+		&"ocean":
+			_selected_ocean_level_number = _selected_level_number
+			_level_select_chapter = &"land"
+			_selected_level_number = _selected_land_level_number
+		_:
+			_selected_land_level_number = _selected_level_number
+			_level_select_chapter = &"sky"
+			_selected_level_number = _selected_sky_level_number
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	level_previous_chapter_button.grab_focus()
+
+
 func _on_next_chapter_pressed() -> void:
-	if _level_select_chapter == &"ocean":
-		_selected_ocean_level_number = _selected_level_number
-		_level_select_chapter = &"land"
-		_selected_level_number = _selected_land_level_number
-	else:
-		_selected_land_level_number = _selected_level_number
-		_level_select_chapter = &"ocean"
-		_selected_level_number = _selected_ocean_level_number
+	match _level_select_chapter:
+		&"sky":
+			_selected_sky_level_number = _selected_level_number
+			_level_select_chapter = &"land"
+			_selected_level_number = _selected_land_level_number
+		&"ocean":
+			_selected_ocean_level_number = _selected_level_number
+			_level_select_chapter = &"sky"
+			_selected_level_number = _selected_sky_level_number
+		_:
+			_selected_land_level_number = _selected_level_number
+			_level_select_chapter = &"ocean"
+			_selected_level_number = _selected_ocean_level_number
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
 	level_next_chapter_button.grab_focus()

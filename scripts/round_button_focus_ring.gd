@@ -23,7 +23,7 @@ func _draw() -> void:
 	if _button == null:
 		return
 	var unit := minf(size.x, size.y)
-	var center := size * 0.5
+	var center := Vector2(size.x * 0.5, size.y * 0.465)
 	var radius := unit * 0.365
 	var line_width := maxf(2.0, unit * 0.026)
 	var segment_angle := TAU / float(DASH_COUNT)

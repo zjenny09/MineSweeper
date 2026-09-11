@@ -33,6 +33,10 @@ const OCEAN_MARKER_CORAL_FAILED := \
 		"res://assets/art/ocean_levels/markers/ocean_flag_coral_failed.png"
 const OCEAN_MARKER_CORAL_WRONG := \
 		"res://assets/art/ocean_levels/markers/ocean_flag_coral_wrong.png"
+const OCEAN_POLLUTION_CORE_MONSTER := \
+		"res://assets/art/ocean_levels/markers/ocean_pollution_core_monster.png"
+const OCEAN_MARKER_MONSTER_WRONG := \
+		"res://assets/art/ocean_levels/markers/ocean_marker_monster_wrong.png"
 
 const LEVEL_01_LAND_BACKGROUND := \
 		"res://assets/art/level_01/background/land_paper_background.png"
@@ -40,6 +44,10 @@ const LAND_TABLETOP_BACKGROUND := \
 		"res://assets/art/land_levels/background/land_tabletop_background5_clean.png"
 const OCEAN_DESKTOP_BACKGROUND := \
 		"res://assets/art/ocean_levels/background/ocean_desktop_clean.png"
+const SKY_DESKTOP_BACKGROUND := \
+		"res://assets/art/sky_levels/background/sky_desktop_clean.png"
+const SKY_BOARD_FRAME := \
+		"res://assets/art/sky_levels/stage/sky_board_frame.png"
 const OCEAN_BOARD_TRAY_FRAME := \
 		"res://assets/art/ocean_levels/stage/ocean_board_tray_frame.png"
 const OCEAN_CELL_HIDDEN := \
@@ -48,6 +56,8 @@ const OCEAN_CELL_REVEALED := \
 		"res://assets/art/ocean_levels/board/cells/ocean_cell_revealed.png"
 const OCEAN_CELL_POLLUTED := \
 		"res://assets/art/ocean_levels/board/cells/ocean_cell_polluted.png"
+const OCEAN_REEF_STRIP_FULL := \
+		"res://assets/art/ocean_levels/obstacles/ocean_reef_strip_full.png"
 const LEVEL_01_BOARD_TRAY := "res://assets/art/level_01/board/board_tray.png"
 const LEVEL_01_BOARD_SHADOW := "res://assets/art/level_01/board/board_shadow.png"
 const LEVEL_01_CELL_HIDDEN := "res://assets/art/level_01/board/cells/cell_hidden.png"
@@ -58,6 +68,22 @@ const LEVEL_01_CELL_REVEALED := \
 		"res://assets/art/level_01/board/cells/cell_revealed.png"
 const LEVEL_01_CELL_POLLUTED := \
 		"res://assets/art/level_01/board/cells/cell_polluted.png"
+const LEVEL_03_OBSTACLE_RUIN := \
+		"res://assets/art/land_levels/obstacles/level_03_short_wall.png"
+const LEVEL_03_OBSTACLE_BROKEN_WALL_01 := \
+		"res://assets/art/land_levels/obstacles/level_03_obstacle_broken_wall_01.png"
+const LEVEL_03_OBSTACLE_BROKEN_WALL_02 := \
+		"res://assets/art/land_levels/obstacles/level_03_obstacle_broken_wall_02.png"
+const LEVEL_03_OBSTACLE_WEB_01 := \
+		"res://assets/art/land_levels/obstacles/level_03_obstacle_web_01.png"
+const LEVEL_03_OBSTACLE_WEB_02 := \
+		"res://assets/art/land_levels/obstacles/level_03_obstacle_web_02.png"
+const LEVEL_03_OBSTACLE_MOSSY_STONE := \
+		"res://assets/art/land_levels/obstacles/level_03_obstacle_mossy_stone.png"
+const LEVEL_04_POLLUTION_NODE_ACTIVE := \
+		"res://assets/art/land_levels/pollution_nodes/level_04_pollution_node_active.png"
+const LEVEL_04_POLLUTION_NODE_CLEANSED := \
+		"res://assets/art/land_levels/pollution_nodes/level_04_pollution_node_cleansed.png"
 
 const LEVEL_01_NOTE_CURVED := "res://assets/art/level_01/interface/notes/note_curved.png"
 const LEVEL_01_NOTE_STRAIGHT := "res://assets/art/level_01/interface/notes/note_straight.png"
@@ -123,6 +149,18 @@ const LEVEL_05_DECOR_TREE_HEALTHY := \
 		"res://assets/art/land_levels/decorations/level_05_tree_healthy.png"
 const LEVEL_05_DECOR_TREE_WILTED := \
 		"res://assets/art/land_levels/decorations/level_05_tree_wilted.png"
+const LEVEL_05_FOREST_EDGE_HEALTHY := \
+		"res://assets/art/land_levels/decorations/level_05_forest_edge_healthy.png"
+const LEVEL_05_FOREST_EDGE_WILTED := \
+		"res://assets/art/land_levels/decorations/level_05_forest_edge_wilted.png"
+const LEVEL_07_ANCIENT_FOREST_HEALTHY := \
+		"res://assets/art/land_levels/decorations/level_07_ancient_forest_healthy.png"
+const LEVEL_07_ANCIENT_FOREST_WILTED := \
+		"res://assets/art/land_levels/decorations/level_07_ancient_forest_wilted.png"
+const LEVEL_05_BOSS_TREE_ACTIVE := \
+		"res://assets/art/land_levels/decorations/level_05_boss_tree_active.png"
+const LEVEL_05_BOSS_TREE_CLEANSED := \
+		"res://assets/art/land_levels/decorations/level_05_boss_tree_cleansed.png"
 
 const LEVEL_02_STICKER_01 := \
 		"res://assets/art/land_levels/stickers/level_02_sticker_01.png"
@@ -168,7 +206,71 @@ const LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_LEFT := \
 const LAND_GUARDIAN_LEFT_CRYING := \
 		"res://assets/art/land_levels/guardians/left_guardian_crying.png"
 const LAND_ROBOT_FAILURE_BODY := \
-		"res://assets/art/land_levels/guardians/robot_failure_body.png"
+		"res://assets/art/land_levels/guardians/robot_reaction_body_with_sprout.png"
+const OCEAN_PROTAGONIST_ROBOT := \
+		"res://assets/art/ocean_levels/actors/ocean_robot_helmet.png"
+const OCEAN_PROTAGONIST_REACTION_BODY := \
+		"res://assets/art/ocean_levels/actors/ocean_robot_reaction_body.png"
+const OCEAN_PROTAGONIST_MONSTER := \
+		"res://assets/art/ocean_levels/actors/ocean_bubble_monster.png"
+const OCEAN_PROTAGONIST_MONSTER_CRYING := \
+		"res://assets/art/ocean_levels/actors/ocean_bubble_monster_crying.png"
+const SKY_PROTAGONIST_ROBOT := \
+		"res://assets/art/sky_levels/actors/sky_robot_upright.png"
+const SKY_PROTAGONIST_VICTORY_BODY := \
+		"res://assets/art/sky_levels/actors/sky_robot_victory_body.png"
+const SKY_PROTAGONIST_FAILURE_BODY := \
+		"res://assets/art/sky_levels/actors/sky_robot_failure_body.png"
+const SKY_PROTAGONIST_PLANE := \
+		"res://assets/art/sky_levels/actors/sky_robot_plane.png"
+const SKY_PROTAGONIST_MONSTER := \
+		"res://assets/art/sky_levels/actors/sky_monster_paper_plane.png"
+const SKY_ECOLOGY_CLOUD_CROWN_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_15_ecology_healthy.png"
+const SKY_ECOLOGY_CLOUD_CROWN_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_15_ecology_failed.png"
+const SKY_ECOLOGY_WIND_RING_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_16_ecology_healthy.png"
+const SKY_ECOLOGY_WIND_RING_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_16_ecology_failed.png"
+const SKY_ECOLOGY_RAINBOW_BRIDGE_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_17_ecology_healthy.png"
+const SKY_ECOLOGY_RAINBOW_BRIDGE_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_17_ecology_failed.png"
+const SKY_ECOLOGY_FLOATING_ISLAND_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_18_ecology_healthy.png"
+const SKY_ECOLOGY_FLOATING_ISLAND_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_18_ecology_failed.png"
+const SKY_ECOLOGY_CLOUD_RIDGE_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_19_ecology_healthy.png"
+const SKY_ECOLOGY_CLOUD_RIDGE_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_19_ecology_failed.png"
+const SKY_ECOLOGY_STORM_EYE_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_20_ecology_healthy.png"
+const SKY_ECOLOGY_STORM_EYE_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_20_ecology_failed.png"
+const SKY_ECOLOGY_SKY_PALACE_HEALTHY := \
+		"res://assets/art/sky_levels/ecology/level_21_ecology_healthy.png"
+const SKY_ECOLOGY_SKY_PALACE_FAILED := \
+		"res://assets/art/sky_levels/ecology/level_21_ecology_failed.png"
+const SKY_ECOLOGY_HEALTHY_PATHS := [
+	SKY_ECOLOGY_CLOUD_CROWN_HEALTHY,
+	SKY_ECOLOGY_WIND_RING_HEALTHY,
+	SKY_ECOLOGY_RAINBOW_BRIDGE_HEALTHY,
+	SKY_ECOLOGY_FLOATING_ISLAND_HEALTHY,
+	SKY_ECOLOGY_CLOUD_RIDGE_HEALTHY,
+	SKY_ECOLOGY_STORM_EYE_HEALTHY,
+	SKY_ECOLOGY_SKY_PALACE_HEALTHY,
+]
+const SKY_ECOLOGY_FAILED_PATHS := [
+	SKY_ECOLOGY_CLOUD_CROWN_FAILED,
+	SKY_ECOLOGY_WIND_RING_FAILED,
+	SKY_ECOLOGY_RAINBOW_BRIDGE_FAILED,
+	SKY_ECOLOGY_FLOATING_ISLAND_FAILED,
+	SKY_ECOLOGY_CLOUD_RIDGE_FAILED,
+	SKY_ECOLOGY_STORM_EYE_FAILED,
+	SKY_ECOLOGY_SKY_PALACE_FAILED,
+]
 const OCEAN_ACTOR_ANEMONE_HEALTHY := \
 		"res://assets/art/ocean_levels/actors/level_06_anemone_healthy.png"
 const OCEAN_ACTOR_ANEMONE_WILTED := \
@@ -189,18 +291,34 @@ const OCEAN_ACTOR_WHALE_FALL_HEALTHY := \
 		"res://assets/art/ocean_levels/actors/level_10_whale_fall_healthy.png"
 const OCEAN_ACTOR_WHALE_FALL_WILTED := \
 		"res://assets/art/ocean_levels/actors/level_10_whale_fall_wilted.png"
+const OCEAN_ACTOR_JELLYFISH_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_11_jellyfish_healthy.png"
+const OCEAN_ACTOR_JELLYFISH_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_11_jellyfish_wilted.png"
+const OCEAN_ACTOR_FISH_SCHOOL_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_12_fish_school_healthy.png"
+const OCEAN_ACTOR_FISH_SCHOOL_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_12_fish_school_wilted.png"
+const OCEAN_ACTOR_TRENCH_HEALTHY := \
+		"res://assets/art/ocean_levels/actors/level_13_trench_healthy.png"
+const OCEAN_ACTOR_TRENCH_WILTED := \
+		"res://assets/art/ocean_levels/actors/level_13_trench_wilted.png"
 const OCEAN_ACTOR_HEALTHY_PATHS := [
 	OCEAN_ACTOR_ANEMONE_HEALTHY,
 	OCEAN_ACTOR_SEAGRASS_HEALTHY,
 	OCEAN_ACTOR_CORAL_HEALTHY,
-	OCEAN_ACTOR_KELP_HEALTHY,
+	OCEAN_ACTOR_JELLYFISH_HEALTHY,
+	OCEAN_ACTOR_FISH_SCHOOL_HEALTHY,
+	OCEAN_ACTOR_TRENCH_HEALTHY,
 	OCEAN_ACTOR_WHALE_FALL_HEALTHY,
 ]
 const OCEAN_ACTOR_WILTED_PATHS := [
 	OCEAN_ACTOR_ANEMONE_WILTED,
 	OCEAN_ACTOR_SEAGRASS_WILTED,
 	OCEAN_ACTOR_CORAL_WILTED,
-	OCEAN_ACTOR_KELP_WILTED,
+	OCEAN_ACTOR_JELLYFISH_WILTED,
+	OCEAN_ACTOR_FISH_SCHOOL_WILTED,
+	OCEAN_ACTOR_TRENCH_WILTED,
 	OCEAN_ACTOR_WHALE_FALL_WILTED,
 ]
 const LAND_GUARDIAN_RIGHT_YELLOW_CRYING := \
@@ -226,6 +344,8 @@ const OCEAN_LEVEL_SELECT_MARKER := \
 		"res://assets/art/level_select/ocean_level_marker_star.png"
 const OCEAN_LEVEL_SELECT_FINAL_MARKER := \
 		"res://assets/art/level_select/ocean_level_marker_final.png"
+const SKY_LEVEL_SELECT_MAP := \
+		"res://assets/art/level_select/sky_level_map_clean.png"
 
 const WELCOME_LANDSCAPE_BASE := "res://assets/art/welcome/background/landscape_base.png"
 const WELCOME_SUN_GLOW := "res://assets/art/welcome/effects/sun_glow.png"

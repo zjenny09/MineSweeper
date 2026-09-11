@@ -1,9 +1,12 @@
 class_name GreenSweeperSaveStore
 extends RefCounted
 
-const SCHEMA_VERSION := 3
+const SCHEMA_VERSION := 6
 const LEGACY_SCHEMA_VERSION := 1
 const SCAN_SCHEMA_VERSION := 2
+const OCEAN_PROGRESS_SCHEMA_VERSION := 3
+const TWELVE_LEVEL_SCHEMA_VERSION := 4
+const FOURTEEN_LEVEL_SCHEMA_VERSION := 5
 const DEFAULT_SAVE_PATH := "user://save_v1.json"
 const SCAN_CAPACITY := 12
 const WINDOW_MODE_WINDOWED := 0
@@ -11,6 +14,7 @@ const WINDOW_MODE_MAXIMIZED := 1
 const WINDOW_MODE_FULLSCREEN := 2
 const OPERATION_MODE_MOUSE := 0
 const OPERATION_MODE_KEYBOARD := 1
+const TEST_ALL_LEVELS_UNLOCKED := true
 
 var _save_path: String
 var _data: Dictionary
@@ -104,7 +108,9 @@ func record_completion(number: int, elapsed_ms: int) -> void:
 func is_level_unlocked(number: int) -> bool:
 	if not _is_valid_level(number):
 		return false
-	if number == 1 or number >= 6:
+	if TEST_ALL_LEVELS_UNLOCKED:
+		return true
+	if number == 1 or number >= 8:
 		return true
 	return is_level_completed(number - 1)
 
@@ -238,13 +244,9 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 	)
 
 	var last_played := _normalized_int(source.get("last_played_level"), 0)
-	var can_restore_last_played := (
-		_is_valid_level(last_played)
-		if source_schema == SCHEMA_VERSION
-		else last_played >= 1 and last_played <= 5
-	)
-	if last_played == 0 or can_restore_last_played:
-		normalized["last_played_level"] = last_played
+	var migrated_last_played := _migrated_level_number(last_played, source_schema)
+	if last_played == 0 or migrated_last_played > 0:
+		normalized["last_played_level"] = migrated_last_played
 
 	var guide_seen = source.get("first_move_guide_seen")
 	if guide_seen is bool:
@@ -264,21 +266,28 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 
 	var source_levels = source.get("levels")
 	if source_levels is Dictionary:
-		var migratable_levels := (
-			GreenSweeperLevels.PLAYABLE_LEVELS
-			if source_schema == SCHEMA_VERSION
-			else GreenSweeperLevels.LAND_LEVELS
-		)
-		for level in migratable_levels:
-			var key := str(int(level["number"]))
-			var source_level = source_levels.get(key)
+		var maximum_source_level := 5
+		if source_schema == SCHEMA_VERSION:
+			maximum_source_level = GreenSweeperLevels.PLAYABLE_LEVELS.size()
+		elif source_schema == FOURTEEN_LEVEL_SCHEMA_VERSION:
+			maximum_source_level = 14
+		elif source_schema == TWELVE_LEVEL_SCHEMA_VERSION:
+			maximum_source_level = 12
+		elif source_schema == OCEAN_PROGRESS_SCHEMA_VERSION:
+			maximum_source_level = 10
+		for source_number in range(1, maximum_source_level + 1):
+			var target_number := _migrated_level_number(source_number, source_schema)
+			if target_number <= 0:
+				continue
+			var source_level = source_levels.get(str(source_number))
 			if not source_level is Dictionary:
 				continue
 			var completed: Variant = source_level.get("completed")
 			var best_time := _normalized_int(source_level.get("best_time_ms"), -1)
 			if completed is bool and completed and best_time >= 0:
-				normalized["levels"][key]["completed"] = true
-				normalized["levels"][key]["best_time_ms"] = best_time
+				var target_key := str(target_number)
+				normalized["levels"][target_key]["completed"] = true
+				normalized["levels"][target_key]["best_time_ms"] = best_time
 
 	var source_settings = source.get("settings")
 	if source_settings is Dictionary:
@@ -310,15 +319,25 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	if schema_version not in [
 		LEGACY_SCHEMA_VERSION,
 		SCAN_SCHEMA_VERSION,
+		OCEAN_PROGRESS_SCHEMA_VERSION,
+		TWELVE_LEVEL_SCHEMA_VERSION,
+		FOURTEEN_LEVEL_SCHEMA_VERSION,
 		SCHEMA_VERSION,
 	]:
 		return false
 
 	var last_played := _normalized_int(serialized.get("last_played_level"), -1)
+	var maximum_legacy_level := 6
+	if schema_version == OCEAN_PROGRESS_SCHEMA_VERSION:
+		maximum_legacy_level = 10
+	elif schema_version == TWELVE_LEVEL_SCHEMA_VERSION:
+		maximum_legacy_level = 12
+	elif schema_version == FOURTEEN_LEVEL_SCHEMA_VERSION:
+		maximum_legacy_level = 14
 	var valid_last_played := (
 		last_played == 0 or _is_valid_level(last_played)
 		if schema_version == SCHEMA_VERSION
-		else last_played >= 0 and last_played <= 6
+		else last_played >= 0 and last_played <= maximum_legacy_level
 	)
 	if not valid_last_played:
 		return false
@@ -338,13 +357,24 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	var levels = serialized.get("levels")
 	if not levels is Dictionary:
 		return false
-	var required_levels := (
-		GreenSweeperLevels.PLAYABLE_LEVELS
-		if schema_version == SCHEMA_VERSION
-		else GreenSweeperLevels.LAND_LEVELS
-	)
-	for level in required_levels:
-		var key := str(int(level["number"]))
+	var required_level_numbers: Array[int] = []
+	if schema_version == SCHEMA_VERSION:
+		for level in GreenSweeperLevels.PLAYABLE_LEVELS:
+			required_level_numbers.append(int(level["number"]))
+	elif schema_version == FOURTEEN_LEVEL_SCHEMA_VERSION:
+		for level_number in range(1, 15):
+			required_level_numbers.append(level_number)
+	elif schema_version == TWELVE_LEVEL_SCHEMA_VERSION:
+		for level_number in range(1, 13):
+			required_level_numbers.append(level_number)
+	elif schema_version == OCEAN_PROGRESS_SCHEMA_VERSION:
+		for level_number in range(1, 11):
+			required_level_numbers.append(level_number)
+	else:
+		for level_number in range(1, 6):
+			required_level_numbers.append(level_number)
+	for level_number in required_level_numbers:
+		var key := str(level_number)
 		var entry = levels.get(key)
 		if not entry is Dictionary or not entry.get("completed") is bool:
 			return false
@@ -374,6 +404,28 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		if operation_mode < OPERATION_MODE_MOUSE or operation_mode > OPERATION_MODE_KEYBOARD:
 			return false
 	return true
+
+
+func _migrated_level_number(number: int, source_schema: int) -> int:
+	if number <= 0:
+		return 0
+	if source_schema == SCHEMA_VERSION:
+		return number if _is_valid_level(number) else 0
+	if source_schema == FOURTEEN_LEVEL_SCHEMA_VERSION:
+		return number if number <= 14 else 0
+	if source_schema == TWELVE_LEVEL_SCHEMA_VERSION:
+		return number if number <= 12 else 0
+	if number >= 1 and number <= 4:
+		return number
+	if number == 5:
+		return 7
+	if (
+		source_schema == OCEAN_PROGRESS_SCHEMA_VERSION
+		and number >= 6
+		and number <= 10
+	):
+		return number + 2
+	return 0
 
 
 func _normalized_int(value: Variant, fallback: int) -> int:

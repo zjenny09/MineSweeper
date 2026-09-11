@@ -4,6 +4,7 @@ extends Control
 signal level_started(level_number: int)
 signal level_completed(level_number: int, elapsed_ms: int)
 signal level_select_requested
+signal chapter_advance_requested
 signal main_menu_requested
 signal settings_requested
 signal exit_game_requested
@@ -39,19 +40,25 @@ const OCEAN_REGENERATE_PRESSED_PATH := ART.OCEAN_REGENERATE_PRESSED
 const LEVEL_ONE_SEED_STICKER_PATH := ART.LEVEL_01_DECOR_BACKGROUND_SEED
 const LEVEL_ONE_BUD_SPROUT_PATH := ART.LEVEL_01_DECOR_STATUS_NOTE_BUD
 const LEVEL_ONE_LEAF_SPROUT_PATH := ART.LEVEL_01_DECOR_BACKGROUND_LEAF_SPROUT
+const BOSS_ANCHOR_ACTIVE_PATH := ART.LEVEL_04_POLLUTION_NODE_ACTIVE
+const BOSS_ANCHOR_CLEANSED_PATH := ART.LEVEL_04_POLLUTION_NODE_CLEANSED
 const LAND_DECORATIVE_HEALTHY_PATHS := [
 	ART.LEVEL_01_DECOR_LEFT_SPROUT_HEALTHY,
 	ART.LEVEL_02_DECOR_SHRUB_HEALTHY,
 	ART.LEVEL_03_DECOR_WETLAND_HEALTHY,
 	ART.LEVEL_04_DECOR_GRASS_HEALTHY,
+	ART.LEVEL_05_FOREST_EDGE_HEALTHY,
 	ART.LEVEL_05_DECOR_TREE_HEALTHY,
+	ART.LEVEL_07_ANCIENT_FOREST_HEALTHY,
 ]
 const LAND_DECORATIVE_FAILED_PATHS := [
 	ART.LEVEL_01_DECOR_LEFT_SPROUT_WILTED,
 	ART.LEVEL_02_DECOR_SHRUB_WILTED,
 	ART.LEVEL_03_DECOR_WETLAND_POLLUTED,
 	ART.LEVEL_04_DECOR_GRASS_WILTED,
+	ART.LEVEL_05_FOREST_EDGE_WILTED,
 	ART.LEVEL_05_DECOR_TREE_WILTED,
+	ART.LEVEL_07_ANCIENT_FOREST_WILTED,
 ]
 const LAND_DECORATIVE_CENTER_X := 218.0
 const LAND_DECORATIVE_BASELINE_Y := 648.0
@@ -154,6 +161,18 @@ enum ScanPhase {
 @onready var subtitle_label: Label = %SubtitleLabel
 @onready var level_summary_label: Label = %LevelSummaryLabel
 @onready var objective_label: Label = %ObjectiveLabel
+@onready var boss_stage: Control = %BossStage
+@onready var boss_portrait: TextureRect = %BossPortrait
+@onready var boss_anchor_icons: Array[TextureRect] = [
+	%BossAnchorA,
+	%BossAnchorB,
+	%BossAnchorC,
+]
+@onready var boss_root_lines: Array[Line2D] = [
+	%BossRootLineA,
+	%BossRootLineB,
+	%BossRootLineC,
+]
 @onready var status_label: Label = %StatusLabel
 @onready var flags_label: Label = %FlagsLabel
 @onready var timer_label: Label = %TimerLabel
@@ -185,6 +204,7 @@ var current_level_index := 0
 var _first_click_mine_streaks: Dictionary = {}
 var _early_loss_streaks: Dictionary = {}
 var _advance_available := false
+var _chapter_advance_available := false
 var _session_paused := false
 var _completion_emitted := false
 var _elapsed_before_segment_ms := 0
@@ -221,6 +241,8 @@ func _ready() -> void:
 	board.scan_target_requested.connect(_on_scan_target_requested)
 	board.scan_cancel_requested.connect(_cancel_scan_targeting)
 	board.scan_completed.connect(_on_scan_completed)
+	board.pollution_nodes_changed.connect(_on_pollution_nodes_changed)
+	board.tidal_zone_changed.connect(_on_tidal_zone_changed)
 	land_tabletop_actors.scan_activation_requested.connect(_request_scan_mode)
 	scan_fallback_button.pressed.connect(_request_scan_mode)
 	first_move_guide.exit_requested.connect(_on_tutorial_exit_requested)
@@ -406,6 +428,9 @@ func _apply_land_decorative_texture(path: String) -> void:
 
 func _apply_land_stickers(state: int) -> void:
 	if not is_instance_valid(land_sticker_sets):
+		return
+	land_sticker_sets.visible = current_level_index < 5
+	if current_level_index >= 5:
 		return
 	land_sticker_sets.call(
 		"show_level",
@@ -623,9 +648,12 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	_set_level_one_reaction(MinesweeperBoard.GameState.READY)
 	if uses_level_one_stage:
 		_apply_land_decorative_texture(
-			LAND_DECORATIVE_HEALTHY_PATHS[current_level_index]
+			str(LAND_DECORATIVE_HEALTHY_PATHS[current_level_index])
 		)
+		boss_stage.visible = false
 		_apply_land_stickers(MinesweeperBoard.GameState.READY)
+	else:
+		boss_stage.visible = false
 	_tutorial_dismissed_for_session = false
 	_tutorial_step = (
 		TutorialStep.FIRST_REVEAL
@@ -657,7 +685,14 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 		"六边形棋盘" if board.topology == &"hex_pointy_odd_r" else "棋盘",
 		board.core_count,
 	]
-	objective_label.text = "清除所有污染核心\n恢复%s生态" % board.level_name
+	_on_pollution_nodes_changed(
+		board.cleansed_pollution_node_count,
+		board.pollution_node_count
+	)
+	_on_tidal_zone_changed(
+		board.active_tidal_zone_index,
+		board.tidal_zone_count
+	)
 	_refresh_instructions()
 	_refresh_first_move_guide()
 	visible = true
@@ -748,6 +783,44 @@ func set_first_move_guide_enabled(enabled: bool) -> void:
 
 func _refresh_instructions() -> void:
 	if not is_instance_valid(instructions_label) or not is_instance_valid(board):
+		return
+	if (
+		board.topology == &"hex_pointy_odd_r"
+		and (
+			board.reef_edge_count > 0
+			or not board.current_paths.is_empty()
+			or board.tidal_zone_count > 0
+		)
+	):
+		var ocean_rules := PackedStringArray()
+		if board.reef_edge_count > 0:
+			ocean_rules.append("礁带阻断六邻接；数字不统计另一侧，礁带端点不会出现0格")
+		if not board.current_paths.is_empty():
+			ocean_rules.append("洋流终点数字=路径内污染核心总数")
+		if board.tidal_zone_count > 0:
+			ocean_rules.append("边界数字跨潮区统计；净化当前潮区后解锁下一潮区")
+		ocean_rules.append(
+			"方向键/WASD移动 · Z净化 · X标记 · C扫描"
+			if _operation_mode == 1
+			else "左键净化 · 右键标记 · 双击展开 · C扫描"
+		)
+		instructions_label.text = "\n".join(ocean_rules)
+		return
+	if board.pollution_node_count > 0:
+		var node_rule := (
+			"切断三条根系锚点以削弱污染母株"
+			if board.level_number == 7
+			else "污染节点不可操作，会计入邻近数字"
+		)
+		instructions_label.text = (
+			node_rule
+			+ "\n翻开节点邻近安全格 · 标记邻近污染核心"
+			+ (
+				"\n方向键/WASD移动 · Z净化 · X标记 · C扫描"
+				if _operation_mode == 1
+				else "\n左键净化 · 右键标记 · C扫描"
+			)
+		)
 		return
 	var tutorial_active := (
 		board.level_number == 1
@@ -1304,6 +1377,7 @@ func _load_level(level_index: int) -> void:
 
 func _on_state_changed(state: int) -> void:
 	_advance_available = false
+	_chapter_advance_available = false
 	if state in [MinesweeperBoard.GameState.WON, MinesweeperBoard.GameState.LOST]:
 		_finish_scan_ability()
 	_record_adaptive_attempt_result(state)
@@ -1325,14 +1399,28 @@ func _on_state_changed(state: int) -> void:
 				and not _tutorial_dismissed_for_session
 				and _tutorial_step == TutorialStep.FIRST_REVEAL
 			)
-			status_label.text = "引导中" if tutorial_ready else "准备中"
+			status_label.text = (
+				"潮区 %d/%d · 准备" % [
+					board.active_tidal_zone_index + 1,
+					board.tidal_zone_count,
+				]
+				if board.tidal_zone_count > 0
+				else ("引导中" if tutorial_ready else "准备中")
+			)
 			restart_button_label.text = "重新\n生成"
 			pause_button_label.text = "暂停\nEsc"
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.PLAYING:
 			eco_showcase.call("set_reaction", 0)
 			_start_timer()
-			status_label.text = "净化中"
+			status_label.text = (
+				"潮区 %d/%d · 净化中" % [
+					board.active_tidal_zone_index + 1,
+					board.tidal_zone_count,
+				]
+				if board.tidal_zone_count > 0
+				else "净化中"
+			)
 			restart_button_label.text = "重新\n开始"
 			pause_button_label.text = "暂停\nEsc"
 			pause_button.disabled = false
@@ -1341,7 +1429,15 @@ func _on_state_changed(state: int) -> void:
 			_pause_timer()
 			pause_button_label.text = "菜单\nEsc"
 			pause_button.disabled = false
-			if _has_next_level_in_chapter():
+			if board.level_number == 7:
+				status_label.text = "古林净化完成！"
+				restart_button_label.text = "下一\n章节"
+				_chapter_advance_available = true
+			elif board.level_number == 14:
+				status_label.text = "海洋净化完成！"
+				restart_button_label.text = "返回\n地图"
+				_chapter_advance_available = true
+			elif _has_next_level_in_chapter():
 				status_label.text = "净化完成"
 				restart_button_label.text = "下一关"
 				_advance_available = true
@@ -1362,7 +1458,39 @@ func _on_state_changed(state: int) -> void:
 
 
 func _has_next_level_in_chapter() -> bool:
+	if current_level_index < GreenSweeperLevels.LAND_LEVELS.size():
+		return current_level_index + 1 < GreenSweeperLevels.LAND_LEVELS.size()
 	return current_level_index + 1 < GreenSweeperLevels.PLAYABLE_LEVELS.size()
+
+
+func _on_pollution_nodes_changed(cleansed_count: int, total_count: int) -> void:
+	if board.level_number == 7 and total_count > 0:
+		objective_label.text = "污染母株\n根系锚点 %d/%d" % [
+			cleansed_count,
+			total_count,
+		]
+	elif total_count > 0:
+		objective_label.text = "净化污染节点 %d/%d\n恢复%s生态" % [
+			cleansed_count,
+			total_count,
+			board.level_name,
+		]
+	else:
+		objective_label.text = "清除所有污染核心\n恢复%s生态" % board.level_name
+
+
+func _on_tidal_zone_changed(active_zone_index: int, zone_count: int) -> void:
+	if zone_count <= 0:
+		return
+	objective_label.text = "推进潮汐区 %d/%d\n翻开当前区全部安全格" % [
+		active_zone_index + 1,
+		zone_count,
+	]
+	if board.game_state == MinesweeperBoard.GameState.READY:
+		status_label.text = "潮区 %d/%d · 准备" % [active_zone_index + 1, zone_count]
+	elif board.game_state == MinesweeperBoard.GameState.PLAYING:
+		status_label.text = "潮区 %d/%d · 净化中" % [active_zone_index + 1, zone_count]
+	_refresh_instructions()
 
 
 func _on_flags_changed(used_flags: int, max_flags: int) -> void:
@@ -1370,7 +1498,9 @@ func _on_flags_changed(used_flags: int, max_flags: int) -> void:
 
 
 func _on_primary_button_pressed() -> void:
-	if _advance_available:
+	if _chapter_advance_available:
+		chapter_advance_requested.emit()
+	elif _advance_available:
 		start_level(current_level_index + 1)
 	else:
 		restart_level()

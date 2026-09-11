@@ -154,6 +154,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -446,10 +450,6 @@ theme_override_font_sizes/font_size = 13
 text = "清除所有污染核心"
 autowrap_mode = 2
 
-[node name="Fill" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=524791034]
-layout_mode = 2
-size_flags_vertical = 3
-
 [node name="InstructionsTitle" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1419730431]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
@@ -466,6 +466,77 @@ theme_override_font_sizes/font_size = 12
 text = "左键净化 · 右键标记
 双击数字快速展开"
 autowrap_mode = 2
+
+[node name="BossStage" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 148)
+layout_mode = 2
+
+[node name="BossRootLineA" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 35, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossRootLineB" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 89, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossRootLineC" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 143, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossPortrait" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 37.0
+offset_top = 0.0
+offset_right = 141.0
+offset_bottom = 102.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorA" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 111.0
+offset_right = 53.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorB" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 71.0
+offset_top = 111.0
+offset_right = 107.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorC" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 125.0
+offset_top = 111.0
+offset_right = 161.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="BottomBreathingSpace" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=598139312]
 custom_minimum_size = Vector2(0, 18)

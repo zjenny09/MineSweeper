@@ -1,0 +1,1322 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/sky_level_prototype.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://cowswlr74d766" path="res://scripts/board.gd" id="2_board"]
+[ext_resource type="Script" uid="uid://jlpif1t3tx33" path="res://scripts/eco_showcase.gd" id="3_eco"]
+[ext_resource type="Theme" uid="uid://b0hk7x6rxhuq1" path="res://themes/crayon_ui_theme.tres" id="4_theme"]
+[ext_resource type="Texture2D" uid="uid://c0vt2p8vsppjb" path="res://assets/art/land_levels/stage/unified_land_stage_shadow_grayblue.png" id="4_vchkt"]
+[ext_resource type="Script" uid="uid://bmj7pcf6diwb8" path="res://scripts/paper_background.gd" id="5_paper"]
+[ext_resource type="Texture2D" uid="uid://dj53ftxfbu37y" path="res://assets/art/land_levels/stage/unified_land_stage_body_grayblue.png" id="5_txyw0"]
+[ext_resource type="Script" uid="uid://b8yoglvunf3a8" path="res://scripts/first_move_guide.gd" id="6_guide"]
+[ext_resource type="Script" uid="uid://nfr0uono16m5" path="res://scripts/note_shadow.gd" id="7_note_shadow"]
+[ext_resource type="Script" uid="uid://cv7vyminb8kaw" path="res://scripts/round_button_shadow.gd" id="8_round_shadow"]
+[ext_resource type="Texture2D" uid="uid://ckdgoqghqu318" path="res://assets/art/level_01/decorations/background_leaf_sprout_sticker.png" id="8_vc5cj"]
+[ext_resource type="Texture2D" uid="uid://ch8samm2t61v7" path="res://assets/art/level_01/decorations/background_seed_sticker.png" id="9_nvyfr"]
+[ext_resource type="Script" uid="uid://bpfimmqm5wohk" path="res://scripts/round_button_focus_ring.gd" id="9_round_focus"]
+[ext_resource type="Script" uid="uid://bqmbp8o0omamr" path="res://scripts/level_one_decorations.gd" id="10_decorations"]
+[ext_resource type="Script" uid="uid://coqqrveafgv4p" path="res://scripts/guardian_ground_shadow.gd" id="11_guardian_shadow"]
+[ext_resource type="Texture2D" uid="uid://b1461nkpbiy2c" path="res://assets/art/level_01/interface/notes/note_straight.png" id="12_ty1g6"]
+[ext_resource type="Script" uid="uid://bkbmkgex8rjqu" path="res://scripts/board_cell_surface_preview.gd" id="13_cell_preview"]
+[ext_resource type="Texture2D" uid="uid://dogl5rx47oreg" path="res://assets/art/level_01/interface/notes/note_curved.png" id="13_j2jfr"]
+[ext_resource type="FontFile" uid="uid://byd7yngf1xx8x" path="res://assets/art/common/fonts/ui_handwritten_zh.ttf" id="14_bjg73"]
+[ext_resource type="AnimationLibrary" uid="uid://brglvfmcpjibc" path="res://animations/level_one_victory_animation_library.tres" id="14_victory_animation"]
+[ext_resource type="StyleBox" path="res://themes/level_one_board_shadow_style.tres" id="15_board_shadow_style"]
+[ext_resource type="Texture2D" uid="uid://vxs4et2gsqp8" path="res://assets/art/level_01/decorations/left_panel_sprout_healthy.png" id="15_bu4jf"]
+[ext_resource type="StyleBox" path="res://themes/victory_light_dot_style.tres" id="16_victory_dot_style"]
+[ext_resource type="Texture2D" uid="uid://d05wyk4rrpd6c" path="res://assets/art/tutorial/first_move_guide_frame.png" id="17_guide_frame"]
+[ext_resource type="Texture2D" uid="uid://ihwk6xqq2ngs" path="res://assets/art/tutorial/first_move_guide_robot_avatar.png" id="18_guide_mascot"]
+[ext_resource type="Texture2D" path="res://assets/art/land_levels/guardians/left_robot_guardian.png" id="18_o7ddy"]
+[ext_resource type="Texture2D" uid="uid://bcno84jvavtxm" path="res://assets/art/level_01/guardians/left_sprout_guardian_facing_left.png" id="19_0loja"]
+[ext_resource type="Texture2D" uid="uid://cgo2tylxhlnds" path="res://assets/art/tutorial/first_move_button_primary.png" id="19_guide_primary"]
+[ext_resource type="Texture2D" uid="uid://dpjsbsm5qqrca" path="res://assets/art/tutorial/first_move_button_secondary.png" id="20_guide_secondary"]
+[ext_resource type="AnimationLibrary" uid="uid://d2o18ajqset4i" path="res://animations/first_move_guide_animation_library.tres" id="21_guide_animation"]
+[ext_resource type="Texture2D" uid="uid://dfi3mp7c3e0im" path="res://assets/art/level_01/board/board_tray.png" id="22_ids8r"]
+[ext_resource type="Script" uid="uid://dywp744ws3npj" path="res://scripts/quick_action_button.gd" id="22_quick_action"]
+[ext_resource type="PackedScene" uid="uid://c1x28t3ncgyu8" path="res://scenes/land_sticker_sets.tscn" id="23_land_stickers"]
+[ext_resource type="Texture2D" uid="uid://kfebbawnsv3n" path="res://assets/art/level_01/decorations/status_note_bud_sticker.png" id="30_dnhof"]
+[ext_resource type="Texture2D" uid="uid://bak2btbkpqish" path="res://assets/art/level_01/guardians/right_panel_guardian_white_sitting.png" id="31_1v6qk"]
+[ext_resource type="Texture2D" uid="uid://dlqtqqpujmy1x" path="res://assets/art/level_01/guardians/right_panel_guardian_yellow_standing.png" id="32_augu2"]
+[ext_resource type="Texture2D" uid="uid://v6egk6lw67vq" path="res://assets/art/land_levels/buttons/pause_normal.png" id="33_tm6hj"]
+[ext_resource type="Texture2D" uid="uid://veteq4qnrb5u" path="res://assets/art/land_levels/buttons/pause_pressed.png" id="34_kf5aa"]
+[ext_resource type="Texture2D" uid="uid://cra7vtv0jshor" path="res://assets/art/land_levels/buttons/pause_hover.png" id="35_t5ykj"]
+[ext_resource type="Texture2D" uid="uid://ch8478mcjb435" path="res://assets/art/land_levels/buttons/pause_focus.png" id="36_e755i"]
+[ext_resource type="Texture2D" uid="uid://bijhjjkypdw6c" path="res://assets/art/land_levels/buttons/regenerate_normal.png" id="40_ro3en"]
+[ext_resource type="Texture2D" uid="uid://bfsft23ch3mkq" path="res://assets/art/land_levels/buttons/regenerate_pressed.png" id="41_od4ux"]
+[ext_resource type="Texture2D" uid="uid://dgoc8bxfaalkf" path="res://assets/art/land_levels/buttons/regenerate_hover.png" id="42_xhfw6"]
+[ext_resource type="Texture2D" uid="uid://cow3tb7j30n03" path="res://assets/art/land_levels/buttons/regenerate_focus.png" id="43_1epgm"]
+[ext_resource type="Texture2D" uid="uid://bws40xbsp6yyg" path="res://assets/art/level_01/interface/pause/pause_menu_frame.png" id="44_152kg"]
+[ext_resource type="Texture2D" path="res://assets/art/land_levels/background/land_tabletop_background5_clean.png" id="45_land_tabletop"]
+[ext_resource type="PackedScene" path="res://scenes/land_tabletop_actors.tscn" id="46_tabletop_actors"]
+[ext_resource type="Texture2D" path="res://assets/art/sky_levels/background/sky_desktop_clean.png" id="47_sky_background"]
+[ext_resource type="Texture2D" path="res://assets/art/sky_levels/stage/sky_board_frame.png" id="48_sky_frame"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mlv25"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBox_gameplay_empty"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a82wo"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("19_guide_primary")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gdvew"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("19_guide_primary")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kjtvk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("19_guide_primary")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xrs0c"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xljpf"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("20_guide_secondary")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j4bwh"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("20_guide_secondary")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ksmap"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+texture = ExtResource("20_guide_secondary")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ygd8o"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2s0kr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xaipn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ndrjj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ih3m7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_ocean_board_paper"]
+bg_color = Color(0.973, 0.956, 0.851, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.443, 0.729, 0.762, 0.62)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[node name="SkyLevel15Prototype" type="Control" unique_id=764041858]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_theme")
+script = ExtResource("1_main")
+
+[node name="Background" type="Control" parent="." unique_id=1547395255]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_paper")
+
+[node name="SkyStage" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+
+[node name="SkyDeskBackground" type="TextureRect" parent="SkyStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("47_sky_background")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanBoardPaper" type="Panel" parent="SkyStage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 406.0
+offset_top = 122.0
+offset_right = 878.0
+offset_bottom = 550.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_ocean_board_paper")
+
+[node name="SkyBoardFrame" type="TextureRect" parent="SkyStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("48_sky_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandDeskBackground" type="TextureRect" parent="." unique_id=1486400221]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("45_land_tabletop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LandUnifiedShadow" type="TextureRect" parent="." unique_id=203994440]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_vchkt")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LevelOneBackground" type="TextureRect" parent="." unique_id=1126778162]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_txyw0")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LevelOneDecorations" type="Control" parent="LevelOneBackground" unique_id=546926816]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("10_decorations")
+
+[node name="LandStickerSets" parent="LevelOneBackground/LevelOneDecorations" unique_id=1619177 instance=ExtResource("23_land_stickers")]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+preview_level = 3
+
+[node name="LeafSproutDecorationA" type="TextureRect" parent="LevelOneBackground/LevelOneDecorations" unique_id=584127972]
+visible = false
+layout_mode = 0
+offset_left = 1080.0
+offset_top = 610.0
+offset_right = 1128.0
+offset_bottom = 658.0
+rotation = -0.383972
+pivot_offset = Vector2(24, 24)
+mouse_filter = 2
+texture = ExtResource("8_vc5cj")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SeedDecorationA" type="TextureRect" parent="LevelOneBackground/LevelOneDecorations" unique_id=440042233]
+visible = false
+layout_mode = 0
+offset_left = 45.0
+offset_top = 95.0
+offset_right = 89.0
+offset_bottom = 151.0
+rotation = -0.25
+pivot_offset = Vector2(22, 28)
+mouse_filter = 2
+texture = ExtResource("9_nvyfr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SeedDecorationB" type="TextureRect" parent="LevelOneBackground/LevelOneDecorations" unique_id=1178573792]
+visible = false
+layout_mode = 0
+offset_left = 1180.0
+offset_top = 95.0
+offset_right = 1224.0
+offset_bottom = 151.0
+rotation = 0.18
+pivot_offset = Vector2(22, 28)
+mouse_filter = 2
+texture = ExtResource("9_nvyfr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EcoShowcase" type="Control" parent="." unique_id=987138976]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_eco")
+gameplay_full_bleed = true
+
+[node name="PageMargin" type="MarginContainer" parent="." unique_id=286851651]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 26
+
+[node name="Columns" type="HBoxContainer" parent="PageMargin" unique_id=2020661513]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="LeftColumn" type="Control" parent="PageMargin/Columns" unique_id=1021890576]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="EnvironmentPanel" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=171445644]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -266.0
+offset_right = 172.0
+offset_bottom = 194.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(150, 230)
+
+[node name="InfoBackShadow" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=1982118706]
+visible = false
+anchors_preset = 0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 294.0
+offset_bottom = 424.0
+rotation = 0.0523599
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+script = ExtResource("7_note_shadow")
+curved_outline = false
+
+[node name="InfoBackArtwork" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=737481006]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+layout_mode = 0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 294.0
+offset_bottom = 424.0
+rotation = 0.0523599
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+texture = ExtResource("12_ty1g6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoTopShadow" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=1651198411]
+visible = false
+z_index = 2
+anchors_preset = 0
+offset_left = 6.0
+offset_top = 28.0
+offset_right = 294.0
+offset_bottom = 447.0
+rotation = -0.0698132
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+script = ExtResource("7_note_shadow")
+shadow_scale = 0.2
+
+[node name="InfoNoteArtwork" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=1485946935]
+unique_name_in_owner = true
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 6.0
+offset_top = 28.0
+offset_right = 294.0
+offset_bottom = 447.0
+rotation = -0.0698132
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+texture = ExtResource("13_j2jfr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=562472609]
+z_index = 4
+layout_mode = 0
+offset_left = 44.0
+offset_top = 46.0
+offset_right = 266.0
+offset_bottom = 459.0
+pivot_offset = Vector2(111, 206.5)
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin" unique_id=1804207696]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SubtitleLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=563304847]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 20
+text = "第1关 · 萌芽"
+horizontal_alignment = 1
+
+[node name="LevelSummaryLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=386521782]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 15
+text = "5 × 5 棋盘
+污染核心 5"
+horizontal_alignment = 1
+
+[node name="Separator" type="HSeparator" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=280997531]
+modulate = Color(0.0863, 0.251, 0.1176, 0.62)
+layout_mode = 2
+
+[node name="ObjectiveTitle" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1374323380]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 14
+text = "净化目标"
+
+[node name="ObjectiveLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=979827316]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 13
+text = "清除所有污染核心"
+autowrap_mode = 2
+
+[node name="InstructionsTitle" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1419730431]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 14
+text = "操作方法"
+
+[node name="InstructionsLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1027751501]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.9)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 12
+text = "左键净化 · 右键标记
+双击数字快速展开"
+autowrap_mode = 2
+
+[node name="BossStage" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 148)
+layout_mode = 2
+
+[node name="BossRootLineA" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 35, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossRootLineB" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 89, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossRootLineC" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 143, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossPortrait" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 37.0
+offset_top = 0.0
+offset_right = 141.0
+offset_bottom = 102.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorA" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 111.0
+offset_right = 53.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorB" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 71.0
+offset_top = 111.0
+offset_right = 107.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorC" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 125.0
+offset_top = 111.0
+offset_right = 161.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BottomBreathingSpace" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=598139312]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+
+[node name="LeftDecorativeSprout" type="TextureRect" parent="PageMargin/Columns/LeftColumn" unique_id=7825881]
+unique_name_in_owner = true
+z_index = 6
+layout_mode = 0
+offset_left = 190.0
+offset_top = 592.0
+offset_right = 246.0
+offset_bottom = 648.0
+pivot_offset = Vector2(28, 50.96)
+mouse_filter = 2
+texture = ExtResource("15_bu4jf")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LeftSproutVictoryDots" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=102113353]
+unique_name_in_owner = true
+visible = false
+z_index = 7
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VictoryDotA" type="Panel" parent="PageMargin/Columns/LeftColumn/LeftSproutVictoryDots" unique_id=1333694266]
+layout_mode = 0
+offset_left = 202.0
+offset_top = 567.0
+offset_right = 210.0
+offset_bottom = 575.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="VictoryDotB" type="Panel" parent="PageMargin/Columns/LeftColumn/LeftSproutVictoryDots" unique_id=514053572]
+layout_mode = 0
+offset_left = 217.0
+offset_top = 563.0
+offset_right = 226.0
+offset_bottom = 572.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="VictoryDotC" type="Panel" parent="PageMargin/Columns/LeftColumn/LeftSproutVictoryDots" unique_id=981361909]
+layout_mode = 0
+offset_left = 232.0
+offset_top = 567.0
+offset_right = 240.0
+offset_bottom = 575.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="LeftSproutGuardianLeftShadow" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=136596180]
+unique_name_in_owner = true
+z_index = 4
+anchors_preset = 0
+offset_left = 58.0
+offset_top = 600.0
+offset_right = 190.0
+offset_bottom = 660.0
+pivot_offset = Vector2(66, 48)
+mouse_filter = 2
+script = ExtResource("11_guardian_shadow")
+center_y_ratio = 0.8
+width_ratio = 0.72
+height_ratio = 0.1
+opacity_multiplier = 0.86
+
+[node name="LeftSproutGuardianRightShadow" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=1127948270]
+unique_name_in_owner = true
+z_index = 4
+anchors_preset = 0
+offset_left = 254.0
+offset_top = 564.0
+offset_right = 338.0
+offset_bottom = 648.0
+mouse_filter = 2
+script = ExtResource("11_guardian_shadow")
+
+[node name="LeftSproutGuardianLeft" type="TextureRect" parent="PageMargin/Columns/LeftColumn" unique_id=21498697]
+unique_name_in_owner = true
+z_index = 5
+layout_mode = 0
+offset_left = 64.0
+offset_top = 500.0
+offset_right = 160.0
+offset_bottom = 648.0
+pivot_offset = Vector2(48, 148)
+mouse_filter = 2
+texture = ExtResource("18_o7ddy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LeftSproutGuardianRight" type="TextureRect" parent="PageMargin/Columns/LeftColumn" unique_id=1594453579]
+unique_name_in_owner = true
+z_index = 5
+layout_mode = 0
+offset_left = 254.0
+offset_top = 564.0
+offset_right = 338.0
+offset_bottom = 648.0
+pivot_offset = Vector2(42, 42)
+mouse_filter = 2
+texture = ExtResource("19_0loja")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BoardPanel" type="Control" parent="PageMargin/Columns" unique_id=2120942765]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BoardCenter" type="CenterContainer" parent="PageMargin/Columns/BoardPanel" unique_id=946514675]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Board" type="Control" parent="PageMargin/Columns/BoardPanel/BoardCenter" unique_id=1576281263]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(620, 587)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="FirstMoveGuide" type="Control" parent="PageMargin/Columns/BoardPanel" unique_id=976973167]
+unique_name_in_owner = true
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_guide")
+
+[node name="GuideBubbleRoot" type="Control" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide" unique_id=1271904294]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 68.0
+offset_top = 246.07349
+offset_right = 552.0
+offset_bottom = 421.9265
+mouse_filter = 1
+
+[node name="GuideFrameTexture" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1251306829]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("17_guide_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideMascot" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=357312411]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 43.0
+offset_right = 88.0
+offset_bottom = 107.0
+pivot_offset = Vector2(32, 32)
+mouse_filter = 2
+texture = ExtResource("18_guide_mascot")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideMascotAnimationPlayer" type="AnimationPlayer" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1833518851]
+libraries/ = ExtResource("21_guide_animation")
+autoplay = &"sway"
+
+[node name="GuideTitle" type="Label" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=824298385]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 96.0
+offset_top = 31.0
+offset_right = 456.0
+offset_bottom = 57.0
+theme_override_colors/font_color = Color(0.27450982, 0.6156863, 0.39607844, 1)
+theme_override_font_sizes/font_size = 17
+text = "小芽带你到安全起点啦！"
+vertical_alignment = 1
+
+[node name="GuideAction" type="Label" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1625000610]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 96.0
+offset_top = 62.0
+offset_right = 456.0
+offset_bottom = 84.0
+theme_override_colors/font_color = Color(0.105882354, 0.1764706, 0.13333334, 1)
+theme_override_font_sizes/font_size = 14
+text = "点这里开始第一次净化"
+vertical_alignment = 1
+
+[node name="GuideHint" type="Label" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1256968699]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 96.0
+offset_top = 89.0
+offset_right = 456.0
+offset_bottom = 108.0
+theme_override_colors/font_color = Color(0.105882354, 0.1764706, 0.13333334, 0.68)
+theme_override_font_sizes/font_size = 11
+text = "这是安全建议，也可以选择别处"
+vertical_alignment = 1
+
+[node name="NextButtonArtwork" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1810678733]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 220.0
+offset_top = 119.5
+offset_right = 328.0
+offset_bottom = 151.5
+mouse_filter = 2
+texture = ExtResource("19_guide_primary")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TutorialNextButton" type="Button" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=444075386]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 220.0
+offset_top = 119.5
+offset_right = 328.0
+offset_bottom = 151.5
+focus_mode = 0
+theme_override_colors/font_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_colors/font_pressed_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_colors/font_hover_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_colors/font_disabled_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mlv25")
+text = "下一步"
+
+[node name="ExitButtonArtwork" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=863359625]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 332.0
+offset_top = 122.92651
+offset_right = 440.0
+offset_bottom = 149.92651
+mouse_filter = 2
+texture = ExtResource("20_guide_secondary")
+expand_mode = 1
+
+[node name="TutorialExitButton" type="Button" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=76935980]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 332.0
+offset_top = 115.5
+offset_right = 440.0
+offset_bottom = 155.5
+focus_mode = 0
+theme_override_colors/font_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_colors/font_pressed_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_colors/font_hover_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_colors/font_disabled_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_mlv25")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_mlv25")
+text = "退出引导"
+
+[node name="RightColumn" type="Control" parent="PageMargin/Columns" unique_id=1785836367]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="BudSproutDecorationA" type="TextureRect" parent="PageMargin/Columns/RightColumn" unique_id=771749144]
+unique_name_in_owner = true
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 195.0
+offset_top = 120.0
+offset_right = 241.0
+offset_bottom = 164.0
+rotation = -0.383972
+pivot_offset = Vector2(23, 22)
+mouse_filter = 2
+texture = ExtResource("30_dnhof")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RightGuardianAShadow" type="Control" parent="PageMargin/Columns/RightColumn" unique_id=1067426575]
+unique_name_in_owner = true
+z_index = 1
+anchors_preset = 0
+offset_left = 35.0
+offset_top = 575.0
+offset_right = 107.0
+offset_bottom = 647.0
+mouse_filter = 2
+script = ExtResource("11_guardian_shadow")
+
+[node name="RightGuardianBShadow" type="Control" parent="PageMargin/Columns/RightColumn" unique_id=1087016744]
+unique_name_in_owner = true
+z_index = 1
+anchors_preset = 0
+offset_left = 115.0
+offset_top = 560.0
+offset_right = 203.0
+offset_bottom = 648.0
+mouse_filter = 2
+script = ExtResource("11_guardian_shadow")
+
+[node name="RightGuardianA" type="TextureRect" parent="PageMargin/Columns/RightColumn" unique_id=1233756379]
+unique_name_in_owner = true
+z_index = 4
+layout_mode = 0
+offset_left = 35.0
+offset_top = 560.0
+offset_right = 107.0
+offset_bottom = 632.0
+pivot_offset = Vector2(36, 36)
+mouse_filter = 2
+texture = ExtResource("31_1v6qk")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RightGuardianB" type="TextureRect" parent="PageMargin/Columns/RightColumn" unique_id=1487017342]
+unique_name_in_owner = true
+z_index = 3
+layout_mode = 0
+offset_left = 115.0
+offset_top = 548.0
+offset_right = 203.0
+offset_bottom = 636.0
+pivot_offset = Vector2(44, 44)
+mouse_filter = 2
+texture = ExtResource("32_augu2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HudPanel" type="PanelContainer" parent="PageMargin/Columns/RightColumn" unique_id=1515148994]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 15.0
+offset_top = 122.0
+offset_right = 225.0
+offset_bottom = 416.0
+pivot_offset = Vector2(105, 147)
+theme_override_styles/panel = SubResource("StyleBox_gameplay_empty")
+
+[node name="StatusNoteShadow" type="Control" parent="PageMargin/Columns/RightColumn/HudPanel" unique_id=2066925406]
+visible = false
+show_behind_parent = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("7_note_shadow")
+
+[node name="StatusNoteArtwork" type="TextureRect" parent="PageMargin/Columns/RightColumn/HudPanel" unique_id=882689816]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("13_j2jfr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/RightColumn/HudPanel" unique_id=782201458]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin" unique_id=1632027872]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="TimeTitle" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1790151562]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 15
+text = "净化时间"
+horizontal_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=682770868]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 30
+text = "00:00.0"
+horizontal_alignment = 1
+
+[node name="TimeSeparator" type="HSeparator" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1628963455]
+modulate = Color(0.0863, 0.251, 0.1176, 0.62)
+layout_mode = 2
+
+[node name="FlagsRow" type="HBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1878153026]
+layout_mode = 2
+
+[node name="FlagsTitle" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/FlagsRow" unique_id=1519288908]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 15
+text = "污染核心"
+
+[node name="FlagsLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/FlagsRow" unique_id=201014904]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 17
+text = "0/5"
+horizontal_alignment = 2
+
+[node name="StatusSeparator" type="HSeparator" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=206704043]
+modulate = Color(0.0863, 0.251, 0.1176, 0.62)
+layout_mode = 2
+
+[node name="StatusTitle" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1658996482]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 15
+text = "净化状态"
+
+[node name="StatusLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1043425687]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 14
+text = "准备中"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ScanFallbackRow" type="HBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="ScanFallbackDots" type="HBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="OceanScanDotA" type="Panel" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow/ScanFallbackDots"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="OceanScanDotB" type="Panel" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow/ScanFallbackDots"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="OceanScanDotC" type="Panel" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow/ScanFallbackDots"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="ScanFallbackStatus" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 11
+text = "首翻后可用"
+vertical_alignment = 1
+
+[node name="ScanFallbackButton" type="Button" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 28)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_colors/font_disabled_color = Color(0.25, 0.35, 0.29, 0.55)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 11
+text = "扫描 C"
+
+[node name="Fill" type="Control" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1905537134]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="QuickButtons" type="HBoxContainer" parent="PageMargin/Columns/RightColumn" unique_id=36696557]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -10.0
+offset_top = 418.0
+offset_right = -40.0
+offset_bottom = 506.0
+grow_horizontal = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="PauseButton" type="TextureButton" parent="PageMargin/Columns/RightColumn/QuickButtons" unique_id=245970244]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+tooltip_text = "暂停 / Esc"
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("33_tm6hj")
+texture_pressed = ExtResource("34_kf5aa")
+texture_hover = ExtResource("35_t5ykj")
+texture_focused = ExtResource("36_e755i")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("22_quick_action")
+
+[node name="PauseButtonShadow" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=1334421812]
+visible = false
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_round_shadow")
+
+[node name="PauseButtonFocusRing" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=137787420]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_round_focus")
+
+[node name="PauseButtonLabel" type="Label" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=498523127]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 13
+text = "暂停
+Esc"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartButton" type="TextureButton" parent="PageMargin/Columns/RightColumn/QuickButtons" unique_id=1791830909]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+tooltip_text = "重新开始"
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("40_ro3en")
+texture_pressed = ExtResource("41_od4ux")
+texture_hover = ExtResource("42_xhfw6")
+texture_focused = ExtResource("43_1epgm")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("22_quick_action")
+
+[node name="RestartButtonShadow" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/RestartButton" unique_id=70982912]
+visible = false
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_round_shadow")
+
+[node name="RestartButtonFocusRing" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/RestartButton" unique_id=734853622]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_round_focus")
+
+[node name="RestartButtonLabel" type="Label" parent="PageMargin/Columns/RightColumn/QuickButtons/RestartButton" unique_id=263313145]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 12
+text = "重新
+生成"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LandTabletopActors" parent="." unique_id=2100359821 instance=ExtResource("46_tabletop_actors")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="PauseOverlay" type="Control" parent="." unique_id=5354387]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Shade" type="ColorRect" parent="PauseOverlay" unique_id=984043890]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.145, 0.153, 0.149, 0.84)
+
+[node name="Center" type="CenterContainer" parent="PauseOverlay" unique_id=871713870]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="PauseOverlay/Center" unique_id=204596415]
+custom_minimum_size = Vector2(400, 510)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_gameplay_empty")
+
+[node name="PauseMenuFrameArtwork" type="NinePatchRect" parent="PauseOverlay/Center/Panel" unique_id=861076130]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("44_152kg")
+patch_margin_left = 80
+patch_margin_top = 90
+patch_margin_right = 80
+patch_margin_bottom = 90
+
+[node name="Margin" type="MarginContainer" parent="PauseOverlay/Center/Panel" unique_id=1903321091]
+layout_mode = 2
+theme_override_constants/margin_left = 85
+theme_override_constants/margin_top = 42
+theme_override_constants/margin_right = 85
+theme_override_constants/margin_bottom = 32
+
+[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Center/Panel/Margin" unique_id=2033234432]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PauseTitle" type="Label" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=2098890739]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.251, 0.231, 0.204, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 28
+text = "净化暂停"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1594533361]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_a82wo")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gdvew")
+theme_override_styles/hover = SubResource("StyleBoxTexture_kjtvk")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xrs0c")
+text = "继续游戏"
+
+[node name="PauseRestartButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=949756108]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ygd8o")
+text = "重新开始"
+
+[node name="LevelSelectButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=774585932]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2s0kr")
+text = "返回关卡选择"
+
+[node name="PauseSettingsButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1250056603]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xaipn")
+text = "设置"
+
+[node name="MainMenuButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=520801165]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ndrjj")
+text = "返回主菜单"
+
+[node name="ExitGameButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1932003066]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ih3m7")
+text = "退出游戏"
+
+[node name="LevelOneAnimationPlayer" type="AnimationPlayer" parent="." unique_id=50624245]
+unique_name_in_owner = true
+libraries/ = ExtResource("14_victory_animation")
