@@ -4,7 +4,9 @@ extends Control
 signal flags_changed(used_flags: int, max_flags: int)
 signal status_changed(text: String)
 signal gameplay_state_changed(state: int)
+signal board_interacted
 signal first_reveal
+signal face_revealed
 signal scan_energy_earned
 signal scan_target_requested(face_index: int)
 signal scan_cancel_requested
@@ -149,7 +151,7 @@ func _draw() -> void:
 
 func _create_instruction_label() -> void:
 	_instruction_label = Label.new()
-	_instruction_label.text = "拖拽旋转 · 左键净化 · 右键标记 · 方向键选择 · WASD旋转"
+	_instruction_label.text = "拖拽旋转 · 左键净化 · 右键标记 · 方向键选择 · W S A D旋转 · J翻开 · K标记"
 	_instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_instruction_label.add_theme_color_override("font_color", Color("315b68"))
 	_instruction_label.add_theme_font_override("font", SKY_NUMBER_FONT)
@@ -508,6 +510,15 @@ func configure_level(
 
 func get_core_count() -> int:
 	return _core_count
+
+
+func set_interaction_enabled(enabled: bool) -> void:
+	_interaction_enabled = enabled
+	if not enabled:
+		_dragging = false
+		_left_double_click_pending = false
+		_joy_rotation = Vector2.ZERO
+	queue_redraw()
 
 
 func new_game() -> void:
@@ -1125,12 +1136,15 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _breeze_effect_active or _cloud_shield_effect_active:
+	if not _interaction_enabled or _breeze_effect_active or _cloud_shield_effect_active:
 		return
 	if not is_visible_in_tree() or not has_focus():
 		return
 	if event is InputEventKey and event.pressed:
 		var key_event := event as InputEventKey
+		var physical_key := key_event.physical_keycode
+		if physical_key == 0:
+			physical_key = key_event.keycode
 		if key_event.keycode == KEY_LEFT:
 			_move_focus(Vector2.LEFT)
 		elif key_event.keycode == KEY_RIGHT:
@@ -1139,19 +1153,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			_move_focus(Vector2.UP)
 		elif key_event.keycode == KEY_DOWN:
 			_move_focus(Vector2.DOWN)
-		elif key_event.keycode == KEY_A:
+		elif physical_key == KEY_A:
 			_rotate_ball(Vector2(-0.11, 0.0))
-		elif key_event.keycode == KEY_D:
+		elif physical_key == KEY_D:
 			_rotate_ball(Vector2(0.11, 0.0))
-		elif key_event.keycode == KEY_W:
+		elif physical_key == KEY_W:
 			_rotate_ball(Vector2(0.0, -0.11))
-		elif key_event.keycode == KEY_S:
+		elif physical_key == KEY_S:
 			_rotate_ball(Vector2(0.0, 0.11))
-		elif key_event.keycode in [KEY_ENTER, KEY_SPACE]:
+		elif physical_key == KEY_J:
 			_activate_face(_focused_face)
-		elif key_event.keycode == KEY_F:
+		elif physical_key == KEY_K:
 			_toggle_flag(_focused_face)
-		elif key_event.keycode == KEY_R:
+		elif physical_key == KEY_R:
 			_center_focused_face()
 		else:
 			return
@@ -1303,6 +1317,7 @@ func _center_focused_face() -> void:
 func _activate_face(face_index: int) -> void:
 	if not _interaction_enabled or face_index < 0:
 		return
+	board_interacted.emit()
 	if _scan_target_mode:
 		if is_scan_candidate(face_index):
 			scan_target_requested.emit(face_index)
@@ -1316,12 +1331,14 @@ func _reveal_face(face_index: int) -> void:
 	var revealed_before := _count_active(_model.get("revealed"))
 	_model.call("reveal_face", face_index)
 	if _count_active(_model.get("revealed")) > revealed_before:
+		face_revealed.emit()
 		scan_energy_earned.emit()
 
 
 func _toggle_flag(face_index: int) -> void:
 	if not _interaction_enabled or face_index < 0:
 		return
+	board_interacted.emit()
 	var flagged: PackedByteArray = _model.get("flagged")
 	var was_flagged := flagged[face_index] == 1
 	_model.call("toggle_flag", face_index)
@@ -1485,19 +1502,24 @@ func _on_boss_eye_changed(
 	_boss_eye_neighbor_lookup.clear()
 	if face_index < 0:
 		if total_eyes > 0:
-			status_changed.emit("先翻开安全格，寻找第一道雷眼")
+			status_changed.emit(
+				"继续净化云球，等待第一道雷眼形成"
+				if eye_number <= 1
+				else "雷眼正在远处重组 · 继续净化等待第%d/%d道" % [
+					eye_number,
+					total_eyes,
+				]
+			)
 		queue_redraw()
 		return
 	for neighbor in _faces[face_index]["neighbors"]:
 		_boss_eye_neighbor_lookup[int(neighbor)] = true
-	if eye_number > 1:
-		status_changed.emit(
-			"上一道雷眼已击破 · 寻找第%d/%d道雷眼" % [eye_number, total_eyes]
-		)
-	else:
-		status_changed.emit(
-			"第%d/%d道雷眼出现 · 标记周围污染后双击雷眼" % [eye_number, total_eyes]
-		)
+	status_changed.emit(
+		"第%d/%d道雷眼出现 · 标记周围污染后双击雷眼" % [
+			eye_number,
+			total_eyes,
+		]
+	)
 	boss_eye_changed.emit(face_index, eye_number, total_eyes)
 	queue_redraw()
 

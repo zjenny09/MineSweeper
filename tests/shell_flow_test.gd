@@ -290,9 +290,9 @@ func _test_operation_mode_setting(shell) -> void:
 	_expect(game.get_operation_mode() == 1, "A retained paused game receives the new operation mode.")
 	_expect(game.board.get_operation_mode() == MinesweeperBoard.OperationMode.KEYBOARD, "The board enters keyboard mode without restarting.")
 	_expect(
-		game.get_node("%InstructionsLabel").text.contains("Z 净化")
-		and game.get_node("%InstructionsLabel").text.contains("X 标记"),
-		"Keyboard mode displays the selected Z/X controls."
+		game.get_node("%InstructionsLabel").text.contains("J 净化")
+		and game.get_node("%InstructionsLabel").text.contains("K 标记"),
+		"Keyboard mode displays the selected J/K controls."
 	)
 	shell.call("_close_settings")
 	_expect(game.is_session_paused(), "Changing operation mode preserves the paused game.")

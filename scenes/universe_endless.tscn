@@ -1,0 +1,395 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/universe_endless.gd" id="1_host"]
+[ext_resource type="Script" path="res://scripts/universe_endless_board.gd" id="2_board"]
+[ext_resource type="Script" path="res://scripts/universe_backdrop.gd" id="3_backdrop"]
+[ext_resource type="Shader" path="res://shaders/universe_nebula.gdshader" id="4_nebula"]
+[ext_resource type="Texture2D" path="res://assets/art/sky_levels/actors/sky_robot_upright.png" id="5_robot"]
+[ext_resource type="Texture2D" path="res://assets/art/sky_levels/actors/sky_robot_plane.png" id="6_plane"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nebula"]
+shader = ExtResource("4_nebula")
+
+[node name="UniverseEndless" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_host")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+material = SubResource("ShaderMaterial_nebula")
+color = Color(1, 1, 1, 1)
+mouse_filter = 2
+
+[node name="ParallaxStars" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_backdrop")
+
+[node name="Header" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 20.0
+offset_right = 1252.0
+offset_bottom = 102.0
+
+[node name="TitleLabel" type="Label" parent="Header"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 10.0
+offset_right = 430.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.69, 0.91, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "宇宙篇 · 无尽星航"
+
+[node name="SubtitleLabel" type="Label" parent="Header"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 45.0
+offset_right = 620.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.49, 0.68, 0.82, 1)
+theme_override_font_sizes/font_size = 14
+text = "有发光连线才属于邻接 · 净化星云后宇宙会继续生长"
+
+[node name="TimerLabel" type="Label" parent="Header"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1010.0
+offset_top = 22.0
+offset_right = 1192.0
+offset_bottom = 59.0
+theme_override_colors/font_color = Color(0.8, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "00:00:00"
+horizontal_alignment = 2
+
+[node name="LeftPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 122.0
+offset_right = 190.0
+offset_bottom = 612.0
+
+[node name="LeftMargin" type="MarginContainer" parent="LeftPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 20.0
+offset_right = -14.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stats" type="VBoxContainer" parent="LeftPanel/LeftMargin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="RegionsLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.88, 0.96, 1)
+theme_override_font_sizes/font_size = 16
+text = "已净化星云\n0"
+horizontal_alignment = 1
+
+[node name="StarsLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.88, 0.96, 1)
+theme_override_font_sizes/font_size = 16
+text = "净化星核\n0"
+horizontal_alignment = 1
+
+[node name="DistanceLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.88, 0.96, 1)
+theme_override_font_sizes/font_size = 16
+text = "航行距离\n0 光年"
+horizontal_alignment = 1
+
+[node name="DisturbanceLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77, 0.62, 0.95, 1)
+theme_override_font_sizes/font_size = 15
+text = "宇宙扰动\n1/5"
+horizontal_alignment = 1
+
+[node name="ShieldLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.54, 0.82, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "航行护盾\n2/2"
+horizontal_alignment = 1
+
+[node name="FlagsLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.83, 0.45, 1)
+theme_override_font_sizes/font_size = 15
+text = "污染标记 0/0"
+horizontal_alignment = 1
+
+[node name="BoardFrame" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 202.0
+offset_top = 106.0
+offset_right = 1078.0
+offset_bottom = 650.0
+
+[node name="UniverseBoard" type="Control" parent="BoardFrame"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+script = ExtResource("2_board")
+
+[node name="CraftRoot" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 202.0
+offset_top = 505.0
+offset_right = 382.0
+offset_bottom = 640.0
+mouse_filter = 2
+pivot_offset = Vector2(90, 68)
+
+[node name="Plane" type="TextureRect" parent="CraftRoot"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 64.0
+offset_right = 180.0
+offset_bottom = 128.0
+texture = ExtResource("6_plane")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Robot" type="TextureRect" parent="CraftRoot"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 0.0
+offset_right = 150.0
+offset_bottom = 108.0
+texture = ExtResource("5_robot")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="RightPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 1090.0
+offset_top = 122.0
+offset_right = 1252.0
+offset_bottom = 612.0
+
+[node name="RightMargin" type="MarginContainer" parent="RightPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 20.0
+offset_right = -12.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Controls" type="VBoxContainer" parent="RightPanel/RightMargin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PauseButton" type="Button" parent="RightPanel/RightMargin/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "暂停航行"
+
+[node name="RestartButton" type="Button" parent="RightPanel/RightMargin/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "新宇宙"
+
+[node name="MapButton" type="Button" parent="RightPanel/RightMargin/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回天空篇"
+
+[node name="RuleLabel" type="Label" parent="RightPanel/RightMargin/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.73, 0.84, 1)
+theme_override_font_sizes/font_size = 13
+text = "左键净化\n右键污染标记\n点击数字展开\n\n紫色弧线也是邻接\n会连接远距离星核\n\n首次净化保护\n附近两颗邻星\n误触核心消耗护盾\n\n航行越深\n星网结构越丰富"
+horizontal_alignment = 1
+
+[node name="StatusPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 202.0
+offset_top = 653.0
+offset_right = 1078.0
+offset_bottom = 704.0
+
+[node name="StatusLabel" type="Label" parent="StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.72, 0.91, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "星图生成中"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 300
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.012, 0.025, 0.07, 0.86)
+
+[node name="PausePanel" type="Panel" parent="PauseOverlay"]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 120.0
+offset_right = 820.0
+offset_bottom = 600.0
+
+[node name="PauseVBox" type="VBoxContainer" parent="PauseOverlay/PausePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 42.0
+offset_right = -50.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
+
+[node name="PauseTitle" type="Label" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "航行暂停"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "继续航行"
+
+[node name="PauseRestartButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "开启新宇宙"
+
+[node name="PauseSettingsButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "设置"
+
+[node name="PauseMainMenuButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回欢迎界面"
+
+[node name="PauseExitButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "退出游戏"
+
+[node name="FailureOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.018, 0.075, 0.90)
+
+[node name="FailurePanel" type="Panel" parent="FailureOverlay"]
+layout_mode = 0
+offset_left = 385.0
+offset_top = 185.0
+offset_right = 895.0
+offset_bottom = 535.0
+
+[node name="FailureVBox" type="VBoxContainer" parent="FailureOverlay/FailurePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = 42.0
+offset_right = -48.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 22
+
+[node name="FailureTitle" type="Label" parent="FailureOverlay/FailurePanel/FailureVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.54, 0.78, 1)
+theme_override_font_sizes/font_size = 28
+text = "远征暂时中断"
+horizontal_alignment = 1
+
+[node name="FailureSummary" type="Label" parent="FailureOverlay/FailurePanel/FailureVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "本次远征抵达 0 光年"
+horizontal_alignment = 1
+
+[node name="NewUniverseButton" type="Button" parent="FailureOverlay/FailurePanel/FailureVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "开启新宇宙"
+
+[node name="FailureMapButton" type="Button" parent="FailureOverlay/FailurePanel/FailureVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回天空篇"

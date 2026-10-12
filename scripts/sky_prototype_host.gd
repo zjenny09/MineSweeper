@@ -65,7 +65,7 @@ func _mount_sky_board() -> void:
 	)
 	(_game.get_node("%InstructionsLabel") as Label).text = (
 		"拖拽旋转 · 左键净化 · 右键标记\n"
-		+ "方向键选择 · WASD旋转 · Enter翻开 · F标记"
+		+ "方向键选择 · W S A D旋转 · J翻开 · K标记"
 	)
 	flags_label.text = "0/6"
 	status_label.text = "旋转球面，寻找安全起点"

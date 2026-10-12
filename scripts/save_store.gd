@@ -139,6 +139,24 @@ func mark_first_move_guide_seen() -> void:
 	_data["first_move_guide_seen"] = true
 
 
+func get_seen_mechanic_guides() -> Array[String]:
+	var result: Array[String] = []
+	for guide_id in _data["mechanic_guides_seen"]:
+		result.append(str(guide_id))
+	return result
+
+
+func has_seen_mechanic_guide(guide_id: StringName) -> bool:
+	return str(guide_id) in _data["mechanic_guides_seen"]
+
+
+func mark_mechanic_guide_seen(guide_id: StringName) -> void:
+	var serialized_id := str(guide_id)
+	if serialized_id.is_empty() or serialized_id in _data["mechanic_guides_seen"]:
+		return
+	_data["mechanic_guides_seen"].append(serialized_id)
+
+
 func get_scan_energy() -> int:
 	return int(_data["scan"]["energy"])
 
@@ -166,6 +184,14 @@ func set_master_volume(value: float) -> void:
 		_data["settings"]["master_volume"] = 1.0
 
 
+func set_bgm_enabled(value: bool) -> void:
+	_data["settings"]["bgm_enabled"] = value
+
+
+func set_sfx_enabled(value: bool) -> void:
+	_data["settings"]["sfx_enabled"] = value
+
+
 func set_fullscreen(value: bool) -> void:
 	set_window_mode(WINDOW_MODE_FULLSCREEN if value else WINDOW_MODE_MAXIMIZED)
 
@@ -183,6 +209,14 @@ func set_operation_mode(value: int) -> void:
 
 func get_master_volume() -> float:
 	return float(_data["settings"]["master_volume"])
+
+
+func is_bgm_enabled() -> bool:
+	return bool(_data["settings"]["bgm_enabled"])
+
+
+func is_sfx_enabled() -> bool:
+	return bool(_data["settings"]["sfx_enabled"])
 
 
 func get_window_mode() -> int:
@@ -222,6 +256,7 @@ func _make_default_data() -> Dictionary:
 		"schema_version": SCHEMA_VERSION,
 		"last_played_level": 0,
 		"first_move_guide_seen": false,
+		"mechanic_guides_seen": [],
 		"scan": {
 			"energy": 0,
 			"level_one_grant_claimed": false,
@@ -229,6 +264,8 @@ func _make_default_data() -> Dictionary:
 		"levels": levels,
 		"settings": {
 			"master_volume": 1.0,
+			"bgm_enabled": true,
+			"sfx_enabled": true,
 			"fullscreen": false,
 			"window_mode": WINDOW_MODE_MAXIMIZED,
 			"operation_mode": OPERATION_MODE_MOUSE,
@@ -255,6 +292,13 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 		# Older saves predate this field. Any recorded play means the guide
 		# must stay dismissed after upgrading.
 		normalized["first_move_guide_seen"] = last_played != 0
+
+	var source_mechanic_guides = source.get("mechanic_guides_seen")
+	if source_mechanic_guides is Array:
+		for guide_id in source_mechanic_guides:
+			if guide_id is String and not guide_id.is_empty() \
+					and guide_id not in normalized["mechanic_guides_seen"]:
+				normalized["mechanic_guides_seen"].append(guide_id)
 
 	var source_scan = source.get("scan")
 	if source_scan is Dictionary:
@@ -294,6 +338,12 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 		var volume = source_settings.get("master_volume")
 		if (typeof(volume) == TYPE_INT or typeof(volume) == TYPE_FLOAT) and is_finite(float(volume)):
 			normalized["settings"]["master_volume"] = clampf(float(volume), 0.0, 1.0)
+		var bgm_enabled = source_settings.get("bgm_enabled")
+		if bgm_enabled is bool:
+			normalized["settings"]["bgm_enabled"] = bgm_enabled
+		var sfx_enabled = source_settings.get("sfx_enabled")
+		if sfx_enabled is bool:
+			normalized["settings"]["sfx_enabled"] = sfx_enabled
 		var mode := _normalized_int(source_settings.get("window_mode"), -1)
 		if mode < WINDOW_MODE_WINDOWED or mode > WINDOW_MODE_FULLSCREEN:
 			var legacy_fullscreen = source_settings.get("fullscreen")
@@ -344,6 +394,13 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	if serialized.has("first_move_guide_seen") \
 			and not serialized.get("first_move_guide_seen") is bool:
 		return false
+	if serialized.has("mechanic_guides_seen"):
+		var mechanic_guides = serialized.get("mechanic_guides_seen")
+		if not mechanic_guides is Array:
+			return false
+		for guide_id in mechanic_guides:
+			if not guide_id is String or guide_id.is_empty():
+				return false
 	if schema_version >= SCAN_SCHEMA_VERSION:
 		var scan = serialized.get("scan")
 		if not scan is Dictionary:
@@ -392,6 +449,10 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	if not (typeof(volume) == TYPE_INT or typeof(volume) == TYPE_FLOAT):
 		return false
 	if not is_finite(float(volume)) or float(volume) < 0.0 or float(volume) > 1.0:
+		return false
+	if settings.has("bgm_enabled") and not settings.get("bgm_enabled") is bool:
+		return false
+	if settings.has("sfx_enabled") and not settings.get("sfx_enabled") is bool:
 		return false
 	if not settings.get("fullscreen") is bool:
 		return false

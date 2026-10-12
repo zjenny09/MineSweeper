@@ -180,6 +180,7 @@ var _scan_locked := true
 var _scan_used := false
 var _scan_available := false
 var _scan_show_charge_status := false
+var _scan_tooltip := ""
 var _filled_dot_count := 0
 var _dot_pop_index := -1
 var _dot_pop_time := 0.0
@@ -452,10 +453,11 @@ func set_scan_meter(
 
 func set_scan_activation_enabled(enabled: bool, tooltip: String) -> void:
 	_scan_available = enabled
+	_scan_tooltip = tooltip
 	robot_hotspot.disabled = not enabled
-	robot_hotspot.tooltip_text = tooltip
+	robot_hotspot.tooltip_text = "" if _scan_paused else _scan_tooltip
 	scan_hint_button.disabled = not enabled
-	scan_hint_button.tooltip_text = tooltip
+	scan_hint_button.tooltip_text = "" if _scan_paused else _scan_tooltip
 	scan_hint_button.visible = (
 		_scan_animation == ScanAnimation.TARGETING
 		or (_reaction_mode == ReactionMode.READY and not _scan_used)
@@ -515,6 +517,8 @@ func finish_scan_visuals() -> void:
 
 func set_scan_paused(paused: bool) -> void:
 	_scan_paused = paused
+	robot_hotspot.tooltip_text = "" if paused else _scan_tooltip
+	scan_hint_button.tooltip_text = "" if paused else _scan_tooltip
 	_refresh_processing()
 
 

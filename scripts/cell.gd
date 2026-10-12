@@ -54,6 +54,9 @@ const SCAN_TARGET_COLOR := Color("39c8d4")
 const SCAN_SAFE_COLOR := Color("58d69a")
 const SCAN_MINE_COLOR := Color("efa94a")
 const SCAN_PULSE_DURATION := 0.62
+const CURRENT_NUMBER_PULSE_DURATION := 0.72
+const DRIFTING_MINE_SHELL_BREAK_DURATION := 0.62
+const CURRENT_NUMBER_PULSE_COLOR := Color("55d7e4")
 const OCEAN_CURRENT_COLOR := Color("397f8a")
 const OCEAN_CURRENT_HIGHLIGHT := Color(0.68, 0.86, 0.84, 0.48)
 const OCEAN_REEF_BASE_COLOR := Color("746858")
@@ -108,6 +111,7 @@ const OCEAN_NUMBER_COLORS := {
 var cell_index := -1
 var _is_revealed := false
 var _input_locked := false
+var _tooltips_enabled := true
 var _hidden_style: StyleBox
 var _hover_style: StyleBox
 var _pressed_style: StyleBox
@@ -127,6 +131,8 @@ var _scan_target_mode := false
 var _scan_candidate := false
 var _scan_pulse_result := -1
 var _scan_pulse_progress := 1.0
+var _current_number_pulse_progress := 1.0
+var _drifting_mine_shell_break_progress := 1.0
 var _level_number := 0
 var _is_hex := false
 var _is_obstacle := false
@@ -140,7 +146,19 @@ var _hex_fill_ratio := 0.94
 var _reef_sides: Array[int] = []
 var _current_in_sides: Array[int] = []
 var _current_out_sides: Array[int] = []
-var _current_endpoint_totals: Array[int] = []
+var _current_endpoint_countdowns: Array[int] = []
+var _current_path_emphasized := false
+var _mobile_current_corridor := false
+var _mobile_current_active := false
+var _mobile_current_warning := 0.0
+var _mobile_current_resolved := false
+var _drifting_mine_active := false
+var _drifting_mine_field_distance := -1
+var _drifting_mine_warning := 0.0
+var _drifting_mine_resolved := false
+var _drifting_mine_disarm_ready := false
+var _drifting_mine_locks_remaining := 0
+var _drifting_mine_total_locks := 0
 var _tide_boundary_sides: Array[int] = []
 var _tidal_zone_index := 0
 var _tidal_locked := false
@@ -239,7 +257,7 @@ func configure_ocean_mechanics(
 	reef_sides: Array[int],
 	current_in_sides: Array[int],
 	current_out_sides: Array[int],
-	current_endpoint_totals: Array[int],
+	current_endpoint_countdowns: Array[int],
 	tide_boundary_sides: Array[int],
 	tidal_zone_index: int,
 	tidal_locked: bool
@@ -247,10 +265,55 @@ func configure_ocean_mechanics(
 	_reef_sides = reef_sides.duplicate()
 	_current_in_sides = current_in_sides.duplicate()
 	_current_out_sides = current_out_sides.duplicate()
-	_current_endpoint_totals = current_endpoint_totals.duplicate()
+	_current_endpoint_countdowns = current_endpoint_countdowns.duplicate()
 	_tide_boundary_sides = tide_boundary_sides.duplicate()
 	_tidal_zone_index = tidal_zone_index
 	_tidal_locked = tidal_locked
+	_update_tooltip()
+	queue_redraw()
+
+
+func set_current_path_emphasized(value: bool) -> void:
+	if _current_path_emphasized == value:
+		return
+	_current_path_emphasized = value
+	queue_redraw()
+
+
+func configure_mobile_current(
+	corridor: bool,
+	active: bool,
+	warning_progress: float,
+	resolved: bool
+) -> void:
+	_mobile_current_corridor = corridor
+	_mobile_current_active = active
+	_mobile_current_warning = clampf(warning_progress, 0.0, 1.0)
+	_mobile_current_resolved = resolved
+	_update_tooltip()
+	queue_redraw()
+
+
+func configure_drifting_mine(
+	active: bool,
+	field_distance: int,
+	warning_progress: float,
+	resolved: bool,
+	disarm_ready: bool,
+	locks_remaining: int,
+	total_locks: int
+) -> void:
+	_drifting_mine_active = active
+	_drifting_mine_field_distance = field_distance
+	_drifting_mine_warning = clampf(warning_progress, 0.0, 1.0)
+	_drifting_mine_resolved = resolved
+	_drifting_mine_disarm_ready = disarm_ready
+	_drifting_mine_locks_remaining = maxi(0, locks_remaining)
+	_drifting_mine_total_locks = maxi(0, total_locks)
+	if active:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_update_tooltip()
 	queue_redraw()
 
@@ -276,9 +339,9 @@ func render_state(
 	_board_lost = board_lost
 	_tidal_locked = tidal_locked
 	_set_text_color(DEFAULT_COLOR)
+	_is_pollution_node = is_pollution_node
 
-	if is_pollution_node or _is_pollution_node:
-		_is_pollution_node = true
+	if _is_pollution_node:
 		_pollution_node_cleansed = pollution_node_cleansed
 		_clear_procedural_visual()
 		_is_revealed = false
@@ -350,6 +413,13 @@ func render_state(
 	queue_redraw()
 
 
+func set_tooltips_enabled(enabled: bool) -> void:
+	if _tooltips_enabled == enabled:
+		return
+	_tooltips_enabled = enabled
+	_update_tooltip()
+
+
 func set_keyboard_selected(selected: bool) -> void:
 	if _is_keyboard_selected == selected:
 		return
@@ -372,15 +442,40 @@ func play_scan_result(result: int) -> void:
 	queue_redraw()
 
 
+func play_current_number_update() -> void:
+	if not _is_hex or not _is_revealed:
+		return
+	_current_number_pulse_progress = 0.0
+	set_process(true)
+	queue_redraw()
+
+
+func play_drifting_mine_shell_break() -> void:
+	if not _drifting_mine_active:
+		return
+	_drifting_mine_shell_break_progress = 0.0
+	set_process(true)
+	queue_redraw()
+
+
 func _update_tooltip() -> void:
+	if not _tooltips_enabled:
+		tooltip_text = ""
+		return
 	if _tidal_locked:
 		tooltip_text = "潮汐锁定：先完成当前潮区"
 	elif _is_pollution_node:
-		tooltip_text = (
-			"污染节点已净化"
-			if _pollution_node_cleansed
-			else "正确处理周围所有格子以净化污染节点"
-		)
+		if _drifting_mine_active:
+			if _drifting_mine_resolved:
+				tooltip_text = "漂流污染源已净化"
+			else:
+				tooltip_text = "中心污染源不可直接操作；完成浅蓝两圈普通格即可净化"
+		else:
+			tooltip_text = (
+				"污染节点已净化"
+				if _pollution_node_cleansed
+				else "正确处理周围所有格子以净化污染节点"
+			)
 	elif _is_obstacle:
 		tooltip_text = "遗迹障碍：不可净化、标记或扫描"
 	elif _scan_target_mode:
@@ -389,6 +484,17 @@ func _update_tooltip() -> void:
 			if _scan_candidate
 			else "此格不可扫描；右键取消"
 		)
+	elif _mobile_current_active:
+		tooltip_text = (
+			"漂流水雷已拦截"
+			if _mobile_current_resolved
+			else "漂流候选物：左键翻开，右键标记；当前组四个之中两个是真水雷"
+		)
+	elif _mobile_current_corridor:
+		tooltip_text = "洋流水道：等待浅蓝区域经过"
+	elif not _current_endpoint_countdowns.is_empty():
+		var countdown := _current_endpoint_countdowns[0]
+		tooltip_text = "洋流终点：再净化%d格，未锚定污染将向下游漂移" % countdown
 	elif _is_confirmed:
 		tooltip_text = "机器人已确认这里存在污染核心"
 	elif _is_flagged:
@@ -474,6 +580,9 @@ func reset_transient_visuals() -> void:
 	_scan_candidate = false
 	_scan_pulse_result = -1
 	_scan_pulse_progress = 1.0
+	_current_number_pulse_progress = 1.0
+	_drifting_mine_shell_break_progress = 1.0
+	_current_path_emphasized = false
 	set_process(false)
 	queue_redraw()
 
@@ -537,6 +646,19 @@ func _process(delta: float) -> void:
 		queue_redraw()
 		if is_equal_approx(_scan_pulse_progress, 1.0):
 			_scan_pulse_result = -1
+	if _current_number_pulse_progress < 1.0:
+		_current_number_pulse_progress = minf(
+			_current_number_pulse_progress + step / CURRENT_NUMBER_PULSE_DURATION,
+			1.0
+		)
+		queue_redraw()
+	if _drifting_mine_shell_break_progress < 1.0:
+		_drifting_mine_shell_break_progress = minf(
+			_drifting_mine_shell_break_progress
+			+ step / DRIFTING_MINE_SHELL_BREAK_DURATION,
+			1.0
+		)
+		queue_redraw()
 	_refresh_processing()
 
 
@@ -547,7 +669,12 @@ func _refresh_processing() -> void:
 			(_sprout_wilting and sprout_wilt_progress < 1.0)
 			or (not _sprout_wilting and (_biosensor_target_visible or biosensor_progress > 0.0))
 		)
-	set_process(procedural_active or _scan_pulse_result >= 0)
+	set_process(
+		procedural_active
+		or _scan_pulse_result >= 0
+		or _current_number_pulse_progress < 1.0
+		or _drifting_mine_shell_break_progress < 1.0
+	)
 
 
 func _set_biosensor_target(visible_target: bool, snap_complete: bool = false) -> void:
@@ -624,6 +751,8 @@ func _on_pressed() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if _input_locked:
+		return
+	if _drifting_mine_active:
 		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
@@ -903,6 +1032,12 @@ func _ocean_pollution_amount() -> float:
 func _draw_hex_cell() -> void:
 	if not _is_hex:
 		return
+	if _mobile_current_corridor and not _mobile_current_active:
+		var channel_points := _full_hex_points()
+		draw_colored_polygon(channel_points, Color(0.40, 0.78, 0.88, 0.16))
+		channel_points.append(channel_points[0])
+		draw_polyline(channel_points, Color(0.28, 0.65, 0.77, 0.34), 1.4, true)
+		return
 	var radius := minf(size.y * 0.5, size.x / HEX_HORIZONTAL_FACTOR) * _hex_fill_ratio
 	var texture_size := Vector2(HEX_HORIZONTAL_FACTOR * radius, radius * 2.0)
 	var texture_rect := Rect2((size - texture_size) * 0.5, texture_size)
@@ -920,6 +1055,60 @@ func _draw_hex_cell() -> void:
 		draw_texture_rect(polluted_texture, texture_rect, false, pollution_color)
 	if _is_guided:
 		draw_colored_polygon(_hex_points(), OCEAN_GUIDE_TINT)
+	if _mobile_current_active:
+		_draw_mobile_current_overlay()
+
+
+func _draw_mobile_current_overlay() -> void:
+	var points := _full_hex_points()
+	var fill_color := (
+		Color(0.48, 0.87, 0.79, 0.34)
+		if _mobile_current_resolved
+		else Color(0.45, 0.82, 0.91, 0.38).lerp(
+			Color(0.62, 0.95, 0.98, 0.62),
+			_mobile_current_warning
+		)
+	)
+	draw_colored_polygon(points, fill_color)
+	points.append(points[0])
+	var border_color := Color(0.22, 0.64, 0.76, 0.78).lerp(
+		Color(0.95, 0.76, 0.30, 0.96),
+		_mobile_current_warning
+	)
+	draw_polyline(points, border_color, maxf(2.0, minf(size.x, size.y) * 0.035), true)
+	if _mobile_current_resolved:
+		return
+	var unit := minf(size.x, size.y)
+	var center := size * 0.5
+	var buoy_color := Color(0.90, 0.97, 0.95, 0.88)
+	draw_arc(
+		center,
+		unit * 0.21,
+		0.0,
+		TAU,
+		28,
+		buoy_color,
+		maxf(2.2, unit * 0.052),
+		true
+	)
+	for buoy_mark in 4:
+		var mark_angle := float(buoy_mark) * TAU / 4.0
+		var mark_center := center + Vector2(cos(mark_angle), sin(mark_angle)) * unit * 0.21
+		draw_circle(
+			mark_center,
+			maxf(2.0, unit * 0.036),
+			Color("efb755") if not _is_revealed else Color("70c89a")
+		)
+	for wave_index in 2:
+		var y_offset := (float(wave_index) - 0.5) * unit * 0.16
+		var wave_points := PackedVector2Array()
+		for sample in 7:
+			var ratio := float(sample) / 6.0
+			wave_points.append(Vector2(
+				center.x + lerpf(-unit * 0.28, unit * 0.28, ratio),
+				center.y + y_offset + sin(ratio * TAU) * unit * 0.035
+			))
+		draw_polyline(wave_points, Color(0.88, 0.98, 0.98, 0.52), maxf(1.0, unit * 0.018), true)
 
 
 func _full_hex_points() -> PackedVector2Array:
@@ -943,6 +1132,15 @@ func _draw_current_overlay() -> void:
 		return
 	var center := size * 0.5
 	var unit := minf(size.x, size.y)
+	if _current_path_emphasized:
+		var outline := _full_hex_points()
+		outline.append(outline[0])
+		draw_polyline(
+			outline,
+			Color(0.94, 0.78, 0.33, 0.88),
+			maxf(2.0, unit * 0.045),
+			true
+		)
 	var line_width := maxf(3.0, unit * 0.075)
 	var all_sides: Array[int] = _current_in_sides.duplicate()
 	for side in _current_out_sides:
@@ -967,16 +1165,16 @@ func _draw_current_overlay() -> void:
 
 
 func _draw_current_endpoint_badge() -> void:
-	if not _is_hex or _tidal_locked or _current_endpoint_totals.is_empty():
+	if not _is_hex or _tidal_locked or _current_endpoint_countdowns.is_empty():
 		return
 	var labels := PackedStringArray()
-	for total in _current_endpoint_totals:
-		labels.append(str(total))
-	var badge_text := "/".join(labels)
+	for countdown in _current_endpoint_countdowns:
+		labels.append(str(countdown))
+	var badge_text := "|".join(labels)
 	var unit := minf(size.x, size.y)
 	var center := Vector2(size.x * 0.70, size.y * 0.29)
-	var radius := maxf(9.0, unit * (0.19 if labels.size() == 1 else 0.23))
-	var paper_color := Color(0.91, 0.93, 0.82, 0.94)
+	var radius := maxf(11.0, unit * (0.25 if labels.size() == 1 else 0.30))
+	var paper_color := Color(0.82, 0.94, 0.91, 0.96)
 	if not _current_in_sides.is_empty():
 		var incoming_direction := (
 			_hex_side_midpoint(_current_in_sides[0]) - size * 0.5
@@ -1000,7 +1198,7 @@ func _draw_current_endpoint_badge() -> void:
 		true
 	)
 	var font := get_theme_font("font")
-	var font_size := clampi(roundi(unit * 0.25), 10, 18)
+	var font_size := clampi(roundi(unit * 0.18), 9, 14)
 	var text_size := font.get_string_size(badge_text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size)
 	var baseline := center + Vector2(
 		-text_size.x * 0.5,
@@ -1102,7 +1300,142 @@ func _draw_ocean_boundaries() -> void:
 			)
 
 
+func _draw_drifting_mine_neighbor() -> void:
+	if not _is_hex or _drifting_mine_field_distance < 1:
+		return
+	var color := (
+		Color(0.18, 0.70, 0.78, 0.76)
+		if _drifting_mine_field_distance == 1
+		else Color(0.24, 0.66, 0.75, 0.52)
+	)
+	color = color.lerp(
+		Color(0.90, 0.58, 0.25, 0.90),
+		_drifting_mine_warning
+	)
+	var points: PackedVector2Array = _hex_points()
+	draw_colored_polygon(
+		points,
+		Color(color.r, color.g, color.b, 0.13 if _drifting_mine_field_distance == 1 else 0.08)
+	)
+	var outline: PackedVector2Array = points.duplicate()
+	outline.append(points[0])
+	draw_polyline(
+		outline,
+		color,
+		maxf(1.4, minf(size.x, size.y) * (0.032 if _drifting_mine_field_distance == 1 else 0.022)),
+		true
+	)
+
+
+func _draw_drifting_mine() -> void:
+	_draw_hex_cell()
+	var unit := minf(size.x, size.y)
+	var center := size * 0.5
+	var body_radius := unit * 0.21
+	var body_color := Color("315f78").lerp(Color("d88a3d"), _drifting_mine_warning)
+	var edge_color := Color("173f55").lerp(Color("8d4828"), _drifting_mine_warning)
+	if _drifting_mine_resolved:
+		body_color = Color("4ea987")
+		edge_color = Color("d9f2d7")
+	elif _drifting_mine_disarm_ready:
+		body_color = Color("d99845")
+		edge_color = Color("fff0a8")
+	for spike_index in 8:
+		var angle := float(spike_index) * TAU / 8.0
+		var direction := Vector2(cos(angle), sin(angle))
+		draw_line(
+			center + direction * body_radius * 0.78,
+			center + direction * body_radius * 1.42,
+			edge_color,
+			maxf(2.0, unit * 0.045),
+			true
+		)
+	draw_circle(center, body_radius, body_color)
+	draw_arc(center, body_radius, 0.0, TAU, 28, edge_color, maxf(2.0, unit * 0.04), true)
+	if _drifting_mine_total_locks > 0:
+		var shell_radius := unit * 0.34
+		var shell_width := maxf(3.4, unit * 0.070)
+		for shell_index in _drifting_mine_total_locks:
+			if shell_index >= _drifting_mine_locks_remaining:
+				continue
+			var shell_center_angle := (
+				-PI * 0.5
+				+ TAU * float(shell_index) / float(_drifting_mine_total_locks)
+			)
+			var shell_color := Color("f2c45c").lerp(
+				Color("fff0ad"),
+				_drifting_mine_warning
+			)
+			draw_arc(
+				center,
+				shell_radius,
+				shell_center_angle - 0.72,
+				shell_center_angle + 0.72,
+				12,
+				shell_color,
+				shell_width,
+				true
+			)
+			var endpoint_angles: Array[float] = [
+				shell_center_angle - 0.72,
+				shell_center_angle + 0.72,
+			]
+			for endpoint_angle in endpoint_angles:
+				draw_circle(
+					center + Vector2(cos(endpoint_angle), sin(endpoint_angle)) * shell_radius,
+					shell_width * 0.48,
+					shell_color
+				)
+	if _drifting_mine_shell_break_progress < 1.0:
+		var break_progress := _drifting_mine_shell_break_progress
+		var break_color := Color(1.0, 0.78, 0.28, 1.0 - break_progress)
+		for shard_index in 8:
+			var shard_angle := float(shard_index) * TAU / 8.0 + 0.18
+			var shard_direction := Vector2(cos(shard_angle), sin(shard_angle))
+			draw_line(
+				center + shard_direction * unit * (0.27 + break_progress * 0.06),
+				center + shard_direction * unit * (0.38 + break_progress * 0.20),
+				break_color,
+				maxf(2.0, unit * 0.042) * (1.0 - break_progress * 0.55),
+				true
+			)
+	if _drifting_mine_resolved:
+		var check_color := Color("eff9df")
+		draw_line(
+			center + Vector2(-body_radius * 0.45, 0.0),
+			center + Vector2(-body_radius * 0.10, body_radius * 0.36),
+			check_color,
+			maxf(2.2, unit * 0.055),
+			true
+		)
+		draw_line(
+			center + Vector2(-body_radius * 0.10, body_radius * 0.36),
+			center + Vector2(body_radius * 0.52, -body_radius * 0.42),
+			check_color,
+			maxf(2.2, unit * 0.055),
+			true
+		)
+	else:
+		draw_circle(
+			center + Vector2(-body_radius * 0.28, -body_radius * 0.30),
+			body_radius * 0.20,
+			Color(0.76, 0.94, 0.96, 0.82)
+		)
+		for trail_index in 3:
+			var trail_y := center.y + (float(trail_index) - 1.0) * unit * 0.10
+			draw_line(
+				Vector2(center.x - unit * (0.46 + float(trail_index) * 0.06), trail_y),
+				Vector2(center.x - unit * 0.31, trail_y),
+				Color(0.31, 0.69, 0.78, 0.72),
+				maxf(1.4, unit * 0.026),
+				true
+			)
+
+
 func _draw_pollution_node() -> void:
+	if _drifting_mine_active:
+		_draw_drifting_mine()
+		return
 	var base_texture := (
 		_pollution_node_cleansed_base_texture
 		if _pollution_node_cleansed
@@ -1163,6 +1496,7 @@ func _draw() -> void:
 			true
 		)
 	_draw_hex_cell()
+	_draw_drifting_mine_neighbor()
 	_draw_tidal_lock_overlay()
 	_draw_focus_outline()
 	_draw_scan_target()
@@ -1188,6 +1522,7 @@ func _draw() -> void:
 		_draw_confirmed_badge()
 	_draw_scan_result_pulse()
 	_draw_hex_number()
+	_draw_current_number_pulse()
 	_draw_current_endpoint_badge()
 	_draw_ocean_boundaries()
 
@@ -1374,6 +1709,17 @@ func _draw_scan_result_pulse() -> void:
 		maxf(2.0, unit * 0.045),
 		true
 	)
+
+
+func _draw_current_number_pulse() -> void:
+	if not _is_hex or not _is_revealed or _current_number_pulse_progress >= 1.0:
+		return
+	var unit := minf(size.x, size.y)
+	var progress := clampf(_current_number_pulse_progress, 0.0, 1.0)
+	var color := CURRENT_NUMBER_PULSE_COLOR
+	color.a = sin(progress * PI) * 0.90
+	var center := size * 0.5
+	draw_circle(center, unit * lerpf(0.25, 0.38, progress), color, false, maxf(2.0, unit * 0.050), true)
 
 
 func _ocean_marker_texture(state: StringName) -> Texture2D:

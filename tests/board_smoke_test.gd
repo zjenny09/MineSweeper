@@ -64,7 +64,7 @@ func _test_guide_behavior(main_scene: Node, board: MinesweeperBoard) -> void:
 	_expect(not next_button.visible, "The action-led opening step does not need a next button.")
 
 	main_scene.call("set_operation_mode", MinesweeperBoard.OperationMode.KEYBOARD)
-	_expect(guide.is_keyboard_mode() and guide.get_action_text().contains("Z"), "Keyboard mode explains the Z reveal action.")
+	_expect(guide.is_keyboard_mode() and guide.get_action_text().contains("J"), "Keyboard mode explains the J reveal action.")
 	_expect(board.get_keyboard_cell_index() == guide_index, "Keyboard selection starts on the suggested cell.")
 	board._input(_key_event(KEY_RIGHT))
 	_expect(guide.visible, "Moving the keyboard cursor does not dismiss the tutorial.")
@@ -319,15 +319,15 @@ func _test_keyboard_controls(main_scene: Node, board: MinesweeperBoard) -> void:
 	board._input(_key_event(KEY_UP))
 	_expect(board.get_keyboard_cell_index() == 0, "Keyboard movement stops at the top edge.")
 
-	board._input(_key_event(0, KEY_X))
-	_expect(board.flagged[0], "X marks the selected hidden cell.")
-	board._input(_key_event(0, KEY_X))
-	_expect(not board.flagged[0], "X removes a mark from the selected cell.")
+	board._input(_key_event(0, KEY_K))
+	_expect(board.flagged[0], "K marks the selected hidden cell.")
+	board._input(_key_event(0, KEY_K))
+	_expect(not board.flagged[0], "K removes a mark from the selected cell.")
 
 	var safe_index := board.mines.find(false)
 	board._set_keyboard_cursor(safe_index)
-	board._input(_key_event(0, KEY_Z))
-	_expect(board.revealed[safe_index], "Z reveals the selected hidden cell.")
+	board._input(_key_event(0, KEY_J))
+	_expect(board.revealed[safe_index], "J reveals the selected hidden cell.")
 
 	board._random.seed = 8301
 	board.new_game()
@@ -340,8 +340,8 @@ func _test_keyboard_controls(main_scene: Node, board: MinesweeperBoard) -> void:
 				board.toggle_flag(neighbor)
 		var before_count := board.revealed_safe_count
 		board._set_keyboard_cursor(number_index)
-		board._input(_key_event(0, KEY_Z))
-		_expect(board.revealed_safe_count > before_count, "Z chords an opened number after every adjacent core is marked.")
+		board._input(_key_event(0, KEY_J))
+		_expect(board.revealed_safe_count > before_count, "J chords an opened number after every adjacent core is marked.")
 
 	board.new_game()
 	var selected_before := board.get_keyboard_cell_index()
@@ -391,8 +391,8 @@ func _test_level_one_visuals(main_scene: Node, board: MinesweeperBoard) -> void:
 	board.set_operation_mode(MinesweeperBoard.OperationMode.KEYBOARD)
 	var keyboard_index := 1
 	board._set_keyboard_cursor(keyboard_index)
-	board._input(_key_event(0, KEY_X))
-	_expect(board.flagged[keyboard_index] and board.cell_nodes[keyboard_index].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR, "Keyboard X starts the same seed animation.")
+	board._input(_key_event(0, KEY_K))
+	_expect(board.flagged[keyboard_index] and board.cell_nodes[keyboard_index].procedural_visual == MineCell.ProceduralVisual.BIOSENSOR, "Keyboard K starts the same seed animation.")
 	board.cell_nodes[keyboard_index].advance_biosensor_animation(1.0)
 	board.new_game()
 	_expect(board.cell_nodes[keyboard_index].procedural_visual == MineCell.ProceduralVisual.NONE and is_zero_approx(board.cell_nodes[keyboard_index].biosensor_progress), "Restart clears all seed animation state immediately.")

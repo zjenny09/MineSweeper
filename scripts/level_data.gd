@@ -40,7 +40,7 @@ const LEVEL_5 := {
 	"number": 5,
 	"name": "林缘",
 	"size": Vector2i(10, 10),
-	"core_count": 15,
+	"core_count": 13,
 	"first_move_guide": false,
 	"obstacle_cluster_count": 1,
 	"pollution_node_count": 2,
@@ -50,7 +50,7 @@ const LEVEL_6 := {
 	"number": 6,
 	"name": "密林",
 	"size": Vector2i(12, 12),
-	"core_count": 20,
+	"core_count": 17,
 	"first_move_guide": false,
 	"obstacle_cluster_count": 2,
 	"pollution_node_count": 3,
@@ -60,7 +60,7 @@ const LEVEL_7 := {
 	"number": 7,
 	"name": "古林",
 	"size": Vector2i(13, 13),
-	"core_count": 24,
+	"core_count": 20,
 	"first_move_guide": false,
 	"pollution_node_count": 3,
 	"boss": true,
@@ -108,38 +108,17 @@ const OCEAN_LEVEL_4 := {
 	"core_count": 17,
 	"first_move_guide": false,
 	"topology": &"hex_pointy_odd_r",
-	"reef_segments": [
-		{"divider": 4, "start_row": 3, "end_row": 5},
-	],
-	"current_paths": [
-		[
-			Vector2i(0, 2),
-			Vector2i(1, 2),
-			Vector2i(1, 3),
-			Vector2i(2, 3),
-			Vector2i(3, 2),
-			Vector2i(4, 2),
-			Vector2i(5, 2),
-			Vector2i(6, 2),
-			Vector2i(6, 3),
-			Vector2i(7, 3),
-			Vector2i(8, 3),
-			Vector2i(9, 2),
+	"mobile_current": {
+		"shape": [
+			Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1),
+			Vector2i(0, 5), Vector2i(1, 5), Vector2i(0, 6), Vector2i(1, 6),
 		],
-		[
-			Vector2i(0, 7),
-			Vector2i(1, 7),
-			Vector2i(2, 6),
-			Vector2i(3, 6),
-			Vector2i(4, 6),
-			Vector2i(5, 6),
-			Vector2i(6, 6),
-			Vector2i(6, 5),
-			Vector2i(7, 5),
-			Vector2i(8, 6),
-			Vector2i(9, 6),
-		],
-	],
+		"group_ids": [0, 0, 0, 0, 1, 1, 1, 1],
+		"start_position": Vector2i(1, 0),
+		"end_column": 9,
+		"core_count": 4,
+		"step_seconds": 7.0,
+	},
 }
 
 const OCEAN_LEVEL_5 := {
@@ -149,24 +128,18 @@ const OCEAN_LEVEL_5 := {
 	"core_count": 21,
 	"first_move_guide": false,
 	"topology": &"hex_pointy_odd_r",
-	"reef_segments": [
-		{"divider": 5, "start_row": 3, "end_row": 6},
-	],
-	"current_paths": [
-		[
-			Vector2i(1, 2),
-			Vector2i(2, 2),
-			Vector2i(3, 2),
-			Vector2i(4, 2),
-			Vector2i(5, 2),
+	"mobile_current": {
+		"shape": [
+			Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1),
+			Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4),
+			Vector2i(0, 6), Vector2i(1, 6), Vector2i(0, 7), Vector2i(1, 7),
 		],
-		[
-			Vector2i(6, 7),
-			Vector2i(7, 7),
-			Vector2i(8, 7),
-			Vector2i(9, 7),
-		],
-	],
+		"group_ids": [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2],
+		"start_position": Vector2i(1, 0),
+		"end_column": 10,
+		"core_count": 6,
+		"step_seconds": 6.0,
+	},
 }
 
 const OCEAN_LEVEL_6 := {
@@ -202,27 +175,6 @@ const OCEAN_LEVEL_7 := {
 	"reef_segments": [
 		{"divider": 3, "start_row": 1, "end_row": 4},
 		{"divider": 8, "start_row": 6, "end_row": 10},
-	],
-	"current_paths": [
-		[
-			Vector2i(0, 1),
-			Vector2i(1, 1),
-			Vector2i(2, 1),
-			Vector2i(3, 1),
-		],
-		[
-			Vector2i(4, 5),
-			Vector2i(5, 5),
-			Vector2i(6, 5),
-			Vector2i(7, 5),
-			Vector2i(8, 5),
-		],
-		[
-			Vector2i(9, 9),
-			Vector2i(10, 9),
-			Vector2i(11, 9),
-			Vector2i(12, 9),
-		],
 	],
 	"tidal_zones": [
 		{

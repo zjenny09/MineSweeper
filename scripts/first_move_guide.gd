@@ -4,6 +4,7 @@ extends Control
 
 signal exit_requested
 signal next_requested
+signal dialogue_completed(dialogue_id: StringName)
 
 const GREEN := Color("469d65")
 const YELLOW := Color("fadf3c")
@@ -31,6 +32,12 @@ var _title_text := ""
 var _action_text := ""
 var _hint_text := ""
 var _show_next_button := false
+var _dialogue_mode := false
+var _dialogue_id := &""
+var _dialogue_pages: Array[Dictionary] = []
+var _dialogue_page_index := 0
+var _dialogue_target_global_position := Vector2(INF, INF)
+var _has_dialogue_target := false
 
 
 func _ready() -> void:
@@ -86,6 +93,11 @@ func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		_update_bubble_position()
 		return
+	if _dialogue_mode:
+		_animation_time += delta
+		_update_bubble_position()
+		queue_redraw()
+		return
 	if not is_instance_valid(_target_cell):
 		hide_guide()
 		return
@@ -108,22 +120,90 @@ func show_for_cell(
 		return
 	_target_cell = cell
 	target_cell_index = cell_index
+	_dialogue_mode = false
+	_dialogue_id = &""
+	_dialogue_pages.clear()
+	_dialogue_page_index = 0
+	_dialogue_target_global_position = Vector2(INF, INF)
+	_has_dialogue_target = false
 	_keyboard_mode = keyboard_mode
 	_title_text = title_text
 	_action_text = action_text
 	_hint_text = hint_text
 	_show_next_button = show_next_button
 	_animation_time = 0.0
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visible = true
 	_refresh_copy()
 	_update_bubble_position()
 	queue_redraw()
 
 
-func hide_guide() -> void:
-	visible = false
+func show_dialogue(
+	dialogue_id: StringName,
+	pages: Array,
+	keyboard_mode: bool = false,
+	target_global_position: Vector2 = Vector2(INF, INF)
+) -> void:
+	if dialogue_id.is_empty() or pages.is_empty():
+		return
+	_dialogue_pages.clear()
+	for page in pages:
+		if page is Dictionary:
+			_dialogue_pages.append((page as Dictionary).duplicate(true))
+	if _dialogue_pages.is_empty():
+		return
 	_target_cell = null
 	target_cell_index = -1
+	_dialogue_mode = true
+	_dialogue_id = dialogue_id
+	_dialogue_page_index = 0
+	_dialogue_target_global_position = target_global_position
+	_has_dialogue_target = (
+		is_finite(target_global_position.x)
+		and is_finite(target_global_position.y)
+	)
+	_keyboard_mode = keyboard_mode
+	_animation_time = 0.0
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	visible = true
+	_update_dialogue_page()
+	_update_bubble_position()
+	queue_redraw()
+
+
+func is_dialogue_mode() -> bool:
+	return _dialogue_mode
+
+
+func set_dialogue_target_global_position(target_position: Vector2) -> void:
+	if not _dialogue_mode:
+		return
+	_dialogue_target_global_position = target_position
+	_has_dialogue_target = (
+		is_finite(target_position.x)
+		and is_finite(target_position.y)
+	)
+	_update_bubble_position()
+	queue_redraw()
+
+
+func complete_dialogue() -> void:
+	if _dialogue_mode:
+		_complete_dialogue()
+
+
+func hide_guide() -> void:
+	visible = false
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_target_cell = null
+	target_cell_index = -1
+	_dialogue_mode = false
+	_dialogue_id = &""
+	_dialogue_pages.clear()
+	_dialogue_page_index = 0
+	_dialogue_target_global_position = Vector2(INF, INF)
+	_has_dialogue_target = false
 	queue_redraw()
 
 
@@ -141,13 +221,17 @@ func is_keyboard_mode() -> bool:
 func get_action_text() -> String:
 	if not _action_text.is_empty():
 		return _action_text
-	return "按 Z 从这里开始" if _keyboard_mode else "点这里开始第一次净化"
+	return "按 J 从这里开始" if _keyboard_mode else "点这里开始第一次净化"
 
 
 func get_stable_bubble_rect() -> Rect2:
 	if not is_instance_valid(bubble_root) or size.x <= 1.0 or size.y <= 1.0:
 		return Rect2()
 	var bubble_size := bubble_root.size
+	if _dialogue_mode:
+		var bubble_x := maxf(PANEL_PADDING, (size.x - bubble_size.x) * 0.5)
+		var bubble_y := PANEL_PADDING
+		return Rect2(Vector2(bubble_x, bubble_y), bubble_size)
 	if Engine.is_editor_hint():
 		return Rect2((size - bubble_size) * 0.5, bubble_size)
 	if not is_instance_valid(_target_cell):
@@ -191,6 +275,21 @@ func _refresh_copy() -> void:
 	title_label.text = title
 	action_label.text = get_action_text()
 	hint_label.text = _hint_text if not _hint_text.is_empty() else "这是安全建议，也可以选择别处"
+	if _dialogue_mode:
+		next_button.visible = true
+		next_button.disabled = false
+		next_button.text = (
+			"开始探索"
+			if _dialogue_page_index >= _dialogue_pages.size() - 1
+			else "继续听"
+		)
+		exit_button.text = "跳过介绍"
+		next_button_artwork.visible = true
+		exit_button_artwork.visible = true
+		exit_button.visible = true
+		return
+	next_button.text = "下一步"
+	exit_button.text = "退出引导"
 	next_button.visible = _show_next_button
 	next_button.disabled = not _show_next_button
 	exit_button.visible = true
@@ -199,13 +298,58 @@ func _refresh_copy() -> void:
 
 
 func _draw() -> void:
-	if Engine.is_editor_hint() or not visible or not is_instance_valid(_target_cell):
+	if Engine.is_editor_hint() or not visible:
 		return
 	var bubble_rect := Rect2(bubble_root.position, bubble_root.size)
+	if _dialogue_mode:
+		if _has_dialogue_target:
+			_draw_dialogue_pointer(
+				bubble_rect,
+				_dialogue_target_in_guide()
+			)
+		return
+	if not is_instance_valid(_target_cell):
+		return
 	var target_rect := _control_rect_in_guide(_target_cell)
 	if target_rect.size == Vector2.ZERO:
 		return
 	_draw_pointer(bubble_rect, target_rect)
+
+
+func _dialogue_target_in_guide() -> Vector2:
+	return (
+		get_global_transform_with_canvas().affine_inverse()
+		* _dialogue_target_global_position
+	)
+
+
+func _draw_dialogue_pointer(
+	bubble_rect: Rect2,
+	target_center: Vector2
+) -> void:
+	var bubble_above := bubble_rect.get_center().y <= target_center.y
+	var direction := Vector2.DOWN if bubble_above else Vector2.UP
+	var edge_anchor := Vector2(
+		clampf(
+			target_center.x,
+			bubble_rect.position.x + 28.0,
+			bubble_rect.end.x - 28.0
+		),
+		bubble_rect.end.y if bubble_above else bubble_rect.position.y
+	)
+	var bounce := (sin(_animation_time * 4.2) * 0.5 + 0.5) * 5.0
+	var arrow_base := edge_anchor + direction * (7.0 + bounce)
+	var arrow_tip := edge_anchor + direction * (31.0 + bounce)
+	var perpendicular := Vector2(-direction.y, direction.x)
+	var arrow := PackedVector2Array([
+		arrow_tip,
+		arrow_base + perpendicular * 13.0,
+		arrow_base - perpendicular * 13.0,
+	])
+	draw_colored_polygon(arrow, YELLOW)
+	var outline := PackedVector2Array(arrow)
+	outline.append(arrow[0])
+	draw_polyline(outline, GREEN, 3.0, true)
 
 
 func _draw_pointer(bubble_rect: Rect2, target_rect: Rect2) -> void:
@@ -236,11 +380,38 @@ func _on_resized() -> void:
 
 
 func _on_next_pressed() -> void:
+	if _dialogue_mode:
+		if _dialogue_page_index < _dialogue_pages.size() - 1:
+			_dialogue_page_index += 1
+			_update_dialogue_page()
+		else:
+			_complete_dialogue()
+		return
 	next_requested.emit()
 
 
 func _on_exit_pressed() -> void:
+	if _dialogue_mode:
+		_complete_dialogue()
+		return
 	exit_requested.emit()
+
+
+func _update_dialogue_page() -> void:
+	if not _dialogue_mode or _dialogue_page_index < 0 \
+			or _dialogue_page_index >= _dialogue_pages.size():
+		return
+	var page := _dialogue_pages[_dialogue_page_index]
+	_title_text = str(page.get("title", "小芽想告诉你"))
+	_action_text = str(page.get("text", ""))
+	_hint_text = str(page.get("hint", "留一点未知，亲自走近看看吧。"))
+	_refresh_copy()
+
+
+func _complete_dialogue() -> void:
+	var completed_id := _dialogue_id
+	hide_guide()
+	dialogue_completed.emit(completed_id)
 
 
 func _control_rect_in_guide(control: Control) -> Rect2:

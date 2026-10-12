@@ -17,6 +17,13 @@ enum State {
 	LOST,
 }
 
+const BOSS_EYE_PROGRESS_BANDS := [
+	Vector2(0.14, 0.22),
+	Vector2(0.40, 0.54),
+	Vector2(0.68, 0.80),
+]
+const BOSS_EYE_LOCATION_JITTER := 55.0
+
 var neighbors: Array[PackedInt32Array] = []
 var mines: PackedByteArray
 var revealed: PackedByteArray
@@ -37,6 +44,7 @@ var boss_eye_total := 0
 var boss_eyes_cleared := 0
 var boss_eye_face := -1
 var boss_eye_used_faces := {}
+var boss_eye_reveal_targets := PackedInt32Array()
 var _rng := RandomNumberGenerator.new()
 
 
@@ -80,6 +88,7 @@ func new_game() -> void:
 	boss_eyes_cleared = 0
 	boss_eye_face = -1
 	boss_eye_used_faces.clear()
+	_roll_boss_eye_reveal_targets()
 	state = State.READY
 	var candidates: Array[int] = []
 	for index in range(neighbors.size()):
@@ -278,10 +287,37 @@ func resolve_breeze_assist() -> void:
 	board_changed.emit()
 
 
+func _roll_boss_eye_reveal_targets() -> void:
+	boss_eye_reveal_targets.resize(0)
+	if boss_eye_total <= 0:
+		return
+	var safe_face_count := maxi(1, neighbors.size() - core_count)
+	var previous_target := 0
+	for eye_index in range(boss_eye_total):
+		var band_index := mini(eye_index, BOSS_EYE_PROGRESS_BANDS.size() - 1)
+		var band: Vector2 = BOSS_EYE_PROGRESS_BANDS[band_index]
+		var ratio := _rng.randf_range(band.x, band.y)
+		var target := ceili(float(safe_face_count) * ratio)
+		target = clampi(maxi(previous_target + 1, target), 1, safe_face_count)
+		boss_eye_reveal_targets.append(target)
+		previous_target = target
+
+
+func _revealed_safe_face_count() -> int:
+	var total := 0
+	for face_index in range(revealed.size()):
+		if revealed[face_index] == 1 and mines[face_index] == 0:
+			total += 1
+	return total
+
+
 func _ensure_boss_eye() -> void:
 	if boss_eye_total <= 0 or boss_eye_face >= 0 \
 			or boss_eyes_cleared >= boss_eye_total \
 			or state in [State.WON, State.LOST]:
+		return
+	if boss_eyes_cleared >= boss_eye_reveal_targets.size() \
+			or _revealed_safe_face_count() < boss_eye_reveal_targets[boss_eyes_cleared]:
 		return
 	var next_face := (
 		_pick_first_boss_eye()
@@ -347,6 +383,7 @@ func _pick_distant_boss_eye(minimum_hidden_neighbors: int) -> int:
 			float(distance_from_previous) * 100.0
 			+ float(hidden_neighbors) * 8.0
 			+ (25.0 if revealed[face_index] == 0 else 0.0)
+			+ _rng.randf_range(0.0, BOSS_EYE_LOCATION_JITTER)
 		)
 		if score > best_score + 0.01:
 			best_score = score
@@ -385,6 +422,11 @@ func _hit_boss_eye(face_index: int) -> void:
 		state = State.WON
 		state_changed.emit(state)
 		return
+	boss_eye_changed.emit(
+		-1,
+		boss_eyes_cleared + 1,
+		boss_eye_total
+	)
 	_ensure_boss_eye()
 
 

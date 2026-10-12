@@ -821,7 +821,7 @@ text = "继续游戏"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.5157, 0.3561, 0.66)
 theme_override_font_sizes/font_size = 11
-text = "v0.5.1  ·  陆地篇 + 海洋篇 + 天空篇"
+text = "v0.6.1  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇"
 horizontal_alignment = 1
 
 [node name="ShowcasePanel" type="Control" parent="MainMenu" unique_id=705723809]
@@ -1119,7 +1119,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Settings/Center" unique_id=558534551]
-custom_minimum_size = Vector2(820, 520)
+custom_minimum_size = Vector2(820, 570)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_panel")
 
@@ -1164,6 +1164,32 @@ custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "100%"
 horizontal_alignment = 2
+
+[node name="AudioToggleRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="AudioToggleTitle" type="Label" parent="Settings/Center/Panel/Margin/VBox/AudioToggleRow"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "声音开关"
+
+[node name="BgmToggleButton" type="CheckButton" parent="Settings/Center/Panel/Margin/VBox/AudioToggleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+button_pressed = true
+theme_override_font_sizes/font_size = 16
+text = "背景音乐：开启"
+
+[node name="SfxToggleButton" type="CheckButton" parent="Settings/Center/Panel/Margin/VBox/AudioToggleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+button_pressed = true
+theme_override_font_sizes/font_size = 16
+text = "游戏音效：开启"
 
 [node name="DisplayModeRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox" unique_id=2041682414]
 layout_mode = 2

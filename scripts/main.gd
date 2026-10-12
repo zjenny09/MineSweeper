@@ -10,6 +10,7 @@ signal settings_requested
 signal exit_game_requested
 signal pause_changed(is_paused: bool)
 signal scan_energy_changed(energy: int)
+signal mechanic_guide_completed(guide_id: StringName)
 
 const ART := preload("res://scripts/art_catalog.gd")
 
@@ -72,6 +73,7 @@ const OCEAN_BOARD_HORIZONTAL_SHIFT := -3.0
 const OCEAN_BOARD_VERTICAL_SHIFT := 2.0
 const OCEAN_BOARD_SCALE := 0.94
 const LAND_QUICK_BUTTON_POSITION := Vector2(-10.0, 458.0)
+const LAND_PAUSE_BUTTON_SHIFT := 6
 const OCEAN_QUICK_BUTTON_POSITION := Vector2(-8.0, 446.0)
 const LAND_QUICK_BUTTON_LABEL_COLOR := Color("71371d")
 const OCEAN_QUICK_BUTTON_LABEL_COLOR := Color("123f5e")
@@ -108,6 +110,65 @@ const FIRST_CLICK_MINE_STREAK_THRESHOLD := 2
 const EARLY_LOSS_STREAK_THRESHOLD := 3
 const EARLY_LOSS_MOVE_LIMIT := 5
 const SCAN_CAPACITY := 12
+const LEVEL_MECHANIC_GUIDES := {
+	3: {
+		"id": &"land_obstacles",
+		"pages": [
+			{"title": "小芽：这些灰色格子是障碍", "text": "障碍不能翻开、标记或扫描，里面也没有污染。", "hint": "看数字时，直接忽略旁边的障碍格。"},
+			{"title": "小芽：其他规则没有变化", "text": "继续用数字判断周围哪些普通格藏着污染。", "hint": "障碍不用清除，净化其余安全格就可以了。"},
+		],
+	},
+	5: {
+		"id": &"pollution_nodes",
+		"pages": [
+			{"title": "小芽：这是污染节点", "text": "节点不能直接点击，而且会被邻近数字算作一个污染。", "hint": "所以数字里既可能有普通污染，也可能包含节点。"},
+			{"title": "小芽：处理它周围的格子", "text": "翻开周围的安全格，并标出周围的污染核心。", "hint": "全部处理正确后，污染节点会自动净化。"},
+		],
+	},
+	7: {
+		"id": &"ancient_tree_roots",
+		"pages": [
+			{"title": "小芽：先切断三条根系锚点", "text": "中间的大树不能点击。先处理与它相连的三条根系。", "hint": "箭头指着其中一条根系末端的锚点。"},
+			{"title": "小芽：锚点周围照常扫雷", "text": "翻开锚点旁的安全格，把污染核心全部标对。", "hint": "三条根系都切断后，中间的大树会自动净化。"},
+		],
+	},
+	8: {
+		"id": &"hex_ocean_board",
+		"pages": [
+			{"title": "小芽：海洋棋盘是六边形", "text": "每个格子最多只有六个相邻格，不再是原来的八个。", "hint": "两格必须共享一条边才算相邻。"},
+			{"title": "小芽：扫雷规则没有变化", "text": "数字仍表示相邻格里一共有多少个污染。", "hint": "只要按照六个方向读数字就可以了。"},
+		],
+	},
+	9: {
+		"id": &"coral_reefs",
+		"pages": [
+			{"title": "小芽：珊瑚墙会隔开两格", "text": "墙两边的格子不再相邻，数字也不会计算墙对面。", "hint": "双击展开时，同样不会穿过珊瑚墙。"},
+			{"title": "小芽：可以从墙边绕过去", "text": "没有被墙隔开的共享边，仍然保持正常相邻。", "hint": "先看清墙在哪两格之间，再判断数字。"},
+		],
+	},
+	11: {
+		"id": &"drifting_mines",
+		"pages": [
+			{"title": "小芽：浅蓝浮标会向右漂", "text": "每组有四个浮标，其中两个安全，另外两个是水雷。", "hint": "浮标也能正常翻开、标记和双击展开。"},
+			{"title": "小芽：移动后数字会重算", "text": "浮标每次移动，周围数字都会按新位置更新。", "hint": "已经翻开的数字也可能跟着发生变化。"},
+			{"title": "小芽：要在漂出前解决它", "text": "翻开两个安全浮标，并标出两颗水雷，这组就会停下。", "hint": "未解决的水雷漂出右侧边界，本局就会失败。"},
+		],
+	},
+	13: {
+		"id": &"tidal_zones",
+		"pages": [
+			{"title": "小芽：棋盘会分区退潮", "text": "现在只能操作亮起的区域，后面的区域暂时锁着。", "hint": "先把当前区域的所有安全格翻开。"},
+			{"title": "小芽：完成后会打开下一区", "text": "新区出现时，交界处已经翻开的数字会重新计算。", "hint": "若没有解锁，状态栏会提示遗漏或错误标记。"},
+		],
+	},
+}
+const SCAN_GUIDE := {
+	"id": &"eco_scan",
+	"pages": [
+		{"title": "小芽：生态扫描已经充满", "text": "翻开格子和首次标记都能充能，能量还能带到下一关。", "hint": "充满后，你可以使用一次生态扫描。"},
+		{"title": "小芽：按C选择一个隐藏格", "text": "扫描会直接告诉你，这一格是安全还是污染。", "hint": "它不会自动翻开或标记，之后仍由你决定。"},
+	],
+}
 
 
 enum ScanPhase {
@@ -186,6 +247,7 @@ enum ScanPhase {
 	%OceanScanDotC,
 ]
 @onready var quick_buttons: HBoxContainer = %QuickButtons
+@onready var pause_button_slot: MarginContainer = %PauseButtonSlot
 @onready var pause_button: TextureButton = %PauseButton
 @onready var restart_button: TextureButton = %RestartButton
 @onready var pause_button_label: Label = %PauseButtonLabel
@@ -203,6 +265,7 @@ enum ScanPhase {
 var current_level_index := 0
 var _first_click_mine_streaks: Dictionary = {}
 var _early_loss_streaks: Dictionary = {}
+var _pending_opening_assist_mode: int = MinesweeperBoard.OpeningAssist.NONE
 var _advance_available := false
 var _chapter_advance_available := false
 var _session_paused := false
@@ -224,6 +287,9 @@ var _scan_threshold := SCAN_CAPACITY
 var _ordinary_reveal_seen := false
 var _scan_target_index := -1
 var _scan_target_global_position := Vector2.ZERO
+var _seen_mechanic_guides: Dictionary = {}
+var _queued_mechanic_guides: Array[StringName] = []
+var _active_mechanic_guide_id := &""
 
 
 func _ready() -> void:
@@ -234,6 +300,7 @@ func _ready() -> void:
 		pause_overlay.visible = editor_preview_pause_menu
 		return
 	board.state_changed.connect(_on_state_changed)
+	board.board_interacted.connect(_on_board_interacted)
 	board.flags_changed.connect(_on_flags_changed)
 	board.reveal_completed.connect(_on_reveal_completed)
 	board.flag_completed.connect(_on_flag_completed)
@@ -243,10 +310,14 @@ func _ready() -> void:
 	board.scan_completed.connect(_on_scan_completed)
 	board.pollution_nodes_changed.connect(_on_pollution_nodes_changed)
 	board.tidal_zone_changed.connect(_on_tidal_zone_changed)
+	board.current_path_feedback.connect(_on_current_path_feedback)
+	board.mobile_current_state_changed.connect(_on_mobile_current_state_changed)
+	board.drifting_mine_state_changed.connect(_on_drifting_mine_state_changed)
 	land_tabletop_actors.scan_activation_requested.connect(_request_scan_mode)
 	scan_fallback_button.pressed.connect(_request_scan_mode)
 	first_move_guide.exit_requested.connect(_on_tutorial_exit_requested)
 	first_move_guide.next_requested.connect(_on_tutorial_next_requested)
+	first_move_guide.dialogue_completed.connect(_on_mechanic_dialogue_completed)
 	restart_button.pressed.connect(_on_primary_button_pressed)
 	pause_button.pressed.connect(_on_pause_button_pressed)
 	resume_button.pressed.connect(_on_resume_button_pressed)
@@ -352,6 +423,14 @@ func _apply_land_interface_transform() -> void:
 		else Vector2.ONE * OCEAN_BOARD_SCALE
 	)
 	if uses_land_stage:
+		page_margin.anchor_left = 0.0
+		page_margin.anchor_top = 0.0
+		page_margin.anchor_right = 1.0
+		page_margin.anchor_bottom = 1.0
+		page_margin.offset_left = 0.0
+		page_margin.offset_top = 0.0
+		page_margin.offset_right = 0.0
+		page_margin.offset_bottom = 0.0
 		var land_scale := LAND_INTERFACE_SCALE
 		var land_width := LAND_INTERFACE_DESIGN_WIDTH * land_scale
 		var land_offset := Vector2(
@@ -363,6 +442,14 @@ func _apply_land_interface_transform() -> void:
 			stage_control.position = land_offset
 		return
 
+	page_margin.anchor_left = 0.0
+	page_margin.anchor_top = 0.0
+	page_margin.anchor_right = 0.0
+	page_margin.anchor_bottom = 0.0
+	page_margin.offset_left = 0.0
+	page_margin.offset_top = 0.0
+	page_margin.offset_right = OCEAN_INTERFACE_DESIGN_SIZE.x
+	page_margin.offset_bottom = OCEAN_INTERFACE_DESIGN_SIZE.y
 	var ocean_scale := maxf(
 		size.x / OCEAN_INTERFACE_DESIGN_SIZE.x,
 		size.y / OCEAN_INTERFACE_DESIGN_SIZE.y
@@ -506,7 +593,14 @@ func _apply_chapter_quick_buttons(uses_land_stage: bool) -> void:
 			_load_runtime_texture(LAND_REGENERATE_FOCUS_PATH),
 			_load_runtime_texture(LAND_REGENERATE_PRESSED_PATH)
 		)
-		quick_buttons.position = LAND_QUICK_BUTTON_POSITION
+		pause_button_slot.add_theme_constant_override(
+			"margin_right",
+			LAND_PAUSE_BUTTON_SHIFT
+		)
+		quick_buttons.position = (
+			LAND_QUICK_BUTTON_POSITION
+			- Vector2(LAND_PAUSE_BUTTON_SHIFT * 0.5, 0.0)
+		)
 		pause_button_label.add_theme_color_override("font_color", LAND_QUICK_BUTTON_LABEL_COLOR)
 		restart_button_label.add_theme_color_override("font_color", LAND_QUICK_BUTTON_LABEL_COLOR)
 		return
@@ -525,6 +619,7 @@ func _apply_chapter_quick_buttons(uses_land_stage: bool) -> void:
 		_load_runtime_texture(OCEAN_REGENERATE_FOCUS_PATH),
 		_load_runtime_texture(OCEAN_REGENERATE_PRESSED_PATH)
 	)
+	pause_button_slot.add_theme_constant_override("margin_right", 0)
 	quick_buttons.position = OCEAN_QUICK_BUTTON_POSITION
 	pause_button_label.add_theme_color_override("font_color", OCEAN_QUICK_BUTTON_LABEL_COLOR)
 	restart_button_label.add_theme_color_override("font_color", OCEAN_QUICK_BUTTON_LABEL_COLOR)
@@ -576,6 +671,11 @@ func _process(_delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
 		return
+	if not _active_mechanic_guide_id.is_empty() \
+			and event.is_action_pressed("ui_cancel"):
+		set_session_paused(not _session_paused)
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
 		if (
@@ -615,6 +715,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	_clear_scan_ability()
+	_active_mechanic_guide_id = &""
+	_queued_mechanic_guides.clear()
+	first_move_guide.hide_guide()
 	if initial_scan_energy >= 0:
 		_scan_energy = clampi(initial_scan_energy, 0, SCAN_CAPACITY)
 	current_level_index = clampi(
@@ -669,7 +772,8 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	var level: Dictionary = GreenSweeperLevels.PLAYABLE_LEVELS[current_level_index].duplicate(true)
 	level["first_move_guide"] = bool(level.get("first_move_guide", false)) \
 			and _first_move_guide_enabled
-	board.set_opening_assist_mode(_take_opening_assist_mode(current_level_index))
+	_pending_opening_assist_mode = _take_opening_assist_mode(current_level_index)
+	board.set_opening_assist_mode(_pending_opening_assist_mode)
 	board.load_level(level)
 	board.scale = Vector2.ONE
 	board.set_interaction_enabled(true)
@@ -697,6 +801,7 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	_refresh_first_move_guide()
 	visible = true
 	level_started.emit(board.level_number)
+	call_deferred("_show_level_mechanic_guide")
 
 
 func restart_level() -> void:
@@ -714,13 +819,27 @@ func restart_level() -> void:
 	_tutorial_number_index = -1
 	_tutorial_target_index = -1
 	_tutorial_last_revealed_index = -1
-	board.set_opening_assist_mode(_take_opening_assist_mode(current_level_index))
+	_pending_opening_assist_mode = _take_opening_assist_mode(current_level_index)
+	board.set_opening_assist_mode(_pending_opening_assist_mode)
 	board.new_game()
 	_initialize_scan_ability()
+	if not _active_mechanic_guide_id.is_empty():
+		board.set_tooltips_enabled(false)
+		land_tabletop_actors.set_scan_paused(true)
+		call_deferred("_refresh_active_mechanic_guide_target")
 	if _tutorial_dismissed_for_session:
 		board.clear_guide_cell()
 	_refresh_instructions()
 	_refresh_first_move_guide()
+
+
+func _refresh_active_mechanic_guide_target() -> void:
+	if _active_mechanic_guide_id.is_empty() \
+			or not first_move_guide.is_dialogue_mode():
+		return
+	first_move_guide.set_dialogue_target_global_position(
+		_mechanic_guide_target_global_position(_active_mechanic_guide_id)
+	)
 
 
 func _take_opening_assist_mode(level_index: int) -> int:
@@ -729,11 +848,9 @@ func _take_opening_assist_mode(level_index: int) -> int:
 		return MinesweeperBoard.OpeningAssist.NONE
 	var early_loss_streak := int(_early_loss_streaks.get(level_index, 0))
 	if early_loss_streak >= EARLY_LOSS_STREAK_THRESHOLD:
-		_early_loss_streaks[level_index] = 0
 		return MinesweeperBoard.OpeningAssist.OPEN_REGION
 	var first_click_streak := int(_first_click_mine_streaks.get(level_index, 0))
 	if first_click_streak >= FIRST_CLICK_MINE_STREAK_THRESHOLD:
-		_first_click_mine_streaks[level_index] = 0
 		return MinesweeperBoard.OpeningAssist.SAFE_FIRST
 	return MinesweeperBoard.OpeningAssist.NONE
 
@@ -744,9 +861,18 @@ func _record_adaptive_attempt_result(state: int) -> void:
 		or current_level_index >= GreenSweeperLevels.PLAYABLE_LEVELS.size()
 	):
 		return
+	if state == MinesweeperBoard.GameState.PLAYING:
+		if _pending_opening_assist_mode == MinesweeperBoard.OpeningAssist.SAFE_FIRST:
+			_first_click_mine_streaks[current_level_index] = 0
+		elif _pending_opening_assist_mode == MinesweeperBoard.OpeningAssist.OPEN_REGION:
+			_first_click_mine_streaks[current_level_index] = 0
+			_early_loss_streaks[current_level_index] = 0
+		_pending_opening_assist_mode = MinesweeperBoard.OpeningAssist.NONE
+		return
 	if state == MinesweeperBoard.GameState.WON:
 		_first_click_mine_streaks[current_level_index] = 0
 		_early_loss_streaks[current_level_index] = 0
+		_pending_opening_assist_mode = MinesweeperBoard.OpeningAssist.NONE
 		return
 	if state != MinesweeperBoard.GameState.LOST:
 		return
@@ -755,14 +881,13 @@ func _record_adaptive_attempt_result(state: int) -> void:
 		_first_click_mine_streaks[current_level_index] = int(
 			_first_click_mine_streaks.get(current_level_index, 0)
 		) + 1
-		_early_loss_streaks[current_level_index] = 0
-	elif board.move_count <= EARLY_LOSS_MOVE_LIMIT:
+	else:
 		_first_click_mine_streaks[current_level_index] = 0
+	if board.move_count <= EARLY_LOSS_MOVE_LIMIT:
 		_early_loss_streaks[current_level_index] = int(
 			_early_loss_streaks.get(current_level_index, 0)
 		) + 1
 	else:
-		_first_click_mine_streaks[current_level_index] = 0
 		_early_loss_streaks[current_level_index] = 0
 
 
@@ -777,6 +902,14 @@ func get_operation_mode() -> int:
 	return _operation_mode
 
 
+func set_seen_mechanic_guides(guide_ids: Array) -> void:
+	_seen_mechanic_guides.clear()
+	for guide_id in guide_ids:
+		var normalized_id := StringName(str(guide_id))
+		if not normalized_id.is_empty():
+			_seen_mechanic_guides[normalized_id] = true
+
+
 func set_first_move_guide_enabled(enabled: bool) -> void:
 	_first_move_guide_enabled = enabled
 
@@ -788,19 +921,46 @@ func _refresh_instructions() -> void:
 		board.topology == &"hex_pointy_odd_r"
 		and (
 			board.reef_edge_count > 0
-			or not board.current_paths.is_empty()
+			or board.mobile_current_enabled
+			or board.drifting_mine_enabled
 			or board.tidal_zone_count > 0
 		)
 	):
 		var ocean_rules := PackedStringArray()
 		if board.reef_edge_count > 0:
 			ocean_rules.append("礁带阻断六邻接；数字不统计另一侧，礁带端点不会出现0格")
-		if not board.current_paths.is_empty():
-			ocean_rules.append("洋流终点数字=路径内污染核心总数")
+		if board.mobile_current_enabled:
+			var mobile_group_count := board.mobile_current_group_count
+			var candidates_per_group := int(
+				board.mobile_current_shape.size() / maxi(1, mobile_group_count)
+			)
+			var cores_per_group := int(
+				board.mobile_current_core_count / maxi(1, mobile_group_count)
+			)
+			var mobile_group_label := (
+				"上下两组"
+				if mobile_group_count == 2
+				else ("上中下三组" if mobile_group_count == 3 else "%d组" % mobile_group_count)
+			)
+			ocean_rules.append(
+				"%s漂流物，每组%d个候选且包含%d个真水雷"
+				% [mobile_group_label, candidates_per_group, cores_per_group]
+			)
+			ocean_rules.append("左键翻开安全浮标，右键标记水雷；完成后保留数字与标记并停止漂流")
+			ocean_rules.append(
+				"%s每%d秒轮流移动，普通棋盘的公开与隐藏数字实时更新"
+				% [mobile_group_label, roundi(board.mobile_current_step_seconds)]
+			)
+			ocean_rules.append("任一组真水雷未标记便流出过滤边界时，本局立即失败")
+		if board.drifting_mine_enabled:
+			ocean_rules.append("漂流污染源每20秒移向右前方；每次移动后全盘数字实时更新")
+			ocean_rules.append("中心不可操作；浅蓝两圈内最多18格全部按普通扫雷处理")
+			ocean_rules.append("污染场完成即可净化；未完成便流出过滤边界则失败")
 		if board.tidal_zone_count > 0:
-			ocean_rules.append("边界数字跨潮区统计；净化当前潮区后解锁下一潮区")
+			ocean_rules.append("边界数字只统计已退潮区域；净化当前潮区后解锁并更新下一潮区")
+			ocean_rules.append("未解锁时状态栏会提示剩余安全格及错误标记数量")
 		ocean_rules.append(
-			"方向键/WASD移动 · Z净化 · X标记 · C扫描"
+			"方向键 / W S A D 移动 · J净化 · K标记 · C扫描"
 			if _operation_mode == 1
 			else "左键净化 · 右键标记 · 双击展开 · C扫描"
 		)
@@ -816,7 +976,7 @@ func _refresh_instructions() -> void:
 			node_rule
 			+ "\n翻开节点邻近安全格 · 标记邻近污染核心"
 			+ (
-				"\n方向键/WASD移动 · Z净化 · X标记 · C扫描"
+				"\n方向键 / W S A D 移动 · J净化 · K标记 · C扫描"
 				if _operation_mode == 1
 				else "\n左键净化 · 右键标记 · C扫描"
 			)
@@ -830,8 +990,8 @@ func _refresh_instructions() -> void:
 	)
 	if _operation_mode == 1:
 		instructions_label.text = (
-			"方向键/WASD 移动"
-			+ "\nZ 净化 · X 标记 · C 扫描"
+			"方向键 / W S A D 移动"
+			+ "\nJ 净化 · K 标记 · C 扫描"
 			+ "\n鼠标仍可使用"
 		)
 	else:
@@ -842,8 +1002,108 @@ func _refresh_instructions() -> void:
 		)
 
 
+func _show_level_mechanic_guide() -> void:
+	var guide_data = LEVEL_MECHANIC_GUIDES.get(board.level_number)
+	if guide_data is Dictionary:
+		_request_mechanic_guide(guide_data)
+
+
+func _request_mechanic_guide(guide_data: Dictionary) -> void:
+	var guide_id := StringName(str(guide_data.get("id", "")))
+	var pages = guide_data.get("pages", [])
+	if guide_id.is_empty() or not pages is Array or pages.is_empty() \
+			or _seen_mechanic_guides.has(guide_id) \
+			or _active_mechanic_guide_id == guide_id:
+		return
+	if first_move_guide.visible:
+		if guide_id not in _queued_mechanic_guides:
+			_queued_mechanic_guides.append(guide_id)
+		return
+	_active_mechanic_guide_id = guide_id
+	board.set_tooltips_enabled(false)
+	land_tabletop_actors.set_scan_paused(true)
+	pause_button.disabled = false
+	restart_button.disabled = false
+	pause_restart_button.disabled = false
+	first_move_guide.show_dialogue(
+		guide_id,
+		pages,
+		_operation_mode == 1,
+		_mechanic_guide_target_global_position(guide_id)
+	)
+
+
+func _mechanic_guide_target_global_position(
+	guide_id: StringName
+) -> Vector2:
+	if guide_id == &"eco_scan":
+		var robot_hotspot := land_tabletop_actors.find_child(
+			"RobotHotspot",
+			true,
+			false
+		) as Control
+		if is_instance_valid(robot_hotspot):
+			return robot_hotspot.get_global_rect().get_center()
+	return board.get_mechanic_guide_target_global_position(guide_id)
+
+
+func _on_board_interacted() -> void:
+	if _active_mechanic_guide_id.is_empty() \
+			or not first_move_guide.is_dialogue_mode():
+		return
+	first_move_guide.complete_dialogue()
+
+
+func _on_mechanic_dialogue_completed(guide_id: StringName) -> void:
+	if guide_id.is_empty():
+		return
+	_seen_mechanic_guides[guide_id] = true
+	mechanic_guide_completed.emit(guide_id)
+	if _active_mechanic_guide_id == guide_id:
+		_active_mechanic_guide_id = &""
+	pause_button.disabled = false
+	restart_button.disabled = false
+	pause_restart_button.disabled = false
+	if not _session_paused:
+		board.set_tooltips_enabled(true)
+		land_tabletop_actors.set_scan_paused(false)
+		if board.game_state in [
+			MinesweeperBoard.GameState.READY,
+			MinesweeperBoard.GameState.PLAYING,
+		]:
+			board.set_interaction_enabled(true)
+			_resume_timer_if_playing()
+	call_deferred("_show_next_queued_mechanic_guide")
+
+
+func _show_next_queued_mechanic_guide() -> void:
+	if first_move_guide.visible or not _active_mechanic_guide_id.is_empty():
+		return
+	while not _queued_mechanic_guides.is_empty():
+		var guide_id: StringName = _queued_mechanic_guides.pop_front()
+		if _seen_mechanic_guides.has(guide_id):
+			continue
+		var guide_data := _mechanic_guide_by_id(guide_id)
+		if not guide_data.is_empty():
+			_request_mechanic_guide(guide_data)
+		return
+
+
+func _mechanic_guide_by_id(guide_id: StringName) -> Dictionary:
+	if StringName(str(SCAN_GUIDE.get("id", ""))) == guide_id:
+		return SCAN_GUIDE
+	for guide_data in LEVEL_MECHANIC_GUIDES.values():
+		if guide_data is Dictionary \
+				and StringName(str(guide_data.get("id", ""))) == guide_id:
+			return guide_data
+	return {}
+
+
 func _refresh_first_move_guide() -> void:
 	if not is_instance_valid(first_move_guide) or not is_instance_valid(board):
+		return
+	if not _active_mechanic_guide_id.is_empty() \
+			and first_move_guide.is_dialogue_mode():
 		return
 	var tutorial_visible := (
 		board.level_number == 1
@@ -868,12 +1128,12 @@ func _refresh_first_move_guide() -> void:
 			if board.game_state == MinesweeperBoard.GameState.READY:
 				target_index = board.guide_cell_index
 				title = "小芽带你认识棋盘"
-				action = "移动到这里按 Z 翻开" if _operation_mode == 1 else "左键翻开这个安全建议格"
+				action = "移动到这里按 J 翻开" if _operation_mode == 1 else "左键翻开这个安全建议格"
 				hint = "白色=未净化 · 黄色=安全建议"
 			else:
 				target_index = _find_unrevealed_safe_index()
 				title = "继续观察"
-				action = "移动后按 Z 再翻一格" if _operation_mode == 1 else "再左键翻开一个白色格"
+				action = "移动后按 J 再翻一格" if _operation_mode == 1 else "再左键翻开一个白色格"
 				hint = "找到数字后，清扫者会继续说明"
 		TutorialStep.NUMBER_INFO:
 			target_index = _tutorial_number_index
@@ -890,15 +1150,15 @@ func _refresh_first_move_guide() -> void:
 				and not board.mines[target_index]
 			)
 			if removing_wrong_flag:
-				action = "按 X 取消这个错误标记" if _operation_mode == 1 else "右键取消这个错误标记"
+				action = "按 K 取消这个错误标记" if _operation_mode == 1 else "右键取消这个错误标记"
 				hint = "种子放错会阻止数字快速展开"
 			else:
-				action = "按 X 放下检测种子" if _operation_mode == 1 else "右键放下检测种子"
+				action = "按 K 放下检测种子" if _operation_mode == 1 else "右键放下检测种子"
 				hint = "把数字周围的污染核心全部标记"
 		TutorialStep.CHORD:
 			target_index = _tutorial_number_index
 			title = "快速展开"
-			action = "选中数字后按 Z" if _operation_mode == 1 else "双击这个数字"
+			action = "选中数字后按 J" if _operation_mode == 1 else "双击这个数字"
 			hint = "标记正确后，会展开周围安全格"
 
 	if not _is_valid_tutorial_index(target_index):
@@ -916,6 +1176,8 @@ func _refresh_first_move_guide() -> void:
 
 
 func _on_reveal_completed(cell_index: int, newly_revealed_count: int) -> void:
+	if newly_revealed_count > 0 and board.level_number >= 8:
+		AudioManager.play_ocean_reveal()
 	if not _ordinary_reveal_seen:
 		_ordinary_reveal_seen = true
 	if newly_revealed_count > 0:
@@ -954,6 +1216,8 @@ func _on_flag_completed(
 
 
 func _on_chord_completed(_cell_index: int, newly_revealed_count: int) -> void:
+	if newly_revealed_count > 0 and board.level_number >= 8:
+		AudioManager.play_ocean_reveal()
 	if newly_revealed_count > 0:
 		_award_scan_energy()
 	if _tutorial_dismissed_for_session or board.level_number != 1:
@@ -1007,6 +1271,8 @@ func _unlock_scan_after_first_reveal() -> void:
 		else ScanPhase.CHARGING
 	)
 	_refresh_scan_ui()
+	if _scan_phase == ScanPhase.READY:
+		_request_mechanic_guide(SCAN_GUIDE)
 
 
 func _award_scan_energy() -> void:
@@ -1033,6 +1299,8 @@ func _award_scan_energy() -> void:
 			else ScanPhase.CHARGING
 		)
 	_refresh_scan_ui()
+	if _scan_phase == ScanPhase.READY:
+		_request_mechanic_guide(SCAN_GUIDE)
 
 
 func _request_scan_mode() -> void:
@@ -1225,6 +1493,7 @@ func _on_tutorial_exit_requested() -> void:
 	_refresh_instructions()
 	if board.game_state in [MinesweeperBoard.GameState.READY, MinesweeperBoard.GameState.PLAYING]:
 		status_label.text = "自由净化"
+	call_deferred("_show_next_queued_mechanic_guide")
 
 
 func _ensure_number_target() -> void:
@@ -1342,18 +1611,21 @@ func _complete_tutorial() -> void:
 	_refresh_scan_ui()
 	if board.game_state == MinesweeperBoard.GameState.PLAYING:
 		status_label.text = "引导完成"
+	call_deferred("_show_next_queued_mechanic_guide")
 
 
 func set_session_paused(paused: bool) -> void:
 	if _session_paused == paused:
 		return
 	_session_paused = paused
+	var guide_active := not _active_mechanic_guide_id.is_empty()
 	if paused:
 		_pause_timer()
 	else:
 		_resume_timer_if_playing()
 	board.set_interaction_enabled(not paused)
-	land_tabletop_actors.set_scan_paused(paused)
+	board.set_tooltips_enabled(not paused and not guide_active)
+	land_tabletop_actors.set_scan_paused(paused or guide_active)
 	pause_overlay.visible = paused
 	_refresh_scan_ui()
 	if paused:
@@ -1446,13 +1718,21 @@ func _on_state_changed(state: int) -> void:
 				restart_button_label.text = "再来一局"
 			if not _completion_emitted:
 				_completion_emitted = true
+				AudioManager.play_level_win(board.level_number)
 				level_completed.emit(board.level_number, get_elapsed_ms())
 		MinesweeperBoard.GameState.LOST:
+			AudioManager.play_fail()
 			eco_showcase.call("set_reaction", 2)
 			_pause_timer()
 			pause_button_label.text = "菜单\nEsc"
 			pause_button.disabled = false
-			status_label.text = "污染触发"
+			var wrong_flag_count := board.get_wrong_flag_count()
+			status_label.text = (
+				"污染触发 · %d个误标" % wrong_flag_count
+				if wrong_flag_count > 0
+				else "污染触发"
+			)
+			_on_flags_changed(board.used_flags, board.get_runtime_mine_count())
 			restart_button_label.text = "重新\n开始"
 	_refresh_first_move_guide()
 
@@ -1464,7 +1744,22 @@ func _has_next_level_in_chapter() -> bool:
 
 
 func _on_pollution_nodes_changed(cleansed_count: int, total_count: int) -> void:
-	if board.level_number == 7 and total_count > 0:
+	if board.drifting_mine_enabled:
+		objective_label.text = (
+			"漂流污染源已净化\n继续清理其余污染"
+			if board.drifting_mine_resolved
+			else "净化两圈污染场\n处理中心周围全部普通格"
+		)
+	elif board.mobile_current_enabled:
+		var group_count := board.mobile_current_group_count
+		var group_core_count := int(
+			board.mobile_current_core_count / maxi(1, group_count)
+		)
+		objective_label.text = "辨认%d组漂流物\n每组%d个真水雷 · 任一流出即失败" % [
+			group_count,
+			group_core_count,
+		]
+	elif board.level_number == 7 and total_count > 0:
 		objective_label.text = "污染母株\n根系锚点 %d/%d" % [
 			cleansed_count,
 			total_count,
@@ -1477,6 +1772,20 @@ func _on_pollution_nodes_changed(cleansed_count: int, total_count: int) -> void:
 		]
 	else:
 		objective_label.text = "清除所有污染核心\n恢复%s生态" % board.level_name
+
+
+func _on_current_path_feedback(text: String) -> void:
+	status_label.text = text
+
+
+func _on_mobile_current_state_changed(resolved: bool) -> void:
+	if resolved and board.game_state == MinesweeperBoard.GameState.PLAYING:
+		objective_label.text = "漂流水雷已拦截\n继续净化其余安全格"
+
+
+func _on_drifting_mine_state_changed(resolved: bool) -> void:
+	if resolved and board.game_state == MinesweeperBoard.GameState.PLAYING:
+		objective_label.text = "漂流污染源已净化\n继续清理其余污染"
 
 
 func _on_tidal_zone_changed(active_zone_index: int, zone_count: int) -> void:
@@ -1495,6 +1804,10 @@ func _on_tidal_zone_changed(active_zone_index: int, zone_count: int) -> void:
 
 func _on_flags_changed(used_flags: int, max_flags: int) -> void:
 	flags_label.text = "%d/%d" % [used_flags, max_flags]
+	if board.game_state == MinesweeperBoard.GameState.LOST:
+		var wrong_flag_count := board.get_wrong_flag_count()
+		if wrong_flag_count > 0:
+			flags_label.text += " · 误标%d" % wrong_flag_count
 
 
 func _on_primary_button_pressed() -> void:

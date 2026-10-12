@@ -9,11 +9,45 @@ signal settings_requested
 signal exit_game_requested
 signal pause_changed(is_paused: bool)
 signal scan_energy_changed(energy: int)
+signal mechanic_guide_completed(guide_id: StringName)
 
 const SKY_SPHERE_BOARD_SCRIPT := preload("res://scripts/sky_sphere_board.gd")
 const LEVELS := preload("res://scripts/level_data.gd")
 const ART := preload("res://scripts/art_catalog.gd")
 const SCAN_CAPACITY := 12
+const SKY_INTERFACE_DESIGN_SIZE := Vector2(1280.0, 720.0)
+
+const SKY_MECHANIC_GUIDES := {
+	15: {
+		"id": &"sky_sphere",
+		"pages": [
+			{"title": "小芽：这次棋盘变成了球", "text": "云球没有边界，转到背面后仍是同一张棋盘。", "hint": "只有共享一条边的云格才算相邻。"},
+			{"title": "小芽：先学会转动云球", "text": "鼠标拖拽或W S A D旋转，方向键切换选中的云格。", "hint": "J翻开、K标记，扫雷规则和之前一样。"},
+		],
+	},
+	17: {
+		"id": &"sky_breeze",
+		"pages": [
+			{"title": "小芽：这一关会出现微风", "text": "你翻开安全格时，微风有时会额外处理一个隐藏格。", "hint": "它会翻开安全格，或自动标出污染。"},
+			{"title": "小芽：云球会转向目标", "text": "微风触发后，画面会转到发生变化的那一格。", "hint": "这是随机帮助，其他判断仍由你完成。"},
+		],
+	},
+	19: {
+		"id": &"storm_shield",
+		"pages": [
+			{"title": "小芽：这一关有一次云盾", "text": "如果误触污染，云盾有可能帮你挡住这次失败。", "hint": "每局最多成功一次，而且不保证触发。"},
+			{"title": "小芽：触发后会自动标记", "text": "被云盾挡住的污染格会直接留下标记。", "hint": "云盾只是保护，最好仍然根据数字推理。"},
+		],
+	},
+	21: {
+		"id": &"storm_eyes",
+		"pages": [
+			{"title": "小芽：安全数字上出现了雷眼", "text": "雷眼可能藏在云球背面，边缘箭头会指向它。", "hint": "雷眼所在的格子本身是安全的。"},
+			{"title": "小芽：正确标完周围污染", "text": "确认雷眼周围的污染都已标记后，双击雷眼数字。", "hint": "一共击破三个雷眼，就能完成这一关。"},
+		],
+	},
+}
+
 
 enum ScanPhase {
 	LOCKED_FIRST_REVEAL,
@@ -28,6 +62,8 @@ enum ScanPhase {
 
 @onready var board_center := find_child("BoardCenter", true, false) as CenterContainer
 @onready var board_host := find_child("Board", true, false) as Control
+@onready var sky_stage := find_child("SkyStage", true, false) as Control
+@onready var page_margin := find_child("PageMargin", true, false) as MarginContainer
 @onready var subtitle_label := find_child("SubtitleLabel", true, false) as Label
 @onready var level_summary_label := find_child("LevelSummaryLabel", true, false) as Label
 @onready var objective_label := find_child("ObjectiveLabel", true, false) as Label
@@ -46,6 +82,7 @@ enum ScanPhase {
 @onready var main_menu_button := find_child("MainMenuButton", true, false) as Button
 @onready var restart_button_label := find_child("RestartButtonLabel", true, false) as Label
 @onready var tabletop_actors := find_child("LandTabletopActors", true, false) as Control
+@onready var first_move_guide := find_child("FirstMoveGuide", true, false) as FirstMoveGuide
 
 var current_level_index := 14
 var _sky_board: Control
@@ -59,13 +96,18 @@ var _gameplay_state := 0
 var _scan_phase: int = ScanPhase.LOCKED_FIRST_REVEAL
 var _scan_energy := 0
 var _scan_target_global_position := Vector2.ZERO
+var _seen_mechanic_guides: Dictionary = {}
+var _active_mechanic_guide_id := &""
 
 
 func _ready() -> void:
 	_prepare_copied_interface()
+	resized.connect(_on_interface_resized)
+	call_deferred("_apply_interface_transform")
 	_mount_sky_sphere()
 	tabletop_actors.call("configure_for_sky")
 	tabletop_actors.connect("scan_activation_requested", _request_scan_mode)
+	first_move_guide.dialogue_completed.connect(_on_mechanic_dialogue_completed)
 	_initialize_scan_ability()
 	pause_button.pressed.connect(_set_paused.bind(true))
 	restart_button.pressed.connect(_on_primary_button_pressed)
@@ -78,6 +120,33 @@ func _ready() -> void:
 	set_process(true)
 	if auto_start:
 		start_level(14, 0)
+
+
+func _on_interface_resized() -> void:
+	call_deferred("_apply_interface_transform")
+
+
+func _apply_interface_transform() -> void:
+	if not is_instance_valid(sky_stage) or not is_instance_valid(page_margin):
+		return
+	page_margin.anchor_left = 0.0
+	page_margin.anchor_top = 0.0
+	page_margin.anchor_right = 0.0
+	page_margin.anchor_bottom = 0.0
+	page_margin.offset_left = 0.0
+	page_margin.offset_top = 0.0
+	page_margin.offset_right = SKY_INTERFACE_DESIGN_SIZE.x
+	page_margin.offset_bottom = SKY_INTERFACE_DESIGN_SIZE.y
+	var interface_scale := maxf(
+		size.x / SKY_INTERFACE_DESIGN_SIZE.x,
+		size.y / SKY_INTERFACE_DESIGN_SIZE.y
+	)
+	var interface_offset := (
+		size - SKY_INTERFACE_DESIGN_SIZE * interface_scale
+	) * 0.5
+	for stage_control in [sky_stage, page_margin]:
+		stage_control.scale = Vector2.ONE * interface_scale
+		stage_control.position = interface_offset
 
 
 func _prepare_copied_interface() -> void:
@@ -125,7 +194,7 @@ func _prepare_copied_interface() -> void:
 	objective_label.text = "旋转球面，净化全部安全面"
 	instructions_label.text = (
 		"拖拽旋转 · 左键净化 · 右键标记 · C扫描\n"
-		+ "方向键选择 · WASD旋转 · Enter翻开 · F标记"
+		+ "方向键选择 · W S A D旋转 · J翻开 · K标记"
 	)
 	flags_label.text = "0/6"
 	status_label.text = "旋转球面，寻找安全起点"
@@ -174,6 +243,8 @@ func _mount_sky_sphere() -> void:
 			status_label.text = text
 	)
 	_sky_board.connect("first_reveal", _on_first_reveal)
+	_sky_board.connect("board_interacted", _on_board_interacted)
+	_sky_board.connect("face_revealed", AudioManager.play_sky_reveal)
 	_sky_board.connect("scan_energy_earned", _award_scan_energy)
 	_sky_board.connect("scan_target_requested", _on_scan_target_requested)
 	_sky_board.connect("scan_cancel_requested", _cancel_scan_targeting)
@@ -184,6 +255,8 @@ func _mount_sky_sphere() -> void:
 
 
 func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
+	_active_mechanic_guide_id = &""
+	first_move_guide.hide_guide()
 	current_level_index = clampi(
 		level_index,
 		14,
@@ -226,7 +299,7 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	]
 	objective_label.text = "旋转球面，净化全部安全面"
 	if boss_eye_count > 0:
-		objective_label.text = "追踪雷眼 · 正确标记周围污染并双击击破 0/%d" % boss_eye_count
+		objective_label.text = "持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d" % boss_eye_count
 	elif storm_guard_uses != 0:
 		objective_label.text = "随机助益翻格或标雷 · 云盾保护概率拦截踩雷"
 	elif breeze_uses != 0:
@@ -237,10 +310,19 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	_initialize_scan_ability()
 	visible = true
 	level_started.emit(level_number)
+	call_deferred("_show_level_mechanic_guide")
 
 
 func set_operation_mode(_mode: int) -> void:
 	pass
+
+
+func set_seen_mechanic_guides(guide_ids: Array) -> void:
+	_seen_mechanic_guides.clear()
+	for guide_id in guide_ids:
+		var normalized_id := StringName(str(guide_id))
+		if not normalized_id.is_empty():
+			_seen_mechanic_guides[normalized_id] = true
 
 
 func set_first_move_guide_enabled(_enabled: bool) -> void:
@@ -252,7 +334,72 @@ func _process(_delta: float) -> void:
 		_update_timer_label()
 
 
+func _show_level_mechanic_guide() -> void:
+	var level_number := current_level_index + 1
+	var guide_data = SKY_MECHANIC_GUIDES.get(level_number)
+	if not guide_data is Dictionary:
+		return
+	var guide_id := StringName(str(guide_data.get("id", "")))
+	var pages = guide_data.get("pages", [])
+	if guide_id.is_empty() or not pages is Array or pages.is_empty() \
+			or _seen_mechanic_guides.has(guide_id):
+		return
+	_active_mechanic_guide_id = guide_id
+	tabletop_actors.call("set_scan_paused", true)
+	pause_button.disabled = false
+	restart_button.disabled = false
+	pause_restart_button.disabled = false
+	first_move_guide.show_dialogue(
+		guide_id,
+		pages,
+		false,
+		_sky_guide_target_global_position(guide_id)
+	)
+
+
+func _sky_guide_target_global_position(guide_id: StringName) -> Vector2:
+	var board_rect := _sky_board.get_global_rect()
+	var target_ratio := Vector2(0.72, 0.34)
+	match guide_id:
+		&"sky_breeze":
+			target_ratio = Vector2(0.72, 0.44)
+		&"storm_shield":
+			target_ratio = Vector2(0.70, 0.58)
+		&"storm_eyes":
+			target_ratio = Vector2(0.68, 0.30)
+	return board_rect.position + board_rect.size * target_ratio
+
+
+func _on_board_interacted() -> void:
+	if _active_mechanic_guide_id.is_empty() \
+			or not first_move_guide.is_dialogue_mode():
+		return
+	first_move_guide.complete_dialogue()
+
+
+func _on_mechanic_dialogue_completed(guide_id: StringName) -> void:
+	if guide_id.is_empty():
+		return
+	_seen_mechanic_guides[guide_id] = true
+	mechanic_guide_completed.emit(guide_id)
+	if _active_mechanic_guide_id == guide_id:
+		_active_mechanic_guide_id = &""
+	pause_button.disabled = false
+	restart_button.disabled = false
+	pause_restart_button.disabled = false
+	if not _paused and not _round_finished:
+		_sky_board.call("set_interaction_enabled", true)
+		_sky_board.process_mode = Node.PROCESS_MODE_INHERIT
+		tabletop_actors.call("set_scan_paused", false)
+		_resume_timer()
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if not _active_mechanic_guide_id.is_empty() \
+			and event.is_action_pressed("ui_cancel"):
+		_set_paused(not _paused)
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_event := event as InputEventKey
 		var keycode := key_event.physical_keycode
@@ -279,7 +426,7 @@ func _on_boss_eye_hit(
 	total_eyes: int
 ) -> void:
 	objective_label.text = (
-		"追踪雷眼 · 正确标记周围污染并双击击破 %d/%d"
+		"持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d"
 		% [cleared_eyes, total_eyes]
 	)
 
@@ -293,13 +440,15 @@ func _on_gameplay_state_changed(state: int) -> void:
 	_finish_scan_ability()
 	tabletop_actors.call("play_reaction", state == 2, state > 2)
 	if state == 2:
+		AudioManager.play_level_win(current_level_index + 1)
 		level_completed.emit(current_level_index + 1, _elapsed_before_segment_ms)
 		restart_button_label.text = (
 			"下一关"
 			if current_level_index < LEVELS.PLAYABLE_LEVELS.size() - 1
-			else "返回地图"
+			else "进入宇宙篇"
 		)
 	else:
+		AudioManager.play_fail()
 		restart_button_label.text = "重新生成"
 
 
@@ -308,7 +457,7 @@ func _on_primary_button_pressed() -> void:
 		if current_level_index < LEVELS.PLAYABLE_LEVELS.size() - 1:
 			start_level(current_level_index + 1, _scan_energy)
 		else:
-			level_select_requested.emit()
+			chapter_advance_requested.emit()
 		return
 	_restart_sky_board()
 
@@ -333,7 +482,7 @@ func _restart_sky_board() -> void:
 	var boss_eye_count := int(level.get("boss_eye_count", 0))
 	if boss_eye_count > 0:
 		objective_label.text = (
-			"追踪雷眼 · 正确标记周围污染并双击击破 0/%d"
+			"持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d"
 			% boss_eye_count
 		)
 	_reset_timer()
@@ -349,10 +498,13 @@ func _restart_from_pause() -> void:
 func _set_paused(value: bool) -> void:
 	_paused = value
 	pause_overlay.visible = value
+	var guide_active := not _active_mechanic_guide_id.is_empty()
 	_sky_board.process_mode = (
-		Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+		Node.PROCESS_MODE_DISABLED
+		if value
+		else Node.PROCESS_MODE_INHERIT
 	)
-	tabletop_actors.call("set_scan_paused", value)
+	tabletop_actors.call("set_scan_paused", value or guide_active)
 	if value:
 		_pause_timer()
 	else:

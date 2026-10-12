@@ -713,7 +713,7 @@ script = ExtResource("13_cell_preview")
 
 [node name="FirstMoveGuide" type="Control" parent="PageMargin/Columns/BoardPanel" unique_id=976973167]
 unique_name_in_owner = true
-z_index = 4
+z_index = 80
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -997,7 +997,7 @@ size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
 theme_override_fonts/font = ExtResource("14_bjg73")
 theme_override_font_sizes/font_size = 15
-text = "污染核心"
+text = "已用标记"
 
 [node name="FlagsLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/FlagsRow" unique_id=201014904]
 unique_name_in_owner = true
@@ -1102,7 +1102,11 @@ grow_horizontal = 2
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="PauseButton" type="TextureButton" parent="PageMargin/Columns/RightColumn/QuickButtons" unique_id=245970244]
+[node name="PauseButtonSlot" type="MarginContainer" parent="PageMargin/Columns/RightColumn/QuickButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PauseButton" type="TextureButton" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButtonSlot" unique_id=245970244]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(88, 88)
 layout_mode = 2
@@ -1116,7 +1120,7 @@ ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("22_quick_action")
 
-[node name="PauseButtonShadow" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=1334421812]
+[node name="PauseButtonShadow" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButtonSlot/PauseButton" unique_id=1334421812]
 visible = false
 show_behind_parent = true
 layout_mode = 1
@@ -1128,7 +1132,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("8_round_shadow")
 
-[node name="PauseButtonFocusRing" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=137787420]
+[node name="PauseButtonFocusRing" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButtonSlot/PauseButton" unique_id=137787420]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1139,7 +1143,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("9_round_focus")
 
-[node name="PauseButtonLabel" type="Label" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=498523127]
+[node name="PauseButtonLabel" type="Label" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButtonSlot/PauseButton" unique_id=498523127]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -1219,7 +1223,7 @@ layout_mode = 1
 [node name="PauseOverlay" type="Control" parent="." unique_id=5354387]
 unique_name_in_owner = true
 visible = false
-z_index = 10
+z_index = 100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

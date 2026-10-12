@@ -12,9 +12,13 @@ config_version=5
 
 config/name="Green Sweeper"
 config/description="A level-based ecological Minesweeper game."
-config/version="0.5.1"
+config/version="0.6.1"
 run/main_scene="res://scenes/shell.tscn"
 config/features=PackedStringArray("4.7")
+
+[autoload]
+
+AudioManager="*res://scripts/audio_manager.gd"
 
 [display]
 

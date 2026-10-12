@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://ejshs88bpdng"
+path="res://.godot/imported/sfx_win_flower_SUCCESS.wav-546e4c1eab622d3a7f1b6c71122b4d41.sample"
+
+[deps]
+
+source_file="res://docs/sound source/audio/sfx_win_flower_SUCCESS.wav"
+dest_files=["res://.godot/imported/sfx_win_flower_SUCCESS.wav-546e4c1eab622d3a7f1b6c71122b4d41.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

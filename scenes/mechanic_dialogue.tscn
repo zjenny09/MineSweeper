@@ -1,0 +1,121 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/first_move_guide.gd" id="1_guide"]
+[ext_resource type="Texture2D" path="res://assets/art/tutorial/first_move_guide_frame.png" id="2_frame"]
+[ext_resource type="Texture2D" path="res://assets/art/tutorial/first_move_guide_robot_avatar.png" id="3_mascot"]
+[ext_resource type="Texture2D" path="res://assets/art/tutorial/first_move_button_primary.png" id="4_primary"]
+[ext_resource type="Texture2D" path="res://assets/art/tutorial/first_move_button_secondary.png" id="5_secondary"]
+[ext_resource type="AnimationLibrary" path="res://animations/first_move_guide_animation_library.tres" id="6_animation"]
+
+[node name="MechanicDialogue" type="Control"]
+z_index = 200
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_guide")
+editor_preview = false
+
+[node name="GuideBubbleRoot" type="Control" parent="."]
+unique_name_in_owner = true
+offset_right = 484.0
+offset_bottom = 176.0
+mouse_filter = 1
+
+[node name="GuideFrameTexture" type="TextureRect" parent="GuideBubbleRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideMascot" type="TextureRect" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 43.0
+offset_right = 88.0
+offset_bottom = 107.0
+pivot_offset = Vector2(32, 32)
+mouse_filter = 2
+texture = ExtResource("3_mascot")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideMascotAnimationPlayer" type="AnimationPlayer" parent="GuideBubbleRoot"]
+libraries/ = ExtResource("6_animation")
+autoplay = &"sway"
+
+[node name="GuideTitle" type="Label" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 96.0
+offset_top = 31.0
+offset_right = 456.0
+offset_bottom = 57.0
+text = "小芽想告诉你"
+vertical_alignment = 1
+
+[node name="GuideAction" type="Label" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 96.0
+offset_top = 62.0
+offset_right = 456.0
+offset_bottom = 84.0
+text = "前面出现了新的生态变化。"
+vertical_alignment = 1
+
+[node name="GuideHint" type="Label" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 96.0
+offset_top = 89.0
+offset_right = 456.0
+offset_bottom = 108.0
+text = "留一点未知，亲自走近看看吧。"
+vertical_alignment = 1
+
+[node name="NextButtonArtwork" type="TextureRect" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 220.0
+offset_top = 119.5
+offset_right = 328.0
+offset_bottom = 151.5
+mouse_filter = 2
+texture = ExtResource("4_primary")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TutorialNextButton" type="Button" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 220.0
+offset_top = 119.5
+offset_right = 328.0
+offset_bottom = 151.5
+focus_mode = 0
+text = "继续听"
+
+[node name="ExitButtonArtwork" type="TextureRect" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 332.0
+offset_top = 122.5
+offset_right = 440.0
+offset_bottom = 149.5
+mouse_filter = 2
+texture = ExtResource("5_secondary")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TutorialExitButton" type="Button" parent="GuideBubbleRoot"]
+unique_name_in_owner = true
+offset_left = 332.0
+offset_top = 115.5
+offset_right = 440.0
+offset_bottom = 155.5
+focus_mode = 0
+text = "跳过介绍"

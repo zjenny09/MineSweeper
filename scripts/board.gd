@@ -2,6 +2,7 @@ class_name MinesweeperBoard
 extends Control
 
 signal state_changed(state: int)
+signal board_interacted
 signal flags_changed(used_flags: int, max_flags: int)
 signal reveal_completed(cell_index: int, newly_revealed_count: int)
 signal flag_completed(cell_index: int, is_flagged: bool, is_first_placement: bool)
@@ -11,6 +12,9 @@ signal scan_cancel_requested
 signal scan_completed(cell_index: int, result: int, newly_revealed_count: int)
 signal pollution_nodes_changed(cleansed_count: int, total_count: int)
 signal tidal_zone_changed(active_zone_index: int, zone_count: int)
+signal current_path_feedback(text: String)
+signal mobile_current_state_changed(resolved: bool)
+signal drifting_mine_state_changed(resolved: bool)
 
 const ART := preload("res://scripts/art_catalog.gd")
 const OCEAN_REEF_STRIP_FULL_PATH := ART.OCEAN_REEF_STRIP_FULL
@@ -47,7 +51,10 @@ const OCEAN_REEF_CELL_FILL := 0.84
 const OCEAN_REEF_GAP_FACTOR := 0.60
 const OCEAN_CURRENT_WASH_COLOR := Color(0.52, 0.78, 0.80, 0.38)
 const OCEAN_CURRENT_INK_COLOR := Color(0.16, 0.46, 0.54, 0.62)
+const OCEAN_CURRENT_FLOW_WASH_COLOR := Color(0.50, 0.94, 0.96, 0.76)
+const OCEAN_CURRENT_FLOW_INK_COLOR := Color(0.12, 0.66, 0.74, 0.98)
 const OCEAN_CURRENT_OFFSET_FACTOR := 0.18
+const OCEAN_CURRENT_FLOW_DURATION := 0.68
 const OCEAN_REEF_BASE_COLOR := Color("8d785d")
 const OCEAN_REEF_SAND_COLOR := Color("ead3a2")
 const OCEAN_REEF_CORAL_COLOR := Color("d46d63")
@@ -168,7 +175,67 @@ var reef_edges: Dictionary = {}
 var reef_dividers: Array[int] = []
 var reef_segments: Array[Dictionary] = []
 var current_paths: Array = []
-var current_path_mine_totals: Array[int] = []
+var current_flow_interval := 0
+var current_reveals_until_flow := 0
+var _current_flow_started := false
+var _hovered_current_path := -1
+var _current_drift_active := false
+var _current_drift_progress := 0.0
+var _current_drift_generation := 0
+var _current_drift_tween: Tween
+var mobile_current_enabled := false
+var mobile_current_shape: Array[Vector2i] = []
+var mobile_current_start_position := Vector2i.ZERO
+var mobile_current_position := Vector2i.ZERO
+var mobile_current_end_column := 0
+var mobile_current_core_count := 0
+var mobile_current_step_seconds := 0.0
+var mobile_current_route_cells: Array[bool] = []
+var mobile_current_covered_cells: Array[bool] = []
+var mobile_current_mines: Array[bool] = []
+var mobile_current_revealed: Array[bool] = []
+var mobile_current_flagged: Array[bool] = []
+var mobile_current_ever_flagged: Array[bool] = []
+var mobile_current_confirmed: Array[bool] = []
+var mobile_current_adjacent_counts: Array[int] = []
+var mobile_current_group_ids: Array[int] = []
+var mobile_current_group_count := 0
+var mobile_current_group_start_positions: Array[Vector2i] = []
+var mobile_current_group_positions: Array[Vector2i] = []
+var mobile_current_group_resolved: Array[bool] = []
+var mobile_current_resolved := false
+var _mobile_current_cells: Array[MineCell] = []
+var _mobile_current_water: Polygon2D
+var _mobile_current_boundary: Line2D
+var _mobile_current_boundary_label: Label
+var _mobile_current_started := false
+var _mobile_current_shifting := false
+var _mobile_current_time_remaining := 0.0
+var _mobile_current_warning_progress := 0.0
+var _mobile_current_last_second := -1
+var _mobile_current_next_group := 0
+var _mobile_current_shift_group := -1
+var _mobile_current_previous_start_positions: Array[Vector2i] = []
+var _mobile_current_shift_tween: Tween
+var drifting_mine_enabled := false
+var drifting_mine_start_position := Vector2i.ZERO
+var drifting_mine_position := Vector2i.ZERO
+var drifting_mine_end_column := 0
+var drifting_mine_step_seconds := 0.0
+var drifting_mine_route_cells: Array[bool] = []
+var drifting_mine_group_index := -1
+var drifting_mine_resolved := false
+var drifting_mine_total_locks := 0
+var drifting_mine_locks_remaining := 0
+var drifting_mine_disarm_ready := false
+var _drifting_mine_last_disarm_column := -1
+var _drifting_mine_started := false
+var _drifting_mine_shifting := false
+var _drifting_mine_time_remaining := 0.0
+var _drifting_mine_warning_progress := 0.0
+var _drifting_mine_last_second := -1
+var _drifting_mine_boundary: Line2D
+var _drifting_mine_boundary_label: Label
 var _random := RandomNumberGenerator.new()
 var _loaded_level_data: Dictionary = {}
 var _handmade_surface: Control
@@ -188,12 +255,15 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	advance_pollution_animation(delta)
+	if _pollution_animation_active:
+		advance_pollution_animation(delta)
+	_advance_mobile_current_timer(delta)
+	_advance_drifting_mine_timer(delta)
+	_refresh_board_processing()
 
 
 func advance_pollution_animation(delta: float) -> void:
 	if not _pollution_animation_active:
-		set_process(false)
 		return
 	_pollution_elapsed += maxf(0.0, delta)
 	var origin_row := int(_pollution_origin_index / column_count)
@@ -217,7 +287,6 @@ func advance_pollution_animation(delta: float) -> void:
 	pollution_tint_progress = clampf(_pollution_elapsed / total_duration, 0.0, 1.0)
 	if all_complete:
 		_pollution_animation_active = false
-		set_process(false)
 
 
 func _start_pollution_animation(origin_index: int) -> void:
@@ -238,7 +307,27 @@ func _reset_pollution_animation() -> void:
 	modulate = Color.WHITE
 	for cell in cell_nodes:
 		cell.set_pollution_progress(0.0)
-	set_process(false)
+	_refresh_board_processing()
+
+
+func _refresh_board_processing() -> void:
+	var mobile_timer_active := (
+		mobile_current_enabled
+		and _mobile_current_started
+		and not mobile_current_resolved
+		and not _mobile_current_shifting
+		and game_state == GameState.PLAYING
+		and interaction_enabled
+	)
+	var drifting_timer_active := (
+		drifting_mine_enabled
+		and _drifting_mine_started
+		and not drifting_mine_resolved
+		and not _drifting_mine_shifting
+		and game_state == GameState.PLAYING
+		and interaction_enabled
+	)
+	set_process(_pollution_animation_active or mobile_timer_active or drifting_timer_active)
 
 
 func _input(event: InputEvent) -> void:
@@ -287,13 +376,13 @@ func _input(event: InputEvent) -> void:
 	var action_key := key_event.physical_keycode
 	if action_key == 0:
 		action_key = key_event.keycode
-	if action_key == KEY_Z:
+	if action_key == KEY_J:
 		if scan_target_mode:
 			scan_target_requested.emit(keyboard_cell_index)
 		else:
 			_keyboard_primary_action()
 		get_viewport().set_input_as_handled()
-	elif action_key == KEY_X:
+	elif action_key == KEY_K:
 		if scan_target_mode:
 			scan_cancel_requested.emit()
 		else:
@@ -315,12 +404,14 @@ func load_level(level: Dictionary) -> void:
 	_extra_obstacle_count = int(level.get("extra_obstacle_count", 0))
 	_configure_ocean_mechanics(level)
 	_configure_pollution_nodes(level)
+	_configure_drifting_mine(level.get("drifting_mine", {}))
 	_configure_obstacles(level)
 	safe_cell_count = (
 		cell_count
 		- core_count
 		- obstacle_count
 		- pollution_node_cell_count
+		+ (mobile_current_shape.size() if mobile_current_enabled else 0)
 	)
 	first_move_guide_enabled = level.get("first_move_guide", false)
 
@@ -334,7 +425,10 @@ func _configure_ocean_mechanics(level: Dictionary) -> void:
 	reef_dividers.clear()
 	reef_segments.clear()
 	current_paths.clear()
-	current_path_mine_totals.clear()
+	current_flow_interval = 0
+	current_reveals_until_flow = 0
+	_current_flow_started = false
+	_hovered_current_path = -1
 	reef_edge_count = 0
 	active_tidal_zone_index = 0
 	tidal_zone_count = 0
@@ -344,9 +438,377 @@ func _configure_ocean_mechanics(level: Dictionary) -> void:
 	_append_reef_edges(level.get("reef_edges", []))
 	reef_edge_count = reef_edges.size()
 	_configure_tidal_zones(level.get("tidal_zones", []))
+	_configure_mobile_current(level.get("mobile_current", {}))
 	var current_layout := _randomized_current_paths(level.get("current_paths", []))
 	_configure_current_paths(current_layout)
+	if not current_paths.is_empty():
+		current_flow_interval = 5 if level_number == 11 else (4 if level_number == 12 else 3)
+		current_reveals_until_flow = current_flow_interval
 	_rebuild_number_neighbor_graph()
+
+
+func _configure_mobile_current(value: Variant) -> void:
+	mobile_current_enabled = false
+	mobile_current_shape.clear()
+	mobile_current_start_position = Vector2i.ZERO
+	mobile_current_position = Vector2i.ZERO
+	mobile_current_end_column = 0
+	mobile_current_core_count = 0
+	mobile_current_step_seconds = 0.0
+	mobile_current_resolved = false
+	_mobile_current_started = false
+	_mobile_current_shifting = false
+	_mobile_current_time_remaining = 0.0
+	_mobile_current_warning_progress = 0.0
+	_mobile_current_last_second = -1
+	_reset_array(mobile_current_route_cells, false)
+	_reset_array(mobile_current_covered_cells, false)
+	mobile_current_mines.clear()
+	mobile_current_revealed.clear()
+	mobile_current_flagged.clear()
+	mobile_current_ever_flagged.clear()
+	mobile_current_confirmed.clear()
+	mobile_current_adjacent_counts.clear()
+	mobile_current_group_ids.clear()
+	mobile_current_group_count = 0
+	mobile_current_group_start_positions.clear()
+	mobile_current_group_positions.clear()
+	mobile_current_group_resolved.clear()
+	_mobile_current_next_group = 0
+	_mobile_current_shift_group = -1
+	if topology != HEX_TOPOLOGY or not value is Dictionary:
+		return
+	var config: Dictionary = value
+	var shape_value: Variant = config.get("shape", [])
+	if not shape_value is Array:
+		return
+	for offset_value in shape_value:
+		if offset_value is Vector2i and not mobile_current_shape.has(offset_value):
+			mobile_current_shape.append(offset_value)
+	if mobile_current_shape.is_empty():
+		return
+	var group_ids_value: Variant = config.get("group_ids", [])
+	for local_index in mobile_current_shape.size():
+		var group_id := 0
+		if group_ids_value is Array and local_index < group_ids_value.size():
+			group_id = maxi(0, int(group_ids_value[local_index]))
+		mobile_current_group_ids.append(group_id)
+		mobile_current_group_count = maxi(mobile_current_group_count, group_id + 1)
+	var maximum_offset_x := 0
+	var maximum_offset_y := 0
+	for offset in mobile_current_shape:
+		maximum_offset_x = maxi(maximum_offset_x, offset.x)
+		maximum_offset_y = maxi(maximum_offset_y, offset.y)
+	mobile_current_start_position = config.get("start_position", Vector2i.ZERO)
+	mobile_current_start_position.x = clampi(
+		mobile_current_start_position.x,
+		0,
+		maxi(0, column_count - maximum_offset_x - 1)
+	)
+	mobile_current_start_position.y = clampi(
+		mobile_current_start_position.y,
+		0,
+		maxi(0, row_count - maximum_offset_y - 1)
+	)
+	mobile_current_position = mobile_current_start_position
+	mobile_current_end_column = clampi(
+		int(config.get("end_column", column_count - 1)),
+		mobile_current_start_position.x + maximum_offset_x,
+		column_count - 1
+	)
+	mobile_current_core_count = maxi(1, int(config.get("core_count", 2)))
+	mobile_current_step_seconds = maxf(4.0, float(config.get("step_seconds", 12.0)))
+	mobile_current_enabled = mobile_current_core_count < mobile_current_shape.size()
+	if not mobile_current_enabled:
+		return
+	mobile_current_group_start_positions.resize(mobile_current_group_count)
+	mobile_current_group_start_positions.fill(mobile_current_start_position)
+	mobile_current_group_positions.resize(mobile_current_group_count)
+	mobile_current_group_positions.fill(mobile_current_start_position)
+	mobile_current_group_resolved.resize(mobile_current_group_count)
+	mobile_current_group_resolved.fill(false)
+	mobile_current_mines.resize(mobile_current_shape.size())
+	mobile_current_mines.fill(false)
+	mobile_current_revealed.resize(mobile_current_shape.size())
+	mobile_current_revealed.fill(false)
+	mobile_current_flagged.resize(mobile_current_shape.size())
+	mobile_current_flagged.fill(false)
+	mobile_current_ever_flagged.resize(mobile_current_shape.size())
+	mobile_current_ever_flagged.fill(false)
+	mobile_current_confirmed.resize(mobile_current_shape.size())
+	mobile_current_confirmed.fill(false)
+	mobile_current_adjacent_counts.resize(mobile_current_shape.size())
+	mobile_current_adjacent_counts.fill(0)
+	_rebuild_mobile_current_masks()
+
+
+func _randomize_mobile_current_group_starts() -> void:
+	if not mobile_current_enabled or mobile_current_group_count <= 0:
+		return
+	var minimum_anchor_x := mobile_current_start_position.x - 1
+	var maximum_anchor_x := mobile_current_start_position.x + 1
+	for group_id in mobile_current_group_count:
+		var minimum_offset_x := column_count
+		var maximum_offset_x := -1
+		for local_index in mobile_current_shape.size():
+			if _mobile_current_group_for_local(local_index) != group_id:
+				continue
+			minimum_offset_x = mini(minimum_offset_x, mobile_current_shape[local_index].x)
+			maximum_offset_x = maxi(maximum_offset_x, mobile_current_shape[local_index].x)
+		minimum_anchor_x = maxi(minimum_anchor_x, -minimum_offset_x)
+		maximum_anchor_x = mini(maximum_anchor_x, mobile_current_end_column - maximum_offset_x)
+	var column_anchors: Array[int] = []
+	for anchor_x in range(minimum_anchor_x, maximum_anchor_x + 1):
+		column_anchors.append(anchor_x)
+	for index in range(column_anchors.size() - 1, 0, -1):
+		var swap_index := _random.randi_range(0, index)
+		var temporary := column_anchors[index]
+		column_anchors[index] = column_anchors[swap_index]
+		column_anchors[swap_index] = temporary
+
+	var previous_group_max_row := -2
+	for group_id in mobile_current_group_count:
+		var minimum_offset_y := row_count
+		var maximum_offset_y := -1
+		for local_index in mobile_current_shape.size():
+			if _mobile_current_group_for_local(local_index) != group_id:
+				continue
+			minimum_offset_y = mini(minimum_offset_y, mobile_current_shape[local_index].y)
+			maximum_offset_y = maxi(maximum_offset_y, mobile_current_shape[local_index].y)
+		var group_height := maximum_offset_y - minimum_offset_y + 1
+		var band_start := int(group_id * row_count / mobile_current_group_count)
+		var band_end := int((group_id + 1) * row_count / mobile_current_group_count) - 1
+		var earliest_minimum_row := maxi(band_start, previous_group_max_row + 2)
+		var latest_minimum_row := band_end - group_height + 1
+		if earliest_minimum_row > latest_minimum_row:
+			earliest_minimum_row = latest_minimum_row
+		var group_minimum_row := _random.randi_range(
+			earliest_minimum_row,
+			latest_minimum_row
+		)
+		var anchor_x := (
+			column_anchors[group_id]
+			if group_id < column_anchors.size()
+			else _random.randi_range(minimum_anchor_x, maximum_anchor_x)
+		)
+		var group_start := Vector2i(
+			anchor_x,
+			group_minimum_row - minimum_offset_y
+		)
+		mobile_current_group_start_positions[group_id] = group_start
+		mobile_current_group_positions[group_id] = group_start
+		previous_group_max_row = group_minimum_row + group_height - 1
+
+	if mobile_current_group_count > 1 \
+			and mobile_current_group_start_positions == _mobile_current_previous_start_positions:
+		var first_start := mobile_current_group_start_positions[0]
+		var second_start := mobile_current_group_start_positions[1]
+		var first_x := first_start.x
+		first_start.x = second_start.x
+		second_start.x = first_x
+		mobile_current_group_start_positions[0] = first_start
+		mobile_current_group_start_positions[1] = second_start
+		mobile_current_group_positions[0] = first_start
+		mobile_current_group_positions[1] = second_start
+	_mobile_current_previous_start_positions = mobile_current_group_start_positions.duplicate()
+
+
+func _rebuild_mobile_current_masks() -> void:
+	_reset_array(mobile_current_route_cells, false)
+	_reset_array(mobile_current_covered_cells, false)
+	if not mobile_current_enabled:
+		return
+	for group_id in mobile_current_group_count:
+		if group_id >= mobile_current_group_start_positions.size():
+			continue
+		var maximum_offset_x := 0
+		for local_index in mobile_current_shape.size():
+			if _mobile_current_group_for_local(local_index) == group_id:
+				maximum_offset_x = maxi(
+					maximum_offset_x,
+					mobile_current_shape[local_index].x
+				)
+		var group_start := mobile_current_group_start_positions[group_id]
+		var final_anchor_x := mobile_current_end_column - maximum_offset_x
+		for anchor_x in range(group_start.x, final_anchor_x + 1):
+			for local_index in mobile_current_shape.size():
+				if _mobile_current_group_for_local(local_index) != group_id:
+					continue
+				var route_coordinate := Vector2i(
+					anchor_x + mobile_current_shape[local_index].x,
+					group_start.y + mobile_current_shape[local_index].y
+				)
+				if route_coordinate.x >= 0 and route_coordinate.x < column_count \
+						and route_coordinate.y >= 0 and route_coordinate.y < row_count:
+					var route_index := route_coordinate.y * column_count + route_coordinate.x
+					mobile_current_route_cells[route_index] = true
+	for local_index in mobile_current_shape.size():
+		var board_index := _mobile_current_board_index(local_index)
+		if _is_valid_index(board_index) \
+				and not mobile_current_group_resolved[_mobile_current_group_for_local(local_index)]:
+			mobile_current_covered_cells[board_index] = true
+
+
+func _mobile_current_group_for_local(local_index: int) -> int:
+	if local_index < 0 or local_index >= mobile_current_group_ids.size():
+		return -1
+	return mobile_current_group_ids[local_index]
+
+
+func _mobile_current_board_index(local_index: int) -> int:
+	if not mobile_current_enabled or local_index < 0 \
+			or local_index >= mobile_current_shape.size():
+		return -1
+	var group_id := _mobile_current_group_for_local(local_index)
+	if group_id < 0 or group_id >= mobile_current_group_positions.size():
+		return -1
+	var coordinate := mobile_current_group_positions[group_id] + mobile_current_shape[local_index]
+	if coordinate.x < 0 or coordinate.x >= column_count \
+			or coordinate.y < 0 or coordinate.y >= row_count:
+		return -1
+	return coordinate.y * column_count + coordinate.x
+
+
+func _mobile_current_local_at_board(cell_index: int) -> int:
+	if not mobile_current_enabled or not _is_valid_index(cell_index):
+		return -1
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_board_index(local_index) == cell_index:
+			return local_index
+	return -1
+
+
+func _is_mobile_current_cell(cell_index: int) -> bool:
+	return (
+		mobile_current_enabled
+		and not mobile_current_resolved
+		and _is_valid_index(cell_index)
+		and mobile_current_covered_cells[cell_index]
+	)
+
+
+func _configure_drifting_mine(value: Variant) -> void:
+	drifting_mine_enabled = false
+	drifting_mine_start_position = Vector2i.ZERO
+	drifting_mine_position = Vector2i.ZERO
+	drifting_mine_end_column = 0
+	drifting_mine_step_seconds = 0.0
+	drifting_mine_group_index = -1
+	drifting_mine_resolved = false
+	drifting_mine_total_locks = 0
+	drifting_mine_locks_remaining = 0
+	drifting_mine_disarm_ready = false
+	_drifting_mine_last_disarm_column = -1
+	_drifting_mine_started = false
+	_drifting_mine_shifting = false
+	_drifting_mine_time_remaining = 0.0
+	_drifting_mine_warning_progress = 0.0
+	_drifting_mine_last_second = -1
+	_reset_array(drifting_mine_route_cells, false)
+	if topology != HEX_TOPOLOGY or not value is Dictionary:
+		return
+	var config: Dictionary = value
+	if config.is_empty():
+		return
+	drifting_mine_start_position = config.get("start_position", Vector2i(1, int(row_count / 2)))
+	drifting_mine_start_position.x = clampi(
+		drifting_mine_start_position.x,
+		0,
+		maxi(0, column_count - 1)
+	)
+	drifting_mine_start_position.y = clampi(
+		drifting_mine_start_position.y,
+		0,
+		maxi(0, row_count - 1)
+	)
+	drifting_mine_position = drifting_mine_start_position
+	drifting_mine_end_column = clampi(
+		int(config.get("end_column", column_count - 1)),
+		drifting_mine_start_position.x,
+		column_count - 1
+	)
+	drifting_mine_step_seconds = maxf(4.0, float(config.get("step_seconds", 20.0)))
+	drifting_mine_enabled = drifting_mine_end_column > drifting_mine_start_position.x
+	if not drifting_mine_enabled:
+		return
+	for column in range(drifting_mine_start_position.x, drifting_mine_end_column + 1):
+		var route_index := drifting_mine_start_position.y * column_count + column
+		drifting_mine_route_cells[route_index] = true
+	drifting_mine_group_index = pollution_node_count
+	pollution_node_count += 1
+	pollution_node_cell_count += 1
+	_set_drifting_mine_node(drifting_mine_position)
+
+
+func _set_drifting_mine_node(position: Vector2i) -> void:
+	if not drifting_mine_enabled:
+		return
+	var cell_index := position.y * column_count + position.x
+	if not _is_valid_index(cell_index):
+		return
+	pollution_nodes[cell_index] = true
+	pollution_node_groups[cell_index] = drifting_mine_group_index
+	pollution_nodes_cleansed[cell_index] = drifting_mine_resolved
+
+
+func _clear_drifting_mine_node(position: Vector2i) -> void:
+	if not drifting_mine_enabled:
+		return
+	var cell_index := position.y * column_count + position.x
+	if not _is_valid_index(cell_index):
+		return
+	if pollution_node_groups[cell_index] != drifting_mine_group_index:
+		return
+	pollution_nodes[cell_index] = false
+	pollution_node_groups[cell_index] = -1
+	pollution_nodes_cleansed[cell_index] = false
+
+
+func _drifting_mine_cell_index() -> int:
+	if not drifting_mine_enabled:
+		return -1
+	return drifting_mine_position.y * column_count + drifting_mine_position.x
+
+
+func _drifting_mine_field_distance(cell_index: int, center_index: int = -1) -> int:
+	if not drifting_mine_enabled or drifting_mine_resolved \
+			or not _is_valid_index(cell_index):
+		return -1
+	var actual_center := center_index
+	if not _is_valid_index(actual_center):
+		actual_center = _drifting_mine_cell_index()
+	if not _is_valid_index(actual_center):
+		return -1
+	if cell_index == actual_center:
+		return 0
+	var first_ring := _get_neighbors(actual_center)
+	if first_ring.has(cell_index):
+		return 1
+	for first_neighbor in first_ring:
+		if _get_neighbors(first_neighbor).has(cell_index):
+			return 2
+	return -1
+
+
+func _reset_drifting_mine_round() -> void:
+	if not drifting_mine_enabled:
+		return
+	_clear_drifting_mine_node(drifting_mine_position)
+	drifting_mine_position = drifting_mine_start_position
+	drifting_mine_resolved = false
+	drifting_mine_locks_remaining = drifting_mine_total_locks
+	drifting_mine_disarm_ready = false
+	_drifting_mine_last_disarm_column = -1
+	_drifting_mine_started = false
+	_drifting_mine_shifting = false
+	_drifting_mine_time_remaining = drifting_mine_step_seconds
+	_drifting_mine_warning_progress = 0.0
+	_drifting_mine_last_second = -1
+	if drifting_mine_group_index >= 0 \
+			and drifting_mine_group_index < pollution_node_group_cleansed.size():
+		pollution_node_group_cleansed[drifting_mine_group_index] = false
+	_set_drifting_mine_node(drifting_mine_position)
+	_refresh_board_processing()
 
 
 func _randomized_reef_segments(value: Variant) -> Array:
@@ -490,6 +952,12 @@ func _build_random_current_path(
 	)
 	var current_index := start_row * column_count + start_column
 	var path: Array = [Vector2i(start_column, start_row)]
+	var target_path_length := _random.randi_range(
+		4,
+		5 if level_number == 11 else 7
+	)
+	if boss_level:
+		target_path_length = _random.randi_range(4, 6)
 	var visited_cells: Dictionary = {current_index: true}
 	var first_side := -1
 	var maximum_steps := column_count * 3
@@ -540,6 +1008,8 @@ func _build_random_current_path(
 		if _has_reef_edge(current_index, next_index):
 			break
 		current_index = next_index
+		if path.size() >= target_path_length:
+			break
 		if current_index % column_count == target_column:
 			break
 	return path
@@ -671,32 +1141,50 @@ func _edge_crosses_reef_segment(
 	)
 
 
-func _crosses_reef_divider(first_index: int, second_index: int) -> bool:
-	var first_column := first_index % column_count
-	var second_column := second_index % column_count
-	for divider_column in reef_dividers:
-		if (
-			(first_column <= divider_column and second_column > divider_column)
-			or (second_column <= divider_column and first_column > divider_column)
-		):
+func _edge_belongs_to_reef_segment(first_index: int, second_index: int) -> bool:
+	for segment in reef_segments:
+		if _edge_crosses_reef_segment(first_index, second_index, segment):
 			return true
 	return false
 
 
+func _reef_segment_endpoint_pair(segment: Dictionary, at_start: bool) -> Array[int]:
+	var divider_column := int(segment["divider"])
+	var inside_row := int(segment["start_row"] if at_start else segment["end_row"])
+	var outside_row := inside_row + (-1 if at_start else 1)
+	if outside_row < 0 or outside_row >= row_count:
+		return []
+	var endpoint_columns: Array[int] = [divider_column, divider_column + 1]
+	for outside_column in endpoint_columns:
+		var outside_index := outside_row * column_count + outside_column
+		for record in _get_raw_hex_neighbor_records(outside_index):
+			var inside_index := int(record["index"])
+			if int(inside_index / column_count) != inside_row:
+				continue
+			var inside_column := inside_index % column_count
+			var crosses_divider := (
+				(outside_column <= divider_column and inside_column > divider_column)
+				or (inside_column <= divider_column and outside_column > divider_column)
+			)
+			if crosses_divider and not _has_reef_edge(outside_index, inside_index):
+				return [outside_index, inside_index]
+	return []
+
+
 func _reef_expansion_boundary_pairs() -> Array:
 	var boundary_pairs: Array = []
+	var seen_pairs: Dictionary = {}
+	var endpoint_flags: Array[bool] = [true, false]
 	for segment in reef_segments:
-		var divider_column := int(segment["divider"])
-		for boundary_row in [
-			int(segment["start_row"]) - 1,
-			int(segment["end_row"]) + 1,
-		]:
-			if boundary_row < 0 or boundary_row >= row_count:
+		for at_start in endpoint_flags:
+			var pair: Array[int] = _reef_segment_endpoint_pair(segment, at_start)
+			if pair.is_empty():
 				continue
-			boundary_pairs.append([
-				boundary_row * column_count + divider_column,
-				boundary_row * column_count + divider_column + 1,
-			])
+			var pair_key := _cell_pair_key(pair[0], pair[1])
+			if seen_pairs.has(pair_key):
+				continue
+			seen_pairs[pair_key] = true
+			boundary_pairs.append(pair)
 	return boundary_pairs
 
 
@@ -852,7 +1340,6 @@ func _commit_current_run(connected_run: Array[int]) -> void:
 	if connected_run.size() < 3 or not _current_run_has_turn(connected_run):
 		return
 	current_paths.append(connected_run.duplicate())
-	current_path_mine_totals.append(0)
 
 
 func _current_run_has_turn(connected_run: Array[int]) -> bool:
@@ -966,14 +1453,7 @@ func _cell_pair_key(first_index: int, second_index: int) -> String:
 
 
 func _has_reef_edge(first_index: int, second_index: int) -> bool:
-	if reef_edges.has(_cell_pair_key(first_index, second_index)):
-		return true
-	if topology != HEX_TOPOLOGY:
-		return false
-	for segment in reef_segments:
-		if _edge_crosses_reef_segment(first_index, second_index, segment):
-			return true
-	return false
+	return reef_edges.has(_cell_pair_key(first_index, second_index))
 
 
 func _cell_touches_reef(cell_index: int) -> bool:
@@ -1317,16 +1797,20 @@ func _configure_pollution_nodes(level: Dictionary) -> void:
 
 func new_game(refresh_dynamic_layout: bool = true) -> void:
 	_reset_pollution_animation()
-	var rebuild_cells := false
-	if (
+	_reset_current_drift()
+	var rebuilds_ocean_layout: bool = (
 		refresh_dynamic_layout
 		and topology == HEX_TOPOLOGY
 		and not _loaded_level_data.is_empty()
 		and (
 			not _loaded_level_data.get("reef_segments", []).is_empty()
 			or not _loaded_level_data.get("current_paths", []).is_empty()
+			or not _loaded_level_data.get("mobile_current", {}).is_empty()
 		)
-	):
+	)
+	_reset_mobile_current_round(not rebuilds_ocean_layout)
+	var rebuild_cells := false
+	if rebuilds_ocean_layout:
 		_configure_ocean_mechanics(_loaded_level_data)
 		rebuild_cells = true
 	if refresh_dynamic_layout and _random_pollution_node_count > 0:
@@ -1344,9 +1828,12 @@ func new_game(refresh_dynamic_layout: bool = true) -> void:
 			- core_count
 			- obstacle_count
 			- pollution_node_cell_count
+			+ (mobile_current_shape.size() if mobile_current_enabled else 0)
 		)
 		_clear_cells()
 		_create_cells()
+	if rebuilds_ocean_layout:
+		_reset_mobile_current_round()
 	game_state = GameState.READY
 	used_flags = 0
 	revealed_safe_count = 0
@@ -1356,6 +1843,9 @@ func new_game(refresh_dynamic_layout: bool = true) -> void:
 	scan_target_mode = false
 	guide_cell_index = -1
 	active_tidal_zone_index = 0
+	_hovered_current_path = -1
+	current_reveals_until_flow = current_flow_interval
+	_current_flow_started = false
 	for cell in cell_nodes:
 		cell.reset_transient_visuals()
 	_reset_array(mines, false)
@@ -1365,10 +1855,11 @@ func new_game(refresh_dynamic_layout: bool = true) -> void:
 	_reset_array(confirmed, false)
 	_reset_array(pollution_node_group_cleansed, false)
 	_reset_array(pollution_nodes_cleansed, false)
+	_reset_drifting_mine_round()
 	_reset_array(adjacent_counts, 0)
 	_place_random_cores()
 	_calculate_adjacent_counts()
-	_calculate_current_path_mine_totals()
+	_calculate_mobile_current_adjacent_counts()
 	_advance_tidal_zone_if_complete(false)
 	_refresh_current_endpoint_cells()
 	if first_move_guide_enabled:
@@ -1376,7 +1867,7 @@ func new_game(refresh_dynamic_layout: bool = true) -> void:
 	_reset_keyboard_cursor()
 	_refresh_all_cells()
 	state_changed.emit(game_state)
-	flags_changed.emit(used_flags, core_count)
+	flags_changed.emit(used_flags, get_runtime_mine_count())
 	pollution_nodes_changed.emit(
 		cleansed_pollution_node_count,
 		pollution_node_count
@@ -1392,13 +1883,17 @@ func set_opening_assist_mode(mode: int) -> void:
 func reveal_cell(cell_index: int) -> void:
 	if (
 		not interaction_enabled
+		or _current_drift_active
+		or _mobile_current_shifting
 		or not _is_valid_index(cell_index)
+		or _is_mobile_current_cell(cell_index)
 		or _is_tidal_cell_locked(cell_index)
 		or obstacles[cell_index]
 		or pollution_nodes[cell_index]
 	):
 		return
 	_sync_keyboard_cursor(cell_index)
+	board_interacted.emit()
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
 	if revealed[cell_index] or flagged[cell_index]:
@@ -1424,14 +1919,20 @@ func reveal_cell(cell_index: int) -> void:
 		return
 
 	var previous_revealed_count := revealed_safe_count
+	var previous_tidal_zone := active_tidal_zone_index
 	_reveal_area(cell_index)
 	_refresh_pollution_nodes()
 	_advance_tidal_zone_if_complete()
+	var newly_revealed := revealed_safe_count - previous_revealed_count
+	if active_tidal_zone_index == previous_tidal_zone:
+		_start_mobile_current_timer()
+		_start_drifting_mine_timer()
+	_check_mobile_current_solved()
 	var completed_game := _is_game_complete()
 	if completed_game:
 		game_state = GameState.WON
 	_refresh_all_cells()
-	reveal_completed.emit(cell_index, revealed_safe_count - previous_revealed_count)
+	reveal_completed.emit(cell_index, newly_revealed)
 	if completed_game:
 		state_changed.emit(game_state)
 
@@ -1439,6 +1940,8 @@ func reveal_cell(cell_index: int) -> void:
 func try_scan_cell(cell_index: int) -> bool:
 	if (
 		not interaction_enabled
+		or _current_drift_active
+		or _mobile_current_shifting
 		or not scan_target_mode
 		or game_state != GameState.PLAYING
 		or reveal_action_count <= 0
@@ -1446,32 +1949,44 @@ func try_scan_cell(cell_index: int) -> bool:
 	):
 		return false
 	_sync_keyboard_cursor(cell_index)
+	board_interacted.emit()
 	set_scan_target_mode(false)
 	move_count += 1
 
 	if mines[cell_index]:
+		_recalculate_used_flags()
+		if used_flags >= get_runtime_mine_count():
+			assert(
+				_remove_one_wrong_flag(),
+				"A full flag budget with an unflagged mine must contain a wrong flag."
+			)
 		flagged[cell_index] = true
 		confirmed[cell_index] = true
-		used_flags += 1
+		_recalculate_used_flags()
 		_refresh_pollution_nodes()
 		_advance_tidal_zone_if_complete()
+		_check_mobile_current_solved()
 		var mine_completed_game := _is_game_complete()
 		if mine_completed_game:
 			game_state = GameState.WON
-			_refresh_all_cells()
-		else:
-			_refresh_cell(cell_index)
+		_refresh_all_cells()
 		cell_nodes[cell_index].play_scan_result(ScanResult.MINE)
-		flags_changed.emit(used_flags, core_count)
+		flags_changed.emit(used_flags, get_runtime_mine_count())
 		scan_completed.emit(cell_index, ScanResult.MINE, 0)
 		if mine_completed_game:
 			state_changed.emit(game_state)
 		return true
 
 	var previous_revealed_count := revealed_safe_count
+	var previous_tidal_zone := active_tidal_zone_index
 	_reveal_area(cell_index)
 	_refresh_pollution_nodes()
 	_advance_tidal_zone_if_complete()
+	var newly_revealed := revealed_safe_count - previous_revealed_count
+	if active_tidal_zone_index == previous_tidal_zone:
+		_start_mobile_current_timer()
+		_start_drifting_mine_timer()
+	_check_mobile_current_solved()
 	var completed_game := _is_game_complete()
 	if completed_game:
 		game_state = GameState.WON
@@ -1480,7 +1995,7 @@ func try_scan_cell(cell_index: int) -> bool:
 	scan_completed.emit(
 		cell_index,
 		ScanResult.SAFE,
-		revealed_safe_count - previous_revealed_count
+		newly_revealed
 	)
 	if completed_game:
 		state_changed.emit(game_state)
@@ -1490,6 +2005,7 @@ func try_scan_cell(cell_index: int) -> bool:
 func is_scan_candidate(cell_index: int) -> bool:
 	return (
 		_is_valid_index(cell_index)
+		and not _is_mobile_current_cell(cell_index)
 		and not _is_tidal_cell_locked(cell_index)
 		and not obstacles[cell_index]
 		and not pollution_nodes[cell_index]
@@ -1513,40 +2029,55 @@ func set_scan_target_mode(enabled: bool) -> void:
 			scan_target_mode,
 			is_scan_candidate(cell_index)
 		)
+	for mobile_cell in _mobile_current_cells:
+		mobile_cell.set_scan_target_mode(scan_target_mode, false)
 
 
 func toggle_flag(cell_index: int) -> void:
 	if (
 		not interaction_enabled
+		or _current_drift_active
+		or _mobile_current_shifting
 		or not _is_valid_index(cell_index)
+		or _is_mobile_current_cell(cell_index)
 		or _is_tidal_cell_locked(cell_index)
 		or obstacles[cell_index]
 		or pollution_nodes[cell_index]
 	):
 		return
 	_sync_keyboard_cursor(cell_index)
+	board_interacted.emit()
 	if game_state == GameState.WON or game_state == GameState.LOST:
 		return
 	if revealed[cell_index] or confirmed[cell_index]:
 		return
+	if not flagged[cell_index] and mobile_current_enabled \
+			and mobile_current_route_cells[cell_index]:
+		current_path_feedback.emit("漂流航线底格不会生成静态水雷，无需标记")
+		return
+	_recalculate_used_flags()
 
 	var is_first_placement := false
 	if flagged[cell_index]:
 		flagged[cell_index] = false
 		used_flags -= 1
-	elif used_flags < core_count:
+	elif used_flags < get_runtime_mine_count():
 		flagged[cell_index] = true
 		used_flags += 1
 		is_first_placement = not ever_flagged[cell_index]
 		ever_flagged[cell_index] = true
 	else:
+		current_path_feedback.emit("标记已用完 · 若仍发现水雷，请检查是否有错误标记")
 		return
 
 	move_count += 1
+	_recalculate_used_flags()
 	_refresh_cell(cell_index)
-	flags_changed.emit(used_flags, core_count)
+	_refresh_current_endpoint_cells()
+	flags_changed.emit(used_flags, get_runtime_mine_count())
 	_refresh_pollution_nodes()
 	_advance_tidal_zone_if_complete()
+	_check_mobile_current_solved()
 	var completed_game := game_state == GameState.PLAYING and _is_game_complete()
 	if completed_game:
 		game_state = GameState.WON
@@ -1559,7 +2090,10 @@ func toggle_flag(cell_index: int) -> void:
 func chord_cell(cell_index: int) -> void:
 	if (
 		not interaction_enabled
+		or _current_drift_active
+		or _mobile_current_shifting
 		or not _is_valid_index(cell_index)
+		or _is_mobile_current_cell(cell_index)
 		or _is_tidal_cell_locked(cell_index)
 		or obstacles[cell_index]
 		or pollution_nodes[cell_index]
@@ -1567,12 +2101,21 @@ func chord_cell(cell_index: int) -> void:
 	):
 		return
 	_sync_keyboard_cursor(cell_index)
+	board_interacted.emit()
 	if not revealed[cell_index] or adjacent_counts[cell_index] <= 0:
 		return
 
 	var number_neighbors := _get_number_neighbors(cell_index)
 	var resolved_pollution_count := 0
 	for neighbor in number_neighbors:
+		var mobile_neighbor := _mobile_current_local_at_board(neighbor)
+		if mobile_neighbor >= 0:
+			if not mobile_current_flagged[mobile_neighbor]:
+				continue
+			if not mobile_current_mines[mobile_neighbor]:
+				return
+			resolved_pollution_count += 1
+			continue
 		if pollution_nodes[neighbor]:
 			resolved_pollution_count += 1
 			continue
@@ -1587,7 +2130,14 @@ func chord_cell(cell_index: int) -> void:
 
 	move_count += 1
 	var previous_revealed_count := revealed_safe_count
+	var previous_tidal_zone := active_tidal_zone_index
 	for neighbor in _get_neighbors(cell_index):
+		var mobile_neighbor := _mobile_current_local_at_board(neighbor)
+		if mobile_neighbor >= 0:
+			if not mobile_current_mines[mobile_neighbor] \
+					and not mobile_current_flagged[mobile_neighbor]:
+				_reveal_mobile_current_area(mobile_neighbor)
+			continue
 		if (
 			not mines[neighbor]
 			and not obstacles[neighbor]
@@ -1599,21 +2149,38 @@ func chord_cell(cell_index: int) -> void:
 
 	_refresh_pollution_nodes()
 	_advance_tidal_zone_if_complete()
+	var newly_revealed := revealed_safe_count - previous_revealed_count
+	if active_tidal_zone_index == previous_tidal_zone:
+		_start_mobile_current_timer()
+		_start_drifting_mine_timer()
+	_check_mobile_current_solved()
 	var completed_game := _is_game_complete()
 	if completed_game:
 		game_state = GameState.WON
-	if revealed_safe_count != previous_revealed_count:
+	if newly_revealed > 0:
 		_refresh_all_cells()
-		chord_completed.emit(cell_index, revealed_safe_count - previous_revealed_count)
+		chord_completed.emit(cell_index, newly_revealed)
 	if completed_game:
 		state_changed.emit(game_state)
 
 
 func set_interaction_enabled(enabled: bool) -> void:
+	for cell in cell_nodes:
+		cell.set_tooltips_enabled(enabled)
+	for mobile_cell in _mobile_current_cells:
+		mobile_cell.set_tooltips_enabled(enabled)
 	if interaction_enabled == enabled:
 		return
 	interaction_enabled = enabled
 	_refresh_all_cells()
+	_refresh_board_processing()
+
+
+func set_tooltips_enabled(enabled: bool) -> void:
+	for cell in cell_nodes:
+		cell.set_tooltips_enabled(enabled)
+	for mobile_cell in _mobile_current_cells:
+		mobile_cell.set_tooltips_enabled(enabled)
 
 
 func set_operation_mode(mode: int) -> void:
@@ -1636,6 +2203,7 @@ func _reset_keyboard_cursor() -> void:
 		_is_valid_index(guide_cell_index)
 		and not obstacles[guide_cell_index]
 		and not pollution_nodes[guide_cell_index]
+		and not _is_mobile_current_cell(guide_cell_index)
 		and not _is_tidal_cell_locked(guide_cell_index)
 	):
 		keyboard_cell_index = guide_cell_index
@@ -1645,6 +2213,7 @@ func _reset_keyboard_cursor() -> void:
 			if (
 				not obstacles[cell_index]
 				and not pollution_nodes[cell_index]
+				and not _is_mobile_current_cell(cell_index)
 				and not _is_tidal_cell_locked(cell_index)
 			):
 				keyboard_cell_index = cell_index
@@ -1670,6 +2239,7 @@ func _move_keyboard_cursor(movement: Vector2i) -> void:
 		if (
 			not obstacles[next_index]
 			and not pollution_nodes[next_index]
+			and not _is_mobile_current_cell(next_index)
 			and not _is_tidal_cell_locked(next_index)
 		):
 			_set_keyboard_cursor(next_index)
@@ -1717,6 +2287,54 @@ func get_neighbor_indices(cell_index: int) -> Array[int]:
 	return _get_neighbors(cell_index)
 
 
+func get_mechanic_guide_target_global_position(
+	guide_id: StringName
+) -> Vector2:
+	var target_index := -1
+	match guide_id:
+		&"land_obstacles":
+			for cell_index in cell_count:
+				if obstacles[cell_index]:
+					target_index = cell_index
+		&"pollution_nodes", &"ancient_tree_roots":
+			for cell_index in cell_count:
+				if pollution_nodes[cell_index]:
+					target_index = cell_index
+					break
+		&"hex_ocean_board":
+			var target_row := mini(1, row_count - 1)
+			target_index = target_row * column_count + int(column_count / 2)
+		&"coral_reefs":
+			if not reef_edges.is_empty():
+				var edge_parts := str(reef_edges.keys()[0]).split(":")
+				if edge_parts.size() == 2:
+					var first_index := int(edge_parts[0])
+					var second_index := int(edge_parts[1])
+					if _is_valid_index(first_index) and _is_valid_index(second_index):
+						return (
+							_cell_global_center(first_index)
+							+ _cell_global_center(second_index)
+						) * 0.5
+		&"drifting_mines":
+			if not _mobile_current_cells.is_empty() \
+					and is_instance_valid(_mobile_current_cells[0]):
+				return _mobile_current_cells[0].get_global_rect().get_center()
+		&"tidal_zones":
+			for cell_index in cell_count:
+				if tidal_zone_indices[cell_index] > active_tidal_zone_index:
+					target_index = cell_index
+					break
+	if _is_valid_index(target_index):
+		return _cell_global_center(target_index)
+	return get_global_rect().get_center()
+
+
+func _cell_global_center(cell_index: int) -> Vector2:
+	if not _is_valid_index(cell_index) or cell_index >= cell_nodes.size():
+		return get_global_rect().get_center()
+	return cell_nodes[cell_index].get_global_rect().get_center()
+
+
 func clear_guide_cell() -> void:
 	var previous_index := guide_cell_index
 	guide_cell_index = -1
@@ -1725,6 +2343,8 @@ func clear_guide_cell() -> void:
 
 
 func _clear_cells() -> void:
+	_clear_mobile_current_overlay()
+	_clear_drifting_mine_overlay()
 	for arrow in _current_arrow_nodes:
 		if is_instance_valid(arrow):
 			var arrow_parent := arrow.get_parent()
@@ -1792,10 +2412,113 @@ func _create_handmade_cells() -> void:
 		cell.custom_minimum_size = Vector2.ZERO
 		_handmade_surface.add_child(cell)
 	_create_current_line_nodes()
+	_create_mobile_current_overlay()
+	_create_drifting_mine_overlay()
 	_create_boss_tree_overlay()
 
 	_layout_cells()
 	call_deferred("_layout_cells")
+
+
+func _clear_mobile_current_overlay() -> void:
+	for cell in _mobile_current_cells:
+		if is_instance_valid(cell):
+			var parent := cell.get_parent()
+			if parent != null:
+				parent.remove_child(cell)
+			cell.free()
+	_mobile_current_cells.clear()
+	var overlay_nodes: Array[Node] = [
+		_mobile_current_water,
+		_mobile_current_boundary,
+		_mobile_current_boundary_label,
+	]
+	for overlay_node in overlay_nodes:
+		if not is_instance_valid(overlay_node):
+			continue
+		var parent: Node = overlay_node.get_parent()
+		if parent != null:
+			parent.remove_child(overlay_node)
+		overlay_node.free()
+	_mobile_current_water = null
+	_mobile_current_boundary = null
+	_mobile_current_boundary_label = null
+
+
+func _create_mobile_current_overlay() -> void:
+	if not mobile_current_enabled or not is_instance_valid(_handmade_surface):
+		return
+	_mobile_current_water = Polygon2D.new()
+	_mobile_current_water.name = "MobileCurrentWater"
+	_mobile_current_water.color = Color(0.34, 0.77, 0.88, 0.12)
+	_mobile_current_water.z_index = 9
+	_handmade_surface.add_child(_mobile_current_water)
+	for local_index in mobile_current_shape.size():
+		var cell := CELL_SCENE.instantiate() as MineCell
+		cell.name = "MobileCurrentCell%02d" % local_index
+		cell.focus_mode = Control.FOCUS_NONE
+		cell.z_index = 10
+		cell.setup(local_index, level_number, topology, false, 0, false, false)
+		cell.configure_mobile_current(true, true, 0.0, false)
+		cell.reveal_requested.connect(_reveal_mobile_current_cell)
+		cell.flag_requested.connect(_toggle_mobile_current_flag)
+		cell.chord_requested.connect(_chord_mobile_current_cell)
+		cell.scan_cancel_requested.connect(_on_cell_scan_cancel_requested)
+		_handmade_surface.add_child(cell)
+		_mobile_current_cells.append(cell)
+	_mobile_current_boundary = Line2D.new()
+	_mobile_current_boundary.name = "MobileCurrentFilterBoundary"
+	_mobile_current_boundary.width = 4.0
+	_mobile_current_boundary.default_color = Color(0.91, 0.62, 0.24, 0.92)
+	_mobile_current_boundary.antialiased = true
+	_mobile_current_boundary.z_index = 12
+	_handmade_surface.add_child(_mobile_current_boundary)
+	_mobile_current_boundary_label = Label.new()
+	_mobile_current_boundary_label.name = "MobileCurrentBoundaryLabel"
+	_mobile_current_boundary_label.text = "过滤边界"
+	_mobile_current_boundary_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_mobile_current_boundary_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mobile_current_boundary_label.z_index = 12
+	_mobile_current_boundary_label.add_theme_color_override("font_color", Color("8a5427"))
+	_mobile_current_boundary_label.add_theme_font_size_override("font_size", 13)
+	_handmade_surface.add_child(_mobile_current_boundary_label)
+
+
+func _clear_drifting_mine_overlay() -> void:
+	var overlay_nodes: Array[Node] = [
+		_drifting_mine_boundary,
+		_drifting_mine_boundary_label,
+	]
+	for overlay_node in overlay_nodes:
+		if not is_instance_valid(overlay_node):
+			continue
+		var parent: Node = overlay_node.get_parent()
+		if parent != null:
+			parent.remove_child(overlay_node)
+		overlay_node.free()
+	_drifting_mine_boundary = null
+	_drifting_mine_boundary_label = null
+
+
+func _create_drifting_mine_overlay() -> void:
+	if not drifting_mine_enabled or not is_instance_valid(_handmade_surface):
+		return
+	_drifting_mine_boundary = Line2D.new()
+	_drifting_mine_boundary.name = "DriftingMineFilterBoundary"
+	_drifting_mine_boundary.width = 4.0
+	_drifting_mine_boundary.default_color = Color(0.91, 0.62, 0.24, 0.92)
+	_drifting_mine_boundary.antialiased = true
+	_drifting_mine_boundary.z_index = 12
+	_handmade_surface.add_child(_drifting_mine_boundary)
+	_drifting_mine_boundary_label = Label.new()
+	_drifting_mine_boundary_label.name = "DriftingMineBoundaryLabel"
+	_drifting_mine_boundary_label.text = "过滤边界"
+	_drifting_mine_boundary_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_drifting_mine_boundary_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_drifting_mine_boundary_label.z_index = 12
+	_drifting_mine_boundary_label.add_theme_color_override("font_color", Color("8a5427"))
+	_drifting_mine_boundary_label.add_theme_font_size_override("font_size", 13)
+	_handmade_surface.add_child(_drifting_mine_boundary_label)
 
 
 func _create_reef_line_nodes() -> void:
@@ -1930,6 +2653,8 @@ func _make_cell(cell_index: int) -> MineCell:
 	cell.reveal_requested.connect(reveal_cell)
 	cell.flag_requested.connect(toggle_flag)
 	cell.chord_requested.connect(chord_cell)
+	cell.mouse_entered.connect(_on_current_endpoint_hover.bind(cell_index, true))
+	cell.mouse_exited.connect(_on_current_endpoint_hover.bind(cell_index, false))
 	cell.scan_requested.connect(_on_cell_scan_requested)
 	cell.scan_cancel_requested.connect(_on_cell_scan_cancel_requested)
 	cell_nodes.append(cell)
@@ -1946,7 +2671,7 @@ func _configure_cell_ocean_mechanics(cell: MineCell, cell_index: int) -> void:
 		var side := int(neighbor_record["side"])
 		if (
 			_has_reef_edge(cell_index, neighbor_index)
-			and not _crosses_reef_divider(cell_index, neighbor_index)
+			and not _edge_belongs_to_reef_segment(cell_index, neighbor_index)
 		):
 			reef_sides.append(side)
 		if (
@@ -1957,7 +2682,7 @@ func _configure_cell_ocean_mechanics(cell: MineCell, cell_index: int) -> void:
 
 	var current_in_sides: Array[int] = []
 	var current_out_sides: Array[int] = []
-	var endpoint_totals: Array[int] = []
+	var endpoint_countdowns: Array[int] = []
 	for path_index in current_paths.size():
 		var path: Array = current_paths[path_index]
 		for position_index in path.size():
@@ -1978,12 +2703,12 @@ func _configure_cell_ocean_mechanics(cell: MineCell, cell_index: int) -> void:
 				if outgoing_side >= 0 and not current_out_sides.has(outgoing_side):
 					current_out_sides.append(outgoing_side)
 			else:
-				endpoint_totals.append(current_path_mine_totals[path_index])
+				endpoint_countdowns.append(current_reveals_until_flow)
 	cell.configure_ocean_mechanics(
 		reef_sides,
 		current_in_sides,
 		current_out_sides,
-		endpoint_totals,
+		endpoint_countdowns,
 		tide_sides,
 		tidal_zone_indices[cell_index],
 		_is_tidal_cell_locked(cell_index)
@@ -1994,6 +2719,898 @@ func _refresh_current_endpoint_cells() -> void:
 	_refresh_current_line_visibility()
 	for cell_index in cell_nodes.size():
 		_configure_cell_ocean_mechanics(cell_nodes[cell_index], cell_index)
+
+
+func _reset_current_drift() -> void:
+	_current_drift_generation += 1
+	if _current_drift_tween != null and _current_drift_tween.is_valid():
+		_current_drift_tween.kill()
+	_current_drift_tween = null
+	_current_drift_active = false
+	_current_drift_progress = 0.0
+	for cell in cell_nodes:
+		cell.set_current_path_emphasized(false)
+	_refresh_current_line_visibility()
+
+
+func _reset_mobile_current_round(randomize_layout: bool = true) -> void:
+	if _mobile_current_shift_tween != null and _mobile_current_shift_tween.is_valid():
+		_mobile_current_shift_tween.kill()
+	_mobile_current_shift_tween = null
+	_mobile_current_started = false
+	_mobile_current_shifting = false
+	mobile_current_resolved = false
+	_mobile_current_time_remaining = mobile_current_step_seconds
+	_mobile_current_warning_progress = 0.0
+	_mobile_current_last_second = -1
+	_mobile_current_next_group = 0
+	_mobile_current_shift_group = -1
+	if mobile_current_enabled:
+		mobile_current_position = mobile_current_start_position
+		if randomize_layout:
+			_randomize_mobile_current_group_starts()
+		else:
+			for group_id in mini(
+				mobile_current_group_positions.size(),
+				mobile_current_group_start_positions.size()
+			):
+				mobile_current_group_positions[group_id] = (
+					mobile_current_group_start_positions[group_id]
+				)
+		mobile_current_group_resolved.fill(false)
+		_rebuild_mobile_current_masks()
+	for cell in _mobile_current_cells:
+		cell.z_index = 10
+	_refresh_mobile_current_cells()
+	_refresh_board_processing()
+
+
+func _refresh_mobile_current_cells() -> void:
+	if not mobile_current_enabled \
+			or _mobile_current_cells.size() != mobile_current_shape.size():
+		return
+	for local_index in mobile_current_shape.size():
+		var mobile_cell := _mobile_current_cells[local_index]
+		var group_id := _mobile_current_group_for_local(local_index)
+		var group_resolved := (
+			group_id >= 0
+			and group_id < mobile_current_group_resolved.size()
+			and mobile_current_group_resolved[group_id]
+		)
+		var group_warning := (
+			_mobile_current_warning_progress
+			if group_id == _mobile_current_next_group else 0.0
+		)
+		mobile_cell.visible = true
+		mobile_cell.mouse_filter = (
+			Control.MOUSE_FILTER_IGNORE
+			if group_resolved
+			else Control.MOUSE_FILTER_STOP
+		)
+		mobile_cell.configure_mobile_current(
+			true,
+			true,
+			group_warning,
+			group_resolved
+		)
+		mobile_cell.render_state(
+			mobile_current_revealed[local_index],
+			mobile_current_flagged[local_index],
+			game_state == GameState.LOST and mobile_current_mines[local_index],
+			mobile_current_adjacent_counts[local_index],
+			_mobile_current_shifting or mobile_current_resolved \
+				or game_state in [GameState.WON, GameState.LOST] \
+				or not interaction_enabled,
+			game_state == GameState.LOST \
+				and mobile_current_flagged[local_index] \
+				and not mobile_current_mines[local_index],
+			game_state == GameState.WON and mobile_current_mines[local_index],
+			false,
+			mobile_current_confirmed[local_index],
+			false,
+			false,
+			game_state == GameState.WON,
+			game_state == GameState.LOST,
+			false
+		)
+		mobile_cell.set_scan_target_mode(scan_target_mode, false)
+	_layout_mobile_current_overlay()
+
+
+func _reveal_mobile_current_cell(local_index: int) -> void:
+	if not mobile_current_enabled or mobile_current_resolved \
+			or _mobile_current_shifting or not interaction_enabled \
+			or local_index < 0 or local_index >= mobile_current_shape.size() \
+			or mobile_current_group_resolved[_mobile_current_group_for_local(local_index)] \
+			or game_state in [GameState.WON, GameState.LOST] \
+			or mobile_current_revealed[local_index] \
+			or mobile_current_flagged[local_index]:
+		return
+	board_interacted.emit()
+	move_count += 1
+	reveal_action_count += 1
+	if game_state == GameState.READY:
+		if mobile_current_mines[local_index]:
+			var clicked_group := _mobile_current_group_for_local(local_index)
+			for candidate in mobile_current_shape.size():
+				if candidate == local_index or mobile_current_mines[candidate] \
+						or mobile_current_flagged[candidate] \
+						or _mobile_current_group_for_local(candidate) != clicked_group:
+					continue
+				mobile_current_mines[local_index] = false
+				mobile_current_mines[candidate] = true
+				break
+		_calculate_adjacent_counts()
+		_calculate_mobile_current_adjacent_counts()
+		game_state = GameState.PLAYING
+		state_changed.emit(game_state)
+	if mobile_current_mines[local_index]:
+		game_state = GameState.LOST
+		_start_pollution_animation(_mobile_current_board_index(local_index))
+		_refresh_all_cells()
+		state_changed.emit(game_state)
+		reveal_completed.emit(_mobile_current_board_index(local_index), 0)
+		return
+	var previous_revealed_count := revealed_safe_count
+	_reveal_mobile_current_area(local_index)
+	var newly_revealed := revealed_safe_count - previous_revealed_count
+	_start_mobile_current_timer()
+	_check_mobile_current_solved()
+	var completed_game := _is_game_complete()
+	if completed_game:
+		game_state = GameState.WON
+	_refresh_all_cells()
+	reveal_completed.emit(_mobile_current_board_index(local_index), newly_revealed)
+	if completed_game:
+		state_changed.emit(game_state)
+
+
+func _reveal_mobile_current_area(start_local_index: int) -> void:
+	var pending: Array[int] = [start_local_index]
+	var queued: Dictionary = {start_local_index: true}
+	while not pending.is_empty():
+		var local_index: int = pending.pop_front()
+		if mobile_current_revealed[local_index] or mobile_current_flagged[local_index] \
+				or mobile_current_mines[local_index]:
+			continue
+		mobile_current_revealed[local_index] = true
+		revealed_safe_count += 1
+		if mobile_current_adjacent_counts[local_index] > 0:
+			continue
+		var board_index := _mobile_current_board_index(local_index)
+		for neighbor in _get_neighbors(board_index):
+			var neighbor_local := _mobile_current_local_at_board(neighbor)
+			if neighbor_local < 0 or queued.has(neighbor_local) \
+					or mobile_current_mines[neighbor_local] \
+					or mobile_current_flagged[neighbor_local]:
+				continue
+			queued[neighbor_local] = true
+			pending.append(neighbor_local)
+
+
+func _toggle_mobile_current_flag(local_index: int) -> void:
+	if not mobile_current_enabled or mobile_current_resolved \
+			or _mobile_current_shifting or not interaction_enabled \
+			or local_index < 0 or local_index >= mobile_current_shape.size() \
+			or mobile_current_group_resolved[_mobile_current_group_for_local(local_index)] \
+			or game_state in [GameState.WON, GameState.LOST] \
+			or mobile_current_revealed[local_index] \
+			or mobile_current_confirmed[local_index]:
+		return
+	board_interacted.emit()
+	_recalculate_used_flags()
+	var is_first_placement := false
+	if mobile_current_flagged[local_index]:
+		mobile_current_flagged[local_index] = false
+		used_flags -= 1
+	elif used_flags < get_runtime_mine_count():
+		mobile_current_flagged[local_index] = true
+		used_flags += 1
+		is_first_placement = not mobile_current_ever_flagged[local_index]
+		mobile_current_ever_flagged[local_index] = true
+	else:
+		current_path_feedback.emit("标记已用完 · 若仍发现水雷，请检查是否有错误标记")
+		return
+	move_count += 1
+	_recalculate_used_flags()
+	_refresh_all_cells()
+	flags_changed.emit(used_flags, get_runtime_mine_count())
+	_check_mobile_current_solved()
+	var completed_game := game_state == GameState.PLAYING and _is_game_complete()
+	if completed_game:
+		game_state = GameState.WON
+		_refresh_all_cells()
+	flag_completed.emit(
+		_mobile_current_board_index(local_index),
+		mobile_current_flagged[local_index],
+		is_first_placement
+	)
+	if completed_game:
+		state_changed.emit(game_state)
+
+
+func _chord_mobile_current_cell(local_index: int) -> void:
+	if not mobile_current_enabled or mobile_current_resolved \
+			or _mobile_current_shifting or not interaction_enabled \
+			or game_state != GameState.PLAYING \
+			or local_index < 0 or local_index >= mobile_current_shape.size() \
+			or mobile_current_group_resolved[_mobile_current_group_for_local(local_index)] \
+			or not mobile_current_revealed[local_index] \
+			or mobile_current_adjacent_counts[local_index] <= 0:
+		return
+	board_interacted.emit()
+	var board_index := _mobile_current_board_index(local_index)
+	var neighbors := _get_number_neighbors(board_index)
+	var resolved_count := 0
+	for neighbor in neighbors:
+		var neighbor_local := _mobile_current_local_at_board(neighbor)
+		if neighbor_local < 0 or not mobile_current_flagged[neighbor_local]:
+			continue
+		if not mobile_current_mines[neighbor_local]:
+			return
+		resolved_count += 1
+	if resolved_count != mobile_current_adjacent_counts[local_index]:
+		return
+	move_count += 1
+	var previous_revealed_count := revealed_safe_count
+	for neighbor in neighbors:
+		var neighbor_local := _mobile_current_local_at_board(neighbor)
+		if neighbor_local >= 0 \
+				and not mobile_current_mines[neighbor_local] \
+				and not mobile_current_flagged[neighbor_local]:
+			_reveal_mobile_current_area(neighbor_local)
+	var newly_revealed := revealed_safe_count - previous_revealed_count
+	_start_mobile_current_timer()
+	_check_mobile_current_solved()
+	var completed_game := _is_game_complete()
+	if completed_game:
+		game_state = GameState.WON
+	_refresh_all_cells()
+	if newly_revealed > 0:
+		chord_completed.emit(board_index, newly_revealed)
+	if completed_game:
+		state_changed.emit(game_state)
+
+
+func _start_drifting_mine_timer() -> void:
+	if not drifting_mine_enabled or drifting_mine_resolved \
+			or _drifting_mine_started or game_state != GameState.PLAYING:
+		return
+	_drifting_mine_started = true
+	_drifting_mine_time_remaining = drifting_mine_step_seconds
+	_drifting_mine_last_second = ceili(_drifting_mine_time_remaining)
+	current_path_feedback.emit(
+		"漂流污染源启动 · %d秒后向过滤边界移动 · 剩余%d格"
+		% [_drifting_mine_last_second, drifting_mine_end_column - drifting_mine_position.x]
+	)
+	_refresh_board_processing()
+
+
+func _advance_drifting_mine_timer(delta: float) -> void:
+	if not drifting_mine_enabled or not _drifting_mine_started \
+			or drifting_mine_resolved or _drifting_mine_shifting \
+			or game_state != GameState.PLAYING or not interaction_enabled:
+		return
+	_drifting_mine_time_remaining = maxf(
+		0.0,
+		_drifting_mine_time_remaining - maxf(0.0, delta)
+	)
+	var next_warning := clampf(
+		(3.0 - _drifting_mine_time_remaining) / 3.0,
+		0.0,
+		1.0
+	)
+	if not is_equal_approx(next_warning, _drifting_mine_warning_progress):
+		_drifting_mine_warning_progress = next_warning
+		var mine_index := _drifting_mine_cell_index()
+		if _is_valid_index(mine_index):
+			_refresh_cell(mine_index)
+	var displayed_second := ceili(_drifting_mine_time_remaining)
+	if displayed_second != _drifting_mine_last_second and displayed_second <= 3 \
+			and displayed_second > 0:
+		_drifting_mine_last_second = displayed_second
+		current_path_feedback.emit("漂流污染源%d秒后移动" % displayed_second)
+	if _drifting_mine_time_remaining <= 0.0:
+		_shift_drifting_mine()
+
+
+func _drifting_mine_unresolved_neighbor_count(position: Vector2i) -> int:
+	var center_index := position.y * column_count + position.x
+	if not _is_valid_index(center_index):
+		return -1
+	var count := 0
+	for cell_index in cell_count:
+		var field_distance := _drifting_mine_field_distance(cell_index, center_index)
+		if field_distance < 1 or field_distance > 2 \
+				or obstacles[cell_index] or pollution_nodes[cell_index]:
+			continue
+		if mines[cell_index]:
+			if not flagged[cell_index]:
+				count += 1
+		elif not revealed[cell_index]:
+			count += 1
+	return count
+
+
+func _choose_drifting_mine_next_position() -> Vector2i:
+	var next_column := drifting_mine_position.x + 1
+	var best_position := Vector2i(next_column, drifting_mine_position.y)
+	var best_score := -1
+	var minimum_row := maxi(0, drifting_mine_start_position.y - 1)
+	var maximum_row := mini(row_count - 1, drifting_mine_start_position.y + 1)
+	for row in range(minimum_row, maximum_row + 1):
+		var candidate := Vector2i(next_column, row)
+		var candidate_index := candidate.y * column_count + candidate.x
+		if not _is_valid_index(candidate_index) or obstacles[candidate_index] \
+				or pollution_nodes[candidate_index] or mines[candidate_index]:
+			continue
+		var score := _drifting_mine_unresolved_neighbor_count(candidate)
+		if score > best_score \
+				or (score == best_score \
+				and absi(row - drifting_mine_position.y) \
+				< absi(best_position.y - drifting_mine_position.y)):
+			best_score = score
+			best_position = candidate
+	return best_position
+
+
+func _shift_drifting_mine() -> void:
+	if not drifting_mine_enabled or drifting_mine_resolved \
+			or game_state != GameState.PLAYING:
+		return
+	if drifting_mine_position.x + 1 >= drifting_mine_end_column:
+		_fail_drifting_mine()
+		return
+	_drifting_mine_shifting = true
+	drifting_mine_disarm_ready = false
+	var previous_counts: Array[int] = adjacent_counts.duplicate()
+	var previous_index := _drifting_mine_cell_index()
+	_clear_drifting_mine_node(drifting_mine_position)
+	drifting_mine_position = _choose_drifting_mine_next_position()
+	_set_drifting_mine_node(drifting_mine_position)
+	_calculate_adjacent_counts()
+	_drifting_mine_shifting = false
+	_drifting_mine_time_remaining = drifting_mine_step_seconds
+	_drifting_mine_warning_progress = 0.0
+	_drifting_mine_last_second = ceili(_drifting_mine_time_remaining)
+	_refresh_all_cells()
+	for cell_index in cell_count:
+		if revealed[cell_index] and previous_counts[cell_index] != adjacent_counts[cell_index]:
+			cell_nodes[cell_index].play_current_number_update()
+	_refresh_pollution_nodes()
+	if not drifting_mine_resolved:
+		current_path_feedback.emit(
+			"污染源已随洋流移动 · 全盘数字已更新 · 剩余%d格"
+			% (drifting_mine_end_column - drifting_mine_position.x)
+		)
+	if _is_valid_index(previous_index):
+		_refresh_cell(previous_index)
+	_refresh_board_processing()
+
+
+func _resolve_drifting_mine() -> void:
+	if not drifting_mine_enabled or drifting_mine_resolved:
+		return
+	drifting_mine_resolved = true
+	drifting_mine_disarm_ready = false
+	drifting_mine_locks_remaining = 0
+	_drifting_mine_started = false
+	_drifting_mine_warning_progress = 0.0
+	if drifting_mine_group_index >= 0 \
+			and not pollution_node_group_cleansed[drifting_mine_group_index]:
+		pollution_node_group_cleansed[drifting_mine_group_index] = true
+		cleansed_pollution_node_count += 1
+	var mine_index := _drifting_mine_cell_index()
+	if _is_valid_index(mine_index):
+		pollution_nodes_cleansed[mine_index] = true
+	var previous_counts: Array[int] = adjacent_counts.duplicate()
+	_calculate_adjacent_counts()
+	var completed_game := _is_game_complete()
+	if completed_game:
+		game_state = GameState.WON
+	_refresh_all_cells()
+	for cell_index in cell_count:
+		if revealed[cell_index] and previous_counts[cell_index] != adjacent_counts[cell_index]:
+			cell_nodes[cell_index].play_current_number_update()
+	pollution_nodes_changed.emit(
+		cleansed_pollution_node_count,
+		pollution_node_count
+	)
+	drifting_mine_state_changed.emit(true)
+	current_path_feedback.emit("漂流污染源已净化 · 停止向过滤边界漂移")
+	if completed_game:
+		state_changed.emit(game_state)
+	_refresh_board_processing()
+
+
+func _fail_drifting_mine() -> void:
+	if not drifting_mine_enabled or drifting_mine_resolved:
+		return
+	_drifting_mine_started = false
+	_drifting_mine_warning_progress = 1.0
+	game_state = GameState.LOST
+	_start_pollution_animation(_drifting_mine_cell_index())
+	_refresh_all_cells()
+	state_changed.emit(game_state)
+	current_path_feedback.emit("漂流污染源未及时净化并流出边界 · 本次净化失败")
+	_refresh_board_processing()
+
+
+func _start_mobile_current_timer() -> void:
+	if not mobile_current_enabled or mobile_current_resolved \
+			or _mobile_current_started or game_state != GameState.PLAYING:
+		return
+	_mobile_current_started = true
+	_mobile_current_next_group = _next_unresolved_mobile_current_group(_mobile_current_next_group)
+	_mobile_current_time_remaining = mobile_current_step_seconds
+	_mobile_current_last_second = ceili(_mobile_current_time_remaining)
+	current_path_feedback.emit(
+		"%d组漂流物启动 · 第%d组%d秒后移动 · 距离边界%d格"
+		% [
+			mobile_current_group_count,
+			_mobile_current_next_group + 1,
+			_mobile_current_last_second,
+			_mobile_current_distance_to_boundary(_mobile_current_next_group),
+		]
+	)
+	_refresh_board_processing()
+
+
+func _advance_mobile_current_timer(delta: float) -> void:
+	if not mobile_current_enabled or not _mobile_current_started \
+			or mobile_current_resolved or _mobile_current_shifting \
+			or game_state != GameState.PLAYING or not interaction_enabled:
+		return
+	_mobile_current_time_remaining = maxf(
+		0.0,
+		_mobile_current_time_remaining - maxf(0.0, delta)
+	)
+	var next_warning := clampf(
+		(3.0 - _mobile_current_time_remaining) / 3.0,
+		0.0,
+		1.0
+	)
+	if not is_equal_approx(next_warning, _mobile_current_warning_progress):
+		_mobile_current_warning_progress = next_warning
+		_refresh_mobile_current_cells()
+	var seconds_remaining := ceili(_mobile_current_time_remaining)
+	if seconds_remaining != _mobile_current_last_second:
+		_mobile_current_last_second = seconds_remaining
+		current_path_feedback.emit(
+			"第%d组漂流物 · %d秒后移动 · 距离边界%d格"
+			% [
+				_mobile_current_next_group + 1,
+				seconds_remaining,
+				_mobile_current_distance_to_boundary(_mobile_current_next_group),
+			]
+		)
+	if _mobile_current_time_remaining <= 0.0:
+		_begin_mobile_current_shift()
+
+
+func _next_unresolved_mobile_current_group(start_group: int) -> int:
+	if mobile_current_group_count <= 0:
+		return -1
+	for offset in mobile_current_group_count:
+		var group_id := posmod(start_group + offset, mobile_current_group_count)
+		if not mobile_current_group_resolved[group_id]:
+			return group_id
+	return -1
+
+
+func _mobile_current_distance_to_boundary(group_id: int = -1) -> int:
+	if not mobile_current_enabled:
+		return 0
+	var target_group := group_id
+	if target_group < 0:
+		target_group = _next_unresolved_mobile_current_group(_mobile_current_next_group)
+	if target_group < 0 or target_group >= mobile_current_group_positions.size():
+		return 0
+	var maximum_offset_x := 0
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) == target_group:
+			maximum_offset_x = maxi(maximum_offset_x, mobile_current_shape[local_index].x)
+	return maxi(
+		1,
+		mobile_current_end_column
+		- (mobile_current_group_positions[target_group].x + maximum_offset_x)
+		+ 1
+	)
+
+
+func _begin_mobile_current_shift() -> void:
+	if not mobile_current_enabled or _mobile_current_shifting \
+			or mobile_current_resolved or game_state != GameState.PLAYING:
+		return
+	var group_id := _next_unresolved_mobile_current_group(_mobile_current_next_group)
+	if group_id < 0:
+		_resolve_mobile_current_early()
+		return
+	_mobile_current_next_group = group_id
+	var maximum_offset_x := 0
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) == group_id:
+			maximum_offset_x = maxi(maximum_offset_x, mobile_current_shape[local_index].x)
+	if mobile_current_group_positions[group_id].x + maximum_offset_x >= mobile_current_end_column:
+		_resolve_mobile_current_boundary(group_id)
+		return
+	_mobile_current_shifting = true
+	_mobile_current_shift_group = group_id
+	_mobile_current_warning_progress = 1.0
+	_refresh_mobile_current_cells()
+	_refresh_all_cells()
+	current_path_feedback.emit("第%d组漂流物正在向右移动" % (group_id + 1))
+	_mobile_current_shift_tween = create_tween().set_parallel(true)
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) != group_id:
+			continue
+		var target_coordinate := (
+			mobile_current_group_positions[group_id]
+			+ mobile_current_shape[local_index]
+			+ Vector2i(1, 0)
+		)
+		var target_index := target_coordinate.y * column_count + target_coordinate.x
+		var mobile_cell := _mobile_current_cells[local_index]
+		var target_position := cell_nodes[target_index].position
+		_mobile_current_shift_tween.tween_property(
+			mobile_cell,
+			"position",
+			target_position,
+			0.82
+		).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_mobile_current_shift_tween.chain().tween_callback(_complete_mobile_current_shift)
+	_refresh_board_processing()
+
+
+func _complete_mobile_current_shift() -> void:
+	if not mobile_current_enabled or not _mobile_current_shifting \
+			or _mobile_current_shift_group < 0:
+		return
+	var shifted_group := _mobile_current_shift_group
+	var previous_counts: Array[int] = adjacent_counts.duplicate()
+	var previous_mobile_counts: Array[int] = mobile_current_adjacent_counts.duplicate()
+	mobile_current_group_positions[shifted_group].x += 1
+	_clear_base_flags_under_mobile_group(shifted_group)
+	_rebuild_mobile_current_masks()
+	_calculate_adjacent_counts()
+	_calculate_mobile_current_adjacent_counts()
+	_mobile_current_shifting = false
+	_mobile_current_shift_group = -1
+	_mobile_current_next_group = _next_unresolved_mobile_current_group(shifted_group + 1)
+	_mobile_current_time_remaining = mobile_current_step_seconds
+	_mobile_current_warning_progress = 0.0
+	_mobile_current_last_second = ceili(_mobile_current_time_remaining)
+	_layout_mobile_current_overlay()
+	_refresh_all_cells()
+	for cell_index in cell_count:
+		if revealed[cell_index] and previous_counts[cell_index] != adjacent_counts[cell_index]:
+			cell_nodes[cell_index].play_current_number_update()
+	for local_index in mobile_current_shape.size():
+		if mobile_current_revealed[local_index] \
+				and previous_mobile_counts[local_index] != mobile_current_adjacent_counts[local_index]:
+			_mobile_current_cells[local_index].play_current_number_update()
+	if _is_mobile_current_solved():
+		_resolve_mobile_current_early()
+	else:
+		current_path_feedback.emit(
+			"第%d组已移动 · 全盘数字已更新 · 距离边界%d格"
+			% [shifted_group + 1, _mobile_current_distance_to_boundary(shifted_group)]
+		)
+	_refresh_board_processing()
+
+
+func _settle_mobile_current_group(group_id: int) -> void:
+	_clear_base_flags_under_mobile_group(group_id)
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) != group_id:
+			continue
+		var board_index := _mobile_current_board_index(local_index)
+		if not _is_valid_index(board_index) or revealed[board_index] \
+				or mines[board_index] or obstacles[board_index] \
+				or pollution_nodes[board_index]:
+			continue
+		revealed[board_index] = true
+		revealed_safe_count += 1
+
+
+func _is_mobile_current_group_solved(group_id: int) -> bool:
+	if group_id < 0 or group_id >= mobile_current_group_count:
+		return false
+	if mobile_current_group_resolved[group_id]:
+		return true
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) != group_id:
+			continue
+		if mobile_current_mines[local_index]:
+			if not mobile_current_flagged[local_index]:
+				return false
+		elif not mobile_current_revealed[local_index]:
+			return false
+	return true
+
+
+func _is_mobile_current_solved() -> bool:
+	if not mobile_current_enabled:
+		return false
+	for group_id in mobile_current_group_count:
+		if not _is_mobile_current_group_solved(group_id):
+			return false
+	return true
+
+
+func _resolve_mobile_current_group_early(group_id: int) -> void:
+	if group_id < 0 or group_id >= mobile_current_group_count \
+			or mobile_current_group_resolved[group_id]:
+		return
+	_settle_mobile_current_group(group_id)
+	mobile_current_group_resolved[group_id] = true
+	_rebuild_mobile_current_masks()
+	_calculate_adjacent_counts()
+	if group_id == _mobile_current_next_group \
+			or _mobile_current_next_group < 0 \
+			or mobile_current_group_resolved[_mobile_current_next_group]:
+		_mobile_current_next_group = _next_unresolved_mobile_current_group(group_id + 1)
+		_mobile_current_time_remaining = mobile_current_step_seconds
+		_mobile_current_warning_progress = 0.0
+		_mobile_current_last_second = ceili(_mobile_current_time_remaining)
+	_refresh_mobile_current_cells()
+	_refresh_all_cells()
+	current_path_feedback.emit("第%d组真水雷已拦截 · 其余漂流组继续移动" % (group_id + 1))
+
+
+func _check_mobile_current_solved() -> void:
+	if not mobile_current_enabled or not _mobile_current_started \
+			or mobile_current_resolved or _mobile_current_shifting:
+		return
+	for group_id in mobile_current_group_count:
+		if not mobile_current_group_resolved[group_id] \
+				and _is_mobile_current_group_solved(group_id):
+			_resolve_mobile_current_group_early(group_id)
+	if _is_mobile_current_solved():
+		_resolve_mobile_current_early()
+
+
+func _resolve_mobile_current_early() -> void:
+	mobile_current_resolved = true
+	_mobile_current_started = false
+	_mobile_current_warning_progress = 0.0
+	for group_id in mobile_current_group_count:
+		mobile_current_group_resolved[group_id] = true
+	_rebuild_mobile_current_masks()
+	_calculate_adjacent_counts()
+	_refresh_mobile_current_cells()
+	_refresh_all_cells()
+	mobile_current_state_changed.emit(true)
+	current_path_feedback.emit("%d组真水雷已全部拦截 · 漂流停止" % mobile_current_group_count)
+	_refresh_board_processing()
+
+
+func _resolve_mobile_current_boundary(group_id: int) -> void:
+	var escaped_core := -1
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) == group_id \
+				and mobile_current_mines[local_index] \
+				and not mobile_current_flagged[local_index]:
+			escaped_core = local_index
+			break
+	_mobile_current_warning_progress = 0.0
+	if escaped_core >= 0:
+		_mobile_current_started = false
+		game_state = GameState.LOST
+		_start_pollution_animation(_mobile_current_board_index(escaped_core))
+		_refresh_all_cells()
+		state_changed.emit(game_state)
+		current_path_feedback.emit(
+			"第%d组真水雷未标记便流出过滤边界 · 本次净化失败" % (group_id + 1)
+		)
+		return
+	var removed_wrong_flags := false
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) != group_id \
+				or mobile_current_mines[local_index] or mobile_current_revealed[local_index]:
+			continue
+		if mobile_current_flagged[local_index]:
+			mobile_current_flagged[local_index] = false
+			mobile_current_confirmed[local_index] = false
+			used_flags -= 1
+			removed_wrong_flags = true
+		mobile_current_revealed[local_index] = true
+		revealed_safe_count += 1
+	if removed_wrong_flags:
+		_recalculate_used_flags()
+		flags_changed.emit(used_flags, get_runtime_mine_count())
+	_settle_mobile_current_group(group_id)
+	mobile_current_group_resolved[group_id] = true
+	_rebuild_mobile_current_masks()
+	_calculate_adjacent_counts()
+	_mobile_current_next_group = _next_unresolved_mobile_current_group(group_id + 1)
+	_mobile_current_time_remaining = mobile_current_step_seconds
+	_mobile_current_last_second = ceili(_mobile_current_time_remaining)
+	if _is_mobile_current_solved():
+		mobile_current_resolved = true
+		_mobile_current_started = false
+	var completed_game := _is_game_complete()
+	if completed_game:
+		game_state = GameState.WON
+	_refresh_all_cells()
+	if mobile_current_resolved:
+		mobile_current_state_changed.emit(true)
+		current_path_feedback.emit(
+			"%d组漂流物通过过滤边界 · 真水雷均已安全拦截"
+			% mobile_current_group_count
+		)
+	else:
+		current_path_feedback.emit("第%d组已安全拦截 · 其余漂流组继续" % (group_id + 1))
+	if completed_game:
+		state_changed.emit(game_state)
+	_refresh_board_processing()
+
+
+func _register_current_reveals(newly_revealed: int) -> void:
+	if newly_revealed <= 0 or current_flow_interval <= 0 \
+			or current_paths.is_empty() or game_state != GameState.PLAYING:
+		return
+	if not _current_flow_started:
+		_current_flow_started = true
+		current_reveals_until_flow = current_flow_interval
+		current_path_feedback.emit(
+			"洋流已激活 · 再净化%d格，未锚定污染将向下游漂移"
+			% current_reveals_until_flow
+		)
+		_refresh_current_endpoint_cells()
+		return
+	current_reveals_until_flow -= newly_revealed
+	if current_reveals_until_flow <= 0:
+		while current_reveals_until_flow <= 0:
+			current_reveals_until_flow += current_flow_interval
+		_start_current_drift()
+	else:
+		current_path_feedback.emit(
+			"洋流倒计时 · 再净化%d格，未锚定污染将向下游漂移"
+			% current_reveals_until_flow
+		)
+	_refresh_current_endpoint_cells()
+
+
+func _start_current_drift() -> void:
+	if _current_drift_active or game_state != GameState.PLAYING:
+		return
+	var moves := _build_current_drift_moves()
+	_current_drift_active = true
+	_current_drift_progress = 0.0
+	_current_drift_generation += 1
+	var generation := _current_drift_generation
+	for path_value in current_paths:
+		for cell_value in path_value:
+			var cell_index := int(cell_value)
+			if _is_valid_index(cell_index) and not _is_tidal_cell_locked(cell_index):
+				cell_nodes[cell_index].set_current_path_emphasized(true)
+	_refresh_all_cells()
+	_refresh_current_line_visibility()
+	current_path_feedback.emit("洋流涌动 · 未锚定污染正在向下游漂移")
+	_current_drift_tween = create_tween()
+	_current_drift_tween.tween_method(
+		_set_current_drift_progress,
+		0.0,
+		1.0,
+		OCEAN_CURRENT_FLOW_DURATION
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_current_drift_tween.tween_callback(_apply_current_drift.bind(moves, generation))
+
+
+func _build_current_drift_moves() -> Array[Vector2i]:
+	var moves: Array[Vector2i] = []
+	var working_mines: Array[bool] = mines.duplicate()
+	var handled_cells: Dictionary = {}
+	for path_value in current_paths:
+		var segment: Array[int] = []
+		for cell_value in path_value:
+			var cell_index := int(cell_value)
+			if not _is_valid_index(cell_index) or handled_cells.has(cell_index):
+				_append_current_segment_moves(segment, working_mines, moves)
+				segment.clear()
+				continue
+			handled_cells[cell_index] = true
+			if _is_tidal_cell_locked(cell_index) or flagged[cell_index] \
+					or obstacles[cell_index] or pollution_nodes[cell_index]:
+				_append_current_segment_moves(segment, working_mines, moves)
+				segment.clear()
+				continue
+			if not revealed[cell_index]:
+				segment.append(cell_index)
+		_append_current_segment_moves(segment, working_mines, moves)
+	return moves
+
+
+func _append_current_segment_moves(
+	segment: Array[int],
+	working_mines: Array[bool],
+	moves: Array[Vector2i]
+) -> void:
+	if segment.size() < 2:
+		return
+	for position_index in range(segment.size() - 2, -1, -1):
+		var source := segment[position_index]
+		var target := segment[position_index + 1]
+		if not working_mines[source] or working_mines[target]:
+			continue
+		working_mines[source] = false
+		working_mines[target] = true
+		moves.append(Vector2i(source, target))
+
+
+func _set_current_drift_progress(value: float) -> void:
+	_current_drift_progress = clampf(value, 0.0, 1.0)
+	_refresh_current_line_visibility()
+
+
+func _apply_current_drift(moves: Array[Vector2i], generation: int) -> void:
+	if generation != _current_drift_generation or not _current_drift_active:
+		return
+	var previous_counts: Array[int] = adjacent_counts.duplicate()
+	var moved_count := 0
+	for move in moves:
+		var source := move.x
+		var target := move.y
+		if not mines[source] or mines[target] or revealed[target] or flagged[target]:
+			continue
+		mines[source] = false
+		mines[target] = true
+		moved_count += 1
+	_calculate_adjacent_counts()
+	_refresh_pollution_nodes()
+	_advance_tidal_zone_if_complete()
+	for cell_index in cell_count:
+		if revealed[cell_index] and previous_counts[cell_index] != adjacent_counts[cell_index]:
+			cell_nodes[cell_index].play_current_number_update()
+	_refresh_all_cells()
+	_refresh_current_endpoint_cells()
+	if moved_count > 0:
+		current_path_feedback.emit(
+			"洋流已推动%d个污染核心 · 数字已重新计算 · 距下次%d格"
+			% [moved_count, current_reveals_until_flow]
+		)
+	else:
+		current_path_feedback.emit(
+			"洋流涌动完成 · 污染已被标记锚定 · 距下次%d格"
+			% current_reveals_until_flow
+		)
+	_current_drift_tween = create_tween()
+	_current_drift_tween.tween_interval(0.46)
+	_current_drift_tween.tween_callback(_finish_current_drift.bind(generation))
+
+
+func _finish_current_drift(generation: int) -> void:
+	if generation != _current_drift_generation:
+		return
+	_current_drift_active = false
+	_current_drift_progress = 0.0
+	for cell in cell_nodes:
+		cell.set_current_path_emphasized(false)
+	if _hovered_current_path >= 0 and _hovered_current_path < current_paths.size():
+		for cell_value in current_paths[_hovered_current_path]:
+			cell_nodes[int(cell_value)].set_current_path_emphasized(true)
+	_refresh_current_line_visibility()
+	_refresh_all_cells()
+
+
+func _on_current_endpoint_hover(cell_index: int, hovered: bool) -> void:
+	if _current_drift_active:
+		return
+	var next_path := -1
+	if hovered:
+		for path_index in range(current_paths.size()):
+			var path: Array = current_paths[path_index]
+			if not path.is_empty() and int(path.back()) == cell_index:
+				next_path = path_index
+				break
+	_hovered_current_path = next_path
+	for cell in cell_nodes:
+		cell.set_current_path_emphasized(false)
+	if _hovered_current_path >= 0:
+		for cell_value in current_paths[_hovered_current_path]:
+			cell_nodes[int(cell_value)].set_current_path_emphasized(true)
+	_refresh_current_line_visibility()
 
 
 func _on_cell_scan_requested(cell_index: int) -> void:
@@ -2110,8 +3727,86 @@ func _layout_hex_cells() -> void:
 		cell.add_theme_constant_override("outline_size", 2)
 	_layout_reef_line_nodes(radius)
 	_layout_current_line_nodes(radius)
+	_layout_mobile_current_overlay()
+	_layout_drifting_mine_overlay()
 	_update_ocean_paper_geometry()
 	queue_redraw()
+
+
+func _layout_mobile_current_overlay() -> void:
+	if not mobile_current_enabled or _mobile_current_cells.size() != mobile_current_shape.size() \
+			or not is_instance_valid(_handmade_surface):
+		return
+	var water_points := PackedVector2Array()
+	for local_index in mobile_current_shape.size():
+		var board_index := _mobile_current_board_index(local_index)
+		if not _is_valid_index(board_index):
+			continue
+		var base_cell := cell_nodes[board_index]
+		var mobile_cell := _mobile_current_cells[local_index]
+		mobile_cell.position = base_cell.position
+		mobile_cell.size = base_cell.size
+		mobile_cell.rotation = base_cell.rotation
+		mobile_cell.pivot_offset = base_cell.pivot_offset
+		var group_id := _mobile_current_group_for_local(local_index)
+		mobile_cell.visible = group_id >= 0
+		var center := mobile_cell.position + mobile_cell.size * 0.5
+		var cell_radius := minf(
+			mobile_cell.size.y * 0.51,
+			mobile_cell.size.x / HEX_HORIZONTAL_FACTOR * 1.01
+		)
+		for point_index in 6:
+			var angle := deg_to_rad(-90.0 + float(point_index) * 60.0)
+			water_points.append(center + Vector2(cos(angle), sin(angle)) * cell_radius)
+	if is_instance_valid(_mobile_current_water):
+		_mobile_current_water.visible = false
+	var minimum_row := row_count - 1
+	var maximum_row := 0
+	for offset in mobile_current_shape:
+		minimum_row = mini(minimum_row, mobile_current_start_position.y + offset.y)
+		maximum_row = maxi(maximum_row, mobile_current_start_position.y + offset.y)
+	var top_index := minimum_row * column_count + mobile_current_end_column
+	var bottom_index := maximum_row * column_count + mobile_current_end_column
+	if is_instance_valid(_mobile_current_boundary) and _is_valid_index(top_index) \
+			and _is_valid_index(bottom_index):
+		var top_cell := cell_nodes[top_index]
+		var bottom_cell := cell_nodes[bottom_index]
+		var boundary_x := top_cell.position.x + top_cell.size.x * 0.90
+		_mobile_current_boundary.points = PackedVector2Array([
+			Vector2(boundary_x, top_cell.position.y - top_cell.size.y * 0.12),
+			Vector2(boundary_x, bottom_cell.position.y + bottom_cell.size.y * 1.12),
+		])
+		_mobile_current_boundary.visible = not mobile_current_resolved
+		if is_instance_valid(_mobile_current_boundary_label):
+			_mobile_current_boundary_label.position = Vector2(
+				boundary_x - 34.0,
+				top_cell.position.y - 28.0
+			)
+			_mobile_current_boundary_label.size = Vector2(68.0, 24.0)
+			_mobile_current_boundary_label.visible = not mobile_current_resolved
+
+
+func _layout_drifting_mine_overlay() -> void:
+	if not drifting_mine_enabled or cell_nodes.size() != cell_count:
+		return
+	var boundary_index := drifting_mine_position.y * column_count + drifting_mine_end_column
+	if not _is_valid_index(boundary_index):
+		return
+	var boundary_cell := cell_nodes[boundary_index]
+	var boundary_x := boundary_cell.position.x + boundary_cell.size.x * 0.90
+	if is_instance_valid(_drifting_mine_boundary):
+		_drifting_mine_boundary.points = PackedVector2Array([
+			Vector2(boundary_x, boundary_cell.position.y - boundary_cell.size.y * 1.25),
+			Vector2(boundary_x, boundary_cell.position.y + boundary_cell.size.y * 2.25),
+		])
+		_drifting_mine_boundary.visible = not drifting_mine_resolved
+	if is_instance_valid(_drifting_mine_boundary_label):
+		_drifting_mine_boundary_label.position = Vector2(
+			boundary_x - 34.0,
+			boundary_cell.position.y - boundary_cell.size.y * 1.65
+		)
+		_drifting_mine_boundary_label.size = Vector2(68.0, 24.0)
+		_drifting_mine_boundary_label.visible = not drifting_mine_resolved
 
 
 func _layout_reef_line_nodes(radius: float) -> void:
@@ -2247,9 +3942,27 @@ func _refresh_current_line_visibility() -> void:
 		var line_entry: Dictionary = _current_line_nodes[path_index]
 		var wash_line := line_entry["wash"] as Line2D
 		var ink_line := line_entry["ink"] as Line2D
+		var wash_color := OCEAN_CURRENT_WASH_COLOR
+		var ink_color := OCEAN_CURRENT_INK_COLOR
+		if _current_drift_active and not path_locked:
+			var pulse := 0.55 + sin(_current_drift_progress * PI) * 0.45
+			wash_color = OCEAN_CURRENT_WASH_COLOR.lerp(
+				OCEAN_CURRENT_FLOW_WASH_COLOR,
+				pulse
+			)
+			ink_color = OCEAN_CURRENT_INK_COLOR.lerp(
+				OCEAN_CURRENT_FLOW_INK_COLOR,
+				pulse
+			)
+		elif path_index == _hovered_current_path:
+			wash_color = Color(0.94, 0.79, 0.35, 0.58)
+			ink_color = Color(0.16, 0.55, 0.61, 0.94)
+		wash_line.default_color = wash_color
+		ink_line.default_color = ink_color
 		wash_line.visible = not path_locked
 		ink_line.visible = not path_locked
 		if path_index < _current_arrow_nodes.size():
+			_current_arrow_nodes[path_index].color = ink_color
 			_current_arrow_nodes[path_index].visible = not path_locked
 
 
@@ -2488,7 +4201,7 @@ func _apply_opening_assist(cell_index: int) -> void:
 	var relocated_core_bands: Array[int] = []
 	var relocated_core_boundary_pairs: Array = []
 	for protected_index in protected_cells:
-		if mines[protected_index]:
+		if mines[protected_index] and not flagged[protected_index]:
 			mines[protected_index] = false
 			relocated_core_count += 1
 			relocated_core_bands.append(_reef_band_index(protected_index))
@@ -2502,6 +4215,9 @@ func _apply_opening_assist(cell_index: int) -> void:
 	for candidate_index in cell_count:
 		if (
 			not mines[candidate_index]
+			and not flagged[candidate_index]
+			and (not mobile_current_enabled or not mobile_current_route_cells[candidate_index])
+			and (not drifting_mine_enabled or not drifting_mine_route_cells[candidate_index])
 			and not obstacles[candidate_index]
 			and not pollution_nodes[candidate_index]
 			and not protected_cells.has(candidate_index)
@@ -2559,9 +4275,12 @@ func _apply_opening_assist(cell_index: int) -> void:
 	_ensure_current_paths_have_cores(protected_cells)
 	_reset_array(adjacent_counts, 0)
 	_calculate_adjacent_counts()
-	_calculate_current_path_mine_totals()
+	_calculate_mobile_current_adjacent_counts()
 	_refresh_current_endpoint_cells()
-	assert(mines.count(true) == core_count, "Opening assistance must preserve the core count.")
+	assert(
+		mines.count(true) == _base_core_count(),
+		"Opening assistance must preserve the base core count."
+	)
 
 
 func _ensure_current_paths_have_cores(excluded_cells: Array[int] = []) -> void:
@@ -2714,10 +4433,80 @@ func _place_balanced_ocean_cores(candidates: Array[int]) -> bool:
 	return mines.count(true) == core_count
 
 
+func _base_core_count() -> int:
+	return core_count - mobile_current_core_count if mobile_current_enabled else core_count
+
+
+func _place_mobile_current_cores() -> bool:
+	if not mobile_current_enabled:
+		return false
+	mobile_current_mines.fill(false)
+	var static_candidates: Array[int] = []
+	for cell_index in cell_count:
+		if obstacles[cell_index] or pollution_nodes[cell_index] \
+				or mobile_current_route_cells[cell_index]:
+			continue
+		static_candidates.append(cell_index)
+	var static_core_count := core_count - mobile_current_core_count
+	if static_core_count < 0 or static_candidates.size() < static_core_count:
+		return false
+	for index in range(static_candidates.size() - 1, 0, -1):
+		var swap_index := _random.randi_range(0, index)
+		var temporary := static_candidates[index]
+		static_candidates[index] = static_candidates[swap_index]
+		static_candidates[swap_index] = temporary
+	_reset_array(mines, false)
+	for index in static_core_count:
+		mines[static_candidates[index]] = true
+	mobile_current_revealed.fill(false)
+	mobile_current_flagged.fill(false)
+	mobile_current_ever_flagged.fill(false)
+	mobile_current_confirmed.fill(false)
+	var placed_mobile_cores := 0
+	var cores_per_group := int(mobile_current_core_count / mobile_current_group_count)
+	var extra_core_groups := mobile_current_core_count % mobile_current_group_count
+	for group_id in mobile_current_group_count:
+		var group_candidates: Array[int] = []
+		for local_index in mobile_current_shape.size():
+			if _mobile_current_group_for_local(local_index) == group_id:
+				group_candidates.append(local_index)
+		for index in range(group_candidates.size() - 1, 0, -1):
+			var swap_index := _random.randi_range(0, index)
+			var temporary := group_candidates[index]
+			group_candidates[index] = group_candidates[swap_index]
+			group_candidates[swap_index] = temporary
+		var group_core_target := cores_per_group + (1 if group_id < extra_core_groups else 0)
+		if group_core_target <= 0 or group_core_target >= group_candidates.size():
+			return false
+		for candidate_index in group_core_target:
+			mobile_current_mines[group_candidates[candidate_index]] = true
+			placed_mobile_cores += 1
+	return (
+		mines.count(true) == static_core_count
+		and mobile_current_mines.count(true) == mobile_current_core_count
+	)
+
+
 func _place_random_cores() -> void:
+	if mobile_current_enabled:
+		assert(
+			_place_mobile_current_cores(),
+			"Mobile-current levels need enough route-free cells for every core."
+		)
+		assert(
+			get_runtime_mine_count() == core_count,
+			"Static and mobile cores together must equal the configured core count."
+		)
+		for cell_index in cell_count:
+			assert(
+				not (mobile_current_route_cells[cell_index] and mines[cell_index]),
+				"Static cores cannot occupy the mobile-current route."
+			)
+		return
 	var candidates: Array[int] = []
 	for cell_index in cell_count:
-		if not obstacles[cell_index] and not pollution_nodes[cell_index]:
+		if not obstacles[cell_index] and not pollution_nodes[cell_index] \
+				and (not drifting_mine_enabled or not drifting_mine_route_cells[cell_index]):
 			candidates.append(cell_index)
 	assert(candidates.size() >= core_count, "The board needs enough playable cells for all cores.")
 	_reset_array(mines, false)
@@ -2842,11 +4631,40 @@ func _choose_guide_cell() -> int:
 	return candidates[_random.randi_range(0, candidates.size() - 1)]
 
 
+func _is_drifting_mine_ring_resolved() -> bool:
+	if not drifting_mine_enabled or drifting_mine_resolved:
+		return false
+	for cell_index in cell_count:
+		var field_distance := _drifting_mine_field_distance(cell_index)
+		if field_distance < 1 or field_distance > 2 \
+				or obstacles[cell_index] or pollution_nodes[cell_index]:
+			continue
+		if mines[cell_index]:
+			if not flagged[cell_index]:
+				return false
+		elif not revealed[cell_index]:
+			return false
+	return true
+
+
+func _update_drifting_mine_disarm_ready() -> void:
+	if not drifting_mine_enabled or drifting_mine_resolved \
+			or _drifting_mine_shifting:
+		return
+	if _is_drifting_mine_ring_resolved():
+		current_path_feedback.emit("两圈污染场已全部处理 · 漂流污染源净化完成")
+		_resolve_drifting_mine()
+
+
 func _refresh_pollution_nodes() -> void:
 	if pollution_node_count == 0:
 		return
+	_update_drifting_mine_disarm_ready()
 	var changed := false
 	for group_index in pollution_node_count:
+		if drifting_mine_enabled and not drifting_mine_resolved \
+				and group_index == drifting_mine_group_index:
+			continue
 		if pollution_node_group_cleansed[group_index]:
 			continue
 		var checked_neighbors := {}
@@ -2888,27 +4706,89 @@ func _refresh_pollution_nodes() -> void:
 		)
 
 
-func _is_game_complete() -> bool:
-	return (
-		revealed_safe_count == safe_cell_count
-		and cleansed_pollution_node_count == pollution_node_count
+func _all_required_safe_cells_revealed() -> bool:
+	if not drifting_mine_enabled:
+		return revealed_safe_count == safe_cell_count
+	for cell_index in cell_count:
+		if mines[cell_index] or obstacles[cell_index] or pollution_nodes[cell_index]:
+			continue
+		if not revealed[cell_index]:
+			return false
+	return true
+
+
+func get_runtime_mine_count() -> int:
+	return mines.count(true) + (
+		mobile_current_mines.count(true)
+		if mobile_current_enabled
+		else 0
 	)
 
 
-func _calculate_current_path_mine_totals() -> void:
-	current_path_mine_totals.resize(current_paths.size())
-	for path_index in current_paths.size():
-		var mine_total := 0
-		var counted_cells: Dictionary = {}
-		var path: Array = current_paths[path_index]
-		for cell_value in path:
-			var cell_index := int(cell_value)
-			if counted_cells.has(cell_index):
+func _recalculate_used_flags() -> void:
+	used_flags = flagged.count(true) + (
+		mobile_current_flagged.count(true)
+		if mobile_current_enabled
+		else 0
+	)
+
+
+func _remove_one_wrong_flag() -> bool:
+	for cell_index in cell_count:
+		if not flagged[cell_index] or mines[cell_index]:
+			continue
+		flagged[cell_index] = false
+		confirmed[cell_index] = false
+		_recalculate_used_flags()
+		return true
+	if mobile_current_enabled:
+		for local_index in mobile_current_shape.size():
+			if not mobile_current_flagged[local_index] \
+					or mobile_current_mines[local_index]:
 				continue
-			counted_cells[cell_index] = true
-			if mines[cell_index]:
-				mine_total += 1
-		current_path_mine_totals[path_index] = mine_total
+			mobile_current_flagged[local_index] = false
+			mobile_current_confirmed[local_index] = false
+			_recalculate_used_flags()
+			return true
+	return false
+
+
+func _clear_base_flags_under_mobile_group(group_id: int) -> bool:
+	var removed_flag := false
+	for local_index in mobile_current_shape.size():
+		if _mobile_current_group_for_local(local_index) != group_id:
+			continue
+		var board_index := _mobile_current_board_index(local_index)
+		if not _is_valid_index(board_index) or not flagged[board_index]:
+			continue
+		flagged[board_index] = false
+		confirmed[board_index] = false
+		removed_flag = true
+	if removed_flag:
+		_recalculate_used_flags()
+		flags_changed.emit(used_flags, get_runtime_mine_count())
+	return removed_flag
+
+
+func get_wrong_flag_count() -> int:
+	var wrong_flag_count := 0
+	for cell_index in cell_count:
+		if flagged[cell_index] and not mines[cell_index]:
+			wrong_flag_count += 1
+	if mobile_current_enabled:
+		for local_index in mobile_current_shape.size():
+			if mobile_current_flagged[local_index] \
+					and not mobile_current_mines[local_index]:
+				wrong_flag_count += 1
+	return wrong_flag_count
+
+
+func _is_game_complete() -> bool:
+	return (
+		(not mobile_current_enabled or mobile_current_resolved)
+		and _all_required_safe_cells_revealed()
+		and cleansed_pollution_node_count == pollution_node_count
+	)
 
 
 func _is_tidal_cell_locked(cell_index: int) -> bool:
@@ -2919,13 +4799,29 @@ func _is_tidal_cell_locked(cell_index: int) -> bool:
 	)
 
 
+func _tidal_zone_progress(zone_index: int) -> Vector2i:
+	var remaining_safe := 0
+	var wrong_flags := 0
+	for cell_index in cell_count:
+		if tidal_zone_indices[cell_index] != zone_index \
+				or obstacles[cell_index] or pollution_nodes[cell_index] \
+				or mines[cell_index] or _is_mobile_current_cell(cell_index):
+			continue
+		if not revealed[cell_index]:
+			remaining_safe += 1
+			if flagged[cell_index]:
+				wrong_flags += 1
+	return Vector2i(remaining_safe, wrong_flags)
+
+
 func _is_tidal_zone_complete(zone_index: int) -> bool:
 	if tidal_zone_count <= 0 or zone_index < 0 or zone_index >= tidal_zone_count:
 		return false
 	for cell_index in cell_count:
 		if tidal_zone_indices[cell_index] != zone_index:
 			continue
-		if obstacles[cell_index] or pollution_nodes[cell_index] or mines[cell_index]:
+		if obstacles[cell_index] or pollution_nodes[cell_index] or mines[cell_index] \
+				or _is_mobile_current_cell(cell_index):
 			continue
 		if not revealed[cell_index]:
 			return false
@@ -2944,7 +4840,23 @@ func _advance_tidal_zone_if_complete(emit_change: bool = true) -> void:
 		resolved_zone += 1
 	active_tidal_zone_index = resolved_zone
 	if active_tidal_zone_index == previous_zone:
+		if emit_change:
+			var progress := _tidal_zone_progress(active_tidal_zone_index)
+			if progress.y > 0:
+				current_path_feedback.emit(
+					"潮区%d尚未完成 · 仍有%d个安全格未翻开，其中%d个被错误标记"
+					% [active_tidal_zone_index + 1, progress.x, progress.y]
+				)
+			else:
+				current_path_feedback.emit(
+					"潮区%d尚未完成 · 仍有%d个安全格未翻开"
+					% [active_tidal_zone_index + 1, progress.x]
+				)
 		return
+	if current_flow_interval > 0:
+		current_reveals_until_flow = current_flow_interval
+		_current_flow_started = false
+	_calculate_adjacent_counts()
 	if emit_change:
 		_refresh_current_endpoint_cells()
 		_refresh_all_cells()
@@ -2961,12 +4873,44 @@ func _calculate_adjacent_counts() -> void:
 		adjacent_counts[cell_index] = _adjacent_hazard_count(cell_index)
 
 
+func _pollution_node_counts_as_hazard(cell_index: int) -> bool:
+	if not _is_valid_index(cell_index) or not pollution_nodes[cell_index]:
+		return false
+	return not (
+		drifting_mine_enabled
+		and drifting_mine_resolved
+		and cell_index == _drifting_mine_cell_index()
+	)
+
+
 func _adjacent_hazard_count(cell_index: int) -> int:
 	var count := 0
 	for neighbor in _get_number_neighbors(cell_index):
-		if mines[neighbor] or pollution_nodes[neighbor]:
+		if mines[neighbor] or _pollution_node_counts_as_hazard(neighbor) \
+				or _mobile_current_mine_at_board(neighbor):
 			count += 1
 	return count
+
+
+func _mobile_current_mine_at_board(cell_index: int) -> bool:
+	var local_index := _mobile_current_local_at_board(cell_index)
+	return (
+		local_index >= 0
+		and local_index < mobile_current_mines.size()
+		and mobile_current_mines[local_index]
+	)
+
+
+func _calculate_mobile_current_adjacent_counts() -> void:
+	if not mobile_current_enabled:
+		return
+	for local_index in mobile_current_shape.size():
+		var board_index := _mobile_current_board_index(local_index)
+		mobile_current_adjacent_counts[local_index] = (
+			_adjacent_hazard_count(board_index)
+			if _is_valid_index(board_index)
+			else 0
+		)
 
 
 func _reveal_area(start_index: int) -> void:
@@ -2979,6 +4923,7 @@ func _reveal_area(start_index: int) -> void:
 		var current: int = queue.pop_front()
 		if (
 			revealed[current]
+			or _is_mobile_current_cell(current)
 			or flagged[current]
 			or mines[current]
 			or obstacles[current]
@@ -2993,10 +4938,9 @@ func _reveal_area(start_index: int) -> void:
 			continue
 
 		for neighbor in _get_neighbors(current):
-			if _has_reef_edge(current, neighbor):
-				continue
 			if (
 				not queued[neighbor]
+				and not _is_mobile_current_cell(neighbor)
 				and not revealed[neighbor]
 				and not flagged[neighbor]
 				and not mines[neighbor]
@@ -3027,7 +4971,14 @@ func _get_number_neighbors(cell_index: int) -> Array[int]:
 	if not _is_valid_index(cell_index) or number_neighbor_indices.size() != cell_count:
 		return neighbors
 	for neighbor in number_neighbor_indices[cell_index]:
-		neighbors.append(int(neighbor))
+		var neighbor_index := int(neighbor)
+		if (
+			tidal_zone_count > 0
+			and tidal_zone_indices[cell_index] != tidal_zone_indices[neighbor_index]
+			and _is_tidal_cell_locked(neighbor_index)
+		):
+			continue
+		neighbors.append(neighbor_index)
 	return neighbors
 
 
@@ -3093,30 +5044,8 @@ func _get_hex_side_between(cell_index: int, neighbor_index: int) -> int:
 
 func _get_hex_neighbors(cell_index: int) -> Array[int]:
 	var neighbors: Array[int] = []
-	var row := int(cell_index / column_count)
-	var column := cell_index % column_count
-	var offsets: Array = (
-		[
-			Vector2i(-1, -1), Vector2i(0, -1),
-			Vector2i(-1, 0), Vector2i(1, 0),
-			Vector2i(-1, 1), Vector2i(0, 1),
-		]
-		if row % 2 == 0
-		else [
-			Vector2i(0, -1), Vector2i(1, -1),
-			Vector2i(-1, 0), Vector2i(1, 0),
-			Vector2i(0, 1), Vector2i(1, 1),
-		]
-	)
-	for offset_value in offsets:
-		var offset: Vector2i = offset_value
-		var neighbor_column: int = column + offset.x
-		var neighbor_row: int = row + offset.y
-		if neighbor_row < 0 or neighbor_row >= row_count:
-			continue
-		if neighbor_column < 0 or neighbor_column >= column_count:
-			continue
-		neighbors.append(neighbor_row * column_count + neighbor_column)
+	for record in _get_raw_hex_neighbor_records(cell_index):
+		neighbors.append(int(record["index"]))
 	return neighbors
 
 
@@ -3143,17 +5072,34 @@ func _get_square_neighbors(cell_index: int) -> Array[int]:
 func _refresh_all_cells() -> void:
 	for cell_index in cell_count:
 		_refresh_cell(cell_index)
+	_refresh_mobile_current_cells()
 	_refresh_keyboard_cursor()
 	_update_boss_tree_visual()
 
 
 func _refresh_cell(cell_index: int) -> void:
-	var game_finished := game_state == GameState.WON or game_state == GameState.LOST or not interaction_enabled
+	var game_finished := (
+		game_state == GameState.WON
+		or game_state == GameState.LOST
+		or not interaction_enabled
+		or _current_drift_active
+		or _mobile_current_shifting
+		or _is_mobile_current_cell(cell_index)
+	)
 	var core_visible := game_state == GameState.LOST and mines[cell_index]
 	var wrong_flag := game_state == GameState.LOST and flagged[cell_index] and not mines[cell_index]
 	var solved_core := game_state == GameState.WON and mines[cell_index]
 	var display_adjacent_count := adjacent_counts[cell_index]
 	if not cell_nodes.is_empty():
+		cell_nodes[cell_index].configure_drifting_mine(
+			drifting_mine_enabled and cell_index == _drifting_mine_cell_index(),
+			_drifting_mine_field_distance(cell_index),
+			_drifting_mine_warning_progress,
+			drifting_mine_resolved,
+			drifting_mine_disarm_ready,
+			drifting_mine_locks_remaining,
+			drifting_mine_total_locks
+		)
 		cell_nodes[cell_index].render_state(
 			revealed[cell_index],
 			flagged[cell_index],

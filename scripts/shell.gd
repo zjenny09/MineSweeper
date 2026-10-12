@@ -3,6 +3,7 @@ extends Control
 
 const GAME_SCENE: PackedScene = preload("res://scenes/main.tscn")
 const SKY_GAME_SCENE: PackedScene = preload("res://scenes/sky_level_15_prototype.tscn")
+const UNIVERSE_GAME_SCENE: PackedScene = preload("res://scenes/universe_endless.tscn")
 const SAVE_STORE_SCRIPT: Script = preload("res://scripts/save_store.gd")
 const OCEAN_ROUTE_SCRIPT: Script = preload("res://scripts/ocean_level_route.gd")
 const ART := preload("res://scripts/art_catalog.gd")
@@ -51,6 +52,20 @@ const SKY_LEVEL_MARKER_POSITIONS := [
 	Vector2(710, 178),
 	Vector2(842, 112),
 ]
+const MECHANIC_GUIDE_FIRST_LEVELS := {
+	&"eco_scan": 1,
+	&"land_obstacles": 3,
+	&"pollution_nodes": 5,
+	&"ancient_tree_roots": 7,
+	&"hex_ocean_board": 8,
+	&"coral_reefs": 9,
+	&"drifting_mines": 11,
+	&"tidal_zones": 13,
+	&"sky_sphere": 15,
+	&"sky_breeze": 17,
+	&"storm_shield": 19,
+	&"storm_eyes": 21,
+}
 
 @export var save_path := "user://save_v1.json"
 
@@ -85,6 +100,8 @@ const SKY_LEVEL_MARKER_POSITIONS := [
 @onready var level_welcome_button: Button = %LevelWelcomeButton
 @onready var volume_slider: HSlider = %VolumeSlider
 @onready var volume_value_label: Label = %VolumeValueLabel
+@onready var bgm_toggle_button: CheckButton = %BgmToggleButton
+@onready var sfx_toggle_button: CheckButton = %SfxToggleButton
 @onready var display_mode_option: OptionButton = %DisplayModeOption
 @onready var operation_mode_option: OptionButton = %OperationModeOption
 @onready var settings_back_button: Button = %SettingsBackButton
@@ -93,6 +110,8 @@ var save_store
 var active_game: Control
 var _record_progress := true
 var _persist_scan_state := true
+var _persist_guide_state := true
+var _session_seen_mechanic_guides: Dictionary = {}
 var _settings_return_to_game := false
 var _level_select_return_to_game := false
 var _level_select_chapter := &"land"
@@ -122,23 +141,30 @@ func _ready() -> void:
 	save_store = SAVE_STORE_SCRIPT.new(save_path)
 	save_store.load_data()
 	volume_slider.value = save_store.get_master_volume()
+	AudioManager.set_bgm_enabled(save_store.is_bgm_enabled())
+	AudioManager.set_sfx_enabled(save_store.is_sfx_enabled())
+	_refresh_audio_toggle_buttons()
 	display_mode_option.add_item("窗口模式（1280 × 720）", 0)
 	display_mode_option.add_item("最大化窗口", 1)
 	display_mode_option.add_item("无边框全屏", 2)
 	display_mode_option.select(save_store.get_window_mode())
 	operation_mode_option.add_item("鼠标操作", 0)
-	operation_mode_option.add_item("键盘操作", 1)
+	operation_mode_option.add_item("键盘操作（方向键 / W S A D + J / K）", 1)
 	operation_mode_option.select(save_store.get_operation_mode())
 	_on_volume_changed(volume_slider.value)
 	_apply_display_mode(display_mode_option.selected)
 	_connect_controls()
 
-	var requested_level := parse_level_argument(OS.get_cmdline_user_args())
+	var user_arguments := OS.get_cmdline_user_args()
+	if user_arguments.has("--universe"):
+		_start_universe_mode(false)
+		return
+	var requested_level := parse_level_argument(user_arguments)
 	if requested_level > 0:
 		start_cli_level(requested_level)
 	else:
 		if requested_level < 0:
-			push_error("无效的 --level 参数；请使用 --level=1 至 --level=21。")
+			push_error("无效启动参数；请使用 --level=1 至 --level=21 或 --universe。")
 		show_main_menu()
 
 
@@ -261,8 +287,8 @@ func _apply_level_select_chapter_art() -> void:
 		level_select_title.add_theme_color_override("font_color", Color("49658f"))
 		level_previous_chapter_button.text = "← 海洋篇"
 		level_previous_chapter_button.tooltip_text = "返回海洋篇"
-		level_next_chapter_button.text = "陆地篇 →"
-		level_next_chapter_button.tooltip_text = "进入陆地篇"
+		level_next_chapter_button.text = "宇宙篇 →"
+		level_next_chapter_button.tooltip_text = "进入无尽宇宙"
 	elif ocean:
 		level_select_title.text = "海洋探险"
 		level_select_title.add_theme_color_override("font_color", Color("175c70"))
@@ -383,6 +409,7 @@ func show_main_menu() -> void:
 	_level_select_return_to_game = false
 	_destroy_active_game()
 	_show_only(main_menu)
+	AudioManager.play_menu_bgm()
 	_refresh_continue_button()
 	start_button.grab_focus()
 
@@ -410,6 +437,7 @@ func show_level_select(preserve_active_game: bool = false) -> void:
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
 	_show_only(level_select)
+	AudioManager.play_menu_bgm()
 	level_back_button.text = "返回关卡"
 	level_back_button.grab_focus()
 
@@ -436,6 +464,44 @@ func start_normal_level(level_number: int) -> void:
 
 func start_cli_level(level_number: int) -> void:
 	_start_level_number(level_number, false, false)
+
+
+func _start_universe_mode(persist_guides: bool = true) -> void:
+	_level_select_return_to_game = false
+	_destroy_active_game()
+	AudioManager.stop_bgm()
+	_record_progress = false
+	_persist_scan_state = false
+	_persist_guide_state = persist_guides
+	active_game = UNIVERSE_GAME_SCENE.instantiate() as Control
+	active_game.set("auto_start", false)
+	game_host.add_child(active_game)
+	active_game.level_select_requested.connect(_on_universe_return_to_sky)
+	active_game.main_menu_requested.connect(show_main_menu)
+	active_game.settings_requested.connect(_on_game_settings_requested)
+	active_game.mechanic_guide_completed.connect(_on_game_mechanic_guide_completed)
+	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
+	active_game.call(
+		"set_seen_mechanic_guides",
+		_combined_seen_mechanic_guides()
+	)
+	_show_only(game_host)
+	active_game.call("start_endless", 0)
+	active_game.call("set_operation_mode", save_store.get_operation_mode())
+
+
+func _on_universe_return_to_sky() -> void:
+	_level_select_return_to_game = false
+	_destroy_active_game()
+	_level_select_chapter = &"sky"
+	_selected_sky_level_number = 21
+	_selected_level_number = 21
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	_show_only(level_select)
+	AudioManager.play_menu_bgm()
+	level_back_button.text = "返回关卡"
+	level_back_button.grab_focus()
 
 
 func get_active_game() -> Control:
@@ -475,6 +541,8 @@ func _connect_controls() -> void:
 	settings_back_button.pressed.connect(_close_settings)
 	volume_slider.value_changed.connect(_on_volume_changed)
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
+	bgm_toggle_button.toggled.connect(_on_bgm_toggled)
+	sfx_toggle_button.toggled.connect(_on_sfx_toggled)
 	display_mode_option.item_selected.connect(_on_display_mode_selected)
 	operation_mode_option.item_selected.connect(_on_operation_mode_selected)
 
@@ -493,6 +561,8 @@ func _start_level_number(
 	_destroy_active_game()
 	_record_progress = record_progress
 	_persist_scan_state = persist_scan_state
+	_persist_guide_state = record_progress
+	AudioManager.play_level_bgm(level_number)
 	var game_scene := SKY_GAME_SCENE if level_number >= 15 else GAME_SCENE
 	active_game = game_scene.instantiate() as Control
 	active_game.set("auto_start", false)
@@ -504,7 +574,12 @@ func _start_level_number(
 	active_game.chapter_advance_requested.connect(_on_game_chapter_advance_requested)
 	active_game.main_menu_requested.connect(show_main_menu)
 	active_game.settings_requested.connect(_on_game_settings_requested)
+	active_game.mechanic_guide_completed.connect(_on_game_mechanic_guide_completed)
 	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
+	active_game.call(
+		"set_seen_mechanic_guides",
+		_seen_mechanic_guides_for_level(level_number, not record_progress)
+	)
 	active_game.call(
 		"set_first_move_guide_enabled",
 		not save_store.has_seen_first_move_guide()
@@ -536,6 +611,7 @@ func _on_continue_pressed() -> void:
 
 
 func _on_game_level_started(level_number: int) -> void:
+	AudioManager.play_level_bgm(level_number)
 	if not _record_progress:
 		return
 	save_store.mark_level_started(level_number)
@@ -650,14 +726,54 @@ func _on_game_scan_energy_changed(energy: int) -> void:
 	save_store.save_data()
 
 
+func _combined_seen_mechanic_guides() -> Array[String]:
+	var guide_ids: Array[String] = save_store.get_seen_mechanic_guides()
+	for stored_id in _session_seen_mechanic_guides:
+		var guide_id := str(stored_id)
+		if not guide_id.is_empty() and guide_id not in guide_ids:
+			guide_ids.append(guide_id)
+	return guide_ids
+
+
+func _seen_mechanic_guides_for_level(
+	level_number: int,
+	assume_previous_guides: bool
+) -> Array[String]:
+	var guide_ids := _combined_seen_mechanic_guides()
+	if not assume_previous_guides:
+		return guide_ids
+	for guide_key in MECHANIC_GUIDE_FIRST_LEVELS:
+		if int(MECHANIC_GUIDE_FIRST_LEVELS[guide_key]) >= level_number:
+			continue
+		var guide_id := str(guide_key)
+		if guide_id not in guide_ids:
+			guide_ids.append(guide_id)
+	return guide_ids
+
+
+func _on_game_mechanic_guide_completed(guide_id: StringName) -> void:
+	if guide_id.is_empty():
+		return
+	_session_seen_mechanic_guides[guide_id] = true
+	if not _persist_guide_state:
+		return
+	save_store.mark_mechanic_guide_seen(guide_id)
+	save_store.save_data()
+
+
 func _on_game_chapter_advance_requested() -> void:
 	if not is_instance_valid(active_game):
 		return
 	var level_number := int(active_game.get("current_level_index")) + 1
-	if level_number == 7 and save_store.is_level_completed(7):
+	if level_number == 7 \
+			and (not _record_progress or save_store.is_level_completed(7)):
 		call_deferred("_transition_to_ocean_chapter")
-	elif level_number == 14 and save_store.is_level_completed(14):
+	elif level_number == 14 \
+			and (not _record_progress or save_store.is_level_completed(14)):
 		call_deferred("_transition_to_sky_chapter")
+	elif level_number == 21 \
+			and (not _record_progress or save_store.is_level_completed(21)):
+		call_deferred("_start_universe_mode")
 
 
 func _on_game_level_select_requested() -> void:
@@ -946,8 +1062,8 @@ func _on_next_chapter_pressed() -> void:
 	match _level_select_chapter:
 		&"sky":
 			_selected_sky_level_number = _selected_level_number
-			_level_select_chapter = &"land"
-			_selected_level_number = _selected_land_level_number
+			_start_universe_mode()
+			return
 		&"ocean":
 			_selected_ocean_level_number = _selected_level_number
 			_level_select_chapter = &"sky"
@@ -965,6 +1081,7 @@ func _on_level_back_pressed() -> void:
 	if _level_select_return_to_game and is_instance_valid(active_game):
 		_level_select_return_to_game = false
 		_show_only(game_host)
+		AudioManager.play_level_bgm(int(active_game.get("current_level_index")) + 1)
 		return
 	if _is_select_level_unlocked(_selected_level_number):
 		_start_level_number(
@@ -999,6 +1116,35 @@ func _on_volume_drag_ended(value_changed: bool) -> void:
 		return
 	save_store.set_master_volume(volume_slider.value)
 	save_store.save_data()
+
+
+func _on_bgm_toggled(enabled: bool) -> void:
+	AudioManager.play_menu_select()
+	AudioManager.set_bgm_enabled(enabled)
+	save_store.set_bgm_enabled(enabled)
+	_refresh_audio_toggle_buttons()
+	save_store.save_data()
+
+
+func _on_sfx_toggled(enabled: bool) -> void:
+	if enabled:
+		AudioManager.set_sfx_enabled(true)
+		AudioManager.play_menu_select()
+	else:
+		AudioManager.play_menu_select()
+		AudioManager.set_sfx_enabled(false)
+	save_store.set_sfx_enabled(enabled)
+	_refresh_audio_toggle_buttons()
+	save_store.save_data()
+
+
+func _refresh_audio_toggle_buttons() -> void:
+	var bgm_enabled: bool = save_store.is_bgm_enabled()
+	var sfx_enabled: bool = save_store.is_sfx_enabled()
+	bgm_toggle_button.set_pressed_no_signal(bgm_enabled)
+	sfx_toggle_button.set_pressed_no_signal(sfx_enabled)
+	bgm_toggle_button.text = "背景音乐：%s" % ("开启" if bgm_enabled else "关闭")
+	sfx_toggle_button.text = "游戏音效：%s" % ("开启" if sfx_enabled else "关闭")
 
 
 func _on_display_mode_selected(index: int) -> void:
@@ -1050,6 +1196,8 @@ func _show_only(page: Control) -> void:
 	level_select.visible = page == level_select
 	settings_page.visible = page == settings_page
 	game_host.visible = page == game_host
+	if page == main_menu or page == level_select:
+		AudioManager.play_menu_bgm()
 
 
 func _destroy_active_game() -> void:
