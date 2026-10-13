@@ -2053,7 +2053,7 @@ func toggle_flag(cell_index: int) -> void:
 		return
 	if not flagged[cell_index] and mobile_current_enabled \
 			and mobile_current_route_cells[cell_index]:
-		current_path_feedback.emit("漂流航线底格不会生成静态水雷，无需标记")
+		current_path_feedback.emit(tr("漂流航线底格不会生成静态水雷，无需标记"))
 		return
 	_recalculate_used_flags()
 
@@ -2067,7 +2067,7 @@ func toggle_flag(cell_index: int) -> void:
 		is_first_placement = not ever_flagged[cell_index]
 		ever_flagged[cell_index] = true
 	else:
-		current_path_feedback.emit("标记已用完 · 若仍发现水雷，请检查是否有错误标记")
+		current_path_feedback.emit(tr("标记已用完 · 若仍发现水雷，请检查是否有错误标记"))
 		return
 
 	move_count += 1
@@ -2181,6 +2181,13 @@ func set_tooltips_enabled(enabled: bool) -> void:
 		cell.set_tooltips_enabled(enabled)
 	for mobile_cell in _mobile_current_cells:
 		mobile_cell.set_tooltips_enabled(enabled)
+
+
+func refresh_localized_text() -> void:
+	for cell in cell_nodes:
+		cell.refresh_localized_tooltip()
+	for mobile_cell in _mobile_current_cells:
+		mobile_cell.refresh_localized_tooltip()
 
 
 func set_operation_mode(mode: int) -> void:
@@ -2909,7 +2916,7 @@ func _toggle_mobile_current_flag(local_index: int) -> void:
 		is_first_placement = not mobile_current_ever_flagged[local_index]
 		mobile_current_ever_flagged[local_index] = true
 	else:
-		current_path_feedback.emit("标记已用完 · 若仍发现水雷，请检查是否有错误标记")
+		current_path_feedback.emit(tr("标记已用完 · 若仍发现水雷，请检查是否有错误标记"))
 		return
 	move_count += 1
 	_recalculate_used_flags()
@@ -2980,7 +2987,7 @@ func _start_drifting_mine_timer() -> void:
 	_drifting_mine_time_remaining = drifting_mine_step_seconds
 	_drifting_mine_last_second = ceili(_drifting_mine_time_remaining)
 	current_path_feedback.emit(
-		"漂流污染源启动 · %d秒后向过滤边界移动 · 剩余%d格"
+		tr("漂流污染源启动 · %d秒后向过滤边界移动 · 剩余%d格")
 		% [_drifting_mine_last_second, drifting_mine_end_column - drifting_mine_position.x]
 	)
 	_refresh_board_processing()
@@ -3009,7 +3016,7 @@ func _advance_drifting_mine_timer(delta: float) -> void:
 	if displayed_second != _drifting_mine_last_second and displayed_second <= 3 \
 			and displayed_second > 0:
 		_drifting_mine_last_second = displayed_second
-		current_path_feedback.emit("漂流污染源%d秒后移动" % displayed_second)
+		current_path_feedback.emit(tr("漂流污染源%d秒后移动") % displayed_second)
 	if _drifting_mine_time_remaining <= 0.0:
 		_shift_drifting_mine()
 
@@ -3080,7 +3087,7 @@ func _shift_drifting_mine() -> void:
 	_refresh_pollution_nodes()
 	if not drifting_mine_resolved:
 		current_path_feedback.emit(
-			"污染源已随洋流移动 · 全盘数字已更新 · 剩余%d格"
+			tr("污染源已随洋流移动 · 全盘数字已更新 · 剩余%d格")
 			% (drifting_mine_end_column - drifting_mine_position.x)
 		)
 	if _is_valid_index(previous_index):
@@ -3117,7 +3124,7 @@ func _resolve_drifting_mine() -> void:
 		pollution_node_count
 	)
 	drifting_mine_state_changed.emit(true)
-	current_path_feedback.emit("漂流污染源已净化 · 停止向过滤边界漂移")
+	current_path_feedback.emit(tr("漂流污染源已净化 · 停止向过滤边界漂移"))
 	if completed_game:
 		state_changed.emit(game_state)
 	_refresh_board_processing()
@@ -3132,7 +3139,7 @@ func _fail_drifting_mine() -> void:
 	_start_pollution_animation(_drifting_mine_cell_index())
 	_refresh_all_cells()
 	state_changed.emit(game_state)
-	current_path_feedback.emit("漂流污染源未及时净化并流出边界 · 本次净化失败")
+	current_path_feedback.emit(tr("漂流污染源未及时净化并流出边界 · 本次净化失败"))
 	_refresh_board_processing()
 
 
@@ -3145,7 +3152,7 @@ func _start_mobile_current_timer() -> void:
 	_mobile_current_time_remaining = mobile_current_step_seconds
 	_mobile_current_last_second = ceili(_mobile_current_time_remaining)
 	current_path_feedback.emit(
-		"%d组漂流物启动 · 第%d组%d秒后移动 · 距离边界%d格"
+		tr("%d组漂流物启动 · 第%d组%d秒后移动 · 距离边界%d格")
 		% [
 			mobile_current_group_count,
 			_mobile_current_next_group + 1,
@@ -3177,7 +3184,7 @@ func _advance_mobile_current_timer(delta: float) -> void:
 	if seconds_remaining != _mobile_current_last_second:
 		_mobile_current_last_second = seconds_remaining
 		current_path_feedback.emit(
-			"第%d组漂流物 · %d秒后移动 · 距离边界%d格"
+			tr("第%d组漂流物 · %d秒后移动 · 距离边界%d格")
 			% [
 				_mobile_current_next_group + 1,
 				seconds_remaining,
@@ -3239,7 +3246,7 @@ func _begin_mobile_current_shift() -> void:
 	_mobile_current_warning_progress = 1.0
 	_refresh_mobile_current_cells()
 	_refresh_all_cells()
-	current_path_feedback.emit("第%d组漂流物正在向右移动" % (group_id + 1))
+	current_path_feedback.emit(tr("第%d组漂流物正在向右移动") % (group_id + 1))
 	_mobile_current_shift_tween = create_tween().set_parallel(true)
 	for local_index in mobile_current_shape.size():
 		if _mobile_current_group_for_local(local_index) != group_id:
@@ -3293,7 +3300,7 @@ func _complete_mobile_current_shift() -> void:
 		_resolve_mobile_current_early()
 	else:
 		current_path_feedback.emit(
-			"第%d组已移动 · 全盘数字已更新 · 距离边界%d格"
+			tr("第%d组已移动 · 全盘数字已更新 · 距离边界%d格")
 			% [shifted_group + 1, _mobile_current_distance_to_boundary(shifted_group)]
 		)
 	_refresh_board_processing()
@@ -3355,7 +3362,9 @@ func _resolve_mobile_current_group_early(group_id: int) -> void:
 		_mobile_current_last_second = ceili(_mobile_current_time_remaining)
 	_refresh_mobile_current_cells()
 	_refresh_all_cells()
-	current_path_feedback.emit("第%d组真水雷已拦截 · 其余漂流组继续移动" % (group_id + 1))
+	current_path_feedback.emit(
+		tr("第%d组真水雷已拦截 · 其余漂流组继续移动") % (group_id + 1)
+	)
 
 
 func _check_mobile_current_solved() -> void:
@@ -3381,7 +3390,9 @@ func _resolve_mobile_current_early() -> void:
 	_refresh_mobile_current_cells()
 	_refresh_all_cells()
 	mobile_current_state_changed.emit(true)
-	current_path_feedback.emit("%d组真水雷已全部拦截 · 漂流停止" % mobile_current_group_count)
+	current_path_feedback.emit(
+		tr("%d组真水雷已全部拦截 · 漂流停止") % mobile_current_group_count
+	)
 	_refresh_board_processing()
 
 
@@ -3401,7 +3412,7 @@ func _resolve_mobile_current_boundary(group_id: int) -> void:
 		_refresh_all_cells()
 		state_changed.emit(game_state)
 		current_path_feedback.emit(
-			"第%d组真水雷未标记便流出过滤边界 · 本次净化失败" % (group_id + 1)
+			tr("第%d组真水雷未标记便流出过滤边界 · 本次净化失败") % (group_id + 1)
 		)
 		return
 	var removed_wrong_flags := false
@@ -3436,11 +3447,13 @@ func _resolve_mobile_current_boundary(group_id: int) -> void:
 	if mobile_current_resolved:
 		mobile_current_state_changed.emit(true)
 		current_path_feedback.emit(
-			"%d组漂流物通过过滤边界 · 真水雷均已安全拦截"
+			tr("%d组漂流物通过过滤边界 · 真水雷均已安全拦截")
 			% mobile_current_group_count
 		)
 	else:
-		current_path_feedback.emit("第%d组已安全拦截 · 其余漂流组继续" % (group_id + 1))
+		current_path_feedback.emit(
+			tr("第%d组已安全拦截 · 其余漂流组继续") % (group_id + 1)
+		)
 	if completed_game:
 		state_changed.emit(game_state)
 	_refresh_board_processing()
@@ -3454,7 +3467,7 @@ func _register_current_reveals(newly_revealed: int) -> void:
 		_current_flow_started = true
 		current_reveals_until_flow = current_flow_interval
 		current_path_feedback.emit(
-			"洋流已激活 · 再净化%d格，未锚定污染将向下游漂移"
+			tr("洋流已激活 · 再净化%d格，未锚定污染将向下游漂移")
 			% current_reveals_until_flow
 		)
 		_refresh_current_endpoint_cells()
@@ -3466,7 +3479,7 @@ func _register_current_reveals(newly_revealed: int) -> void:
 		_start_current_drift()
 	else:
 		current_path_feedback.emit(
-			"洋流倒计时 · 再净化%d格，未锚定污染将向下游漂移"
+			tr("洋流倒计时 · 再净化%d格，未锚定污染将向下游漂移")
 			% current_reveals_until_flow
 		)
 	_refresh_current_endpoint_cells()
@@ -3487,7 +3500,7 @@ func _start_current_drift() -> void:
 				cell_nodes[cell_index].set_current_path_emphasized(true)
 	_refresh_all_cells()
 	_refresh_current_line_visibility()
-	current_path_feedback.emit("洋流涌动 · 未锚定污染正在向下游漂移")
+	current_path_feedback.emit(tr("洋流涌动 · 未锚定污染正在向下游漂移"))
 	_current_drift_tween = create_tween()
 	_current_drift_tween.tween_method(
 		_set_current_drift_progress,
@@ -3567,12 +3580,12 @@ func _apply_current_drift(moves: Array[Vector2i], generation: int) -> void:
 	_refresh_current_endpoint_cells()
 	if moved_count > 0:
 		current_path_feedback.emit(
-			"洋流已推动%d个污染核心 · 数字已重新计算 · 距下次%d格"
+			tr("洋流已推动%d个污染核心 · 数字已重新计算 · 距下次%d格")
 			% [moved_count, current_reveals_until_flow]
 		)
 	else:
 		current_path_feedback.emit(
-			"洋流涌动完成 · 污染已被标记锚定 · 距下次%d格"
+			tr("洋流涌动完成 · 污染已被标记锚定 · 距下次%d格")
 			% current_reveals_until_flow
 		)
 	_current_drift_tween = create_tween()
@@ -4652,7 +4665,7 @@ func _update_drifting_mine_disarm_ready() -> void:
 			or _drifting_mine_shifting:
 		return
 	if _is_drifting_mine_ring_resolved():
-		current_path_feedback.emit("两圈污染场已全部处理 · 漂流污染源净化完成")
+		current_path_feedback.emit(tr("两圈污染场已全部处理 · 漂流污染源净化完成"))
 		_resolve_drifting_mine()
 
 
@@ -4844,12 +4857,12 @@ func _advance_tidal_zone_if_complete(emit_change: bool = true) -> void:
 			var progress := _tidal_zone_progress(active_tidal_zone_index)
 			if progress.y > 0:
 				current_path_feedback.emit(
-					"潮区%d尚未完成 · 仍有%d个安全格未翻开，其中%d个被错误标记"
+					tr("潮区%d尚未完成 · 仍有%d个安全格未翻开，其中%d个被错误标记")
 					% [active_tidal_zone_index + 1, progress.x, progress.y]
 				)
 			else:
 				current_path_feedback.emit(
-					"潮区%d尚未完成 · 仍有%d个安全格未翻开"
+					tr("潮区%d尚未完成 · 仍有%d个安全格未翻开")
 					% [active_tidal_zone_index + 1, progress.x]
 				)
 		return

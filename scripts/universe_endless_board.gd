@@ -128,6 +128,10 @@ func set_interaction_enabled(enabled: bool) -> void:
 	queue_redraw()
 
 
+func refresh_localized_text() -> void:
+	model.refresh_localized_text()
+
+
 func get_mechanic_guide_target_global_position(
 	guide_id: StringName
 ) -> Vector2:
@@ -168,7 +172,7 @@ func _gui_input(event: InputEvent) -> void:
 				))
 				if model.revealed[hovered_node] == 1 and live_count > 0:
 					status_changed.emit(
-						"数字%d = 普通星链污染%d + 虫洞污染%d · 共%d个邻星"
+						tr("数字%d = 普通星链污染%d + 虫洞污染%d · 共%d个邻星")
 						% [
 							live_count,
 							live_count - wormhole_count,
@@ -178,7 +182,7 @@ func _gui_input(event: InputEvent) -> void:
 					)
 				else:
 					status_changed.emit(
-						"当前星核连接%d颗邻星 · 数字只统计这些线的另一端"
+						tr("当前星核连接%d颗邻星 · 数字只统计这些线的另一端")
 						% model.neighbors[hovered_node].size()
 					)
 		queue_redraw()

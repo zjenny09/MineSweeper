@@ -463,15 +463,15 @@ func set_scan_activation_enabled(enabled: bool, tooltip: String) -> void:
 		or (_reaction_mode == ReactionMode.READY and not _scan_used)
 	)
 	if _scan_animation == ScanAnimation.TARGETING:
-		scan_hint_button.text = "选择格子 · Esc取消"
+		scan_hint_button.text = tr("选择格子 · Esc取消")
 	elif _scan_show_charge_status and not enabled:
-		scan_hint_button.text = "扫描 %d/%d · C" % [_scan_energy, _scan_threshold]
+		scan_hint_button.text = tr("扫描 %d/%d · C") % [_scan_energy, _scan_threshold]
 	elif _scan_locked:
-		scan_hint_button.text = "首翻后扫描 · C"
+		scan_hint_button.text = tr("首翻后扫描 · C")
 	elif _scan_energy < _scan_threshold:
-		scan_hint_button.text = "扫描 %d/%d · C" % [_scan_energy, _scan_threshold]
+		scan_hint_button.text = tr("扫描 %d/%d · C") % [_scan_energy, _scan_threshold]
 	else:
-		scan_hint_button.text = "点机器人扫描 · C"
+		scan_hint_button.text = tr("点机器人扫描 · C")
 	_refresh_processing()
 
 
@@ -481,7 +481,7 @@ func begin_scan_targeting() -> void:
 	_scan_animation = ScanAnimation.TARGETING
 	_scan_time = 0.0
 	scan_hint_button.visible = true
-	scan_hint_button.text = "选择格子 · Esc取消"
+	scan_hint_button.text = tr("选择格子 · Esc取消")
 	scan_beam.visible = false
 	_refresh_processing()
 
@@ -1098,7 +1098,7 @@ func _reset_scan_animation() -> void:
 	scan_beam.visible = false
 	scan_beam.modulate = Color.WHITE
 	scan_hint_button.visible = _scan_available
-	scan_hint_button.text = "点机器人扫描 · C"
+	scan_hint_button.text = tr("点机器人扫描 · C")
 	robot_scan_motion.position = Vector2.ZERO
 	robot_scan_motion.scale = Vector2.ONE
 	robot_scan_motion.rotation = 0.0

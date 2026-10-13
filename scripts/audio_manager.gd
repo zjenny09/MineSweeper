@@ -6,12 +6,14 @@ const BGM_PATHS := {
 	&"land": AUDIO_ROOT + "forest_papercut_bgm.wav",
 	&"ocean": AUDIO_ROOT + "ocean_papercut_bgm.wav",
 	&"sky": AUDIO_ROOT + "sky_papercut_bgm.wav",
+	&"universe": AUDIO_ROOT + "sky_papercut_bgm.wav",
 }
 const BGM_VOLUMES := {
-	&"menu": 0.56,
-	&"land": 0.64,
-	&"ocean": 0.62,
-	&"sky": 0.62,
+	&"menu": 0.76,
+	&"land": 0.80,
+	&"ocean": 0.78,
+	&"sky": 0.78,
+	&"universe": 0.72,
 }
 const MENU_SELECT_PATH := AUDIO_ROOT + "sfx_menu_select.wav"
 const MENU_BACK_PATH := AUDIO_ROOT + "sfx_menu_back.wav"
@@ -31,17 +33,30 @@ var _gameplay_player: AudioStreamPlayer
 var _result_player: AudioStreamPlayer
 var _desired_bgm := &""
 var _current_bgm := &""
+var _bgm_restart_cooldown := 0.0
 var _stream_cache: Dictionary = {}
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_bgm_player = _create_player("BackgroundMusic")
+	_bgm_player.finished.connect(_on_bgm_finished)
 	_ui_player = _create_player("InterfaceSfx")
 	_gameplay_player = _create_player("GameplaySfx")
 	_result_player = _create_player("ResultSfx")
 	get_tree().node_added.connect(_on_node_added)
+	set_process(true)
 	call_deferred("_bind_existing_buttons")
+
+
+func _process(delta: float) -> void:
+	if not bgm_enabled or _desired_bgm.is_empty() or _bgm_player.playing:
+		_bgm_restart_cooldown = 0.0
+		return
+	_bgm_restart_cooldown -= maxf(0.0, delta)
+	if _bgm_restart_cooldown <= 0.0:
+		_bgm_restart_cooldown = 1.0
+		play_bgm(_desired_bgm)
 
 
 func set_bgm_enabled(enabled: bool) -> void:
@@ -63,6 +78,10 @@ func set_sfx_enabled(enabled: bool) -> void:
 
 func play_menu_bgm() -> void:
 	play_bgm(&"menu")
+
+
+func play_universe_bgm() -> void:
+	play_bgm(&"universe")
 
 
 func play_level_bgm(level_number: int) -> void:
@@ -102,6 +121,11 @@ func stop_bgm() -> void:
 	_desired_bgm = &""
 	_current_bgm = &""
 	_bgm_player.stop()
+
+
+func _on_bgm_finished() -> void:
+	if bgm_enabled and not _desired_bgm.is_empty():
+		play_bgm(_desired_bgm)
 
 
 func play_menu_select() -> void:
@@ -161,7 +185,13 @@ func _load_audio_stream(path: String, loop: bool) -> AudioStream:
 	var cache_key := "%s|%s" % [path, loop]
 	if _stream_cache.has(cache_key):
 		return _stream_cache[cache_key] as AudioStream
-	var stream := load(path) as AudioStream
+	var stream: AudioStream
+	if loop and path.get_extension().to_lower() == "wav":
+		stream = AudioStreamWAV.load_from_file(
+			ProjectSettings.globalize_path(path)
+		)
+	if stream == null:
+		stream = load(path) as AudioStream
 	if stream == null:
 		push_error("Audio stream could not be loaded: %s" % path)
 		return null

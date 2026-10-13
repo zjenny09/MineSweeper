@@ -512,6 +512,39 @@ func get_core_count() -> int:
 	return _core_count
 
 
+func refresh_localized_text() -> void:
+	if not is_instance_valid(_model):
+		return
+	var state := int(_model.get("state"))
+	if state == 1 and _boss_eye_total > 0:
+		if _boss_eye_face_index >= 0:
+			status_changed.emit(
+				tr("第%d/%d道雷眼出现 · 标记周围污染后双击雷眼") % [
+					_boss_eye_number,
+					_boss_eye_total,
+				]
+			)
+		elif _boss_eye_number <= 1:
+			status_changed.emit(tr("继续净化云球，等待第一道雷眼形成"))
+		else:
+			status_changed.emit(
+				tr("雷眼正在远处重组 · 继续净化等待第%d/%d道") % [
+					_boss_eye_number,
+					_boss_eye_total,
+				]
+			)
+		return
+	match state:
+		0:
+			status_changed.emit(tr("旋转球面，寻找安全起点"))
+		1:
+			status_changed.emit(tr("净化进行中"))
+		2:
+			status_changed.emit(tr("球面净化完成"))
+		3:
+			status_changed.emit(tr("污染扩散，重新生成后再试"))
+
+
 func set_interaction_enabled(enabled: bool) -> void:
 	_interaction_enabled = enabled
 	if not enabled:
@@ -548,7 +581,7 @@ func new_game() -> void:
 	_hovered_face = -1
 	_focused_face = _frontmost_face()
 	_model.call("new_game")
-	status_changed.emit("旋转球面，寻找安全起点")
+	status_changed.emit(tr("旋转球面，寻找安全起点"))
 	_refresh_all_faces()
 
 
@@ -1430,7 +1463,7 @@ func _on_breeze_assist_used(
 	_breeze_pending_result = result
 	_breeze_pending_remaining = remaining_uses
 	_start_breeze_effect(face_index)
-	status_changed.emit("随机助益触发 · 风正在吹向目标格")
+	status_changed.emit(tr("随机助益触发 · 风正在吹向目标格"))
 
 
 func _finish_breeze_effect() -> void:
@@ -1438,9 +1471,9 @@ func _finish_breeze_effect() -> void:
 	var result := _breeze_pending_result
 	var remaining_uses := _breeze_pending_remaining
 	var usage_text := (
-		"不限次数"
+		tr("不限次数")
 		if remaining_uses < 0
-		else "剩余%d次" % remaining_uses
+		else tr("剩余%d次") % remaining_uses
 	)
 	_breeze_pending_result = -1
 	_breeze_pending_remaining = 0
@@ -1451,13 +1484,13 @@ func _finish_breeze_effect() -> void:
 		_show_assist_feedback(face_index, Color("8edcf0"))
 		if int(_model.get("state")) < 2:
 			status_changed.emit(
-				"随机助益完成 · 污染核心已自动标记 · %s" % usage_text
+				tr("随机助益完成 · 污染核心已自动标记 · %s") % usage_text
 			)
 	else:
 		_show_assist_feedback(face_index, Color("72dfbb"))
 		if int(_model.get("state")) < 2:
 			status_changed.emit(
-				"随机助益完成 · 安全格已翻开 · %s" % usage_text
+				tr("随机助益完成 · 安全格已翻开 · %s") % usage_text
 			)
 	breeze_assist_used.emit(face_index, result, remaining_uses)
 
@@ -1469,7 +1502,7 @@ func _on_storm_guard_used(face_index: int, remaining_uses: int) -> void:
 	_cloud_shield_pending_remaining = remaining_uses
 	_dragging = false
 	_joy_rotation = Vector2.ZERO
-	status_changed.emit("云盾保护触发 · 云层正在包裹污染核心")
+	status_changed.emit(tr("云盾保护触发 · 云层正在包裹污染核心"))
 	queue_redraw()
 
 
@@ -1482,11 +1515,13 @@ func _finish_cloud_shield_effect() -> void:
 	_model.call("resolve_storm_guard")
 	_show_assist_feedback(face_index, Color("ffe486"))
 	var usage_text := (
-		"不限次数"
+		tr("不限次数")
 		if remaining_uses < 0
-		else "剩余%d次" % remaining_uses
+		else tr("剩余%d次") % remaining_uses
 	)
-	status_changed.emit("云盾保护成功 · 污染核心已自动标记 · %s" % usage_text)
+	status_changed.emit(
+		tr("云盾保护成功 · 污染核心已自动标记 · %s") % usage_text
+	)
 	storm_guard_used.emit(face_index, remaining_uses)
 
 
@@ -1503,9 +1538,9 @@ func _on_boss_eye_changed(
 	if face_index < 0:
 		if total_eyes > 0:
 			status_changed.emit(
-				"继续净化云球，等待第一道雷眼形成"
+				tr("继续净化云球，等待第一道雷眼形成")
 				if eye_number <= 1
-				else "雷眼正在远处重组 · 继续净化等待第%d/%d道" % [
+				else tr("雷眼正在远处重组 · 继续净化等待第%d/%d道") % [
 					eye_number,
 					total_eyes,
 				]
@@ -1515,7 +1550,7 @@ func _on_boss_eye_changed(
 	for neighbor in _faces[face_index]["neighbors"]:
 		_boss_eye_neighbor_lookup[int(neighbor)] = true
 	status_changed.emit(
-		"第%d/%d道雷眼出现 · 标记周围污染后双击雷眼" % [
+		tr("第%d/%d道雷眼出现 · 标记周围污染后双击雷眼") % [
 			eye_number,
 			total_eyes,
 		]
@@ -1531,7 +1566,7 @@ func _on_boss_eye_hit(
 ) -> void:
 	_boss_hit_face_index = face_index
 	_boss_hit_effect_time = BOSS_HIT_EFFECT_DURATION
-	status_changed.emit("雷眼击破 · %d/%d" % [cleared_eyes, total_eyes])
+	status_changed.emit(tr("雷眼击破 · %d/%d") % [cleared_eyes, total_eyes])
 	boss_eye_hit.emit(face_index, cleared_eyes, total_eyes)
 	queue_redraw()
 
@@ -1545,13 +1580,13 @@ func _on_model_state_changed(state: int) -> void:
 	gameplay_state_changed.emit(state)
 	match state:
 		0:
-			status_changed.emit("旋转球面，寻找安全起点")
+			status_changed.emit(tr("旋转球面，寻找安全起点"))
 		1:
-			status_changed.emit("净化进行中")
+			status_changed.emit(tr("净化进行中"))
 		2:
-			status_changed.emit("球面净化完成")
+			status_changed.emit(tr("球面净化完成"))
 		3:
-			status_changed.emit("污染扩散，重新生成后再试")
+			status_changed.emit(tr("污染扩散，重新生成后再试"))
 	queue_redraw()
 
 

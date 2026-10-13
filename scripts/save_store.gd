@@ -14,6 +14,8 @@ const WINDOW_MODE_MAXIMIZED := 1
 const WINDOW_MODE_FULLSCREEN := 2
 const OPERATION_MODE_MOUSE := 0
 const OPERATION_MODE_KEYBOARD := 1
+const LANGUAGE_CHINESE := "zh_CN"
+const LANGUAGE_ENGLISH := "en"
 const TEST_ALL_LEVELS_UNLOCKED := true
 
 var _save_path: String
@@ -207,6 +209,14 @@ func set_operation_mode(value: int) -> void:
 	_data["settings"]["operation_mode"] = mode
 
 
+func set_language(value: String) -> void:
+	_data["settings"]["language"] = (
+		LANGUAGE_ENGLISH
+		if value == LANGUAGE_ENGLISH
+		else LANGUAGE_CHINESE
+	)
+
+
 func get_master_volume() -> float:
 	return float(_data["settings"]["master_volume"])
 
@@ -225,6 +235,10 @@ func get_window_mode() -> int:
 
 func get_operation_mode() -> int:
 	return int(_data["settings"]["operation_mode"])
+
+
+func get_language() -> String:
+	return str(_data["settings"]["language"])
 
 
 func is_fullscreen() -> bool:
@@ -269,6 +283,7 @@ func _make_default_data() -> Dictionary:
 			"fullscreen": false,
 			"window_mode": WINDOW_MODE_MAXIMIZED,
 			"operation_mode": OPERATION_MODE_MOUSE,
+			"language": LANGUAGE_CHINESE,
 		},
 	}
 
@@ -357,6 +372,12 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 		if operation_mode < OPERATION_MODE_MOUSE or operation_mode > OPERATION_MODE_KEYBOARD:
 			operation_mode = OPERATION_MODE_MOUSE
 		normalized["settings"]["operation_mode"] = operation_mode
+		var language := str(source_settings.get("language", LANGUAGE_CHINESE))
+		normalized["settings"]["language"] = (
+			LANGUAGE_ENGLISH
+			if language == LANGUAGE_ENGLISH
+			else LANGUAGE_CHINESE
+		)
 
 	return normalized
 
@@ -464,6 +485,9 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		var operation_mode := _normalized_int(settings.get("operation_mode"), -1)
 		if operation_mode < OPERATION_MODE_MOUSE or operation_mode > OPERATION_MODE_KEYBOARD:
 			return false
+	if settings.has("language") \
+			and str(settings.get("language")) not in [LANGUAGE_CHINESE, LANGUAGE_ENGLISH]:
+		return false
 	return true
 
 

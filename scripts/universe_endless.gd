@@ -60,6 +60,10 @@ var _paused := false
 var _regions := 0
 var _purified_stars := 0
 var _distance := 0
+var _shield_remaining := 0
+var _shield_capacity := 0
+var _used_flags := 0
+var _total_mines := 0
 var _craft_time := 0.0
 var _warp_active := false
 var _nebula_speed := 0.055
@@ -105,6 +109,21 @@ func start_endless(_initial_scan_energy: int = 0) -> void:
 
 func set_operation_mode(_mode: int) -> void:
 	pass
+
+
+func refresh_localized_interface() -> void:
+	_refresh_stats()
+	_on_shield_changed(_shield_remaining, _shield_capacity)
+	_on_flags_changed(_used_flags, _total_mines)
+	if failure_overlay.visible:
+		failure_summary.text = (
+			tr("本次远征抵达 %d 光年\n净化星云 %d 片 · 净化星核 %d 颗")
+			% [_distance, _regions, _purified_stars]
+		)
+	if is_instance_valid(_mechanic_dialogue):
+		_mechanic_dialogue.refresh_localized_text()
+	if board.has_method("refresh_localized_text"):
+		board.call("refresh_localized_text")
 
 
 func set_seen_mechanic_guides(guide_ids: Array) -> void:
@@ -266,11 +285,15 @@ func _on_warp_changed(active: bool) -> void:
 
 
 func _on_shield_changed(remaining: int, capacity: int) -> void:
-	shield_label.text = "航行护盾\n%d/%d" % [remaining, capacity]
+	_shield_remaining = remaining
+	_shield_capacity = capacity
+	shield_label.text = tr("航行护盾\n%d/%d") % [remaining, capacity]
 
 
 func _on_flags_changed(used_flags: int, total_mines: int) -> void:
-	flags_label.text = "污染标记 %d/%d" % [used_flags, total_mines]
+	_used_flags = used_flags
+	_total_mines = total_mines
+	flags_label.text = tr("污染标记 %d/%d") % [used_flags, total_mines]
 
 
 func _on_voyage_stats_changed(
@@ -296,7 +319,7 @@ func _on_expedition_failed(
 	AudioManager.play_fail()
 	_refresh_stats()
 	failure_summary.text = (
-		"本次远征抵达 %d 光年\n净化星云 %d 片 · 净化星核 %d 颗"
+		tr("本次远征抵达 %d 光年\n净化星云 %d 片 · 净化星核 %d 颗")
 		% [distance, regions, purified_stars]
 	)
 	failure_overlay.visible = true
@@ -304,10 +327,10 @@ func _on_expedition_failed(
 
 
 func _refresh_stats() -> void:
-	regions_label.text = "已净化星云\n%d" % _regions
-	stars_label.text = "净化星核\n%d" % _purified_stars
-	distance_label.text = "航行距离\n%d 光年" % _distance
-	disturbance_label.text = "宇宙扰动\n%d/5" % clampi(
+	regions_label.text = tr("已净化星云\n%d") % _regions
+	stars_label.text = tr("净化星核\n%d") % _purified_stars
+	distance_label.text = tr("航行距离\n%d 光年") % _distance
+	disturbance_label.text = tr("宇宙扰动\n%d/5") % clampi(
 		1 + int(_regions / 2),
 		1,
 		5

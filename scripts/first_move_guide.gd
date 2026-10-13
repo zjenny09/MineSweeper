@@ -45,6 +45,7 @@ func _ready() -> void:
 	focus_mode = Control.FOCUS_NONE
 	_apply_text_styles()
 	_apply_button_styles()
+	_apply_locale_layout()
 	next_button.pressed.connect(_on_next_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	resized.connect(_on_resized)
@@ -85,6 +86,50 @@ func _apply_button_styles() -> void:
 	exit_button.add_theme_color_override("font_color", Color("5b4935"))
 	exit_button.add_theme_color_override("font_hover_color", Color("5b4935"))
 	exit_button.add_theme_color_override("font_pressed_color", Color("5b4935"))
+
+
+func _apply_locale_layout() -> void:
+	var english := TranslationServer.get_locale().begins_with("en")
+	if english:
+		bubble_root.size = Vector2(560.0, 212.0)
+		mascot.position = Vector2(22.0, 60.0)
+		mascot.size = Vector2(64.0, 64.0)
+		title_label.position = Vector2(94.0, 22.0)
+		title_label.size = Vector2(440.0, 30.0)
+		action_label.position = Vector2(94.0, 56.0)
+		action_label.size = Vector2(440.0, 66.0)
+		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		hint_label.position = Vector2(94.0, 126.0)
+		hint_label.size = Vector2(440.0, 34.0)
+		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		next_button_artwork.position = Vector2(258.0, 168.0)
+		next_button_artwork.size = Vector2(132.0, 34.0)
+		next_button.position = next_button_artwork.position
+		next_button.size = next_button_artwork.size
+		exit_button_artwork.position = Vector2(400.0, 168.0)
+		exit_button_artwork.size = Vector2(132.0, 34.0)
+		exit_button.position = exit_button_artwork.position
+		exit_button.size = exit_button_artwork.size
+		return
+	bubble_root.size = Vector2(484.0, 175.853)
+	mascot.position = Vector2(24.0, 43.0)
+	mascot.size = Vector2(64.0, 64.0)
+	title_label.position = Vector2(96.0, 31.0)
+	title_label.size = Vector2(360.0, 26.0)
+	action_label.position = Vector2(96.0, 62.0)
+	action_label.size = Vector2(360.0, 22.0)
+	action_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	hint_label.position = Vector2(96.0, 89.0)
+	hint_label.size = Vector2(360.0, 19.0)
+	hint_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	next_button_artwork.position = Vector2(220.0, 119.5)
+	next_button_artwork.size = Vector2(108.0, 32.0)
+	next_button.position = next_button_artwork.position
+	next_button.size = next_button_artwork.size
+	exit_button_artwork.position = Vector2(332.0, 122.92651)
+	exit_button_artwork.size = Vector2(108.0, 27.0)
+	exit_button.position = Vector2(332.0, 115.5)
+	exit_button.size = Vector2(108.0, 40.0)
 
 
 func _process(delta: float) -> void:
@@ -220,8 +265,15 @@ func is_keyboard_mode() -> bool:
 
 func get_action_text() -> String:
 	if not _action_text.is_empty():
-		return _action_text
-	return "按 J 从这里开始" if _keyboard_mode else "点这里开始第一次净化"
+		return tr(_action_text)
+	return tr("按 J 从这里开始") if _keyboard_mode else tr("点这里开始第一次净化")
+
+
+func refresh_localized_text() -> void:
+	_apply_locale_layout()
+	_refresh_copy()
+	_update_bubble_position()
+	queue_redraw()
 
 
 func get_stable_bubble_rect() -> Rect2:
@@ -272,24 +324,28 @@ func _refresh_copy() -> void:
 	var title := _title_text
 	if title.is_empty():
 		title = "小芽带你到安全起点啦！" if _keyboard_mode else "小芽找到安全起点啦！"
-	title_label.text = title
+	title_label.text = tr(title)
 	action_label.text = get_action_text()
-	hint_label.text = _hint_text if not _hint_text.is_empty() else "这是安全建议，也可以选择别处"
+	hint_label.text = (
+		tr(_hint_text)
+		if not _hint_text.is_empty()
+		else tr("这是安全建议，也可以选择别处")
+	)
 	if _dialogue_mode:
 		next_button.visible = true
 		next_button.disabled = false
 		next_button.text = (
-			"开始探索"
+			tr("开始探索")
 			if _dialogue_page_index >= _dialogue_pages.size() - 1
-			else "继续听"
+			else tr("继续听")
 		)
-		exit_button.text = "跳过介绍"
+		exit_button.text = tr("跳过介绍")
 		next_button_artwork.visible = true
 		exit_button_artwork.visible = true
 		exit_button.visible = true
 		return
-	next_button.text = "下一步"
-	exit_button.text = "退出引导"
+	next_button.text = tr("下一步")
+	exit_button.text = tr("退出引导")
 	next_button.visible = _show_next_button
 	next_button.disabled = not _show_next_button
 	exit_button.visible = true

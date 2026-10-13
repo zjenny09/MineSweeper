@@ -821,7 +821,7 @@ text = "继续游戏"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.5157, 0.3561, 0.66)
 theme_override_font_sizes/font_size = 11
-text = "v0.6.1  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇"
+text = "v0.7.0  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇"
 horizontal_alignment = 1
 
 [node name="ShowcasePanel" type="Control" parent="MainMenu" unique_id=705723809]
@@ -1119,7 +1119,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Settings/Center" unique_id=558534551]
-custom_minimum_size = Vector2(820, 570)
+custom_minimum_size = Vector2(820, 640)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_panel")
 
@@ -1219,6 +1219,23 @@ theme_override_font_sizes/font_size = 17
 text = "操作方式"
 
 [node name="OperationModeOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/OperationModeRow" unique_id=631579745]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="LanguageRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="LanguageTitle" type="Label" parent="Settings/Center/Panel/Margin/VBox/LanguageRow"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "语言 / Language"
+
+[node name="LanguageOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/LanguageRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2

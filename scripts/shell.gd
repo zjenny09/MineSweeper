@@ -7,6 +7,7 @@ const UNIVERSE_GAME_SCENE: PackedScene = preload("res://scenes/universe_endless.
 const SAVE_STORE_SCRIPT: Script = preload("res://scripts/save_store.gd")
 const OCEAN_ROUTE_SCRIPT: Script = preload("res://scripts/ocean_level_route.gd")
 const ART := preload("res://scripts/art_catalog.gd")
+const LOCALIZATION_STYLE := preload("res://scripts/localization_style.gd")
 const MENU_PRIMARY_PATH := ART.MENU_PRIMARY_NORMAL
 const MENU_PRIMARY_SELECTED_PATH := ART.MENU_PRIMARY_HOVER
 const MENU_PRIMARY_PRESSED_PATH := ART.MENU_PRIMARY_PRESSED
@@ -14,6 +15,8 @@ const MENU_PAPER_PATH := ART.MENU_SECONDARY_NORMAL
 const MENU_PAPER_SELECTED_PATH := ART.MENU_SECONDARY_HOVER
 const MENU_PAPER_PRESSED_PATH := ART.MENU_SECONDARY_PRESSED
 const MENU_FONT_PATH := ART.UI_FONT
+const LANGUAGE_CHINESE := "zh_CN"
+const LANGUAGE_ENGLISH := "en"
 const LEVEL_SELECT_BACKGROUND_PATH := ART.LEVEL_SELECT_DESKTOP_BACKGROUND
 const LEVEL_SELECT_MAP_PATH := ART.LEVEL_SELECT_LAND_MAP
 const LEVEL_SELECT_INFO_PATH := ART.LEVEL_SELECT_BOTTOM_INFO_BAR
@@ -104,6 +107,7 @@ const MECHANIC_GUIDE_FIRST_LEVELS := {
 @onready var sfx_toggle_button: CheckButton = %SfxToggleButton
 @onready var display_mode_option: OptionButton = %DisplayModeOption
 @onready var operation_mode_option: OptionButton = %OperationModeOption
+@onready var language_option: OptionButton = %LanguageOption
 @onready var settings_back_button: Button = %SettingsBackButton
 
 var save_store
@@ -140,18 +144,14 @@ func _ready() -> void:
 		return
 	save_store = SAVE_STORE_SCRIPT.new(save_path)
 	save_store.load_data()
+	TranslationServer.set_locale(save_store.get_language())
 	volume_slider.value = save_store.get_master_volume()
 	AudioManager.set_bgm_enabled(save_store.is_bgm_enabled())
 	AudioManager.set_sfx_enabled(save_store.is_sfx_enabled())
+	_refresh_settings_options()
 	_refresh_audio_toggle_buttons()
-	display_mode_option.add_item("窗口模式（1280 × 720）", 0)
-	display_mode_option.add_item("最大化窗口", 1)
-	display_mode_option.add_item("无边框全屏", 2)
-	display_mode_option.select(save_store.get_window_mode())
-	operation_mode_option.add_item("鼠标操作", 0)
-	operation_mode_option.add_item("键盘操作（方向键 / W S A D + J / K）", 1)
-	operation_mode_option.select(save_store.get_operation_mode())
 	_on_volume_changed(volume_slider.value)
+	LOCALIZATION_STYLE.apply(self, save_store.get_language())
 	_apply_display_mode(display_mode_option.selected)
 	_connect_controls()
 
@@ -283,26 +283,38 @@ func _apply_level_select_chapter_art() -> void:
 		else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	)
 	if sky:
-		level_select_title.text = "天空探险"
+		level_select_title.text = tr("天空探险")
 		level_select_title.add_theme_color_override("font_color", Color("49658f"))
-		level_previous_chapter_button.text = "← 海洋篇"
-		level_previous_chapter_button.tooltip_text = "返回海洋篇"
-		level_next_chapter_button.text = "宇宙篇 →"
-		level_next_chapter_button.tooltip_text = "进入无尽宇宙"
+		level_previous_chapter_button.text = tr("← 海洋篇")
+		level_previous_chapter_button.tooltip_text = tr("返回海洋篇")
+		level_next_chapter_button.text = tr("宇宙篇 →")
+		level_next_chapter_button.tooltip_text = tr("进入无尽宇宙")
 	elif ocean:
-		level_select_title.text = "海洋探险"
+		level_select_title.text = tr("海洋探险")
 		level_select_title.add_theme_color_override("font_color", Color("175c70"))
-		level_previous_chapter_button.text = "← 陆地篇"
-		level_previous_chapter_button.tooltip_text = "返回陆地篇"
-		level_next_chapter_button.text = "天空篇 →"
-		level_next_chapter_button.tooltip_text = "进入天空篇"
+		level_previous_chapter_button.text = tr("← 陆地篇")
+		level_previous_chapter_button.tooltip_text = tr("返回陆地篇")
+		level_next_chapter_button.text = tr("天空篇 →")
+		level_next_chapter_button.tooltip_text = tr("进入天空篇")
 	else:
-		level_select_title.text = "陆地探险"
+		level_select_title.text = tr("陆地探险")
 		level_select_title.add_theme_color_override("font_color", Color("1b4d2d"))
-		level_previous_chapter_button.text = "← 天空篇"
-		level_previous_chapter_button.tooltip_text = "返回天空篇"
-		level_next_chapter_button.text = "海洋篇 →"
-		level_next_chapter_button.tooltip_text = "进入海洋篇"
+		level_previous_chapter_button.text = tr("← 天空篇")
+		level_previous_chapter_button.tooltip_text = tr("返回天空篇")
+		level_next_chapter_button.text = tr("海洋篇 →")
+		level_next_chapter_button.tooltip_text = tr("进入海洋篇")
+	var shortcut_font_size := (
+		10
+		if save_store != null and save_store.get_language() == LANGUAGE_ENGLISH
+		else 12
+	)
+	for button in [
+		level_back_button,
+		level_previous_chapter_button,
+		level_next_chapter_button,
+		level_welcome_button,
+	]:
+		button.add_theme_font_size_override("font_size", shortcut_font_size)
 	if ocean:
 		level_select_title.offset_top = 96.0
 		level_select_title.offset_bottom = 152.0
@@ -438,7 +450,7 @@ func show_level_select(preserve_active_game: bool = false) -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = "返回关卡"
+	level_back_button.text = tr("返回关卡")
 	level_back_button.grab_focus()
 
 
@@ -469,7 +481,7 @@ func start_cli_level(level_number: int) -> void:
 func _start_universe_mode(persist_guides: bool = true) -> void:
 	_level_select_return_to_game = false
 	_destroy_active_game()
-	AudioManager.stop_bgm()
+	AudioManager.play_universe_bgm()
 	_record_progress = false
 	_persist_scan_state = false
 	_persist_guide_state = persist_guides
@@ -488,6 +500,7 @@ func _start_universe_mode(persist_guides: bool = true) -> void:
 	_show_only(game_host)
 	active_game.call("start_endless", 0)
 	active_game.call("set_operation_mode", save_store.get_operation_mode())
+	LOCALIZATION_STYLE.apply(active_game, save_store.get_language())
 
 
 func _on_universe_return_to_sky() -> void:
@@ -500,7 +513,7 @@ func _on_universe_return_to_sky() -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = "返回关卡"
+	level_back_button.text = tr("返回关卡")
 	level_back_button.grab_focus()
 
 
@@ -545,6 +558,7 @@ func _connect_controls() -> void:
 	sfx_toggle_button.toggled.connect(_on_sfx_toggled)
 	display_mode_option.item_selected.connect(_on_display_mode_selected)
 	operation_mode_option.item_selected.connect(_on_operation_mode_selected)
+	language_option.item_selected.connect(_on_language_selected)
 
 
 func _start_level_number(
@@ -595,6 +609,7 @@ func _start_level_number(
 		initial_scan_energy
 	)
 	active_game.call("set_operation_mode", save_store.get_operation_mode())
+	LOCALIZATION_STYLE.apply(active_game, save_store.get_language())
 
 
 func _on_start_journey_pressed() -> void:
@@ -822,12 +837,14 @@ func _rebuild_level_cards() -> void:
 
 	for level in chapter_levels:
 		_create_level_marker(level)
-	progress_label.text = "已完成：%d / %d" % [
+	progress_label.text = tr("已完成：%d / %d") % [
 		completed_count,
 		chapter_levels.size(),
 	]
 	_refresh_level_marker_states()
 	_update_level_selection_info()
+	if save_store != null:
+		LOCALIZATION_STYLE.apply(level_select, save_store.get_language())
 
 
 func _chapter_levels() -> Array:
@@ -917,9 +934,13 @@ func _create_level_marker(level: Dictionary) -> void:
 	button.pivot_offset = button.size * 0.5
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	var marker_name := str(level.name)
-	button.text = marker_name
-	button.tooltip_text = "选择第%d关 · %s" % [level_number, str(level.name)]
+	var marker_name := tr(str(level.name))
+	button.text = (
+		"%02d" % level_number
+		if save_store.get_language() == LANGUAGE_ENGLISH
+		else marker_name
+	)
+	button.tooltip_text = tr("选择第%d关 · %s") % [level_number, marker_name]
 	var marker_texture := _marker_texture_for_level(level_number)
 	if marker_texture != null:
 		var marker_style := StyleBoxTexture.new()
@@ -1013,9 +1034,9 @@ func _update_level_selection_info() -> void:
 	var level: Dictionary = GreenSweeperLevels.get_level_by_number(_selected_level_number)
 	if level.is_empty():
 		return
-	selected_level_label.text = "当前关卡：%02d %s" % [
+	selected_level_label.text = tr("当前关卡：%02d %s") % [
 		_selected_level_number,
-		str(level.name),
+		tr(str(level.name)),
 	]
 	var unlocked: bool = _is_select_level_unlocked(_selected_level_number)
 	var completed: bool = _is_select_level_completed(_selected_level_number)
@@ -1023,19 +1044,19 @@ func _update_level_selection_info() -> void:
 		_selected_level_number == save_store.get_last_played_level()
 		and not completed
 	)
-	var status: String = "未解锁"
+	var status: String = tr("未解锁")
 	if completed:
-		status = "已完成"
+		status = tr("已完成")
 	elif in_progress:
-		status = "正在进行"
+		status = tr("正在进行")
 	elif unlocked:
-		status = "已解锁"
-	selected_level_status_label.text = "状态：%s" % status
+		status = tr("已解锁")
+	selected_level_status_label.text = tr("状态：%s") % status
 	var best_time: int = save_store.get_best_time_ms(_selected_level_number)
 	selected_best_time_label.text = (
-		"最佳时间：%s" % _format_time(best_time)
+		tr("最佳时间：%s") % _format_time(best_time)
 		if best_time >= 0
-		else "最佳时间：--:--.-"
+		else tr("最佳时间：--:--.-")
 	)
 
 
@@ -1097,11 +1118,33 @@ func _refresh_continue_button() -> void:
 	continue_button.disabled = not can_continue
 	if can_continue:
 		var level: Dictionary = GreenSweeperLevels.get_level_by_number(last_level)
-		continue_button.text = "继续游戏 · %02d %s" % [last_level, level.name]
-		continue_button.tooltip_text = "重新生成上次游玩的关卡"
+		continue_button.text = tr("继续游戏 · %02d %s") % [
+			last_level,
+			tr(str(level.name)),
+		]
+		continue_button.tooltip_text = tr("重新生成上次游玩的关卡")
 	else:
-		continue_button.text = "继续游戏"
-		continue_button.tooltip_text = "开始第一局后即可继续"
+		continue_button.text = tr("继续游戏")
+		continue_button.tooltip_text = tr("开始第一局后即可继续")
+
+
+func _refresh_settings_options() -> void:
+	display_mode_option.clear()
+	display_mode_option.add_item(tr("窗口模式（1280 × 720）"), 0)
+	display_mode_option.add_item(tr("最大化窗口"), 1)
+	display_mode_option.add_item(tr("无边框全屏"), 2)
+	display_mode_option.select(save_store.get_window_mode())
+	operation_mode_option.clear()
+	operation_mode_option.add_item(tr("鼠标操作"), 0)
+	operation_mode_option.add_item(
+		tr("键盘操作（方向键 / W S A D + J / K）"),
+		1
+	)
+	operation_mode_option.select(save_store.get_operation_mode())
+	language_option.clear()
+	language_option.add_item(tr("简体中文"), 0)
+	language_option.add_item("English", 1)
+	language_option.select(1 if save_store.get_language() == LANGUAGE_ENGLISH else 0)
 
 
 func _on_volume_changed(value: float) -> void:
@@ -1143,8 +1186,12 @@ func _refresh_audio_toggle_buttons() -> void:
 	var sfx_enabled: bool = save_store.is_sfx_enabled()
 	bgm_toggle_button.set_pressed_no_signal(bgm_enabled)
 	sfx_toggle_button.set_pressed_no_signal(sfx_enabled)
-	bgm_toggle_button.text = "背景音乐：%s" % ("开启" if bgm_enabled else "关闭")
-	sfx_toggle_button.text = "游戏音效：%s" % ("开启" if sfx_enabled else "关闭")
+	bgm_toggle_button.text = tr("背景音乐：%s") % (
+		tr("开启") if bgm_enabled else tr("关闭")
+	)
+	sfx_toggle_button.text = tr("游戏音效：%s") % (
+		tr("开启") if sfx_enabled else tr("关闭")
+	)
 
 
 func _on_display_mode_selected(index: int) -> void:
@@ -1159,6 +1206,24 @@ func _on_operation_mode_selected(index: int) -> void:
 	if is_instance_valid(active_game):
 		active_game.call("set_operation_mode", save_store.get_operation_mode())
 	save_store.save_data()
+
+
+func _on_language_selected(index: int) -> void:
+	var language := LANGUAGE_ENGLISH if index == 1 else LANGUAGE_CHINESE
+	if save_store.get_language() == language:
+		return
+	save_store.set_language(language)
+	save_store.save_data()
+	TranslationServer.set_locale(language)
+	_refresh_settings_options()
+	_refresh_audio_toggle_buttons()
+	_apply_level_select_chapter_art()
+	_rebuild_level_cards()
+	_refresh_continue_button()
+	if is_instance_valid(active_game) \
+			and active_game.has_method("refresh_localized_interface"):
+		active_game.call("refresh_localized_interface")
+	LOCALIZATION_STYLE.apply(self, language)
 
 
 func _toggle_display_mode() -> void:

@@ -96,6 +96,10 @@ var _gameplay_state := 0
 var _scan_phase: int = ScanPhase.LOCKED_FIRST_REVEAL
 var _scan_energy := 0
 var _scan_target_global_position := Vector2.ZERO
+var _used_flags := 0
+var _maximum_flags := 0
+var _cleared_boss_eyes := 0
+var _total_boss_eyes := 0
 var _seen_mechanic_guides: Dictionary = {}
 var _active_mechanic_guide_id := &""
 
@@ -189,15 +193,15 @@ func _prepare_copied_interface() -> void:
 		if node != null:
 			node.visible = false
 	_apply_ocean_button_art()
-	subtitle_label.text = "第15关 · 云冠"
-	level_summary_label.text = "12个五边形 + 20个六边形\n污染核心 6"
-	objective_label.text = "旋转球面，净化全部安全面"
+	subtitle_label.text = tr("第15关 · 云冠")
+	level_summary_label.text = tr("12个五边形 + 20个六边形\n污染核心 6")
+	objective_label.text = tr("旋转球面，净化全部安全面")
 	instructions_label.text = (
-		"拖拽旋转 · 左键净化 · 右键标记 · C扫描\n"
-		+ "方向键选择 · W S A D旋转 · J翻开 · K标记"
+		tr("拖拽旋转 · 左键净化 · 右键标记 · C扫描\n")
+		+ tr("方向键选择 · W S A D旋转 · J翻开 · K标记")
 	)
 	flags_label.text = "0/6"
-	status_label.text = "旋转球面，寻找安全起点"
+	status_label.text = tr("旋转球面，寻找安全起点")
 	pause_overlay.visible = false
 	_update_timer_label()
 
@@ -235,6 +239,8 @@ func _mount_sky_sphere() -> void:
 	_sky_board.connect(
 		"flags_changed",
 		func(used_flags: int, max_flags: int) -> void:
+			_used_flags = used_flags
+			_maximum_flags = max_flags
 			flags_label.text = "%d/%d" % [used_flags, max_flags]
 	)
 	_sky_board.connect(
@@ -266,12 +272,16 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	var level_number := int(level["number"])
 	var core_count := int(level["core_count"])
 	var face_count := int(level.get("face_count", 32))
-	var structure_name := str(level.get("structure_name", "%d格云球" % face_count))
+	var structure_name := str(
+		level.get("structure_name", tr("%d格云球") % face_count)
+	)
 	var breeze_uses := int(level.get("breeze_assists", 0))
 	var breeze_chance := float(level.get("breeze_trigger_chance", 0.0))
 	var storm_guard_uses := int(level.get("storm_guard_assists", 0))
 	var storm_guard_chance := float(level.get("storm_guard_trigger_chance", 0.0))
 	var boss_eye_count := int(level.get("boss_eye_count", 0))
+	_cleared_boss_eyes = 0
+	_total_boss_eyes = boss_eye_count
 	_round_finished = false
 	_round_started = false
 	_gameplay_state = 0
@@ -291,22 +301,27 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 		storm_guard_chance,
 		boss_eye_count
 	)
-	subtitle_label.text = "第%d关 · %s" % [level_number, str(level["name"])]
-	level_summary_label.text = "%s · 共%d格\n污染核心 %d" % [
-		structure_name,
+	subtitle_label.text = tr("第%d关 · %s") % [level_number, tr(str(level["name"]))]
+	level_summary_label.text = tr("%s · 共%d格\n污染核心 %d") % [
+		tr(structure_name),
 		face_count,
 		core_count,
 	]
-	objective_label.text = "旋转球面，净化全部安全面"
+	objective_label.text = tr("旋转球面，净化全部安全面")
 	if boss_eye_count > 0:
-		objective_label.text = "持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d" % boss_eye_count
+		objective_label.text = (
+			tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d")
+			% boss_eye_count
+		)
 	elif storm_guard_uses != 0:
-		objective_label.text = "随机助益翻格或标雷 · 云盾保护概率拦截踩雷"
+		objective_label.text = tr("随机助益翻格或标雷 · 云盾保护概率拦截踩雷")
 	elif breeze_uses != 0:
-		objective_label.text = "净化时可能触发随机翻格或自动标雷"
+		objective_label.text = tr("净化时可能触发随机翻格或自动标雷")
+	_used_flags = 0
+	_maximum_flags = core_count
 	flags_label.text = "0/%d" % core_count
-	status_label.text = "旋转球面，寻找安全起点"
-	restart_button_label.text = "重新生成"
+	status_label.text = tr("旋转球面，寻找安全起点")
+	restart_button_label.text = tr("重新生成")
 	_initialize_scan_ability()
 	visible = true
 	level_started.emit(level_number)
@@ -315,6 +330,58 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 
 func set_operation_mode(_mode: int) -> void:
 	pass
+
+
+func refresh_localized_interface() -> void:
+	var level: Dictionary = LEVELS.PLAYABLE_LEVELS[current_level_index]
+	var level_number := int(level["number"])
+	var core_count := int(level["core_count"])
+	var face_count := int(level.get("face_count", 32))
+	var structure_name := str(level.get("structure_name", tr("%d格云球") % face_count))
+	subtitle_label.text = tr("第%d关 · %s") % [
+		level_number,
+		tr(str(level["name"])),
+	]
+	level_summary_label.text = tr("%s · 共%d格\n污染核心 %d") % [
+		tr(structure_name),
+		face_count,
+		core_count,
+	]
+	instructions_label.text = (
+		tr("拖拽旋转 · 左键净化 · 右键标记 · C扫描\n")
+		+ tr("方向键选择 · W S A D旋转 · J翻开 · K标记")
+	)
+	if _total_boss_eyes > 0:
+		objective_label.text = (
+			tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d")
+			% [_cleared_boss_eyes, _total_boss_eyes]
+		)
+	elif int(level.get("storm_guard_assists", 0)) != 0:
+		objective_label.text = tr("随机助益翻格或标雷 · 云盾保护概率拦截踩雷")
+	elif int(level.get("breeze_assists", 0)) != 0:
+		objective_label.text = tr("净化时可能触发随机翻格或自动标雷")
+	else:
+		objective_label.text = tr("旋转球面，净化全部安全面")
+	flags_label.text = "%d/%d" % [_used_flags, _maximum_flags]
+	if _round_finished:
+		if _gameplay_state == 2:
+			restart_button_label.text = (
+				tr("下一关")
+				if current_level_index < LEVELS.PLAYABLE_LEVELS.size() - 1
+				else tr("进入宇宙篇")
+			)
+		else:
+			restart_button_label.text = tr("重新生成")
+	elif not _round_started:
+		status_label.text = tr("旋转球面，寻找安全起点")
+		restart_button_label.text = tr("重新生成")
+	else:
+		status_label.text = tr("净化进行中")
+	_refresh_scan_ui()
+	first_move_guide.refresh_localized_text()
+	if is_instance_valid(_sky_board) \
+			and _sky_board.has_method("refresh_localized_text"):
+		_sky_board.call("refresh_localized_text")
 
 
 func set_seen_mechanic_guides(guide_ids: Array) -> void:
@@ -425,8 +492,10 @@ func _on_boss_eye_hit(
 	cleared_eyes: int,
 	total_eyes: int
 ) -> void:
+	_cleared_boss_eyes = cleared_eyes
+	_total_boss_eyes = total_eyes
 	objective_label.text = (
-		"持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d"
+		tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d")
 		% [cleared_eyes, total_eyes]
 	)
 
@@ -443,13 +512,13 @@ func _on_gameplay_state_changed(state: int) -> void:
 		AudioManager.play_level_win(current_level_index + 1)
 		level_completed.emit(current_level_index + 1, _elapsed_before_segment_ms)
 		restart_button_label.text = (
-			"下一关"
+			tr("下一关")
 			if current_level_index < LEVELS.PLAYABLE_LEVELS.size() - 1
-			else "进入宇宙篇"
+			else tr("进入宇宙篇")
 		)
 	else:
 		AudioManager.play_fail()
-		restart_button_label.text = "重新生成"
+		restart_button_label.text = tr("重新生成")
 
 
 func _on_primary_button_pressed() -> void:
@@ -477,12 +546,14 @@ func _restart_sky_board() -> void:
 	_round_started = false
 	_gameplay_state = 0
 	tabletop_actors.call("play_reaction", false, false)
-	restart_button_label.text = "重新生成"
+	restart_button_label.text = tr("重新生成")
 	var level: Dictionary = LEVELS.PLAYABLE_LEVELS[current_level_index]
 	var boss_eye_count := int(level.get("boss_eye_count", 0))
+	_cleared_boss_eyes = 0
+	_total_boss_eyes = boss_eye_count
 	if boss_eye_count > 0:
 		objective_label.text = (
-			"持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d"
+			tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d")
 			% boss_eye_count
 		)
 	_reset_timer()
@@ -554,7 +625,7 @@ func _request_scan_mode() -> void:
 	_scan_phase = ScanPhase.TARGETING
 	_sky_board.call("set_scan_target_mode", true)
 	tabletop_actors.call("begin_scan_targeting")
-	status_label.text = "选择一个隐藏格进行生态扫描"
+	status_label.text = tr("选择一个隐藏格进行生态扫描")
 	_refresh_scan_ui()
 
 
@@ -580,7 +651,7 @@ func _on_scan_target_requested(face_index: int) -> void:
 func _on_scan_completed(_face_index: int, result: int) -> void:
 	_scan_phase = ScanPhase.FINISHED if _round_finished else ScanPhase.CHARGING
 	tabletop_actors.call("play_scan_result", result, _scan_target_global_position)
-	status_label.text = "扫描确认：污染核心" if result == 1 else "扫描确认：安全面"
+	status_label.text = tr("扫描确认：污染核心") if result == 1 else tr("扫描确认：安全面")
 	_refresh_scan_ui()
 
 
@@ -590,7 +661,7 @@ func _cancel_scan_targeting() -> void:
 	_sky_board.call("set_scan_target_mode", false)
 	_scan_phase = ScanPhase.READY
 	tabletop_actors.call("cancel_scan_targeting")
-	status_label.text = "净化进行中"
+	status_label.text = tr("净化进行中")
 	_refresh_scan_ui()
 
 
@@ -617,18 +688,18 @@ func _refresh_scan_ui() -> void:
 		and not _paused
 		and not _round_finished
 	)
-	var tooltip := "完成首次净化后可使用生态扫描"
+	var tooltip := tr("完成首次净化后可使用生态扫描")
 	match _scan_phase:
 		ScanPhase.CHARGING:
-			tooltip = "扫描充能 %d/%d" % [_scan_energy, SCAN_CAPACITY]
+			tooltip = tr("扫描充能 %d/%d") % [_scan_energy, SCAN_CAPACITY]
 		ScanPhase.READY:
-			tooltip = "点击机器人或按 C，选择隐藏格扫描"
+			tooltip = tr("点击机器人或按 C，选择隐藏格扫描")
 		ScanPhase.TARGETING:
-			tooltip = "选择隐藏格；Esc、右键或 C 取消"
+			tooltip = tr("选择隐藏格；Esc、右键或 C 取消")
 		ScanPhase.RESOLVING:
-			tooltip = "正在扫描"
+			tooltip = tr("正在扫描")
 		ScanPhase.FINISHED:
-			tooltip = "本局已经结束"
+			tooltip = tr("本局已经结束")
 	tabletop_actors.call("set_scan_activation_enabled", enabled, tooltip)
 
 

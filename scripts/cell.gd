@@ -463,54 +463,58 @@ func _update_tooltip() -> void:
 		tooltip_text = ""
 		return
 	if _tidal_locked:
-		tooltip_text = "潮汐锁定：先完成当前潮区"
+		tooltip_text = tr("潮汐锁定：先完成当前潮区")
 	elif _is_pollution_node:
 		if _drifting_mine_active:
 			if _drifting_mine_resolved:
-				tooltip_text = "漂流污染源已净化"
+				tooltip_text = tr("漂流污染源已净化")
 			else:
-				tooltip_text = "中心污染源不可直接操作；完成浅蓝两圈普通格即可净化"
+				tooltip_text = tr("中心污染源不可直接操作；完成浅蓝两圈普通格即可净化")
 		else:
 			tooltip_text = (
-				"污染节点已净化"
+				tr("污染节点已净化")
 				if _pollution_node_cleansed
-				else "正确处理周围所有格子以净化污染节点"
+				else tr("正确处理周围所有格子以净化污染节点")
 			)
 	elif _is_obstacle:
-		tooltip_text = "遗迹障碍：不可净化、标记或扫描"
+		tooltip_text = tr("遗迹障碍：不可净化、标记或扫描")
 	elif _scan_target_mode:
 		tooltip_text = (
-			"点击扫描此格；右键取消"
+			tr("点击扫描此格；右键取消")
 			if _scan_candidate
-			else "此格不可扫描；右键取消"
+			else tr("此格不可扫描；右键取消")
 		)
 	elif _mobile_current_active:
 		tooltip_text = (
-			"漂流水雷已拦截"
+			tr("漂流水雷已拦截")
 			if _mobile_current_resolved
-			else "漂流候选物：左键翻开，右键标记；当前组四个之中两个是真水雷"
+			else tr("漂流候选物：左键翻开，右键标记；当前组四个之中两个是真水雷")
 		)
 	elif _mobile_current_corridor:
-		tooltip_text = "洋流水道：等待浅蓝区域经过"
+		tooltip_text = tr("洋流水道：等待浅蓝区域经过")
 	elif not _current_endpoint_countdowns.is_empty():
 		var countdown := _current_endpoint_countdowns[0]
-		tooltip_text = "洋流终点：再净化%d格，未锚定污染将向下游漂移" % countdown
+		tooltip_text = tr("洋流终点：再净化%d格，未锚定污染将向下游漂移") % countdown
 	elif _is_confirmed:
-		tooltip_text = "机器人已确认这里存在污染核心"
+		tooltip_text = tr("机器人已确认这里存在污染核心")
 	elif _is_flagged:
 		tooltip_text = (
-			"珊瑚已标记疑似污染源"
+			tr("珊瑚已标记疑似污染源")
 			if _is_hex
-			else "小芽已标记疑似污染源"
+			else tr("小芽已标记疑似污染源")
 		)
 	elif _is_guided:
-		tooltip_text = "建议从这里开始（也可以忽略）"
+		tooltip_text = tr("建议从这里开始（也可以忽略）")
 	elif _is_revealed and _adjacent_count == 0:
-		tooltip_text = "空白净化区"
+		tooltip_text = tr("空白净化区")
 	elif _is_revealed:
-		tooltip_text = "邻近污染核心：%d；双击可快速展开" % _adjacent_count
+		tooltip_text = tr("邻近污染核心：%d；双击可快速展开") % _adjacent_count
 	else:
-		tooltip_text = "左键净化，右键标记污染核心"
+		tooltip_text = tr("左键净化，右键标记污染核心")
+
+
+func refresh_localized_tooltip() -> void:
+	_update_tooltip()
 
 
 func uses_level_one_art() -> bool:
