@@ -1,0 +1,17 @@
+{
+  "canvas": [
+    1672,
+    941
+  ],
+  "basis": "One fixed color mother and its matching gray master; no independent redraws",
+  "areas": {
+    "云冠": 111017,
+    "风环": 88011,
+    "虹桥": 126500,
+    "浮岛": 105700,
+    "云脊": 89404,
+    "雷眼": 109955,
+    "天宫": 90223
+  },
+  "notes": "All seven overlays combined via mask-based color replacement recreate the master to <=4 RGB-level tolerance for changed ecosystem pixels. Use mask replacement or shader, not naive pixel-alpha overlay for strict fidelity. These are continuous ecological regions, not independently redrawable 3D assets."
+}

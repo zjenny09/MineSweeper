@@ -28,7 +28,7 @@
 
 ## 明确不做
 
-- 不覆盖 `docs/ui_history` 中的源图。
+- 不覆盖 `docs/art/ui_history` 中的源图。
 - 不修改六边形邻接、首翻规则、难度和扫描能量规则。
 - 不使用后台Agent；后续只执行前台、范围明确的步骤。
 - 不把自动抠图边缘、临时阴影或未经用户观看的画面标记为最终通过。
@@ -55,7 +55,7 @@
 ## 已修改文件
 
 - `docs/OCEAN_CHAPTER_PROGRESS.md`：本次迁移的恢复入口。
-- `docs/ui_history/海洋关卡棋盘概念图/棋盘和棋盘格/processed_candidates/ocean_desktop_clean_candidate.png`：1600×900无水印候选。
+- `docs/art/ui_history/海洋关卡棋盘概念图/棋盘和棋盘格/processed_candidates/ocean_desktop_clean_candidate.png`：1600×900无水印候选。
 - `.../ocean_board_tray_frame_candidate.png`：第一版浅蓝托盘候选，因与背景对比不足已停用。
 - `.../ocean_board_tray_frame2_candidate.png`：从 `棋盘托2.png` 提取的1600×900深蓝透明托盘，中央动态纸张窗口已挖空。
 - `.../ocean_board_tray_frame2_transparency_check.png`：深蓝托盘四色透明边缘检查。
@@ -73,17 +73,17 @@
 - `scripts/cell.gd`：严格接入棋盘格1/2/3、海洋数字与格内焦点；普通旗/胜利确认绘制珊瑚1，失败正确旗绘制珊瑚2，错误旗绘制珊瑚3，并从污染底格切换中排除所有已标记格。
 - `assets/art/ocean_levels/buttons/ocean_{pause,regenerate}_{normal,hover,focus,pressed}.png`：海洋快捷按钮四态；普通态保持原有米白纸材，交互态改为浅水蓝纸材并保留源纹理与源投影。
 - `scripts/main.gd`：按陆地/海洋章节切换按钮纹理和文字色；海洋按钮行从 `(-10,458)` 微调至 `(2,446)`，即向右12、向上12设计像素。
-- `docs/ui_history/海洋关卡棋盘概念图/UI元素/processed_candidates/ocean_flag_coral_{normal,failed}_candidate.png`：标记珊瑚1/2的透明候选。
+- `docs/art/ui_history/海洋关卡棋盘概念图/UI元素/processed_candidates/ocean_flag_coral_{normal,failed}_candidate.png`：标记珊瑚1/2的透明候选。
 - `.../ocean_flag_coral_transparency_check.png`：正常与失败珊瑚的四色透明边缘检查。
 - `assets/art/ocean_levels/markers/ocean_flag_coral_{normal,failed}.png`：海洋普通与正确失败标记正式运行素材。
-- `docs/ui_history/海洋关卡棋盘概念图/UI元素/processed_candidates/ocean_flag_coral_wrong_candidate.png`：从标记珊瑚3提取的错误旗透明候选。
+- `docs/art/ui_history/海洋关卡棋盘概念图/UI元素/processed_candidates/ocean_flag_coral_wrong_candidate.png`：从标记珊瑚3提取的错误旗透明候选。
 - `.../ocean_flag_coral_wrong_transparency_check.png`：错误旗珊瑚3的四色透明边缘检查。
 - `assets/art/ocean_levels/markers/ocean_flag_coral_wrong.png`：海洋错误旗正式运行素材。
 - `scripts/art_catalog.gd`：登记海洋舞台、格子、按钮及珊瑚标记素材。
 - `tests/ocean_levels_test.gd`：覆盖5种海洋棋盘纸张包围、空白纸边、安全窗口限制、共享边唯一性、三态纹理及珊瑚标记映射。
-- `docs/ocean_cell_theme_level6.png`：第6关正式隐藏格与鼠标悬停实机截图，未自动代替玩家翻开格子。
-- `docs/ocean_dynamic_paper_level6.png`：第6关动态纸张与凹痕实机截图，等待用户确认。
-- `docs/ocean_stage_level6_1280x720.png`：第6关深蓝托盘宏观舞台实机截图。
+- `docs/art/previews/ocean_cell_theme_level6.png`：第6关正式隐藏格与鼠标悬停实机截图，未自动代替玩家翻开格子。
+- `docs/art/previews/ocean_dynamic_paper_level6.png`：第6关动态纸张与凹痕实机截图，等待用户确认。
+- `docs/art/previews/ocean_stage_level6_1280x720.png`：第6关深蓝托盘宏观舞台实机截图。
 
 ## 测试记录
 
@@ -96,7 +96,7 @@
 - `desktop_layout_test.gd` 通过：陆地按钮仍位于 `(-10,458)` 并使用陆地素材；海洋按钮位于 `(2,446)`、加载海洋四态纹理且两按钮不重叠；1280×720/800对齐保持不变。
 - `board_smoke_test.gd` 与 `scan_ability_test.gd` 通过，珊瑚标记替换未改变旗计数、权威确认、命中多边形或扫描规则。
 - 用户已确认珊瑚1/2/3素材无问题；三种素材均已安装到正式运行目录并由游戏实际加载。
-- 第6关已用正式启动参数渲染并保存 `docs/ocean_cell_theme_level6.png`；预览未自动翻开安全格，翻开、数字和污染状态由用户在正式游戏中操作判断。
+- 第6关已用正式启动参数渲染并保存 `docs/art/previews/ocean_cell_theme_level6.png`；预览未自动翻开安全格，翻开、数字和污染状态由用户在正式游戏中操作判断。
 
 ## 当前阻塞
 

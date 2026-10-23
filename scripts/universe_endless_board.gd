@@ -172,7 +172,7 @@ func _gui_input(event: InputEvent) -> void:
 				))
 				if model.revealed[hovered_node] == 1 and live_count > 0:
 					status_changed.emit(
-						tr("数字%d = 普通星链污染%d + 虫洞污染%d · 共%d个邻星")
+						tr("TXT_0366")
 						% [
 							live_count,
 							live_count - wormhole_count,
@@ -182,7 +182,7 @@ func _gui_input(event: InputEvent) -> void:
 					)
 				else:
 					status_changed.emit(
-						tr("当前星核连接%d颗邻星 · 数字只统计这些线的另一端")
+						tr("TXT_0367")
 						% model.neighbors[hovered_node].size()
 					)
 		queue_redraw()

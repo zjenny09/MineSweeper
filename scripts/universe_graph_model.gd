@@ -27,10 +27,10 @@ const EARLY_REGION_DISTURBANCE := [1, 1, 2, 3, 4, 5, 5]
 const EARLY_REGION_AVERAGE_DEGREES := [3.2, 3.6, 4.0, 4.5, 5.0, 5.5, 6.0]
 const EARLY_REGION_SHAPES := [4, 2, 3, 5, 6, 7, 7]
 const SHAPE_NAMES := [
-	"星云团", "螺旋星臂", "星环", "双星团", "分叉星河",
-	"三岛星群", "星核辐射", "多核星群",
+	"TXT_0368", "TXT_0369", "TXT_0370", "TXT_0371", "TXT_0372",
+	"TXT_0374", "TXT_0375", "TXT_0373",
 ]
-const TOPOLOGY_NAMES := ["稀疏星链", "混合星网", "密集星网", "星核辐射网", "多恒星枢纽"]
+const TOPOLOGY_NAMES := ["TXT_0376", "TXT_0377", "TXT_0378", "TXT_0379", "TXT_0380"]
 
 var positions := PackedVector2Array()
 var neighbors: Array[PackedInt32Array] = []
@@ -48,8 +48,8 @@ var purified_stars := 0
 var mine_count := 0
 var shape_index := 0
 var shape_cluster_count := 1
-var shape_name := "星云团"
-var topology_name := "稀疏星链"
+var shape_name := "TXT_0368"
+var topology_name := "TXT_0376"
 var world_seed := 0
 var shield_remaining := SHIELD_CAPACITY
 
@@ -103,7 +103,7 @@ func reveal_node(node_index: int) -> void:
 			shield_used.emit(node_index, shield_remaining)
 			flags_changed.emit(get_used_flags(), mine_count)
 			status_changed.emit(
-				tr("星舰护盾拦截污染核心 · 已自动放置污染标记 · 护盾%d/%d")
+				tr("TXT_0359")
 				% [shield_remaining, SHIELD_CAPACITY]
 			)
 			changed.emit()
@@ -111,7 +111,7 @@ func reveal_node(node_index: int) -> void:
 		revealed[node_index] = 1
 		state = State.LOST
 		_reveal_all_mines()
-		status_changed.emit(tr("航行中断 · 星舰触碰污染核心"))
+		status_changed.emit(tr("TXT_0358"))
 		expedition_failed.emit(region_index, purified_stars)
 		changed.emit()
 		return
@@ -125,7 +125,7 @@ func toggle_flag(node_index: int) -> void:
 			or state in [State.REGION_COMPLETE, State.LOST]:
 		return
 	if flagged[node_index] == 0 and get_used_flags() >= mine_count:
-		status_changed.emit(tr("本区域的污染标记数量已经用完"))
+		status_changed.emit(tr("TXT_0360"))
 		return
 	flagged[node_index] = 0 if flagged[node_index] == 1 else 1
 	flags_changed.emit(get_used_flags(), mine_count)
@@ -188,9 +188,9 @@ func get_snapshot() -> Dictionary:
 func refresh_localized_text() -> void:
 	match state:
 		State.REGION_COMPLETE:
-			status_changed.emit(tr("当前星云已经净化 · 前方宇宙正在展开"))
+			status_changed.emit(tr("TXT_0362"))
 		State.LOST:
-			status_changed.emit(tr("航行中断 · 星舰触碰污染核心"))
+			status_changed.emit(tr("TXT_0358"))
 		_:
 			_emit_region_status()
 
@@ -269,7 +269,7 @@ func _emit_region_status() -> void:
 	if region_index < EARLY_REGION_DISTURBANCE.size():
 		disturbance_level = int(EARLY_REGION_DISTURBANCE[region_index])
 	var wormhole_text := (
-		tr(" · 虫洞%d条") % wormhole_edges.size()
+		tr("TXT_0364") % wormhole_edges.size()
 		if not wormhole_edges.is_empty()
 		else ""
 	)
@@ -282,7 +282,7 @@ func _emit_region_status() -> void:
 		total_degree += node_neighbors.size()
 	var average_degree := float(total_degree) / maxf(1.0, float(neighbors.size()))
 	status_changed.emit(
-		tr("%s · %s · 邻接%.1f（%d～%d） · 宇宙扰动%d/5%s")
+		tr("TXT_0365")
 		% [
 			tr(shape_name),
 			tr(topology_name),
@@ -880,7 +880,7 @@ func _chord_node(node_index: int) -> void:
 		return
 	for neighbor in neighbors[node_index]:
 		if (flagged[neighbor] == 1) != (mines[neighbor] == 1):
-			status_changed.emit(tr("污染标记位置不正确，星链没有展开"))
+			status_changed.emit(tr("TXT_0361"))
 			return
 	for neighbor in neighbors[node_index]:
 		if flagged[neighbor] == 0 and revealed[neighbor] == 0:
@@ -905,9 +905,9 @@ func _check_region_complete() -> void:
 		shield_changed.emit(shield_remaining, SHIELD_CAPACITY)
 	state = State.REGION_COMPLETE
 	status_changed.emit(
-		tr("当前星云已经净化 · 护盾恢复1层 · 前方宇宙正在展开")
+		tr("TXT_0363")
 		if shield_restored
-		else tr("当前星云已经净化 · 前方宇宙正在展开")
+		else tr("TXT_0362")
 	)
 	region_completed.emit(region_index, purified_stars)
 

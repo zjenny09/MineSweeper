@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://0jnxnl4l1dda"]
 
-[ext_resource type="Script" path="res://scripts/sky_level_prototype.gd" id="1_main"]
-[ext_resource type="Script" uid="uid://cowswlr74d766" path="res://scripts/board.gd" id="2_board"]
+[ext_resource type="Script" uid="uid://b7xm20t7rcidd" path="res://scripts/sky_level_prototype.gd" id="1_main"]
 [ext_resource type="Script" uid="uid://jlpif1t3tx33" path="res://scripts/eco_showcase.gd" id="3_eco"]
 [ext_resource type="Theme" uid="uid://b0hk7x6rxhuq1" path="res://themes/crayon_ui_theme.tres" id="4_theme"]
 [ext_resource type="Texture2D" uid="uid://c0vt2p8vsppjb" path="res://assets/art/land_levels/stage/unified_land_stage_shadow_grayblue.png" id="4_vchkt"]
@@ -14,43 +13,50 @@
 [ext_resource type="Texture2D" uid="uid://ch8samm2t61v7" path="res://assets/art/level_01/decorations/background_seed_sticker.png" id="9_nvyfr"]
 [ext_resource type="Script" uid="uid://bpfimmqm5wohk" path="res://scripts/round_button_focus_ring.gd" id="9_round_focus"]
 [ext_resource type="Script" uid="uid://bqmbp8o0omamr" path="res://scripts/level_one_decorations.gd" id="10_decorations"]
-[ext_resource type="Script" uid="uid://coqqrveafgv4p" path="res://scripts/guardian_ground_shadow.gd" id="11_guardian_shadow"]
 [ext_resource type="Texture2D" uid="uid://b1461nkpbiy2c" path="res://assets/art/level_01/interface/notes/note_straight.png" id="12_ty1g6"]
-[ext_resource type="Script" uid="uid://bkbmkgex8rjqu" path="res://scripts/board_cell_surface_preview.gd" id="13_cell_preview"]
 [ext_resource type="Texture2D" uid="uid://dogl5rx47oreg" path="res://assets/art/level_01/interface/notes/note_curved.png" id="13_j2jfr"]
 [ext_resource type="FontFile" uid="uid://byd7yngf1xx8x" path="res://assets/art/common/fonts/ui_handwritten_zh.ttf" id="14_bjg73"]
 [ext_resource type="AnimationLibrary" uid="uid://brglvfmcpjibc" path="res://animations/level_one_victory_animation_library.tres" id="14_victory_animation"]
-[ext_resource type="StyleBox" path="res://themes/level_one_board_shadow_style.tres" id="15_board_shadow_style"]
-[ext_resource type="Texture2D" uid="uid://vxs4et2gsqp8" path="res://assets/art/level_01/decorations/left_panel_sprout_healthy.png" id="15_bu4jf"]
 [ext_resource type="StyleBox" path="res://themes/victory_light_dot_style.tres" id="16_victory_dot_style"]
 [ext_resource type="Texture2D" uid="uid://d05wyk4rrpd6c" path="res://assets/art/tutorial/first_move_guide_frame.png" id="17_guide_frame"]
+[ext_resource type="Texture2D" uid="uid://dxm6xnq14pmai" path="res://assets/art/land_v2/characters/sprout_robot_claw.png" id="18_guide_claw"]
 [ext_resource type="Texture2D" uid="uid://ihwk6xqq2ngs" path="res://assets/art/tutorial/first_move_guide_robot_avatar.png" id="18_guide_mascot"]
-[ext_resource type="Texture2D" path="res://assets/art/land_levels/guardians/left_robot_guardian.png" id="18_o7ddy"]
-[ext_resource type="Texture2D" uid="uid://bcno84jvavtxm" path="res://assets/art/level_01/guardians/left_sprout_guardian_facing_left.png" id="19_0loja"]
 [ext_resource type="Texture2D" uid="uid://cgo2tylxhlnds" path="res://assets/art/tutorial/first_move_button_primary.png" id="19_guide_primary"]
 [ext_resource type="Texture2D" uid="uid://dpjsbsm5qqrca" path="res://assets/art/tutorial/first_move_button_secondary.png" id="20_guide_secondary"]
 [ext_resource type="AnimationLibrary" uid="uid://d2o18ajqset4i" path="res://animations/first_move_guide_animation_library.tres" id="21_guide_animation"]
-[ext_resource type="Texture2D" uid="uid://dfi3mp7c3e0im" path="res://assets/art/level_01/board/board_tray.png" id="22_ids8r"]
 [ext_resource type="Script" uid="uid://dywp744ws3npj" path="res://scripts/quick_action_button.gd" id="22_quick_action"]
 [ext_resource type="PackedScene" uid="uid://c1x28t3ncgyu8" path="res://scenes/land_sticker_sets.tscn" id="23_land_stickers"]
 [ext_resource type="Texture2D" uid="uid://kfebbawnsv3n" path="res://assets/art/level_01/decorations/status_note_bud_sticker.png" id="30_dnhof"]
-[ext_resource type="Texture2D" uid="uid://bak2btbkpqish" path="res://assets/art/level_01/guardians/right_panel_guardian_white_sitting.png" id="31_1v6qk"]
-[ext_resource type="Texture2D" uid="uid://dlqtqqpujmy1x" path="res://assets/art/level_01/guardians/right_panel_guardian_yellow_standing.png" id="32_augu2"]
-[ext_resource type="Texture2D" uid="uid://v6egk6lw67vq" path="res://assets/art/land_levels/buttons/pause_normal.png" id="33_tm6hj"]
-[ext_resource type="Texture2D" uid="uid://veteq4qnrb5u" path="res://assets/art/land_levels/buttons/pause_pressed.png" id="34_kf5aa"]
-[ext_resource type="Texture2D" uid="uid://cra7vtv0jshor" path="res://assets/art/land_levels/buttons/pause_hover.png" id="35_t5ykj"]
-[ext_resource type="Texture2D" uid="uid://ch8478mcjb435" path="res://assets/art/land_levels/buttons/pause_focus.png" id="36_e755i"]
-[ext_resource type="Texture2D" uid="uid://bijhjjkypdw6c" path="res://assets/art/land_levels/buttons/regenerate_normal.png" id="40_ro3en"]
-[ext_resource type="Texture2D" uid="uid://bfsft23ch3mkq" path="res://assets/art/land_levels/buttons/regenerate_pressed.png" id="41_od4ux"]
-[ext_resource type="Texture2D" uid="uid://dgoc8bxfaalkf" path="res://assets/art/land_levels/buttons/regenerate_hover.png" id="42_xhfw6"]
-[ext_resource type="Texture2D" uid="uid://cow3tb7j30n03" path="res://assets/art/land_levels/buttons/regenerate_focus.png" id="43_1epgm"]
 [ext_resource type="Texture2D" uid="uid://bws40xbsp6yyg" path="res://assets/art/level_01/interface/pause/pause_menu_frame.png" id="44_152kg"]
-[ext_resource type="Texture2D" path="res://assets/art/land_levels/background/land_tabletop_background5_clean.png" id="45_land_tabletop"]
+[ext_resource type="Texture2D" uid="uid://bnawbwmuu8n" path="res://assets/art/land_levels/background/land_tabletop_background5_clean.png" id="45_land_tabletop"]
 [ext_resource type="PackedScene" path="res://scenes/land_tabletop_actors.tscn" id="46_tabletop_actors"]
-[ext_resource type="Texture2D" path="res://assets/art/sky_levels/background/sky_desktop_clean.png" id="47_sky_background"]
-[ext_resource type="Texture2D" path="res://assets/art/sky_levels/stage/sky_board_frame.png" id="48_sky_frame"]
+[ext_resource type="Texture2D" uid="uid://k3tnq24cwx3u" path="res://assets/art/sky_v2/background/sky_background.png" id="47_sky_background"]
+[ext_resource type="Texture2D" uid="uid://cgulf11jgiou3" path="res://assets/art/sky_v2/stage/sky_triptych_stage.png" id="48_sky_frame"]
+[ext_resource type="Texture2D" uid="uid://dwlo8cw8t2b0q" path="res://assets/art/sky_v2/hud/top_attachment_strip.png" id="49_sky_top_attachment"]
+[ext_resource type="Texture2D" uid="uid://d1v5foskvbnp5" path="res://assets/art/land_v2/hud/counter_frame.png" id="50_sky_counter_frame"]
+[ext_resource type="Texture2D" uid="uid://b560jlaqecxve" path="res://assets/art/land_v2/hud/robot_emblem_smile.png" id="51_sky_emblem"]
+[ext_resource type="Texture2D" uid="uid://ds1q38vrqffkb" path="res://assets/art/sky_v2/hud/plane_counter_icon.png" id="52_sky_counter_icon"]
+[ext_resource type="Texture2D" uid="uid://38hps8cew3t1" path="res://assets/art/land_v2/hud/timer_icon.png" id="53_sky_timer_icon"]
+[ext_resource type="Texture2D" uid="uid://ygbnwcb2b3xu" path="res://assets/art/sky_v2/buttons/restart_button.png" id="54_sky_restart"]
+[ext_resource type="Texture2D" uid="uid://bfe057ceiu8vp" path="res://assets/art/sky_v2/buttons/settings_button.png" id="55_sky_settings"]
+[ext_resource type="Texture2D" uid="uid://d1iwgw7qfmtsh" path="res://assets/art/land_v2/characters/sprout_robot_right_front.png" id="56_sky_robot"]
+[ext_resource type="Texture2D" uid="uid://cqks622lhf84x" path="res://assets/art/sky_v2/characters/skycraft.png" id="57_skycraft"]
+[ext_resource type="Texture2D" uid="uid://dgkhf0hw3888y" path="res://assets/art/sky_v2/ecology/level_15_cloud_crown.png" id="58_sky_ecology"]
+[ext_resource type="Texture2D" uid="uid://bww1sjuhim11a" path="res://assets/art/sky_v2/characters/haze_defiant.png" id="59_sky_haze"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mlv25"]
+[sub_resource type="StyleBoxFlat" id="StyleBox_ocean_board_paper"]
+bg_color = Color(0.973, 0.956, 0.851, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.443, 0.729, 0.762, 0.62)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cajqj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBox_gameplay_empty"]
 
@@ -108,18 +114,6 @@ texture = ExtResource("20_guide_secondary")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ih3m7"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_ocean_board_paper"]
-bg_color = Color(0.973, 0.956, 0.851, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.443, 0.729, 0.762, 0.62)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
-
 [node name="SkyLevel15Prototype" type="Control" unique_id=764041858]
 layout_mode = 3
 anchors_preset = 15
@@ -140,14 +134,14 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("5_paper")
 
-[node name="SkyStage" type="Control" parent="."]
+[node name="SkyStage" type="Control" parent="." unique_id=1245685128]
 unique_name_in_owner = true
-layout_mode = 0
+anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 
-[node name="SkyDeskBackground" type="TextureRect" parent="SkyStage"]
+[node name="SkyDeskBackground" type="TextureRect" parent="SkyStage" unique_id=919722252]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -160,7 +154,7 @@ texture = ExtResource("47_sky_background")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="OceanBoardPaper" type="Panel" parent="SkyStage"]
+[node name="OceanBoardPaper" type="Panel" parent="SkyStage" unique_id=469757412]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
@@ -171,20 +165,867 @@ offset_bottom = 550.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_ocean_board_paper")
 
-[node name="SkyBoardFrame" type="TextureRect" parent="SkyStage"]
+[node name="SkyBoardFrame" type="TextureRect" parent="SkyStage" unique_id=1441998235]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -20.0
-offset_bottom = -20.0
+offset_left = 100.0
+offset_top = 37.0
+offset_right = -130.0
+offset_bottom = -163.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("48_sky_frame")
 expand_mode = 1
+
+[node name="SkyTopHud" type="Control" parent="SkyStage" unique_id=117086274]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 176.0
+offset_top = 33.0
+offset_right = 1616.0
+offset_bottom = 145.85713
+scale = Vector2(0.7, 0.7)
+mouse_filter = 2
+
+[node name="Attachment" type="TextureRect" parent="SkyStage/SkyTopHud" unique_id=1759721231]
+layout_mode = 0
+offset_left = 291.4286
+offset_top = -4.2857113
+offset_right = 1005.71423
+offset_bottom = 95.71428
+mouse_filter = 2
+texture = ExtResource("49_sky_top_attachment")
+expand_mode = 1
+
+[node name="MineCounterFrame" type="TextureRect" parent="SkyStage/SkyTopHud" unique_id=1252244860]
+layout_mode = 0
+offset_left = 377.14288
+offset_right = 584.0
+offset_bottom = 90.0
+mouse_filter = 2
+texture = ExtResource("50_sky_counter_frame")
+expand_mode = 1
+
+[node name="TimerCounterFrame" type="TextureRect" parent="SkyStage/SkyTopHud" unique_id=1416963785]
+layout_mode = 0
+offset_left = 696.0
+offset_right = 924.2857
+offset_bottom = 90.0
+mouse_filter = 2
+texture = ExtResource("50_sky_counter_frame")
+expand_mode = 1
+
+[node name="RobotEmblem" type="TextureRect" parent="SkyStage/SkyTopHud" unique_id=556727101]
+layout_mode = 0
+offset_left = 591.4286
+offset_top = -17.142847
+offset_right = 691.4286
+offset_bottom = 82.857155
+mouse_filter = 2
+texture = ExtResource("51_sky_emblem")
+expand_mode = 1
+
+[node name="MineCounterIcon" type="TextureRect" parent="SkyStage/SkyTopHud" unique_id=1586275531]
+layout_mode = 0
+offset_left = 394.2857
+offset_top = 18.0
+offset_right = 455.7143
+offset_bottom = 75.0
+mouse_filter = 2
+texture = ExtResource("52_sky_counter_icon")
+expand_mode = 1
+
+[node name="TimerCounterIcon" type="TextureRect" parent="SkyStage/SkyTopHud" unique_id=362855912]
+layout_mode = 0
+offset_left = 722.1428
+offset_top = 15.142862
+offset_right = 774.1428
+offset_bottom = 73.14286
+mouse_filter = 2
+texture = ExtResource("53_sky_timer_icon")
+expand_mode = 1
+
+[node name="SkyMineCounterLabel" type="Label" parent="SkyStage/SkyTopHud" unique_id=35247935]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 470.0
+offset_top = 18.0
+offset_right = 574.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.91, 0.98, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.03, 0.12, 0.18, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 30
+text = "0/6"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkyTimerCounterLabel" type="Label" parent="SkyStage/SkyTopHud" unique_id=1951571817]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 787.1429
+offset_top = 15.714288
+offset_right = 891.1429
+offset_bottom = 73.71429
+theme_override_colors/font_color = Color(0.91, 0.98, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.03, 0.12, 0.18, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 22
+text = "00:00.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkyCraft" type="TextureRect" parent="SkyStage" unique_id=1516327421]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 88.0
+offset_top = 607.0
+offset_right = 270.0
+offset_bottom = 717.0
+mouse_filter = 2
+texture = ExtResource("57_skycraft")
+expand_mode = 1
 stretch_mode = 5
+
+[node name="SkyRobot" type="TextureRect" parent="SkyStage" unique_id=840202291]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 122.0
+offset_top = 540.0
+offset_right = 227.0
+offset_bottom = 680.0
+mouse_filter = 2
+texture = ExtResource("56_sky_robot")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyScanDotPreview" type="Control" parent="SkyStage" unique_id=1292114637]
+unique_name_in_owner = true
+visible = false
+z_index = 8
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ScanDotA" type="Panel" parent="SkyStage/SkyScanDotPreview" unique_id=902849026]
+layout_mode = 0
+offset_left = 160.28
+offset_top = 527.33
+offset_right = 168.6
+offset_bottom = 535.65
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="ScanDotB" type="Panel" parent="SkyStage/SkyScanDotPreview" unique_id=1009014729]
+layout_mode = 0
+offset_left = 179.0
+offset_top = 519.01
+offset_right = 187.32
+offset_bottom = 527.33
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="ScanDotC" type="Panel" parent="SkyStage/SkyScanDotPreview" unique_id=103206829]
+layout_mode = 0
+offset_left = 197.72
+offset_top = 527.33
+offset_right = 206.04
+offset_bottom = 535.65
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="SkyEcology" type="TextureRect" parent="SkyStage" unique_id=1736658361]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 348.0
+offset_top = 535.0
+offset_right = 897.0
+offset_bottom = 718.0
+mouse_filter = 2
+texture = ExtResource("58_sky_ecology")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyMonster" type="TextureRect" parent="SkyStage" unique_id=629513868]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1029.0
+offset_top = 565.0
+offset_right = 1146.0
+offset_bottom = 675.0
+mouse_filter = 2
+texture = ExtResource("59_sky_haze")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyLeftInfo" type="Control" parent="SkyStage" unique_id=171445644]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 114.0
+offset_top = 119.0
+offset_right = 414.0
+offset_bottom = 579.0
+pivot_offset = Vector2(150, 230)
+
+[node name="InfoBackShadow" type="Control" parent="SkyStage/SkyLeftInfo" unique_id=1982118706]
+visible = false
+anchors_preset = 0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 294.0
+offset_bottom = 424.0
+rotation = 0.0523599
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+script = ExtResource("7_note_shadow")
+curved_outline = false
+
+[node name="InfoBackArtwork" type="TextureRect" parent="SkyStage/SkyLeftInfo" unique_id=737481006]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+layout_mode = 0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 294.0
+offset_bottom = 424.0
+rotation = 0.0523599
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+texture = ExtResource("12_ty1g6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoTopShadow" type="Control" parent="SkyStage/SkyLeftInfo" unique_id=1651198411]
+visible = false
+z_index = 2
+anchors_preset = 0
+offset_left = 6.0
+offset_top = 28.0
+offset_right = 294.0
+offset_bottom = 447.0
+rotation = -0.0698132
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+script = ExtResource("7_note_shadow")
+shadow_scale = 0.2
+
+[node name="InfoNoteArtwork" type="TextureRect" parent="SkyStage/SkyLeftInfo" unique_id=1485946935]
+unique_name_in_owner = true
+visible = false
+z_index = 3
+layout_mode = 0
+offset_left = 6.0
+offset_top = 28.0
+offset_right = 294.0
+offset_bottom = 447.0
+rotation = -0.0698132
+pivot_offset = Vector2(144, 209.5)
+mouse_filter = 2
+texture = ExtResource("13_j2jfr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Margin" type="MarginContainer" parent="SkyStage/SkyLeftInfo" unique_id=562472609]
+z_index = 4
+layout_mode = 0
+offset_left = 23.0
+offset_top = 31.0
+offset_right = 245.0
+offset_bottom = 444.0
+pivot_offset = Vector2(111, 206.5)
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="SkyStage/SkyLeftInfo/Margin" unique_id=1804207696]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SubtitleLabel" type="Label" parent="SkyStage/SkyLeftInfo/Margin/VBox" unique_id=563304847]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 20
+text = "TXT_0096"
+horizontal_alignment = 1
+
+[node name="InstructionsTitle" type="Label" parent="SkyStage/SkyLeftInfo/Margin/VBox" unique_id=1419730431]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 14
+text = "TXT_0113"
+
+[node name="InstructionsLabel" type="Label" parent="SkyStage/SkyLeftInfo/Margin/VBox" unique_id=1027751501]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.9)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 12
+text = "TXT_0458"
+autowrap_mode = 2
+
+[node name="BossStage" type="Control" parent="SkyStage/SkyLeftInfo/Margin/VBox" unique_id=686536261]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 148)
+layout_mode = 2
+
+[node name="BossRootLineA" type="Line2D" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=1446847590]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 35, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossRootLineB" type="Line2D" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=764196486]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 89, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossRootLineC" type="Line2D" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=512498133]
+unique_name_in_owner = true
+points = PackedVector2Array(89, 72, 143, 119)
+width = 3.0
+default_color = Color(0.3804, 0.1608, 0.451, 0.82)
+antialiased = true
+
+[node name="BossPortrait" type="TextureRect" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=445277164]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 37.0
+offset_right = 141.0
+offset_bottom = 102.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorA" type="TextureRect" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=766443676]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 111.0
+offset_right = 53.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorB" type="TextureRect" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=1136203861]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 71.0
+offset_top = 111.0
+offset_right = 107.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossAnchorC" type="TextureRect" parent="SkyStage/SkyLeftInfo/Margin/VBox/BossStage" unique_id=450374211]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 125.0
+offset_top = 111.0
+offset_right = 161.0
+offset_bottom = 147.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BottomBreathingSpace" type="Control" parent="SkyStage/SkyLeftInfo/Margin/VBox" unique_id=598139312]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+
+[node name="SkyBoardArea" type="Control" parent="SkyStage" unique_id=2120942765]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 330.0
+offset_top = 26.0
+offset_right = 950.0
+offset_bottom = 694.0
+
+[node name="BoardCenter" type="CenterContainer" parent="SkyStage/SkyBoardArea" unique_id=946514675]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -14.0
+offset_top = -33.0
+offset_right = -14.0
+offset_bottom = -33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Board" type="Control" parent="SkyStage/SkyBoardArea/BoardCenter" unique_id=1576281263]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(470, 470)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="FirstMoveGuide" type="Control" parent="SkyStage/SkyBoardArea" unique_id=976973167]
+unique_name_in_owner = true
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_guide")
+
+[node name="GuideBubbleRoot" type="Control" parent="SkyStage/SkyBoardArea/FirstMoveGuide" unique_id=1271904294]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 68.0
+offset_top = 246.07349
+offset_right = 552.0
+offset_bottom = 421.9265
+mouse_filter = 1
+
+[node name="GuideFrameTexture" type="TextureRect" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=1251306829]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("17_guide_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideCharacterRig" type="Control" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=1611675326]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 24.0
+offset_top = 43.0
+offset_right = 124.0
+offset_bottom = 115.0
+mouse_filter = 2
+
+[node name="GuideMascot" type="TextureRect" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot/GuideCharacterRig" unique_id=357312411]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+pivot_offset = Vector2(32, 32)
+mouse_filter = 2
+texture = ExtResource("18_guide_mascot")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideClaw" type="TextureRect" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot/GuideCharacterRig" unique_id=349868034]
+unique_name_in_owner = true
+z_index = 1
+layout_mode = 0
+offset_left = 52.0
+offset_top = 36.0
+offset_right = 84.0
+offset_bottom = 68.0
+pivot_offset = Vector2(6, 16)
+mouse_filter = 2
+texture = ExtResource("18_guide_claw")
+expand_mode = 1
+stretch_mode = 5
+flip_v = true
+
+[node name="GuideMascotAnimationPlayer" type="AnimationPlayer" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=1833518851]
+libraries/ = ExtResource("21_guide_animation")
+autoplay = &"sway"
+
+[node name="GuideTitle" type="Label" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=824298385]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 116.0
+offset_top = 31.0
+offset_right = 456.0
+offset_bottom = 65.0
+theme_override_colors/font_color = Color(0.27450982, 0.6156863, 0.39607844, 1)
+theme_override_font_sizes/font_size = 17
+text = "TXT_0241"
+vertical_alignment = 1
+
+[node name="GuideAction" type="Label" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=1625000610]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 116.0
+offset_top = 62.0
+offset_right = 456.0
+offset_bottom = 91.0
+theme_override_colors/font_color = Color(0.105882354, 0.1764706, 0.13333334, 1)
+theme_override_font_sizes/font_size = 14
+text = "TXT_0244"
+vertical_alignment = 1
+
+[node name="GuideHint" type="Label" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=1256968699]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 116.0
+offset_top = 89.0
+offset_right = 456.0
+offset_bottom = 113.0
+theme_override_colors/font_color = Color(0.105882354, 0.1764706, 0.13333334, 0.68)
+theme_override_font_sizes/font_size = 11
+text = "TXT_0246"
+vertical_alignment = 1
+
+[node name="NextButtonArtwork" type="TextureRect" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=1810678733]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 220.0
+offset_top = 119.5
+offset_right = 328.0
+offset_bottom = 151.5
+mouse_filter = 2
+texture = ExtResource("19_guide_primary")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TutorialNextButton" type="Button" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=444075386]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 220.0
+offset_top = 119.5
+offset_right = 328.0
+offset_bottom = 152.5
+focus_mode = 0
+theme_override_colors/font_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_colors/font_pressed_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_colors/font_hover_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_colors/font_disabled_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cajqj")
+disabled = true
+text = "TXT_0250"
+
+[node name="ExitButtonArtwork" type="TextureRect" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=863359625]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 332.0
+offset_top = 122.92651
+offset_right = 440.0
+offset_bottom = 149.92651
+mouse_filter = 2
+texture = ExtResource("20_guide_secondary")
+expand_mode = 1
+
+[node name="TutorialExitButton" type="Button" parent="SkyStage/SkyBoardArea/FirstMoveGuide/GuideBubbleRoot" unique_id=76935980]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 332.0
+offset_top = 115.5
+offset_right = 440.0
+offset_bottom = 155.5
+focus_mode = 0
+theme_override_colors/font_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_colors/font_pressed_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_colors/font_hover_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_colors/font_disabled_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_cajqj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cajqj")
+text = "TXT_0251"
+
+[node name="SkyRightInfo" type="Control" parent="SkyStage" unique_id=1515148994]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 903.0
+offset_top = 168.0
+offset_right = 1113.0
+offset_bottom = 586.0
+pivot_offset = Vector2(105, 209)
+
+[node name="StatusNoteShadow" type="Control" parent="SkyStage/SkyRightInfo" unique_id=2066925406]
+visible = false
+show_behind_parent = true
+anchors_preset = 0
+offset_right = 210.0
+offset_bottom = 418.0
+mouse_filter = 2
+script = ExtResource("7_note_shadow")
+
+[node name="StatusNoteArtwork" type="TextureRect" parent="SkyStage/SkyRightInfo" unique_id=882689816]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 210.0
+offset_bottom = 418.0
+mouse_filter = 2
+texture = ExtResource("13_j2jfr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Margin" type="MarginContainer" parent="SkyStage/SkyRightInfo" unique_id=782201458]
+layout_mode = 0
+offset_top = -33.0
+offset_right = 210.0
+offset_bottom = 385.0
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="SkyStage/SkyRightInfo/Margin" unique_id=1632027872]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="ObjectiveTitle" type="Label" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=1374323380]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 14
+text = "TXT_0112"
+
+[node name="ObjectiveLabel" type="Label" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=979827316]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 13
+text = "TXT_0114"
+autowrap_mode = 2
+
+[node name="FlagsRow" type="HBoxContainer" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=1878153026]
+layout_mode = 2
+
+[node name="StatusSeparator" type="HSeparator" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=206704043]
+modulate = Color(0.0863, 0.251, 0.1176, 0.62)
+layout_mode = 2
+
+[node name="StatusTitle" type="Label" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=1658996482]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 15
+text = "TXT_0156"
+
+[node name="StatusLabel" type="Label" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=1043425687]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 14
+text = "TXT_0129"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ScanFallbackRow" type="HBoxContainer" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=2057104311]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="ScanFallbackDots" type="HBoxContainer" parent="SkyStage/SkyRightInfo/Margin/VBox/ScanFallbackRow" unique_id=3131948]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="OceanScanDotA" type="Panel" parent="SkyStage/SkyRightInfo/Margin/VBox/ScanFallbackRow/ScanFallbackDots" unique_id=1887918251]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="OceanScanDotB" type="Panel" parent="SkyStage/SkyRightInfo/Margin/VBox/ScanFallbackRow/ScanFallbackDots" unique_id=1628217154]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="OceanScanDotC" type="Panel" parent="SkyStage/SkyRightInfo/Margin/VBox/ScanFallbackRow/ScanFallbackDots" unique_id=1006567492]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("16_victory_dot_style")
+
+[node name="ScanFallbackStatus" type="Label" parent="SkyStage/SkyRightInfo/Margin/VBox/ScanFallbackRow" unique_id=1142330432]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 11
+text = "TXT_0194"
+vertical_alignment = 1
+
+[node name="ScanFallbackButton" type="Button" parent="SkyStage/SkyRightInfo/Margin/VBox/ScanFallbackRow" unique_id=238562094]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 28)
+layout_mode = 2
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
+theme_override_colors/font_disabled_color = Color(0.25, 0.35, 0.29, 0.55)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 11
+text = "TXT_0405"
+
+[node name="Fill" type="Control" parent="SkyStage/SkyRightInfo/Margin/VBox" unique_id=1905537134]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkyQuickButtons" type="Control" parent="SkyStage" unique_id=36696557]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 863.0
+offset_top = 407.0
+offset_right = 1133.0
+offset_bottom = 497.0
+
+[node name="PauseButton" type="TextureButton" parent="SkyStage/SkyQuickButtons" unique_id=245970244]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 0
+offset_left = 148.0
+offset_right = 238.0
+offset_bottom = 90.0
+tooltip_text = "TXT_0146"
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("55_sky_settings")
+texture_pressed = ExtResource("55_sky_settings")
+texture_hover = ExtResource("55_sky_settings")
+texture_focused = ExtResource("55_sky_settings")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("22_quick_action")
+
+[node name="PauseButtonShadow" type="Control" parent="SkyStage/SkyQuickButtons/PauseButton" unique_id=1334421812]
+visible = false
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_round_shadow")
+
+[node name="PauseButtonFocusRing" type="Control" parent="SkyStage/SkyQuickButtons/PauseButton" unique_id=137787420]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_round_focus")
+
+[node name="PauseButtonLabel" type="Label" parent="SkyStage/SkyQuickButtons/PauseButton" unique_id=498523127]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 16.0
+offset_right = 3.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 13
+text = "TXT_0148"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartButton" type="TextureButton" parent="SkyStage/SkyQuickButtons" unique_id=1791830909]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 0
+offset_left = 44.0
+offset_right = 134.0
+offset_bottom = 90.0
+tooltip_text = "TXT_0143"
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("54_sky_restart")
+texture_pressed = ExtResource("54_sky_restart")
+texture_hover = ExtResource("54_sky_restart")
+texture_focused = ExtResource("54_sky_restart")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("22_quick_action")
+
+[node name="RestartButtonShadow" type="Control" parent="SkyStage/SkyQuickButtons/RestartButton" unique_id=70982912]
+visible = false
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_round_shadow")
+
+[node name="RestartButtonFocusRing" type="Control" parent="SkyStage/SkyQuickButtons/RestartButton" unique_id=734853622]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_round_focus")
+
+[node name="RestartButtonLabel" type="Label" parent="SkyStage/SkyQuickButtons/RestartButton" unique_id=263313145]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 12
+text = "TXT_0144"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LandDeskBackground" type="TextureRect" parent="." unique_id=1486400221]
 unique_name_in_owner = true
@@ -289,6 +1130,7 @@ stretch_mode = 5
 
 [node name="EcoShowcase" type="Control" parent="." unique_id=987138976]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -299,262 +1141,31 @@ mouse_filter = 2
 script = ExtResource("3_eco")
 gameplay_full_bleed = true
 
-[node name="PageMargin" type="MarginContainer" parent="." unique_id=286851651]
+[node name="PageMargin" type="Control" parent="." unique_id=286851651]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 26
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 26
 
-[node name="Columns" type="HBoxContainer" parent="PageMargin" unique_id=2020661513]
-layout_mode = 2
-theme_override_constants/separation = 18
-
-[node name="LeftColumn" type="Control" parent="PageMargin/Columns" unique_id=1021890576]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-
-[node name="EnvironmentPanel" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=171445644]
-unique_name_in_owner = true
+[node name="Columns" type="Control" parent="PageMargin" unique_id=2020661513]
+visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -128.0
-offset_top = -266.0
-offset_right = 172.0
-offset_bottom = 194.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(150, 230)
 
-[node name="InfoBackShadow" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=1982118706]
+[node name="LeftColumn" type="Control" parent="PageMargin/Columns" unique_id=1021890576]
 visible = false
 anchors_preset = 0
-offset_left = 6.0
-offset_top = 5.0
-offset_right = 294.0
-offset_bottom = 424.0
-rotation = 0.0523599
-pivot_offset = Vector2(144, 209.5)
-mouse_filter = 2
-script = ExtResource("7_note_shadow")
-curved_outline = false
-
-[node name="InfoBackArtwork" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=737481006]
-unique_name_in_owner = true
-visible = false
-z_index = 1
-layout_mode = 0
-offset_left = 6.0
-offset_top = 5.0
-offset_right = 294.0
-offset_bottom = 424.0
-rotation = 0.0523599
-pivot_offset = Vector2(144, 209.5)
-mouse_filter = 2
-texture = ExtResource("12_ty1g6")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="InfoTopShadow" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=1651198411]
-visible = false
-z_index = 2
-anchors_preset = 0
-offset_left = 6.0
-offset_top = 28.0
-offset_right = 294.0
-offset_bottom = 447.0
-rotation = -0.0698132
-pivot_offset = Vector2(144, 209.5)
-mouse_filter = 2
-script = ExtResource("7_note_shadow")
-shadow_scale = 0.2
-
-[node name="InfoNoteArtwork" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=1485946935]
-unique_name_in_owner = true
-visible = false
-z_index = 3
-layout_mode = 0
-offset_left = 6.0
-offset_top = 28.0
-offset_right = 294.0
-offset_bottom = 447.0
-rotation = -0.0698132
-pivot_offset = Vector2(144, 209.5)
-mouse_filter = 2
-texture = ExtResource("13_j2jfr")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel" unique_id=562472609]
-z_index = 4
-layout_mode = 0
-offset_left = 44.0
-offset_top = 46.0
-offset_right = 266.0
-offset_bottom = 459.0
-pivot_offset = Vector2(111, 206.5)
-theme_override_constants/margin_left = 22
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 22
-theme_override_constants/margin_bottom = 22
-
-[node name="VBox" type="VBoxContainer" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin" unique_id=1804207696]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="SubtitleLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=563304847]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 20
-text = "第1关 · 萌芽"
-horizontal_alignment = 1
-
-[node name="LevelSummaryLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=386521782]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 15
-text = "5 × 5 棋盘
-污染核心 5"
-horizontal_alignment = 1
-
-[node name="Separator" type="HSeparator" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=280997531]
-modulate = Color(0.0863, 0.251, 0.1176, 0.62)
-layout_mode = 2
-
-[node name="ObjectiveTitle" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1374323380]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 14
-text = "净化目标"
-
-[node name="ObjectiveLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=979827316]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 13
-text = "清除所有污染核心"
-autowrap_mode = 2
-
-[node name="InstructionsTitle" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1419730431]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 14
-text = "操作方法"
-
-[node name="InstructionsLabel" type="Label" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=1027751501]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.9)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 12
-text = "左键净化 · 右键标记
-双击数字快速展开"
-autowrap_mode = 2
-
-[node name="BossStage" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox"]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(0, 148)
-layout_mode = 2
-
-[node name="BossRootLineA" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-points = PackedVector2Array(89, 72, 35, 119)
-width = 3.0
-default_color = Color(0.3804, 0.1608, 0.451, 0.82)
-antialiased = true
-
-[node name="BossRootLineB" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-points = PackedVector2Array(89, 72, 89, 119)
-width = 3.0
-default_color = Color(0.3804, 0.1608, 0.451, 0.82)
-antialiased = true
-
-[node name="BossRootLineC" type="Line2D" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-points = PackedVector2Array(89, 72, 143, 119)
-width = 3.0
-default_color = Color(0.3804, 0.1608, 0.451, 0.82)
-antialiased = true
-
-[node name="BossPortrait" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 37.0
-offset_top = 0.0
-offset_right = 141.0
-offset_bottom = 102.0
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BossAnchorA" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 17.0
-offset_top = 111.0
-offset_right = 53.0
-offset_bottom = 147.0
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BossAnchorB" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 71.0
-offset_top = 111.0
-offset_right = 107.0
-offset_bottom = 147.0
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BossAnchorC" type="TextureRect" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox/BossStage"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 125.0
-offset_top = 111.0
-offset_right = 161.0
-offset_bottom = 147.0
-mouse_filter = 2
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BottomBreathingSpace" type="Control" parent="PageMargin/Columns/LeftColumn/EnvironmentPanel/Margin/VBox" unique_id=598139312]
-custom_minimum_size = Vector2(0, 18)
-layout_mode = 2
-
-[node name="LeftDecorativeSprout" type="TextureRect" parent="PageMargin/Columns/LeftColumn" unique_id=7825881]
-unique_name_in_owner = true
-z_index = 6
-layout_mode = 0
-offset_left = 190.0
-offset_top = 592.0
-offset_right = 246.0
-offset_bottom = 648.0
-pivot_offset = Vector2(28, 50.96)
-mouse_filter = 2
-texture = ExtResource("15_bu4jf")
-expand_mode = 1
-stretch_mode = 5
+offset_left = 12.0
+offset_top = 26.0
+offset_right = 312.0
+offset_bottom = 694.0
 
 [node name="LeftSproutVictoryDots" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=102113353]
 unique_name_in_owner = true
@@ -595,236 +1206,12 @@ offset_bottom = 575.0
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("16_victory_dot_style")
 
-[node name="LeftSproutGuardianLeftShadow" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=136596180]
-unique_name_in_owner = true
-z_index = 4
-anchors_preset = 0
-offset_left = 58.0
-offset_top = 600.0
-offset_right = 190.0
-offset_bottom = 660.0
-pivot_offset = Vector2(66, 48)
-mouse_filter = 2
-script = ExtResource("11_guardian_shadow")
-center_y_ratio = 0.8
-width_ratio = 0.72
-height_ratio = 0.1
-opacity_multiplier = 0.86
-
-[node name="LeftSproutGuardianRightShadow" type="Control" parent="PageMargin/Columns/LeftColumn" unique_id=1127948270]
-unique_name_in_owner = true
-z_index = 4
-anchors_preset = 0
-offset_left = 254.0
-offset_top = 564.0
-offset_right = 338.0
-offset_bottom = 648.0
-mouse_filter = 2
-script = ExtResource("11_guardian_shadow")
-
-[node name="LeftSproutGuardianLeft" type="TextureRect" parent="PageMargin/Columns/LeftColumn" unique_id=21498697]
-unique_name_in_owner = true
-z_index = 5
-layout_mode = 0
-offset_left = 64.0
-offset_top = 500.0
-offset_right = 160.0
-offset_bottom = 648.0
-pivot_offset = Vector2(48, 148)
-mouse_filter = 2
-texture = ExtResource("18_o7ddy")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="LeftSproutGuardianRight" type="TextureRect" parent="PageMargin/Columns/LeftColumn" unique_id=1594453579]
-unique_name_in_owner = true
-z_index = 5
-layout_mode = 0
-offset_left = 254.0
-offset_top = 564.0
-offset_right = 338.0
-offset_bottom = 648.0
-pivot_offset = Vector2(42, 42)
-mouse_filter = 2
-texture = ExtResource("19_0loja")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BoardPanel" type="Control" parent="PageMargin/Columns" unique_id=2120942765]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="BoardCenter" type="CenterContainer" parent="PageMargin/Columns/BoardPanel" unique_id=946514675]
-z_index = 1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 0.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Board" type="Control" parent="PageMargin/Columns/BoardPanel/BoardCenter" unique_id=1576281263]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(620, 587)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="FirstMoveGuide" type="Control" parent="PageMargin/Columns/BoardPanel" unique_id=976973167]
-unique_name_in_owner = true
-z_index = 4
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("6_guide")
-
-[node name="GuideBubbleRoot" type="Control" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide" unique_id=1271904294]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_left = 68.0
-offset_top = 246.07349
-offset_right = 552.0
-offset_bottom = 421.9265
-mouse_filter = 1
-
-[node name="GuideFrameTexture" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1251306829]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("17_guide_frame")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="GuideMascot" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=357312411]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 24.0
-offset_top = 43.0
-offset_right = 88.0
-offset_bottom = 107.0
-pivot_offset = Vector2(32, 32)
-mouse_filter = 2
-texture = ExtResource("18_guide_mascot")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="GuideMascotAnimationPlayer" type="AnimationPlayer" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1833518851]
-libraries/ = ExtResource("21_guide_animation")
-autoplay = &"sway"
-
-[node name="GuideTitle" type="Label" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=824298385]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 96.0
-offset_top = 31.0
-offset_right = 456.0
-offset_bottom = 57.0
-theme_override_colors/font_color = Color(0.27450982, 0.6156863, 0.39607844, 1)
-theme_override_font_sizes/font_size = 17
-text = "小芽带你到安全起点啦！"
-vertical_alignment = 1
-
-[node name="GuideAction" type="Label" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1625000610]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 96.0
-offset_top = 62.0
-offset_right = 456.0
-offset_bottom = 84.0
-theme_override_colors/font_color = Color(0.105882354, 0.1764706, 0.13333334, 1)
-theme_override_font_sizes/font_size = 14
-text = "点这里开始第一次净化"
-vertical_alignment = 1
-
-[node name="GuideHint" type="Label" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1256968699]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 96.0
-offset_top = 89.0
-offset_right = 456.0
-offset_bottom = 108.0
-theme_override_colors/font_color = Color(0.105882354, 0.1764706, 0.13333334, 0.68)
-theme_override_font_sizes/font_size = 11
-text = "这是安全建议，也可以选择别处"
-vertical_alignment = 1
-
-[node name="NextButtonArtwork" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=1810678733]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 220.0
-offset_top = 119.5
-offset_right = 328.0
-offset_bottom = 151.5
-mouse_filter = 2
-texture = ExtResource("19_guide_primary")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TutorialNextButton" type="Button" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=444075386]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 220.0
-offset_top = 119.5
-offset_right = 328.0
-offset_bottom = 151.5
-focus_mode = 0
-theme_override_colors/font_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
-theme_override_colors/font_pressed_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
-theme_override_colors/font_hover_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
-theme_override_colors/font_disabled_color = Color(0.19215687, 0.37254903, 0.21176471, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_mlv25")
-text = "下一步"
-
-[node name="ExitButtonArtwork" type="TextureRect" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=863359625]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 332.0
-offset_top = 122.92651
-offset_right = 440.0
-offset_bottom = 149.92651
-mouse_filter = 2
-texture = ExtResource("20_guide_secondary")
-expand_mode = 1
-
-[node name="TutorialExitButton" type="Button" parent="PageMargin/Columns/BoardPanel/FirstMoveGuide/GuideBubbleRoot" unique_id=76935980]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 332.0
-offset_top = 115.5
-offset_right = 440.0
-offset_bottom = 155.5
-focus_mode = 0
-theme_override_colors/font_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
-theme_override_colors/font_pressed_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
-theme_override_colors/font_hover_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
-theme_override_colors/font_disabled_color = Color(0.35686275, 0.28627452, 0.20784314, 1)
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_mlv25")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_mlv25")
-text = "退出引导"
-
 [node name="RightColumn" type="Control" parent="PageMargin/Columns" unique_id=1785836367]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
+anchors_preset = 0
+offset_left = 968.0
+offset_top = 26.0
+offset_right = 1268.0
+offset_bottom = 694.0
 
 [node name="BudSproutDecorationA" type="TextureRect" parent="PageMargin/Columns/RightColumn" unique_id=771749144]
 unique_name_in_owner = true
@@ -842,340 +1229,8 @@ texture = ExtResource("30_dnhof")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="RightGuardianAShadow" type="Control" parent="PageMargin/Columns/RightColumn" unique_id=1067426575]
-unique_name_in_owner = true
-z_index = 1
-anchors_preset = 0
-offset_left = 35.0
-offset_top = 575.0
-offset_right = 107.0
-offset_bottom = 647.0
-mouse_filter = 2
-script = ExtResource("11_guardian_shadow")
-
-[node name="RightGuardianBShadow" type="Control" parent="PageMargin/Columns/RightColumn" unique_id=1087016744]
-unique_name_in_owner = true
-z_index = 1
-anchors_preset = 0
-offset_left = 115.0
-offset_top = 560.0
-offset_right = 203.0
-offset_bottom = 648.0
-mouse_filter = 2
-script = ExtResource("11_guardian_shadow")
-
-[node name="RightGuardianA" type="TextureRect" parent="PageMargin/Columns/RightColumn" unique_id=1233756379]
-unique_name_in_owner = true
-z_index = 4
-layout_mode = 0
-offset_left = 35.0
-offset_top = 560.0
-offset_right = 107.0
-offset_bottom = 632.0
-pivot_offset = Vector2(36, 36)
-mouse_filter = 2
-texture = ExtResource("31_1v6qk")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="RightGuardianB" type="TextureRect" parent="PageMargin/Columns/RightColumn" unique_id=1487017342]
-unique_name_in_owner = true
-z_index = 3
-layout_mode = 0
-offset_left = 115.0
-offset_top = 548.0
-offset_right = 203.0
-offset_bottom = 636.0
-pivot_offset = Vector2(44, 44)
-mouse_filter = 2
-texture = ExtResource("32_augu2")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="HudPanel" type="PanelContainer" parent="PageMargin/Columns/RightColumn" unique_id=1515148994]
-unique_name_in_owner = true
-layout_mode = 1
-offset_left = 15.0
-offset_top = 122.0
-offset_right = 225.0
-offset_bottom = 416.0
-pivot_offset = Vector2(105, 147)
-theme_override_styles/panel = SubResource("StyleBox_gameplay_empty")
-
-[node name="StatusNoteShadow" type="Control" parent="PageMargin/Columns/RightColumn/HudPanel" unique_id=2066925406]
-visible = false
-show_behind_parent = true
-layout_mode = 2
-mouse_filter = 2
-script = ExtResource("7_note_shadow")
-
-[node name="StatusNoteArtwork" type="TextureRect" parent="PageMargin/Columns/RightColumn/HudPanel" unique_id=882689816]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("13_j2jfr")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/RightColumn/HudPanel" unique_id=782201458]
-layout_mode = 2
-theme_override_constants/margin_left = 22
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 22
-theme_override_constants/margin_bottom = 20
-
-[node name="VBox" type="VBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin" unique_id=1632027872]
-layout_mode = 2
-theme_override_constants/separation = 9
-
-[node name="TimeTitle" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1790151562]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.92)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 15
-text = "净化时间"
-horizontal_alignment = 1
-
-[node name="TimerLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=682770868]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 30
-text = "00:00.0"
-horizontal_alignment = 1
-
-[node name="TimeSeparator" type="HSeparator" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1628963455]
-modulate = Color(0.0863, 0.251, 0.1176, 0.62)
-layout_mode = 2
-
-[node name="FlagsRow" type="HBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1878153026]
-layout_mode = 2
-
-[node name="FlagsTitle" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/FlagsRow" unique_id=1519288908]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 15
-text = "污染核心"
-
-[node name="FlagsLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/FlagsRow" unique_id=201014904]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 17
-text = "0/5"
-horizontal_alignment = 2
-
-[node name="StatusSeparator" type="HSeparator" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=206704043]
-modulate = Color(0.0863, 0.251, 0.1176, 0.62)
-layout_mode = 2
-
-[node name="StatusTitle" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1658996482]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 15
-text = "净化状态"
-
-[node name="StatusLabel" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1043425687]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 14
-text = "准备中"
-horizontal_alignment = 1
-autowrap_mode = 2
-
-[node name="ScanFallbackRow" type="HBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox"]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-theme_override_constants/separation = 5
-alignment = 1
-
-[node name="ScanFallbackDots" type="HBoxContainer" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow"]
-layout_mode = 2
-theme_override_constants/separation = 2
-alignment = 1
-
-[node name="OceanScanDotA" type="Panel" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow/ScanFallbackDots"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(8, 8)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("16_victory_dot_style")
-
-[node name="OceanScanDotB" type="Panel" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow/ScanFallbackDots"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(8, 8)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("16_victory_dot_style")
-
-[node name="OceanScanDotC" type="Panel" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow/ScanFallbackDots"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(8, 8)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = ExtResource("16_victory_dot_style")
-
-[node name="ScanFallbackStatus" type="Label" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 11
-text = "首翻后可用"
-vertical_alignment = 1
-
-[node name="ScanFallbackButton" type="Button" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox/ScanFallbackRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 28)
-layout_mode = 2
-focus_mode = 0
-mouse_default_cursor_shape = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 1)
-theme_override_colors/font_disabled_color = Color(0.25, 0.35, 0.29, 0.55)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 11
-text = "扫描 C"
-
-[node name="Fill" type="Control" parent="PageMargin/Columns/RightColumn/HudPanel/Margin/VBox" unique_id=1905537134]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="QuickButtons" type="HBoxContainer" parent="PageMargin/Columns/RightColumn" unique_id=36696557]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = -10.0
-offset_top = 418.0
-offset_right = -40.0
-offset_bottom = 506.0
-grow_horizontal = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="PauseButton" type="TextureButton" parent="PageMargin/Columns/RightColumn/QuickButtons" unique_id=245970244]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 88)
-layout_mode = 2
-tooltip_text = "暂停 / Esc"
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("33_tm6hj")
-texture_pressed = ExtResource("34_kf5aa")
-texture_hover = ExtResource("35_t5ykj")
-texture_focused = ExtResource("36_e755i")
-ignore_texture_size = true
-stretch_mode = 0
-script = ExtResource("22_quick_action")
-
-[node name="PauseButtonShadow" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=1334421812]
-visible = false
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("8_round_shadow")
-
-[node name="PauseButtonFocusRing" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=137787420]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("9_round_focus")
-
-[node name="PauseButtonLabel" type="Label" parent="PageMargin/Columns/RightColumn/QuickButtons/PauseButton" unique_id=498523127]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
-theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.72)
-theme_override_constants/outline_size = 1
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 13
-text = "暂停
-Esc"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="RestartButton" type="TextureButton" parent="PageMargin/Columns/RightColumn/QuickButtons" unique_id=1791830909]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(88, 88)
-layout_mode = 2
-tooltip_text = "重新开始"
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("40_ro3en")
-texture_pressed = ExtResource("41_od4ux")
-texture_hover = ExtResource("42_xhfw6")
-texture_focused = ExtResource("43_1epgm")
-ignore_texture_size = true
-stretch_mode = 0
-script = ExtResource("22_quick_action")
-
-[node name="RestartButtonShadow" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/RestartButton" unique_id=70982912]
-visible = false
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("8_round_shadow")
-
-[node name="RestartButtonFocusRing" type="Control" parent="PageMargin/Columns/RightColumn/QuickButtons/RestartButton" unique_id=734853622]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("9_round_focus")
-
-[node name="RestartButtonLabel" type="Label" parent="PageMargin/Columns/RightColumn/QuickButtons/RestartButton" unique_id=263313145]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 1)
-theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.72)
-theme_override_constants/outline_size = 1
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 12
-text = "重新
-生成"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="LandTabletopActors" parent="." unique_id=2100359821 instance=ExtResource("46_tabletop_actors")]
-unique_name_in_owner = true
+visible = false
 layout_mode = 1
 
 [node name="PauseOverlay" type="Control" parent="." unique_id=5354387]
@@ -1207,7 +1262,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="PauseOverlay/Center" unique_id=204596415]
-custom_minimum_size = Vector2(400, 510)
+custom_minimum_size = Vector2(400, 570)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBox_gameplay_empty")
 
@@ -1236,7 +1291,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.251, 0.231, 0.204, 1)
 theme_override_fonts/font = ExtResource("14_bjg73")
 theme_override_font_sizes/font_size = 28
-text = "净化暂停"
+text = "TXT_0149"
 horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1594533361]
@@ -1250,7 +1305,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_a82wo")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_gdvew")
 theme_override_styles/hover = SubResource("StyleBoxTexture_kjtvk")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_xrs0c")
-text = "继续游戏"
+text = "TXT_0003"
 
 [node name="PauseRestartButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=949756108]
 unique_name_in_owner = true
@@ -1263,7 +1318,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ygd8o")
-text = "重新开始"
+text = "TXT_0143"
 
 [node name="LevelSelectButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=774585932]
 unique_name_in_owner = true
@@ -1276,7 +1331,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_2s0kr")
-text = "返回关卡选择"
+text = "TXT_0035"
 
 [node name="PauseSettingsButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1250056603]
 unique_name_in_owner = true
@@ -1289,7 +1344,20 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_xaipn")
-text = "设置"
+text = "TXT_0007"
+
+[node name="PauseHelpButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1578764219]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(1, 0.98, 0.88, 0.72)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xaipn")
+text = "TXT_0461"
 
 [node name="MainMenuButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=520801165]
 unique_name_in_owner = true
@@ -1302,7 +1370,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ndrjj")
-text = "返回主菜单"
+text = "TXT_0031"
 
 [node name="ExitGameButton" type="Button" parent="PauseOverlay/Center/Panel/Margin/VBox" unique_id=1932003066]
 unique_name_in_owner = true
@@ -1315,7 +1383,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_xljpf")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_j4bwh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ksmap")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ih3m7")
-text = "退出游戏"
+text = "TXT_0009"
 
 [node name="LevelOneAnimationPlayer" type="AnimationPlayer" parent="." unique_id=50624245]
 unique_name_in_owner = true

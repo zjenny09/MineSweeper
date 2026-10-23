@@ -1,12 +1,13 @@
 class_name GreenSweeperSaveStore
 extends RefCounted
 
-const SCHEMA_VERSION := 6
+const SCHEMA_VERSION := 7
 const LEGACY_SCHEMA_VERSION := 1
 const SCAN_SCHEMA_VERSION := 2
 const OCEAN_PROGRESS_SCHEMA_VERSION := 3
 const TWELVE_LEVEL_SCHEMA_VERSION := 4
 const FOURTEEN_LEVEL_SCHEMA_VERSION := 5
+const TWENTY_ONE_LEVEL_SCHEMA_VERSION := 6
 const DEFAULT_SAVE_PATH := "user://save_v1.json"
 const SCAN_CAPACITY := 12
 const WINDOW_MODE_WINDOWED := 0
@@ -159,6 +160,26 @@ func mark_mechanic_guide_seen(guide_id: StringName) -> void:
 	_data["mechanic_guides_seen"].append(serialized_id)
 
 
+func get_universe_boards_created() -> int:
+	return int(_data["universe"]["boards_created"])
+
+
+func has_triggered_universe_thousand_milestone() -> bool:
+	return bool(_data["universe"]["thousand_milestone_triggered"])
+
+
+func record_universe_board_created() -> bool:
+	var universe: Dictionary = _data["universe"]
+	universe["boards_created"] = int(universe["boards_created"]) + 1
+	if (
+		int(universe["boards_created"]) >= 1000
+		and not bool(universe["thousand_milestone_triggered"])
+	):
+		universe["thousand_milestone_triggered"] = true
+		return true
+	return false
+
+
 func get_scan_energy() -> int:
 	return int(_data["scan"]["energy"])
 
@@ -275,6 +296,10 @@ func _make_default_data() -> Dictionary:
 			"energy": 0,
 			"level_one_grant_claimed": false,
 		},
+		"universe": {
+			"boards_created": 0,
+			"thousand_milestone_triggered": false,
+		},
 		"levels": levels,
 		"settings": {
 			"master_volume": 1.0,
@@ -323,11 +348,23 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 		if grant_claimed is bool:
 			normalized["scan"]["level_one_grant_claimed"] = grant_claimed
 
+	if source_schema == SCHEMA_VERSION:
+		var source_universe = source.get("universe")
+		if source_universe is Dictionary:
+			var boards_created := _normalized_int(source_universe.get("boards_created"), 0)
+			if boards_created >= 0:
+				normalized["universe"]["boards_created"] = boards_created
+			var milestone_triggered = source_universe.get("thousand_milestone_triggered")
+			if milestone_triggered is bool:
+				normalized["universe"]["thousand_milestone_triggered"] = milestone_triggered
+
 	var source_levels = source.get("levels")
 	if source_levels is Dictionary:
 		var maximum_source_level := 5
 		if source_schema == SCHEMA_VERSION:
 			maximum_source_level = GreenSweeperLevels.PLAYABLE_LEVELS.size()
+		elif source_schema == TWENTY_ONE_LEVEL_SCHEMA_VERSION:
+			maximum_source_level = 21
 		elif source_schema == FOURTEEN_LEVEL_SCHEMA_VERSION:
 			maximum_source_level = 14
 		elif source_schema == TWELVE_LEVEL_SCHEMA_VERSION:
@@ -393,6 +430,7 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		OCEAN_PROGRESS_SCHEMA_VERSION,
 		TWELVE_LEVEL_SCHEMA_VERSION,
 		FOURTEEN_LEVEL_SCHEMA_VERSION,
+		TWENTY_ONE_LEVEL_SCHEMA_VERSION,
 		SCHEMA_VERSION,
 	]:
 		return false
@@ -405,6 +443,8 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 		maximum_legacy_level = 12
 	elif schema_version == FOURTEEN_LEVEL_SCHEMA_VERSION:
 		maximum_legacy_level = 14
+	elif schema_version == TWENTY_ONE_LEVEL_SCHEMA_VERSION:
+		maximum_legacy_level = 21
 	var valid_last_played := (
 		last_played == 0 or _is_valid_level(last_played)
 		if schema_version == SCHEMA_VERSION
@@ -431,6 +471,15 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 			return false
 		if not scan.get("level_one_grant_claimed") is bool:
 			return false
+	if schema_version == SCHEMA_VERSION:
+		var universe = serialized.get("universe")
+		if not universe is Dictionary:
+			return false
+		var boards_created := _normalized_int(universe.get("boards_created"), -1)
+		if boards_created < 0:
+			return false
+		if not universe.get("thousand_milestone_triggered") is bool:
+			return false
 
 	var levels = serialized.get("levels")
 	if not levels is Dictionary:
@@ -439,6 +488,9 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 	if schema_version == SCHEMA_VERSION:
 		for level in GreenSweeperLevels.PLAYABLE_LEVELS:
 			required_level_numbers.append(int(level["number"]))
+	elif schema_version == TWENTY_ONE_LEVEL_SCHEMA_VERSION:
+		for level_number in range(1, 22):
+			required_level_numbers.append(level_number)
 	elif schema_version == FOURTEEN_LEVEL_SCHEMA_VERSION:
 		for level_number in range(1, 15):
 			required_level_numbers.append(level_number)
@@ -496,6 +548,8 @@ func _migrated_level_number(number: int, source_schema: int) -> int:
 		return 0
 	if source_schema == SCHEMA_VERSION:
 		return number if _is_valid_level(number) else 0
+	if source_schema == TWENTY_ONE_LEVEL_SCHEMA_VERSION:
+		return number if number <= 21 else 0
 	if source_schema == FOURTEEN_LEVEL_SCHEMA_VERSION:
 		return number if number <= 14 else 0
 	if source_schema == TWELVE_LEVEL_SCHEMA_VERSION:

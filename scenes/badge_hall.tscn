@@ -1,0 +1,994 @@
+[gd_scene format=3 uid="uid://2obod8ii4dnk"]
+
+[ext_resource type="Script" uid="uid://b55p8jj4k5if" path="res://scripts/badge_hall.gd" id="1_hall"]
+[ext_resource type="Theme" uid="uid://b0hk7x6rxhuq1" path="res://themes/crayon_ui_theme.tres" id="2_theme"]
+[ext_resource type="FontFile" uid="uid://byd7yngf1xx8x" path="res://assets/art/common/fonts/ui_handwritten_zh.ttf" id="3_font"]
+[ext_resource type="Texture2D" uid="uid://c0jphmo3n2jfd" path="res://assets/art/badge_hall/background.png" id="4_background"]
+[ext_resource type="Texture2D" uid="uid://ee3176mx153u" path="res://assets/art/badge_hall/land/stage_initial.png" id="5_stage_initial"]
+[ext_resource type="Texture2D" uid="uid://df1xfkjx4pmi7" path="res://assets/art/badge_hall/land/ecology/01_sprout.png" id="7_ecology_1"]
+[ext_resource type="Texture2D" uid="uid://bde76soq1lxvj" path="res://assets/art/badge_hall/land/ecology/02_shrub.png" id="8_ecology_2"]
+[ext_resource type="Texture2D" uid="uid://cy4htd4j1pok3" path="res://assets/art/badge_hall/land/ecology/03_wetland.png" id="9_ecology_3"]
+[ext_resource type="Texture2D" uid="uid://b8jpqbva54ef" path="res://assets/art/badge_hall/land/ecology/04_grassland.png" id="10_ecology_4"]
+[ext_resource type="Texture2D" uid="uid://dyx1pj00ej6yy" path="res://assets/art/badge_hall/land/ecology/05_forest_edge.png" id="11_ecology_5"]
+[ext_resource type="Texture2D" uid="uid://kmgqjyhttwef" path="res://assets/art/badge_hall/land/ecology/06_dense_forest.png" id="12_ecology_6"]
+[ext_resource type="Texture2D" uid="uid://b1c6emro47y6b" path="res://assets/art/badge_hall/land/ecology/07_ancient_forest.png" id="13_ecology_7"]
+[ext_resource type="Texture2D" uid="uid://7y1ps6fjpfcx" path="res://assets/art/badge_hall/land/book_cover.png" id="14_book_cover"]
+[ext_resource type="Shader" uid="uid://c8w8l5kpb65o5" path="res://shaders/badge_hall_soft_glow.gdshader" id="15_glow_shader"]
+[ext_resource type="Texture2D" uid="uid://b5x4qvecryvai" path="res://assets/art/badge_hall/ocean/stage_initial.png" id="16_ocean_stage_initial"]
+[ext_resource type="Texture2D" uid="uid://dgcq8g076vbht" path="res://assets/art/badge_hall/ocean/ecology/01_anemone.png" id="17_ocean_ecology_1"]
+[ext_resource type="Texture2D" uid="uid://bm3dwlqeav3en" path="res://assets/art/badge_hall/ocean/ecology/02_seagrass.png" id="18_ocean_ecology_2"]
+[ext_resource type="Texture2D" uid="uid://bj7605u4spfm3" path="res://assets/art/badge_hall/ocean/ecology/03_coral.png" id="19_ocean_ecology_3"]
+[ext_resource type="Texture2D" uid="uid://da8w80i8f801h" path="res://assets/art/badge_hall/ocean/ecology/04_jellyfish.png" id="20_ocean_ecology_4"]
+[ext_resource type="Texture2D" uid="uid://btybbd7ufwmcy" path="res://assets/art/badge_hall/ocean/ecology/05_fish_school.png" id="21_ocean_ecology_5"]
+[ext_resource type="Texture2D" uid="uid://b7ff5gv7limbm" path="res://assets/art/badge_hall/ocean/ecology/06_trench.png" id="22_ocean_ecology_6"]
+[ext_resource type="Texture2D" uid="uid://ceh4qoh1nb084" path="res://assets/art/badge_hall/ocean/ecology/07_whale_fall.png" id="23_ocean_ecology_7"]
+[ext_resource type="Texture2D" uid="uid://crmud1pgcmwrx" path="res://assets/art/badge_hall/ocean/book_cover.png" id="24_ocean_book_cover"]
+[ext_resource type="Texture2D" uid="uid://cqnjqsvnw6f3i" path="res://assets/art/badge_hall/ocean/shell_frame_top.png" id="25_ocean_shell_frame"]
+[ext_resource type="Texture2D" uid="uid://ehgfadcovn3t" path="res://assets/art/badge_hall/sky/ecology/01_cloud_crown.png" id="27_sky_ecology_1"]
+[ext_resource type="Texture2D" uid="uid://ciiw6rfukwt01" path="res://assets/art/badge_hall/sky/ecology/02_wind_ring.png" id="28_sky_ecology_2"]
+[ext_resource type="Texture2D" uid="uid://cmpp7nlr6d6m1" path="res://assets/art/badge_hall/sky/ecology/03_rainbow_bridge.png" id="29_sky_ecology_3"]
+[ext_resource type="Texture2D" uid="uid://dustbjgbq74kv" path="res://assets/art/badge_hall/sky/ecology/04_floating_isles.png" id="30_sky_ecology_4"]
+[ext_resource type="Texture2D" uid="uid://hjh5h5gn3pai" path="res://assets/art/badge_hall/sky/ecology/05_cloud_ridge.png" id="31_sky_ecology_5"]
+[ext_resource type="Texture2D" uid="uid://bohowybfryivx" path="res://assets/art/badge_hall/sky/ecology/06_storm_eye.png" id="32_sky_ecology_6"]
+[ext_resource type="Texture2D" uid="uid://6mb3ivd1lvdu" path="res://assets/art/badge_hall/sky/ecology/07_sky_palace.png" id="33_sky_ecology_7"]
+[ext_resource type="Texture2D" uid="uid://bkvww6f2cuwh5" path="res://assets/art/badge_hall/sky/book_cover.png" id="34_sky_book_cover"]
+[ext_resource type="Texture2D" uid="uid://cmskmey63j1jr" path="res://assets/art/badge_hall/universe/stage.png" id="35_universe_stage"]
+[ext_resource type="Texture2D" uid="uid://ge26b44wrlla" path="res://assets/art/badge_hall/universe/ecology/01_asteroid.png" id="36_universe_asteroid"]
+[ext_resource type="Texture2D" uid="uid://dt6eqfojln428" path="res://assets/art/badge_hall/universe/ecology/02_planet.png" id="37_universe_planet"]
+[ext_resource type="Texture2D" uid="uid://c10pnf8xhlqoi" path="res://assets/art/badge_hall/universe/ecology/03_star_cluster.png" id="38_universe_cluster"]
+[ext_resource type="Texture2D" uid="uid://8epbnbgfiqlg" path="res://assets/art/badge_hall/universe/ecology/04_galaxy_outer.png" id="39_universe_galaxy_outer"]
+[ext_resource type="Texture2D" uid="uid://cgdvkovfcwg1" path="res://assets/art/badge_hall/universe/ecology/05_galaxy_spiral.png" id="40_universe_galaxy_spiral"]
+[ext_resource type="Texture2D" uid="uid://cmxnyc8v08y8f" path="res://assets/art/badge_hall/universe/ecology/06_galaxy_core.png" id="41_universe_galaxy_core"]
+[ext_resource type="Texture2D" uid="uid://tsyhgnc0aoaa" path="res://assets/art/badge_hall/universe/ecology/07_trophy.png" id="42_universe_trophy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_land_glow"]
+shader = ExtResource("15_glow_shader")
+shader_parameter/radiance_color = Color(1, 0.8, 0.28, 0.88)
+shader_parameter/intensity = 1.05
+shader_parameter/animation_speed = 0.62
+shader_parameter/aspect_ratio = 1.72
+
+[sub_resource type="StyleBoxEmpty" id="StyleBox_book_button"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean_glow"]
+shader = ExtResource("15_glow_shader")
+shader_parameter/radiance_color = Color(0.25, 0.84, 1, 0.88)
+shader_parameter/intensity = 1.05
+shader_parameter/animation_speed = 0.58
+shader_parameter/aspect_ratio = 1.72
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_r2yag"]
+load_path = "res://.godot/imported/stage_initial.png-9a6f7218d77b9ef31256c09c35660262.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sky_glow"]
+shader = ExtResource("15_glow_shader")
+shader_parameter/radiance_color = Color(0.48, 0.82, 1, 0.88)
+shader_parameter/intensity = 1.05
+shader_parameter/animation_speed = 0.54
+shader_parameter/aspect_ratio = 1.72
+
+[node name="BadgeHall" type="Control" unique_id=2027399475]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_hall")
+
+[node name="HallBackground" type="TextureRect" parent="." unique_id=1191517194]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="HallTitle" type="Label" parent="." unique_id=1930243827]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 330.0
+offset_top = 16.0
+offset_right = 950.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(1, 0.88, 0.48, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.08, 0.25, 0.92)
+theme_override_constants/outline_size = 7
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 30
+text = "TXT_0473"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LandHallSection" type="Control" parent="." unique_id=1878025536]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 38.0
+offset_top = 48.0
+offset_right = 658.0
+offset_bottom = 500.0
+mouse_filter = 2
+
+[node name="LandStageInitial" type="TextureRect" parent="LandHallSection" unique_id=283376554]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 50.0
+offset_top = 45.0
+offset_right = 568.0
+offset_bottom = 342.0
+mouse_filter = 2
+texture = ExtResource("5_stage_initial")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologyGrassland" type="TextureRect" parent="LandHallSection" unique_id=56940324]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 143.0
+offset_top = 44.0
+offset_right = 412.0
+offset_bottom = 278.0
+mouse_filter = 2
+texture = ExtResource("10_ecology_4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologyShrub" type="TextureRect" parent="LandHallSection" unique_id=1239553383]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 63.0
+offset_top = 100.0
+offset_right = 441.0
+offset_bottom = 318.0
+mouse_filter = 2
+texture = ExtResource("8_ecology_2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologySprout" type="TextureRect" parent="LandHallSection" unique_id=2122801112]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 48.0
+offset_top = 74.0
+offset_right = 435.0
+offset_bottom = 352.0
+mouse_filter = 2
+texture = ExtResource("7_ecology_1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologyForestEdge" type="TextureRect" parent="LandHallSection" unique_id=793326001]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 159.0
+offset_top = 73.0
+offset_right = 521.0
+offset_bottom = 331.0
+mouse_filter = 2
+texture = ExtResource("11_ecology_5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologyDenseForest" type="TextureRect" parent="LandHallSection" unique_id=134999074]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 279.0
+offset_top = 21.0
+offset_right = 527.0
+offset_bottom = 228.0
+mouse_filter = 2
+texture = ExtResource("12_ecology_6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologyAncientForest" type="TextureRect" parent="LandHallSection" unique_id=961146950]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 203.0
+offset_top = 36.0
+offset_right = 564.0
+offset_bottom = 305.0
+mouse_filter = 2
+texture = ExtResource("13_ecology_7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandEcologyWetland" type="TextureRect" parent="LandHallSection" unique_id=798394214]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 199.0
+offset_top = 147.0
+offset_right = 466.0
+offset_bottom = 320.0
+mouse_filter = 2
+texture = ExtResource("9_ecology_3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandCompletionGlow" type="ColorRect" parent="LandHallSection" unique_id=739937078]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0.86)
+material = SubResource("ShaderMaterial_land_glow")
+layout_mode = 0
+offset_left = 14.0
+offset_top = 2.0
+offset_right = 606.0
+offset_bottom = 346.0
+mouse_filter = 2
+
+[node name="LandBookCover" type="TextureRect" parent="LandHallSection" unique_id=1527086966]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 280.0
+offset_top = 264.0
+offset_right = 338.0
+offset_bottom = 328.0
+pivot_offset = Vector2(64, 80)
+mouse_filter = 2
+texture = ExtResource("14_book_cover")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LandBookButton" type="Button" parent="LandHallSection" unique_id=924184855]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 256.0
+offset_top = 236.0
+offset_right = 356.0
+offset_bottom = 354.0
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBox_book_button")
+theme_override_styles/pressed = SubResource("StyleBox_book_button")
+theme_override_styles/hover = SubResource("StyleBox_book_button")
+theme_override_styles/focus = SubResource("StyleBox_book_button")
+
+[node name="OceanHallSection" type="Control" parent="." unique_id=1170317060]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 622.0
+offset_top = 48.0
+offset_right = 1242.0
+offset_bottom = 500.0
+mouse_filter = 2
+
+[node name="OceanStageInitial" type="TextureRect" parent="OceanHallSection" unique_id=1259170562]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 25.0
+offset_top = 36.0
+offset_right = 606.0
+offset_bottom = 383.0
+mouse_filter = 2
+texture = ExtResource("16_ocean_stage_initial")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologySeagrass" type="TextureRect" parent="OceanHallSection" unique_id=2035728108]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 61.0
+offset_top = 12.0
+offset_right = 416.0
+offset_bottom = 356.0
+mouse_filter = 2
+texture = ExtResource("18_ocean_ecology_2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologyAnemone" type="TextureRect" parent="OceanHallSection" unique_id=22798947]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 76.0
+offset_top = 107.0
+offset_right = 348.0
+offset_bottom = 354.0
+mouse_filter = 2
+texture = ExtResource("17_ocean_ecology_1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologyCoral" type="TextureRect" parent="OceanHallSection" unique_id=197687247]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 66.0
+offset_top = 64.0
+offset_right = 448.0
+offset_bottom = 337.0
+mouse_filter = 2
+texture = ExtResource("19_ocean_ecology_3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologyFishSchool" type="TextureRect" parent="OceanHallSection" unique_id=748290776]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 123.0
+offset_top = 10.0
+offset_right = 481.0
+offset_bottom = 292.0
+mouse_filter = 2
+texture = ExtResource("21_ocean_ecology_5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologyJellyfish" type="TextureRect" parent="OceanHallSection" unique_id=665415898]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 183.0
+offset_top = 94.0
+offset_right = 569.0
+offset_bottom = 241.0
+mouse_filter = 2
+texture = ExtResource("20_ocean_ecology_4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologyTrench" type="TextureRect" parent="OceanHallSection" unique_id=1349268559]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 106.0
+offset_top = 58.0
+offset_right = 528.0
+offset_bottom = 319.0
+mouse_filter = 2
+texture = ExtResource("22_ocean_ecology_6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanEcologyWhaleFall" type="TextureRect" parent="OceanHallSection" unique_id=173515726]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 228.0
+offset_top = 92.0
+offset_right = 558.0
+offset_bottom = 334.0
+mouse_filter = 2
+texture = ExtResource("23_ocean_ecology_7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanShellFrameTop" type="TextureRect" parent="OceanHallSection" unique_id=1309071464]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 92.0
+offset_top = 15.0
+offset_right = 538.0
+offset_bottom = 297.0
+mouse_filter = 2
+texture = ExtResource("25_ocean_shell_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanCompletionGlow" type="ColorRect" parent="OceanHallSection" unique_id=1829864867]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0.86)
+material = SubResource("ShaderMaterial_ocean_glow")
+layout_mode = 0
+offset_left = 14.0
+offset_top = 2.0
+offset_right = 606.0
+offset_bottom = 346.0
+mouse_filter = 2
+
+[node name="OceanBookCover" type="TextureRect" parent="OceanHallSection" unique_id=447088724]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 284.0
+offset_top = 258.0
+offset_right = 347.0
+offset_bottom = 332.0
+pivot_offset = Vector2(32, 40)
+mouse_filter = 2
+texture = ExtResource("24_ocean_book_cover")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OceanBookButton" type="Button" parent="OceanHallSection" unique_id=1239762966]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 268.0
+offset_top = 247.0
+offset_right = 362.0
+offset_bottom = 357.0
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBox_book_button")
+theme_override_styles/pressed = SubResource("StyleBox_book_button")
+theme_override_styles/hover = SubResource("StyleBox_book_button")
+theme_override_styles/focus = SubResource("StyleBox_book_button")
+
+[node name="SkyHallSection" type="Control" parent="." unique_id=1178997057]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 38.0
+offset_top = 350.0
+offset_right = 658.0
+offset_bottom = 700.0
+mouse_filter = 2
+
+[node name="SkyStageInitial" type="TextureRect" parent="SkyHallSection" unique_id=1189289182]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 29.0
+offset_top = 40.0
+offset_right = 598.0
+offset_bottom = 389.0
+mouse_filter = 2
+texture = SubResource("CompressedTexture2D_r2yag")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologyCloudCrown" type="TextureRect" parent="SkyHallSection" unique_id=1648395607]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 178.0
+offset_top = 52.0
+offset_right = 451.0
+offset_bottom = 250.0
+mouse_filter = 2
+texture = ExtResource("27_sky_ecology_1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologyWindRing" type="TextureRect" parent="SkyHallSection" unique_id=1578020844]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 221.0
+offset_top = 67.0
+offset_right = 501.0
+offset_bottom = 294.0
+mouse_filter = 2
+texture = ExtResource("28_sky_ecology_2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologyFloatingIsles" type="TextureRect" parent="SkyHallSection" unique_id=167641851]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 133.0
+offset_top = 104.0
+offset_right = 474.0
+offset_bottom = 275.0
+mouse_filter = 2
+texture = ExtResource("30_sky_ecology_4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologyRainbowBridge" type="TextureRect" parent="SkyHallSection" unique_id=569331908]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 45.0
+offset_top = 84.0
+offset_right = 566.0
+offset_bottom = 358.0
+mouse_filter = 2
+texture = ExtResource("29_sky_ecology_3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologyCloudRidge" type="TextureRect" parent="SkyHallSection" unique_id=1224431673]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 65.0
+offset_right = 584.0
+offset_bottom = 333.0
+mouse_filter = 2
+texture = ExtResource("31_sky_ecology_5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologyStormEye" type="TextureRect" parent="SkyHallSection" unique_id=811523577]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 227.0
+offset_top = 155.0
+offset_right = 639.0
+offset_bottom = 317.0
+mouse_filter = 2
+texture = ExtResource("32_sky_ecology_6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyEcologySkyPalace" type="TextureRect" parent="SkyHallSection" unique_id=1316665023]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 269.0
+offset_top = 101.0
+offset_right = 582.0
+offset_bottom = 268.0
+mouse_filter = 2
+texture = ExtResource("33_sky_ecology_7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyCompletionGlow" type="ColorRect" parent="SkyHallSection" unique_id=731442298]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0.86)
+material = SubResource("ShaderMaterial_sky_glow")
+layout_mode = 0
+offset_right = 620.0
+offset_bottom = 350.0
+mouse_filter = 2
+
+[node name="SkyBookCover" type="TextureRect" parent="SkyHallSection" unique_id=1974997725]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 284.0
+offset_top = 269.0
+offset_right = 343.0
+offset_bottom = 349.0
+pivot_offset = Vector2(35, 44)
+mouse_filter = 2
+texture = ExtResource("34_sky_book_cover")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SkyBookButton" type="Button" parent="SkyHallSection" unique_id=739977574]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 268.0
+offset_top = 256.0
+offset_right = 353.0
+offset_bottom = 357.0
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBox_book_button")
+theme_override_styles/pressed = SubResource("StyleBox_book_button")
+theme_override_styles/hover = SubResource("StyleBox_book_button")
+theme_override_styles/focus = SubResource("StyleBox_book_button")
+
+[node name="UniverseHallSection" type="Control" parent="." unique_id=1447508868]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 622.0
+offset_top = 350.0
+offset_right = 1242.0
+offset_bottom = 700.0
+mouse_filter = 2
+
+[node name="UniverseStage" type="TextureRect" parent="UniverseHallSection" unique_id=703417167]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 16.0
+offset_top = 39.0
+offset_right = 663.0
+offset_bottom = 392.0
+mouse_filter = 2
+texture = ExtResource("35_universe_stage")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid01" type="TextureRect" parent="UniverseHallSection" unique_id=2108949512]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 245.0
+offset_top = 171.0
+offset_right = 269.0
+offset_bottom = 201.0
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid02" type="TextureRect" parent="UniverseHallSection" unique_id=1967886873]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 218.0
+offset_top = 217.00002
+offset_right = 241.0
+offset_bottom = 245.00002
+rotation = -0.16
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid03" type="TextureRect" parent="UniverseHallSection" unique_id=316393228]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 264.0
+offset_top = 239.0
+offset_right = 291.0
+offset_bottom = 272.0
+rotation = 0.12
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid04" type="TextureRect" parent="UniverseHallSection" unique_id=207324001]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 352.0
+offset_top = 150.0
+offset_right = 373.0
+offset_bottom = 176.0
+rotation = 0.2
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid05" type="TextureRect" parent="UniverseHallSection" unique_id=879580252]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 433.0
+offset_top = 187.0
+offset_right = 459.0
+offset_bottom = 219.0
+rotation = -0.1
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid06" type="TextureRect" parent="UniverseHallSection" unique_id=1303734388]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 190.0
+offset_top = 167.0
+offset_right = 211.0
+offset_bottom = 193.0
+rotation = 0.09
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid07" type="TextureRect" parent="UniverseHallSection" unique_id=1517736028]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 400.0
+offset_top = 232.0
+offset_right = 426.0
+offset_bottom = 264.0
+rotation = -0.2
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid08" type="TextureRect" parent="UniverseHallSection" unique_id=1062355840]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 363.0
+offset_top = 181.00009
+offset_right = 386.0
+offset_bottom = 209.00009
+rotation = 0.16
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseAsteroid09" type="TextureRect" parent="UniverseHallSection" unique_id=916330203]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 428.0
+offset_top = 160.0
+offset_right = 456.0
+offset_bottom = 194.0
+rotation = -0.08
+mouse_filter = 2
+texture = ExtResource("36_universe_asteroid")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet01" type="TextureRect" parent="UniverseHallSection" unique_id=407122299]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 204.0
+offset_top = 186.0
+offset_right = 248.0
+offset_bottom = 226.0
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet02" type="TextureRect" parent="UniverseHallSection" unique_id=504409681]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 299.0
+offset_top = 189.0
+offset_right = 340.0
+offset_bottom = 227.0
+rotation = -0.08
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet03" type="TextureRect" parent="UniverseHallSection" unique_id=2089437859]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 368.0
+offset_top = 125.0
+offset_right = 414.0
+offset_bottom = 167.0
+rotation = 0.08
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet04" type="TextureRect" parent="UniverseHallSection" unique_id=1108204363]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 350.0
+offset_top = 230.0
+offset_right = 389.0
+offset_bottom = 266.0
+rotation = 0.1
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet05" type="TextureRect" parent="UniverseHallSection" unique_id=2010610062]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 226.0
+offset_top = 255.0
+offset_right = 272.0
+offset_bottom = 297.0
+rotation = -0.11
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet06" type="TextureRect" parent="UniverseHallSection" unique_id=254403303]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 404.0
+offset_top = 177.0
+offset_right = 444.0
+offset_bottom = 214.0
+rotation = 0.05
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet07" type="TextureRect" parent="UniverseHallSection" unique_id=1649960027]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 439.0
+offset_top = 227.0
+offset_right = 482.0
+offset_bottom = 267.0
+rotation = -0.06
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet08" type="TextureRect" parent="UniverseHallSection" unique_id=140805166]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 144.0
+offset_top = 207.0
+offset_right = 182.0
+offset_bottom = 242.0
+rotation = 0.07
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniversePlanet09" type="TextureRect" parent="UniverseHallSection" unique_id=542350053]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 243.0
+offset_top = 147.0
+offset_right = 289.0
+offset_bottom = 189.0
+rotation = -0.09
+mouse_filter = 2
+texture = ExtResource("37_universe_planet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster01" type="TextureRect" parent="UniverseHallSection" unique_id=441570252]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 285.0
+offset_top = 225.0
+offset_right = 337.0
+offset_bottom = 279.0
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster02" type="TextureRect" parent="UniverseHallSection" unique_id=2038476896]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 204.0
+offset_top = 131.0
+offset_right = 253.0
+offset_bottom = 182.0
+rotation = -0.05
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster03" type="TextureRect" parent="UniverseHallSection" unique_id=1711418090]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 445.0
+offset_top = 122.0
+offset_right = 500.0
+offset_bottom = 179.0
+rotation = 0.06
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster04" type="TextureRect" parent="UniverseHallSection" unique_id=1824822293]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 168.99997
+offset_top = 225.0
+offset_right = 232.56528
+offset_bottom = 288.81036
+rotation = -0.04
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster05" type="TextureRect" parent="UniverseHallSection" unique_id=139571647]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 205.0
+offset_top = 155.0
+offset_right = 259.0
+offset_bottom = 211.0
+rotation = 0.04
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster06" type="TextureRect" parent="UniverseHallSection" unique_id=84315337]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 300.0
+offset_top = 147.0
+offset_right = 387.208
+offset_bottom = 254.44574
+rotation = -0.07
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster07" type="TextureRect" parent="UniverseHallSection" unique_id=2082389702]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 406.0
+offset_top = 187.0
+offset_right = 479.18262
+offset_bottom = 266.1291
+rotation = 0.05
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster08" type="TextureRect" parent="UniverseHallSection" unique_id=191881218]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 249.0
+offset_top = 179.0
+offset_right = 310.38037
+offset_bottom = 256.73712
+rotation = -0.03
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseCluster09" type="TextureRect" parent="UniverseHallSection" unique_id=209386619]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 351.0
+offset_top = 224.00003
+offset_right = 435.26025
+offset_bottom = 304.1769
+rotation = 0.06
+mouse_filter = 2
+texture = ExtResource("38_universe_cluster")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseGalaxyOuter" type="TextureRect" parent="UniverseHallSection" unique_id=1657033473]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 84.0
+offset_top = 55.0
+offset_right = 589.0
+offset_bottom = 320.0
+mouse_filter = 2
+texture = ExtResource("39_universe_galaxy_outer")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseGalaxySpiral" type="TextureRect" parent="UniverseHallSection" unique_id=427534474]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 140.0
+offset_top = 64.0
+offset_right = 546.0
+offset_bottom = 292.0
+mouse_filter = 2
+texture = ExtResource("40_universe_galaxy_spiral")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseGalaxyCore" type="TextureRect" parent="UniverseHallSection" unique_id=280187995]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 126.0
+offset_top = 54.0
+offset_right = 567.0
+offset_bottom = 300.0
+mouse_filter = 2
+texture = ExtResource("41_universe_galaxy_core")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseTrophy" type="TextureRect" parent="UniverseHallSection" unique_id=1269019950]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 272.0
+offset_top = 164.0
+offset_right = 408.0
+offset_bottom = 368.0
+mouse_filter = 2
+texture = ExtResource("42_universe_trophy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="UniverseTotalValue" type="Label" parent="UniverseHallSection" unique_id=1013969709]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 158.0
+offset_top = 338.0
+offset_right = 422.0
+offset_bottom = 370.0
+theme_override_colors/font_color = Color(1, 0.86, 0.44, 1)
+theme_override_colors/font_outline_color = Color(0.09, 0.05, 0.2, 0.92)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 15
+text = "累计探索宇宙棋盘：0"
+horizontal_alignment = 2
+vertical_alignment = 1

@@ -6,22 +6,46 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GuideMascot:position")
+tracks/0/path = NodePath("GuideCharacterRig/GuideMascot:position")
 tracks/0/interp = 0
 tracks/0/loop_wrap = false
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(24, 43)]
+"values": [Vector2(0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GuideMascot:rotation")
+tracks/1/path = NodePath("GuideCharacterRig/GuideMascot:rotation")
 tracks/1/interp = 0
 tracks/1/loop_wrap = false
 tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("GuideCharacterRig/GuideClaw:position")
+tracks/2/interp = 0
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(52, 36)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GuideCharacterRig/GuideClaw:rotation")
+tracks/3/interp = 0
+tracks/3/loop_wrap = false
+tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -36,19 +60,19 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("GuideMascot:position")
+tracks/0/path = NodePath("GuideCharacterRig/GuideMascot:position")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(24, 43), Vector2(25.5, 43), Vector2(25.5, 42), Vector2(24, 42), Vector2(22.5, 43), Vector2(22.5, 44), Vector2(24, 44), Vector2(24, 43)]
+"values": [Vector2(0, 0), Vector2(1.5, 0), Vector2(1.5, -1), Vector2(0, -1), Vector2(-1.5, 0), Vector2(-1.5, 1), Vector2(0, 1), Vector2(0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("GuideMascot:rotation")
+tracks/1/path = NodePath("GuideCharacterRig/GuideMascot:rotation")
 tracks/1/interp = 0
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -56,6 +80,30 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.018, 0.018, 0.0, -0.02, -0.02, 0.0, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("GuideCharacterRig/GuideClaw:position")
+tracks/2/interp = 0
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(52, 36), Vector2(50.5, 37), Vector2(50.5, 37.5), Vector2(52, 37), Vector2(53.5, 35), Vector2(53.5, 34.5), Vector2(52, 35), Vector2(52, 36)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GuideCharacterRig/GuideClaw:rotation")
+tracks/3/interp = 0
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.12, -0.1, 0.0, 0.12, 0.1, 0.0, 0.0]
 }
 
 [resource]

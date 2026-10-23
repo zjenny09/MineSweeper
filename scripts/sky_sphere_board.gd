@@ -11,10 +11,18 @@ signal scan_energy_earned
 signal scan_target_requested(face_index: int)
 signal scan_cancel_requested
 signal scan_completed(face_index: int, result: int)
+signal breeze_effect_started
 signal breeze_assist_used(face_index: int, result: int, remaining_uses: int)
 signal storm_guard_used(face_index: int, remaining_uses: int)
 signal boss_eye_changed(face_index: int, eye_number: int, total_eyes: int)
 signal boss_eye_hit(face_index: int, cleared_eyes: int, total_eyes: int)
+
+
+enum OperationMode {
+	MOUSE,
+	KEYBOARD,
+}
+
 
 const GRAPH_MODEL_SCRIPT := preload("res://scripts/sky_graph_board_model.gd")
 const STRUCTURE_DATA_PATH := "res://assets/data/sky_sphere_structures.json"
@@ -23,6 +31,7 @@ const FACE_RADIUS := 2.05
 const CORE_COUNT := 6
 const DRAG_THRESHOLD := 6.0
 const FRONT_FACE_EPSILON := 0.001
+const KEYBOARD_FOCUS_MIN_FRONTNESS := 0.12
 const LABEL_FADE_START := 0.12
 const LABEL_FADE_END := 0.42
 const CORE_MONSTER_MIN_FRONTNESS := 0.32
@@ -35,22 +44,25 @@ const BREEZE_EFFECT_DURATION := 1.25
 const BREEZE_WIND_DURATION := 0.62
 const BREEZE_TURN_DELAY := 0.24
 const CLOUD_SHIELD_EFFECT_DURATION := 1.05
-const BOSS_HIT_EFFECT_DURATION := 0.9
+const BOSS_HIT_EFFECT_DURATION := 1.2
+const STORM_EYE_RING_PERIOD := 4.0
+const STORM_EYE_LIGHTNING_PERIOD := 2.6
+const STORM_EYE_LIGHTNING_DURATION := 0.22
 
 const OUTLINE_COLOR := Color("667b85")
 const HOVER_COLOR := Color("fff0a8")
 const FOCUS_COLOR := Color("ffc857")
 const SKY_FLAG_NORMAL_TEXTURE := preload(
-	"res://assets/art/sky_levels/markers/sky_flag_plane_normal.png"
+	"res://assets/art/sky_v2/markers/sky_marker.png"
 )
 const SKY_FLAG_FAILED_TEXTURE := preload(
-	"res://assets/art/sky_levels/markers/sky_flag_plane_failed.png"
+	"res://assets/art/sky_v2/markers/sky_marker_failed.png"
 )
 const SKY_MARKER_WRONG_TEXTURE := preload(
-	"res://assets/art/sky_levels/markers/sky_marker_wrong_cloud.png"
+	"res://assets/art/sky_v2/markers/sky_marker_wrong.png"
 )
 const CORE_MONSTER_TEXTURE := preload(
-	"res://assets/art/sky_levels/markers/sky_pollution_core_cloud.png"
+	"res://assets/art/sky_v2/characters/haze_alert.png"
 )
 const PENTAGON_HIDDEN_TEXTURE := preload(
 	"res://assets/art/sky_levels/board/pentagon_hidden_surface.png"
@@ -69,6 +81,26 @@ const HEXAGON_REVEALED_TEXTURE := preload(
 )
 const HEXAGON_POLLUTED_TEXTURE := preload(
 	"res://assets/art/sky_levels/board/hexagon_polluted_surface.png"
+)
+const SKY_DIGIT_TEXTURES := [
+	preload("res://assets/art/sky_v2/digits/digit_1.png"),
+	preload("res://assets/art/sky_v2/digits/digit_2.png"),
+	preload("res://assets/art/sky_v2/digits/digit_3.png"),
+	preload("res://assets/art/sky_v2/digits/digit_4.png"),
+	preload("res://assets/art/sky_v2/digits/digit_5.png"),
+	preload("res://assets/art/sky_v2/digits/digit_6.png"),
+]
+const STORM_EYE_BODY_TEXTURE := preload(
+	"res://assets/art/sky_v2/mechanics/storm_eye_body.png"
+)
+const STORM_EYE_RING_TEXTURE := preload(
+	"res://assets/art/sky_v2/mechanics/storm_eye_ring.png"
+)
+const STORM_EYE_STAR_TEXTURE := preload(
+	"res://assets/art/sky_v2/mechanics/storm_eye_star.png"
+)
+const STORM_EYE_LIGHTNING_TEXTURE := preload(
+	"res://assets/art/sky_v2/mechanics/storm_eye_lightning.png"
 )
 const SKY_NUMBER_FONT := preload(
 	"res://assets/art/common/fonts/ui_handwritten_zh.ttf"
@@ -97,6 +129,9 @@ var _last_drag_position := Vector2.ZERO
 var _hovered_face := -1
 var _focused_face := -1
 var _joy_rotation := Vector2.ZERO
+var _operation_mode := OperationMode.MOUSE
+var _host_interaction_enabled := true
+var _model_interaction_enabled := true
 var _interaction_enabled := true
 var _scan_target_mode := false
 var _flagged_once := {}
@@ -124,7 +159,6 @@ var _instruction_label: Label
 
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(620.0, 587.0)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
 	clip_contents = false
@@ -151,7 +185,7 @@ func _draw() -> void:
 
 func _create_instruction_label() -> void:
 	_instruction_label = Label.new()
-	_instruction_label.text = "拖拽旋转 · 左键净化 · 右键标记 · 方向键选择 · W S A D旋转 · J翻开 · K标记"
+	_instruction_label.text = tr("TXT_0408")
 	_instruction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_instruction_label.add_theme_color_override("font_color", Color("315b68"))
 	_instruction_label.add_theme_font_override("font", SKY_NUMBER_FONT)
@@ -519,16 +553,16 @@ func refresh_localized_text() -> void:
 	if state == 1 and _boss_eye_total > 0:
 		if _boss_eye_face_index >= 0:
 			status_changed.emit(
-				tr("第%d/%d道雷眼出现 · 标记周围污染后双击雷眼") % [
+				tr("TXT_0239") % [
 					_boss_eye_number,
 					_boss_eye_total,
 				]
 			)
 		elif _boss_eye_number <= 1:
-			status_changed.emit(tr("继续净化云球，等待第一道雷眼形成"))
+			status_changed.emit(tr("TXT_0237"))
 		else:
 			status_changed.emit(
-				tr("雷眼正在远处重组 · 继续净化等待第%d/%d道") % [
+				tr("TXT_0238") % [
 					_boss_eye_number,
 					_boss_eye_total,
 				]
@@ -536,26 +570,53 @@ func refresh_localized_text() -> void:
 		return
 	match state:
 		0:
-			status_changed.emit(tr("旋转球面，寻找安全起点"))
+			status_changed.emit(tr("TXT_0228"))
 		1:
-			status_changed.emit(tr("净化进行中"))
+			status_changed.emit(tr("TXT_0131"))
 		2:
-			status_changed.emit(tr("球面净化完成"))
+			status_changed.emit(tr("TXT_0140"))
 		3:
-			status_changed.emit(tr("污染扩散，重新生成后再试"))
+			status_changed.emit(tr("TXT_0229"))
 
 
-func set_interaction_enabled(enabled: bool) -> void:
-	_interaction_enabled = enabled
-	if not enabled:
+func set_operation_mode(mode: int) -> void:
+	_operation_mode = (
+		OperationMode.KEYBOARD
+		if mode == OperationMode.KEYBOARD
+		else OperationMode.MOUSE
+	)
+	if _operation_mode == OperationMode.KEYBOARD:
+		call_deferred("_restore_keyboard_focus")
+
+
+func _restore_keyboard_focus() -> void:
+	if _operation_mode == OperationMode.KEYBOARD and is_visible_in_tree() \
+			and _interaction_enabled:
+		grab_focus()
+
+
+func _refresh_interaction_enabled() -> void:
+	_interaction_enabled = (
+		_host_interaction_enabled and _model_interaction_enabled
+	)
+	if not _interaction_enabled:
 		_dragging = false
 		_left_double_click_pending = false
 		_joy_rotation = Vector2.ZERO
 	queue_redraw()
 
 
+func set_interaction_enabled(enabled: bool) -> void:
+	_host_interaction_enabled = enabled
+	_refresh_interaction_enabled()
+	if enabled:
+		call_deferred("_restore_keyboard_focus")
+
+
 func new_game() -> void:
-	_interaction_enabled = true
+	_host_interaction_enabled = true
+	_model_interaction_enabled = true
+	_refresh_interaction_enabled()
 	_scan_target_mode = false
 	_flagged_once.clear()
 	_assist_face_index = -1
@@ -581,8 +642,9 @@ func new_game() -> void:
 	_hovered_face = -1
 	_focused_face = _frontmost_face()
 	_model.call("new_game")
-	status_changed.emit(tr("旋转球面，寻找安全起点"))
+	status_changed.emit(tr("TXT_0228"))
 	_refresh_all_faces()
+	call_deferred("_restore_keyboard_focus")
 
 
 func _draw_projected_board() -> void:
@@ -619,7 +681,14 @@ func _draw_projected_board() -> void:
 		var face_index: int = record["index"]
 		var polygon: PackedVector2Array = record["polygon"]
 		if _boss_eye_neighbor_lookup.has(face_index):
-			_draw_closed_polyline(polygon, Color("8ddae5"), 2.2)
+			var neighbor_resolved := (
+				(mines[face_index] == 1 and flagged[face_index] == 1)
+				or (mines[face_index] == 0 and revealed[face_index] == 1)
+			)
+			var neighbor_color := (
+				Color("79dca2") if neighbor_resolved else Color("8ddae5")
+			)
+			_draw_closed_polyline(polygon, neighbor_color, 2.5)
 		if face_index == _boss_eye_face_index:
 			_draw_closed_polyline(polygon, Color("4aafc2"), 4.4)
 		if face_index == _hovered_face:
@@ -663,7 +732,8 @@ func _draw_projected_board() -> void:
 func _draw_boss_storm_eye() -> void:
 	if _boss_eye_face_index < 0:
 		return
-	if _face_frontness(_boss_eye_face_index) <= 0.10:
+	var frontness := _face_frontness(_boss_eye_face_index)
+	if frontness <= 0.10:
 		_draw_boss_eye_direction_hint()
 		return
 	var center := _project_face_center(_boss_eye_face_index)
@@ -672,29 +742,79 @@ func _draw_boss_storm_eye() -> void:
 		polygon.append(_project_point(Vector3(vertex_value)))
 	var nearest_vertex_distance := INF
 	for point in polygon:
-		nearest_vertex_distance = minf(nearest_vertex_distance, center.distance_to(point))
-	var radius := clampf(nearest_vertex_distance * 0.82, 10.0, 27.0)
-	var rotation_phase := _boss_eye_time * 1.75
-	draw_circle(center, radius * 0.42, Color(0.40, 0.77, 0.86, 0.18))
-	for ring_index in range(3):
-		var ring_radius := radius * (0.52 + float(ring_index) * 0.22)
-		var direction := 1.0 if ring_index % 2 == 0 else -1.0
-		for segment_index in range(2):
-			var arc_start := (
-				rotation_phase * direction
-				+ float(segment_index) * PI
-				+ float(ring_index) * 0.36
-			)
-			draw_arc(
-				center,
-				ring_radius,
-				arc_start,
-				arc_start + PI * 0.72,
-				18,
-				Color(0.72, 0.95, 1.0, 0.88 - float(ring_index) * 0.15),
-				2.6 - float(ring_index) * 0.35,
-				true
-			)
+		nearest_vertex_distance = minf(
+			nearest_vertex_distance,
+			center.distance_to(point)
+		)
+	var diameter := clampf(nearest_vertex_distance * 2.65, 30.0, 76.0)
+	var appear_progress: float = smoothstep(
+		0.0,
+		1.0,
+		clampf(_boss_eye_time / 0.32, 0.0, 1.0)
+	)
+	var appear_scale: float = lerpf(0.55, 1.0, appear_progress)
+	var edge_alpha: float = smoothstep(0.10, 0.42, frontness)
+	var layer_alpha: float = appear_progress * edge_alpha
+	_draw_storm_eye_layer(
+		STORM_EYE_BODY_TEXTURE,
+		center,
+		diameter,
+		0.0,
+		appear_scale,
+		layer_alpha
+	)
+	_draw_storm_eye_layer(
+		STORM_EYE_RING_TEXTURE,
+		center,
+		diameter,
+		_boss_eye_time * TAU / STORM_EYE_RING_PERIOD,
+		appear_scale,
+		layer_alpha
+	)
+	var star_pulse := 1.0 + sin(_boss_eye_time * 3.2) * 0.055
+	_draw_storm_eye_layer(
+		STORM_EYE_STAR_TEXTURE,
+		center,
+		diameter,
+		0.0,
+		appear_scale * star_pulse,
+		layer_alpha
+	)
+	var lightning_phase := fmod(
+		_boss_eye_time + float(_boss_eye_number) * 0.47,
+		STORM_EYE_LIGHTNING_PERIOD
+	)
+	if lightning_phase < STORM_EYE_LIGHTNING_DURATION:
+		var lightning_alpha := sin(
+			lightning_phase / STORM_EYE_LIGHTNING_DURATION * PI
+		)
+		_draw_storm_eye_layer(
+			STORM_EYE_LIGHTNING_TEXTURE,
+			center,
+			diameter,
+			0.0,
+			appear_scale,
+			layer_alpha * lightning_alpha
+		)
+
+
+func _draw_storm_eye_layer(
+	texture: Texture2D,
+	center: Vector2,
+	diameter: float,
+	rotation: float,
+	layer_scale: float,
+	alpha: float
+) -> void:
+	draw_set_transform(center, rotation, Vector2.ONE * layer_scale)
+	draw_texture_rect(
+		texture,
+		Rect2(Vector2.ONE * diameter * -0.5, Vector2.ONE * diameter),
+		false,
+		Color(1.0, 1.0, 1.0, alpha)
+	)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
 
 
 func _draw_boss_eye_direction_hint() -> void:
@@ -727,8 +847,42 @@ func _draw_boss_hit_effect() -> void:
 		1.0
 	)
 	var center := _project_face_center(_boss_hit_face_index)
-	var radius := lerpf(16.0, 74.0, progress)
+	var radius := lerpf(18.0, 62.0, progress)
 	var alpha := 1.0 - progress
+	var dissolve_alpha := pow(alpha, 1.35)
+	var dissolve_diameter := lerpf(58.0, 82.0, progress)
+	_draw_storm_eye_layer(
+		STORM_EYE_BODY_TEXTURE,
+		center,
+		dissolve_diameter,
+		-progress * 0.22,
+		1.0,
+		dissolve_alpha
+	)
+	_draw_storm_eye_layer(
+		STORM_EYE_RING_TEXTURE,
+		center,
+		dissolve_diameter,
+		progress * TAU * 0.72,
+		1.0,
+		dissolve_alpha * 0.92
+	)
+	_draw_storm_eye_layer(
+		STORM_EYE_STAR_TEXTURE,
+		center,
+		dissolve_diameter,
+		-progress * 0.35,
+		lerpf(1.0, 1.32, progress),
+		alpha
+	)
+	_draw_storm_eye_layer(
+		STORM_EYE_LIGHTNING_TEXTURE,
+		center,
+		dissolve_diameter * 1.12,
+		progress * 0.18,
+		1.0,
+		alpha * sin(progress * PI)
+	)
 	draw_circle(center, radius * 0.55, Color(0.73, 0.96, 1.0, alpha * 0.12))
 	draw_arc(
 		center,
@@ -984,9 +1138,18 @@ func _draw_face_mark(
 		_draw_core_monster(face_index, frontness, polygon)
 		return
 	if revealed[face_index] == 1:
-		if adjacent_counts[face_index] > 0:
-			text = str(adjacent_counts[face_index])
-			color = SKY_NUMBER_COLORS.get(adjacent_counts[face_index], Color("31515b"))
+		var adjacent_count := adjacent_counts[face_index]
+		if adjacent_count > 0 and adjacent_count <= SKY_DIGIT_TEXTURES.size():
+			_draw_digit_texture(
+				face_index,
+				frontness,
+				polygon,
+				SKY_DIGIT_TEXTURES[adjacent_count - 1]
+			)
+			return
+		if adjacent_count > 0:
+			text = str(adjacent_count)
+			color = SKY_NUMBER_COLORS.get(adjacent_count, Color("31515b"))
 	if text.is_empty() or frontness <= LABEL_FADE_START:
 		return
 	var alpha := smoothstep(LABEL_FADE_START, LABEL_FADE_END, frontness)
@@ -1001,6 +1164,31 @@ func _draw_face_mark(
 		MAX_LABEL_SIZE
 	)
 	_draw_centered_text(text, center, font_size, color, alpha)
+
+
+func _draw_digit_texture(
+	face_index: int,
+	frontness: float,
+	polygon: PackedVector2Array,
+	texture: Texture2D
+) -> void:
+	if frontness <= LABEL_FADE_START or texture == null:
+		return
+	var center := _project_face_center(face_index)
+	var nearest_vertex_distance := INF
+	for point in polygon:
+		nearest_vertex_distance = minf(nearest_vertex_distance, center.distance_to(point))
+	var source_size := texture.get_size()
+	var max_extent := clampf(nearest_vertex_distance * 1.42, 24.0, 46.0)
+	var digit_scale := max_extent / maxf(source_size.x, source_size.y)
+	var digit_size := source_size * digit_scale
+	var alpha := smoothstep(LABEL_FADE_START, LABEL_FADE_END, frontness)
+	draw_texture_rect(
+		texture,
+		Rect2(center - digit_size * 0.5, digit_size),
+		false,
+		Color(1.0, 1.0, 1.0, alpha)
+	)
 
 
 func _draw_marker_texture(
@@ -1116,6 +1304,36 @@ func _gui_input(event: InputEvent) -> void:
 	if _breeze_effect_active or _cloud_shield_effect_active:
 		accept_event()
 		return
+	if event is InputEventKey and event.pressed:
+		var key_event := event as InputEventKey
+		match key_event.keycode:
+			KEY_LEFT:
+				_move_focus(Vector2.LEFT)
+			KEY_RIGHT:
+				_move_focus(Vector2.RIGHT)
+			KEY_UP:
+				_move_focus(Vector2.UP)
+			KEY_DOWN:
+				_move_focus(Vector2.DOWN)
+			_:
+				return
+		accept_event()
+		return
+	if event is InputEventJoypadButton and event.pressed:
+		var joy_button := event as InputEventJoypadButton
+		match joy_button.button_index:
+			JOY_BUTTON_DPAD_LEFT:
+				_move_focus(Vector2.LEFT)
+			JOY_BUTTON_DPAD_RIGHT:
+				_move_focus(Vector2.RIGHT)
+			JOY_BUTTON_DPAD_UP:
+				_move_focus(Vector2.UP)
+			JOY_BUTTON_DPAD_DOWN:
+				_move_focus(Vector2.DOWN)
+			_:
+				return
+		accept_event()
+		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
@@ -1171,22 +1389,16 @@ func _gui_input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not _interaction_enabled or _breeze_effect_active or _cloud_shield_effect_active:
 		return
-	if not is_visible_in_tree() or not has_focus():
+	if not is_visible_in_tree():
 		return
 	if event is InputEventKey and event.pressed:
+		if _operation_mode != OperationMode.KEYBOARD or event.echo:
+			return
 		var key_event := event as InputEventKey
 		var physical_key := key_event.physical_keycode
 		if physical_key == 0:
 			physical_key = key_event.keycode
-		if key_event.keycode == KEY_LEFT:
-			_move_focus(Vector2.LEFT)
-		elif key_event.keycode == KEY_RIGHT:
-			_move_focus(Vector2.RIGHT)
-		elif key_event.keycode == KEY_UP:
-			_move_focus(Vector2.UP)
-		elif key_event.keycode == KEY_DOWN:
-			_move_focus(Vector2.DOWN)
-		elif physical_key == KEY_A:
+		if physical_key == KEY_A:
 			_rotate_ball(Vector2(-0.11, 0.0))
 		elif physical_key == KEY_D:
 			_rotate_ball(Vector2(0.11, 0.0))
@@ -1220,14 +1432,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			_toggle_flag(_focused_face)
 		elif button.button_index == JOY_BUTTON_RIGHT_STICK:
 			_center_focused_face()
-		elif button.button_index == JOY_BUTTON_DPAD_LEFT:
-			_move_focus(Vector2.LEFT)
-		elif button.button_index == JOY_BUTTON_DPAD_RIGHT:
-			_move_focus(Vector2.RIGHT)
-		elif button.button_index == JOY_BUTTON_DPAD_UP:
-			_move_focus(Vector2.UP)
-		elif button.button_index == JOY_BUTTON_DPAD_DOWN:
-			_move_focus(Vector2.DOWN)
 		else:
 			return
 		get_viewport().set_input_as_handled()
@@ -1302,8 +1506,32 @@ func _rotate_ball(delta_rotation: Vector2) -> void:
 	var yaw := Quaternion(Vector3.UP, delta_rotation.x)
 	var pitch := Quaternion(Vector3.RIGHT, delta_rotation.y)
 	_rotation = (pitch * yaw * _rotation).normalized()
+	_follow_keyboard_focus_after_rotation()
 	_hovered_face = -1
 	queue_redraw()
+
+
+func _follow_keyboard_focus_after_rotation() -> void:
+	var view_center := _board_rect().get_center()
+	var best_face := -1
+	var best_distance := INF
+	var best_frontness := -INF
+	for face_index in range(_faces.size()):
+		if face_index == _boss_eye_face_index:
+			continue
+		var frontness := _face_frontness(face_index)
+		if frontness < KEYBOARD_FOCUS_MIN_FRONTNESS:
+			continue
+		var distance := _project_face_center(face_index).distance_squared_to(
+			view_center
+		)
+		if distance < best_distance - 0.01 \
+				or (absf(distance - best_distance) <= 0.01 \
+				and frontness > best_frontness):
+			best_face = face_index
+			best_distance = distance
+			best_frontness = frontness
+	_focused_face = best_face if best_face >= 0 else _frontmost_face()
 
 
 func _move_focus(direction: Vector2) -> void:
@@ -1327,8 +1555,6 @@ func _move_focus(direction: Vector2) -> void:
 			best_index = neighbor
 	if best_index >= 0:
 		_focused_face = best_index
-	else:
-		_rotate_ball(direction * 0.13)
 	queue_redraw()
 
 
@@ -1434,6 +1660,7 @@ func _show_assist_feedback(face_index: int, color: Color) -> void:
 
 
 func _start_breeze_effect(face_index: int) -> void:
+	breeze_effect_started.emit()
 	_breeze_effect_active = true
 	_breeze_effect_time = 0.0
 	_breeze_start_rotation = _rotation
@@ -1463,7 +1690,7 @@ func _on_breeze_assist_used(
 	_breeze_pending_result = result
 	_breeze_pending_remaining = remaining_uses
 	_start_breeze_effect(face_index)
-	status_changed.emit(tr("随机助益触发 · 风正在吹向目标格"))
+	status_changed.emit(tr("TXT_0232"))
 
 
 func _finish_breeze_effect() -> void:
@@ -1471,9 +1698,9 @@ func _finish_breeze_effect() -> void:
 	var result := _breeze_pending_result
 	var remaining_uses := _breeze_pending_remaining
 	var usage_text := (
-		tr("不限次数")
+		tr("TXT_0230")
 		if remaining_uses < 0
-		else tr("剩余%d次") % remaining_uses
+		else tr("TXT_0231") % remaining_uses
 	)
 	_breeze_pending_result = -1
 	_breeze_pending_remaining = 0
@@ -1484,13 +1711,13 @@ func _finish_breeze_effect() -> void:
 		_show_assist_feedback(face_index, Color("8edcf0"))
 		if int(_model.get("state")) < 2:
 			status_changed.emit(
-				tr("随机助益完成 · 污染核心已自动标记 · %s") % usage_text
+				tr("TXT_0233") % usage_text
 			)
 	else:
 		_show_assist_feedback(face_index, Color("72dfbb"))
 		if int(_model.get("state")) < 2:
 			status_changed.emit(
-				tr("随机助益完成 · 安全格已翻开 · %s") % usage_text
+				tr("TXT_0234") % usage_text
 			)
 	breeze_assist_used.emit(face_index, result, remaining_uses)
 
@@ -1502,7 +1729,7 @@ func _on_storm_guard_used(face_index: int, remaining_uses: int) -> void:
 	_cloud_shield_pending_remaining = remaining_uses
 	_dragging = false
 	_joy_rotation = Vector2.ZERO
-	status_changed.emit(tr("云盾保护触发 · 云层正在包裹污染核心"))
+	status_changed.emit(tr("TXT_0235"))
 	queue_redraw()
 
 
@@ -1515,12 +1742,12 @@ func _finish_cloud_shield_effect() -> void:
 	_model.call("resolve_storm_guard")
 	_show_assist_feedback(face_index, Color("ffe486"))
 	var usage_text := (
-		tr("不限次数")
+		tr("TXT_0230")
 		if remaining_uses < 0
-		else tr("剩余%d次") % remaining_uses
+		else tr("TXT_0231") % remaining_uses
 	)
 	status_changed.emit(
-		tr("云盾保护成功 · 污染核心已自动标记 · %s") % usage_text
+		tr("TXT_0236") % usage_text
 	)
 	storm_guard_used.emit(face_index, remaining_uses)
 
@@ -1538,9 +1765,9 @@ func _on_boss_eye_changed(
 	if face_index < 0:
 		if total_eyes > 0:
 			status_changed.emit(
-				tr("继续净化云球，等待第一道雷眼形成")
+				tr("TXT_0237")
 				if eye_number <= 1
-				else tr("雷眼正在远处重组 · 继续净化等待第%d/%d道") % [
+				else tr("TXT_0238") % [
 					eye_number,
 					total_eyes,
 				]
@@ -1550,7 +1777,7 @@ func _on_boss_eye_changed(
 	for neighbor in _faces[face_index]["neighbors"]:
 		_boss_eye_neighbor_lookup[int(neighbor)] = true
 	status_changed.emit(
-		tr("第%d/%d道雷眼出现 · 标记周围污染后双击雷眼") % [
+		tr("TXT_0239") % [
 			eye_number,
 			total_eyes,
 		]
@@ -1566,13 +1793,14 @@ func _on_boss_eye_hit(
 ) -> void:
 	_boss_hit_face_index = face_index
 	_boss_hit_effect_time = BOSS_HIT_EFFECT_DURATION
-	status_changed.emit(tr("雷眼击破 · %d/%d") % [cleared_eyes, total_eyes])
+	status_changed.emit(tr("TXT_0240") % [cleared_eyes, total_eyes])
 	boss_eye_hit.emit(face_index, cleared_eyes, total_eyes)
 	queue_redraw()
 
 
 func _on_model_state_changed(state: int) -> void:
-	_interaction_enabled = state < 2
+	_model_interaction_enabled = state < 2
+	_refresh_interaction_enabled()
 	if not _interaction_enabled:
 		_scan_target_mode = false
 		_dragging = false
@@ -1580,13 +1808,13 @@ func _on_model_state_changed(state: int) -> void:
 	gameplay_state_changed.emit(state)
 	match state:
 		0:
-			status_changed.emit(tr("旋转球面，寻找安全起点"))
+			status_changed.emit(tr("TXT_0228"))
 		1:
-			status_changed.emit(tr("净化进行中"))
+			status_changed.emit(tr("TXT_0131"))
 		2:
-			status_changed.emit(tr("球面净化完成"))
+			status_changed.emit(tr("TXT_0140"))
 		3:
-			status_changed.emit(tr("污染扩散，重新生成后再试"))
+			status_changed.emit(tr("TXT_0229"))
 	queue_redraw()
 
 

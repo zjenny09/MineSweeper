@@ -7,83 +7,61 @@ signal level_select_requested
 signal chapter_advance_requested
 signal main_menu_requested
 signal settings_requested
+signal help_requested
+signal badge_book_requested(level_number: int)
 signal exit_game_requested
 signal pause_changed(is_paused: bool)
 signal scan_energy_changed(energy: int)
 signal mechanic_guide_completed(guide_id: StringName)
 
 const ART := preload("res://scripts/art_catalog.gd")
+const BADGE_CELEBRATION_SCENE := preload("res://scenes/badge_celebration.tscn")
 
-const LAND_DESK_BACKGROUND_PATH := ART.LAND_TABLETOP_BACKGROUND
-const OCEAN_DESK_BACKGROUND_PATH := ART.OCEAN_DESKTOP_BACKGROUND
-const OCEAN_BOARD_TRAY_FRAME_PATH := ART.OCEAN_BOARD_TRAY_FRAME
-const LEVEL_ONE_BACKGROUND_PATH := ART.LAND_UNIFIED_STAGE_BODY
+const LAND_DESK_BACKGROUND_PATH := ART.LAND_V2_BACKGROUND
+const OCEAN_DESK_BACKGROUND_PATH := ART.OCEAN_V2_BACKGROUND
+const OCEAN_STAGE_BODY_PATH := ART.OCEAN_V2_STAGE_BODY
+const LEVEL_ONE_BACKGROUND_PATH := ART.LAND_V2_STAGE_BODY
 const LAND_UNIFIED_SHADOW_PATH := ART.LAND_UNIFIED_STAGE_SHADOW
-const LEVEL_ONE_BOARD_TRAY_PATH := ART.LEVEL_01_BOARD_TRAY
-const LEVEL_ONE_STATUS_NOTE_PATH := ART.LEVEL_01_NOTE_CURVED
-const LEVEL_ONE_STRAIGHT_NOTE_PATH := ART.LEVEL_01_NOTE_STRAIGHT
-const LAND_PAUSE_NORMAL_PATH := ART.LAND_PAUSE_NORMAL
-const LAND_PAUSE_HOVER_PATH := ART.LAND_PAUSE_HOVER
-const LAND_PAUSE_FOCUS_PATH := ART.LAND_PAUSE_FOCUS
-const LAND_PAUSE_PRESSED_PATH := ART.LAND_PAUSE_PRESSED
-const LAND_REGENERATE_NORMAL_PATH := ART.LAND_REGENERATE_NORMAL
-const LAND_REGENERATE_HOVER_PATH := ART.LAND_REGENERATE_HOVER
-const LAND_REGENERATE_FOCUS_PATH := ART.LAND_REGENERATE_FOCUS
-const LAND_REGENERATE_PRESSED_PATH := ART.LAND_REGENERATE_PRESSED
-const OCEAN_PAUSE_NORMAL_PATH := ART.OCEAN_PAUSE_NORMAL
-const OCEAN_PAUSE_HOVER_PATH := ART.OCEAN_PAUSE_HOVER
-const OCEAN_PAUSE_FOCUS_PATH := ART.OCEAN_PAUSE_FOCUS
-const OCEAN_PAUSE_PRESSED_PATH := ART.OCEAN_PAUSE_PRESSED
-const OCEAN_REGENERATE_NORMAL_PATH := ART.OCEAN_REGENERATE_NORMAL
-const OCEAN_REGENERATE_HOVER_PATH := ART.OCEAN_REGENERATE_HOVER
-const OCEAN_REGENERATE_FOCUS_PATH := ART.OCEAN_REGENERATE_FOCUS
-const OCEAN_REGENERATE_PRESSED_PATH := ART.OCEAN_REGENERATE_PRESSED
-const LEVEL_ONE_SEED_STICKER_PATH := ART.LEVEL_01_DECOR_BACKGROUND_SEED
-const LEVEL_ONE_BUD_SPROUT_PATH := ART.LEVEL_01_DECOR_STATUS_NOTE_BUD
-const LEVEL_ONE_LEAF_SPROUT_PATH := ART.LEVEL_01_DECOR_BACKGROUND_LEAF_SPROUT
+const LAND_PAUSE_NORMAL_PATH := ART.LAND_V2_PAUSE_BUTTON
+const LAND_PAUSE_HOVER_PATH := ART.LAND_V2_PAUSE_BUTTON
+const LAND_PAUSE_FOCUS_PATH := ART.LAND_V2_PAUSE_BUTTON
+const LAND_PAUSE_PRESSED_PATH := ART.LAND_V2_PAUSE_BUTTON
+const LAND_REGENERATE_NORMAL_PATH := ART.LAND_V2_RESTART_BUTTON
+const LAND_REGENERATE_HOVER_PATH := ART.LAND_V2_RESTART_BUTTON
+const LAND_REGENERATE_FOCUS_PATH := ART.LAND_V2_RESTART_BUTTON
+const LAND_REGENERATE_PRESSED_PATH := ART.LAND_V2_RESTART_BUTTON
+const LAND_SETTINGS_NORMAL_PATH := ART.LAND_V2_SETTINGS_BUTTON
+const LAND_SETTINGS_HOVER_PATH := ART.LAND_V2_SETTINGS_BUTTON
+const LAND_SETTINGS_FOCUS_PATH := ART.LAND_V2_SETTINGS_BUTTON
+const LAND_SETTINGS_PRESSED_PATH := ART.LAND_V2_SETTINGS_BUTTON
+const OCEAN_PAUSE_NORMAL_PATH := ART.OCEAN_V2_RESTART_BUTTON
+const OCEAN_PAUSE_HOVER_PATH := ART.OCEAN_V2_RESTART_BUTTON
+const OCEAN_PAUSE_FOCUS_PATH := ART.OCEAN_V2_RESTART_BUTTON
+const OCEAN_PAUSE_PRESSED_PATH := ART.OCEAN_V2_RESTART_BUTTON
+const OCEAN_REGENERATE_NORMAL_PATH := ART.OCEAN_V2_SETTINGS_BUTTON
+const OCEAN_REGENERATE_HOVER_PATH := ART.OCEAN_V2_SETTINGS_BUTTON
+const OCEAN_REGENERATE_FOCUS_PATH := ART.OCEAN_V2_SETTINGS_BUTTON
+const OCEAN_REGENERATE_PRESSED_PATH := ART.OCEAN_V2_SETTINGS_BUTTON
 const BOSS_ANCHOR_ACTIVE_PATH := ART.LEVEL_04_POLLUTION_NODE_ACTIVE
 const BOSS_ANCHOR_CLEANSED_PATH := ART.LEVEL_04_POLLUTION_NODE_CLEANSED
-const LAND_DECORATIVE_HEALTHY_PATHS := [
-	ART.LEVEL_01_DECOR_LEFT_SPROUT_HEALTHY,
-	ART.LEVEL_02_DECOR_SHRUB_HEALTHY,
-	ART.LEVEL_03_DECOR_WETLAND_HEALTHY,
-	ART.LEVEL_04_DECOR_GRASS_HEALTHY,
-	ART.LEVEL_05_FOREST_EDGE_HEALTHY,
-	ART.LEVEL_05_DECOR_TREE_HEALTHY,
-	ART.LEVEL_07_ANCIENT_FOREST_HEALTHY,
-]
-const LAND_DECORATIVE_FAILED_PATHS := [
-	ART.LEVEL_01_DECOR_LEFT_SPROUT_WILTED,
-	ART.LEVEL_02_DECOR_SHRUB_WILTED,
-	ART.LEVEL_03_DECOR_WETLAND_POLLUTED,
-	ART.LEVEL_04_DECOR_GRASS_WILTED,
-	ART.LEVEL_05_FOREST_EDGE_WILTED,
-	ART.LEVEL_05_DECOR_TREE_WILTED,
-	ART.LEVEL_07_ANCIENT_FOREST_WILTED,
-]
-const LAND_DECORATIVE_CENTER_X := 218.0
-const LAND_DECORATIVE_BASELINE_Y := 648.0
-const LAND_DECORATIVE_MAX_SIZE := Vector2(68.0, 56.0)
-const LAND_INTERFACE_SCALE := 0.84
+const LAND_TOP_ATTACHMENT_PATH := ART.LAND_V2_TOP_ATTACHMENT
+const LAND_COUNTER_FRAME_PATH := ART.LAND_V2_COUNTER_FRAME
+const LAND_ROBOT_EMBLEM_PATH := ART.LAND_V2_ROBOT_EMBLEM
+const LAND_COUNTER_ICON_PATH := ART.LAND_V2_COUNTER_ICON
+const LAND_TIMER_ICON_PATH := ART.LAND_V2_TIMER_ICON
+const OCEAN_TOP_ATTACHMENT_PATH := ART.OCEAN_V2_TOP_ATTACHMENT
+const OCEAN_COUNTER_FRAME_PATH := ART.OCEAN_V2_COUNTER_FRAME
+const OCEAN_ROBOT_EMBLEM_PATH := ART.OCEAN_V2_ROBOT_EMBLEM
+const OCEAN_COUNTER_ICON_PATH := ART.OCEAN_V2_COUNTER_ICON
+const OCEAN_TIMER_ICON_PATH := ART.OCEAN_V2_TIMER_ICON
+const LAND_DECORATIVE_HEALTHY_PATHS := ART.LAND_V2_VICTORY_ECOLOGY_PATHS
+const LAND_DECORATIVE_FAILED_PATHS := ART.LAND_V2_ECOLOGY_POLLUTED_PATHS
+const LAND_INTERFACE_SCALE := 1.0
 const LAND_INTERFACE_DESIGN_WIDTH := 1280.0
-const LAND_INTERFACE_TOP_OFFSET := 25.0
+const LAND_INTERFACE_TOP_OFFSET := 0.0
 const OCEAN_INTERFACE_DESIGN_SIZE := Vector2(1280.0, 720.0)
-const BOARD_CENTER_VERTICAL_INSET := 20.0
-const OCEAN_BOARD_HORIZONTAL_SHIFT := -3.0
-const OCEAN_BOARD_VERTICAL_SHIFT := 2.0
-const OCEAN_BOARD_SCALE := 0.94
-const LAND_QUICK_BUTTON_POSITION := Vector2(-10.0, 458.0)
-const LAND_PAUSE_BUTTON_SHIFT := 6
-const OCEAN_QUICK_BUTTON_POSITION := Vector2(-8.0, 446.0)
 const LAND_QUICK_BUTTON_LABEL_COLOR := Color("71371d")
 const OCEAN_QUICK_BUTTON_LABEL_COLOR := Color("123f5e")
-const LEVEL_ONE_SIDE_GUARDIAN_A_PATH := ART.LEVEL_01_GUARDIAN_RIGHT_YELLOW_STANDING
-const LEVEL_ONE_SIDE_GUARDIAN_B_PATH := ART.LEVEL_01_GUARDIAN_RIGHT_WHITE_SITTING
-const LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH := ART.LEVEL_01_GUARDIAN_LEFT_ROBOT
-const LEVEL_ONE_SPROUT_GUARDIAN_RIGHT_PATH := ART.LEVEL_01_GUARDIAN_LEFT_SPROUT_FACING_LEFT
-const FAILURE_LEFT_GUARDIAN_PATH := ART.LAND_GUARDIAN_LEFT_CRYING
-const FAILURE_RIGHT_YELLOW_GUARDIAN_PATH := ART.LAND_GUARDIAN_RIGHT_YELLOW_CRYING
-const FAILURE_RIGHT_WHITE_GUARDIAN_PATH := ART.LAND_GUARDIAN_RIGHT_WHITE_CRYING
 const HANDMADE_FONT_PATH := ART.UI_FONT
 const PAPER_BUTTON_PATH := ART.TUTORIAL_GUIDE_BUTTON_SECONDARY
 const PAPER_BUTTON_SELECTED_PATH := ART.TUTORIAL_GUIDE_BUTTON_SECONDARY
@@ -114,59 +92,59 @@ const LEVEL_MECHANIC_GUIDES := {
 	3: {
 		"id": &"land_obstacles",
 		"pages": [
-			{"title": "小芽：这些灰色格子是障碍", "text": "障碍不能翻开、标记或扫描，里面也没有污染。", "hint": "看数字时，直接忽略旁边的障碍格。"},
-			{"title": "小芽：其他规则没有变化", "text": "继续用数字判断周围哪些普通格藏着污染。", "hint": "障碍不用清除，净化其余安全格就可以了。"},
+			{"title": "TXT_0253", "text": "TXT_0254", "hint": "TXT_0255"},
+			{"title": "TXT_0256", "text": "TXT_0448", "hint": "TXT_0257"},
 		],
 	},
 	5: {
 		"id": &"pollution_nodes",
 		"pages": [
-			{"title": "小芽：这是污染节点", "text": "节点不能直接点击，而且会被邻近数字算作一个污染。", "hint": "所以数字里既可能有普通污染，也可能包含节点。"},
-			{"title": "小芽：处理它周围的格子", "text": "翻开周围的安全格，并标出周围的污染核心。", "hint": "全部处理正确后，污染节点会自动净化。"},
+			{"title": "TXT_0258", "text": "TXT_0259", "hint": "TXT_0404"},
+			{"title": "TXT_0260", "text": "TXT_0261", "hint": "TXT_0262"},
 		],
 	},
 	7: {
 		"id": &"ancient_tree_roots",
 		"pages": [
-			{"title": "小芽：先切断三条根系锚点", "text": "中间的大树不能点击。先处理与它相连的三条根系。", "hint": "箭头指着其中一条根系末端的锚点。"},
-			{"title": "小芽：锚点周围照常扫雷", "text": "翻开锚点旁的安全格，把污染核心全部标对。", "hint": "三条根系都切断后，中间的大树会自动净化。"},
+			{"title": "TXT_0263", "text": "TXT_0264", "hint": "TXT_0265"},
+			{"title": "TXT_0266", "text": "TXT_0267", "hint": "TXT_0268"},
 		],
 	},
 	8: {
 		"id": &"hex_ocean_board",
 		"pages": [
-			{"title": "小芽：海洋棋盘是六边形", "text": "每个格子最多只有六个相邻格，不再是原来的八个。", "hint": "两格必须共享一条边才算相邻。"},
-			{"title": "小芽：扫雷规则没有变化", "text": "数字仍表示相邻格里一共有多少个污染。", "hint": "只要按照六个方向读数字就可以了。"},
+			{"title": "TXT_0274", "text": "TXT_0275", "hint": "TXT_0388"},
+			{"title": "TXT_0277", "text": "TXT_0413", "hint": "TXT_0276"},
 		],
 	},
 	9: {
 		"id": &"coral_reefs",
 		"pages": [
-			{"title": "小芽：珊瑚墙会隔开两格", "text": "墙两边的格子不再相邻，数字也不会计算墙对面。", "hint": "双击展开时，同样不会穿过珊瑚墙。"},
-			{"title": "小芽：可以从墙边绕过去", "text": "没有被墙隔开的共享边，仍然保持正常相邻。", "hint": "先看清墙在哪两格之间，再判断数字。"},
+			{"title": "TXT_0279", "text": "TXT_0280", "hint": "TXT_0284"},
+			{"title": "TXT_0282", "text": "TXT_0283", "hint": "TXT_0281"},
 		],
 	},
 	11: {
 		"id": &"drifting_mines",
 		"pages": [
-			{"title": "小芽：浅蓝浮标会向右漂", "text": "每组有四个浮标，其中两个安全，另外两个是水雷。", "hint": "浮标也能正常翻开、标记和双击展开。"},
-			{"title": "小芽：移动后数字会重算", "text": "浮标每次移动，周围数字都会按新位置更新。", "hint": "已经翻开的数字也可能跟着发生变化。"},
-			{"title": "小芽：要在漂出前解决它", "text": "翻开两个安全浮标，并标出两颗水雷，这组就会停下。", "hint": "未解决的水雷漂出右侧边界，本局就会失败。"},
+			{"title": "TXT_0285", "text": "TXT_0286", "hint": "TXT_0278"},
+			{"title": "TXT_0290", "text": "TXT_0291", "hint": "TXT_0292"},
+			{"title": "TXT_0287", "text": "TXT_0288", "hint": "TXT_0289"},
 		],
 	},
 	13: {
 		"id": &"tidal_zones",
 		"pages": [
-			{"title": "小芽：棋盘会分区退潮", "text": "现在只能操作亮起的区域，后面的区域暂时锁着。", "hint": "先把当前区域的所有安全格翻开。"},
-			{"title": "小芽：完成后会打开下一区", "text": "新区出现时，交界处已经翻开的数字会重新计算。", "hint": "若没有解锁，状态栏会提示遗漏或错误标记。"},
+			{"title": "TXT_0293", "text": "TXT_0294", "hint": "TXT_0295"},
+			{"title": "TXT_0296", "text": "TXT_0297", "hint": "TXT_0298"},
 		],
 	},
 }
 const SCAN_GUIDE := {
 	"id": &"eco_scan",
 	"pages": [
-		{"title": "小芽：生态扫描已经充满", "text": "翻开格子和首次标记都能充能，能量还能带到下一关。", "hint": "充满后，你可以使用一次生态扫描。"},
-		{"title": "小芽：按C选择一个隐藏格", "text": "扫描会直接告诉你，这一格是安全还是污染。", "hint": "它不会自动翻开或标记，之后仍由你决定。"},
+		{"title": "TXT_0269", "text": "TXT_0270", "hint": "TXT_0273"},
+		{"title": "TXT_0271", "text": "TXT_0272", "hint": "TXT_0398"},
 	],
 }
 
@@ -183,45 +161,60 @@ enum ScanPhase {
 }
 
 
-@onready var board: MinesweeperBoard = %Board
-@onready var board_center: CenterContainer = $PageMargin/Columns/BoardPanel/BoardCenter
-@onready var page_margin: MarginContainer = $PageMargin
-@onready var eco_showcase: Control = %EcoShowcase
-@onready var ocean_stage: Control = %OceanStage
+@onready var land_board: MinesweeperBoard = %Board
+@onready var ocean_board: MinesweeperBoard = %OceanBoard
+@onready var board: MinesweeperBoard = land_board
+@onready var land_board_center: CenterContainer = %BoardCenter
+@onready var land_layout: Control = %LandLayout
+@onready var ocean_layout: Control = %OceanLayout
 @onready var ocean_desk_background: TextureRect = %OceanDeskBackground
-@onready var ocean_board_tray_frame: TextureRect = %OceanBoardTrayFrame
+@onready var ocean_stage_art: TextureRect = %OceanStageArt
 @onready var land_desk_background: TextureRect = %LandDeskBackground
-@onready var level_one_background: TextureRect = %LevelOneBackground
+@onready var level_one_background: TextureRect = %Stage
 @onready var land_unified_shadow: TextureRect = %LandUnifiedShadow
-@onready var land_sticker_sets: Control = %LandStickerSets
-@onready var land_tabletop_actors: LandTabletopActors = %LandTabletopActors
-@onready var bud_sprout_decoration_a: TextureRect = %BudSproutDecorationA
-@onready var leaf_sprout_decoration_a: TextureRect = \
-		$LevelOneBackground/LevelOneDecorations/LeafSproutDecorationA
-@onready var seed_decoration_a: TextureRect = \
-		$LevelOneBackground/LevelOneDecorations/SeedDecorationA
-@onready var seed_decoration_b: TextureRect = \
-		$LevelOneBackground/LevelOneDecorations/SeedDecorationB
-@onready var environment_panel: Control = %EnvironmentPanel
-@onready var hud_panel: PanelContainer = %HudPanel
-@onready var info_note_artwork: TextureRect = %InfoNoteArtwork
-@onready var info_back_artwork: TextureRect = %InfoBackArtwork
-@onready var status_note_artwork: TextureRect = %StatusNoteArtwork
-@onready var board_tray: TextureRect = %BoardTray
-@onready var board_shadow: Panel = %BoardShadow
-@onready var victory_animation_player: AnimationPlayer = %LevelOneAnimationPlayer
-@onready var left_decorative_sprout: TextureRect = %LeftDecorativeSprout
-@onready var right_guardian_a: TextureRect = %RightGuardianA
-@onready var right_guardian_b: TextureRect = %RightGuardianB
-@onready var left_sprout_guardian_left: TextureRect = %LeftSproutGuardianLeft
-@onready var left_sprout_guardian_right: TextureRect = %LeftSproutGuardianRight
-@onready var right_guardian_a_shadow: Control = %RightGuardianAShadow
-@onready var right_guardian_b_shadow: Control = %RightGuardianBShadow
-@onready var left_sprout_guardian_left_shadow: Control = %LeftSproutGuardianLeftShadow
-@onready var left_sprout_guardian_right_shadow: Control = %LeftSproutGuardianRightShadow
-@onready var subtitle_label: Label = %SubtitleLabel
-@onready var level_summary_label: Label = %LevelSummaryLabel
-@onready var objective_label: Label = %ObjectiveLabel
+@onready var land_top_hud: Control = %TopHud
+@onready var ocean_top_hud: Control = %OceanTopHud
+@onready var land_top_attachment: TextureRect = %LandTopAttachment
+@onready var land_mine_counter_frame: TextureRect = %LandMineCounterFrame
+@onready var land_timer_counter_frame: TextureRect = %LandTimerCounterFrame
+@onready var land_robot_emblem: TextureRect = %LandRobotEmblem
+@onready var land_mine_counter_icon: TextureRect = %LandMineCounterIcon
+@onready var land_timer_counter_icon: TextureRect = %LandTimerCounterIcon
+@onready var land_mine_counter_label: Label = %LandMineCounterLabel
+@onready var land_timer_counter_label: Label = %LandTimerCounterLabel
+@onready var ocean_mine_counter_label: Label = %OceanMineCounterLabel
+@onready var ocean_timer_counter_label: Label = %OceanTimerCounterLabel
+@onready var mine_counter_label: Label = land_mine_counter_label
+@onready var top_timer_counter_label: Label = land_timer_counter_label
+@onready var land_robot_layout: TextureRect = %LandRobot
+@onready var land_ecology_layout: TextureRect = %LandEcology
+@onready var land_monster_layout: TextureRect = %LandMonster
+@onready var ocean_robot_layout: TextureRect = %OceanRobot
+@onready var ocean_ecology_layout: TextureRect = %OceanEcology
+@onready var ocean_monster_layout: TextureRect = %OceanMonster
+@onready var land_tabletop_actors: LandTabletopActors = %LandAnimationController
+@onready var land_environment_panel: Control = %LeftInfo
+@onready var ocean_environment_panel: Control = %OceanLeftInfo
+@onready var environment_panel: Control = land_environment_panel
+@onready var land_hud_panel: Control = %RightInfo
+@onready var ocean_hud_panel: Control = %OceanRightInfo
+@onready var hud_panel: Control = land_hud_panel
+@onready var land_time_title: Label = _optional_label("%TimeTitle")
+@onready var time_title: Label = land_time_title
+@onready var land_time_separator: HSeparator = _optional_separator("%TimeSeparator")
+@onready var time_separator: HSeparator = land_time_separator
+@onready var land_flags_row: HBoxContainer = %FlagsRow
+@onready var ocean_flags_row: HBoxContainer = %OceanFlagsRow
+@onready var flags_row: HBoxContainer = land_flags_row
+@onready var land_subtitle_label: Label = %SubtitleLabel
+@onready var ocean_subtitle_label: Label = %OceanSubtitleLabel
+@onready var subtitle_label: Label = land_subtitle_label
+@onready var land_level_summary_label: Label = %LevelSummaryLabel
+@onready var ocean_level_summary_label: Label = %OceanLevelSummaryLabel
+@onready var level_summary_label: Label = land_level_summary_label
+@onready var land_objective_label: Label = %ObjectiveLabel
+@onready var ocean_objective_label: Label = %OceanObjectiveLabel
+@onready var objective_label: Label = land_objective_label
 @onready var boss_stage: Control = %BossStage
 @onready var boss_portrait: TextureRect = %BossPortrait
 @onready var boss_anchor_icons: Array[TextureRect] = [
@@ -234,24 +227,51 @@ enum ScanPhase {
 	%BossRootLineB,
 	%BossRootLineC,
 ]
-@onready var status_label: Label = %StatusLabel
-@onready var flags_label: Label = %FlagsLabel
-@onready var timer_label: Label = %TimerLabel
-@onready var instructions_label: Label = %InstructionsLabel
-@onready var scan_fallback_row: HBoxContainer = %ScanFallbackRow
-@onready var scan_fallback_status: Label = %ScanFallbackStatus
-@onready var scan_fallback_button: Button = %ScanFallbackButton
-@onready var ocean_scan_dots: Array[Control] = [
+@onready var land_status_label: Label = %StatusLabel
+@onready var ocean_status_label: Label = %OceanStatusLabel
+@onready var status_label: Label = land_status_label
+@onready var land_flags_label: Label = _optional_label("%FlagsLabel")
+@onready var flags_label: Label = land_flags_label
+@onready var land_timer_label: Label = _optional_label("%TimerLabel")
+@onready var timer_label: Label = land_timer_label
+@onready var land_instructions_label: Label = %InstructionsLabel
+@onready var ocean_instructions_label: Label = %OceanInstructionsLabel
+@onready var instructions_label: Label = land_instructions_label
+@onready var land_scan_fallback_row: HBoxContainer = %ScanFallbackRow
+@onready var ocean_scan_fallback_row: HBoxContainer = %OceanScanFallbackRow
+@onready var scan_fallback_row: HBoxContainer = land_scan_fallback_row
+@onready var land_scan_fallback_status: Label = %ScanFallbackStatus
+@onready var ocean_scan_fallback_status: Label = %OceanScanFallbackStatus
+@onready var scan_fallback_status: Label = land_scan_fallback_status
+@onready var land_scan_fallback_button: Button = %ScanFallbackButton
+@onready var ocean_scan_fallback_button: Button = %OceanScanFallbackButton
+@onready var scan_fallback_button: Button = land_scan_fallback_button
+@onready var land_scan_dots: Array[Control] = [
 	%OceanScanDotA,
 	%OceanScanDotB,
 	%OceanScanDotC,
 ]
-@onready var quick_buttons: HBoxContainer = %QuickButtons
-@onready var pause_button_slot: MarginContainer = %PauseButtonSlot
-@onready var pause_button: TextureButton = %PauseButton
-@onready var restart_button: TextureButton = %RestartButton
-@onready var pause_button_label: Label = %PauseButtonLabel
-@onready var restart_button_label: Label = %RestartButtonLabel
+@onready var ocean_v2_scan_dots: Array[Control] = [
+	%OceanV2ScanDotA,
+	%OceanV2ScanDotB,
+	%OceanV2ScanDotC,
+]
+@onready var ocean_scan_dots: Array[Control] = land_scan_dots
+@onready var land_quick_buttons: Control = %QuickActions
+@onready var ocean_quick_buttons: Control = %OceanQuickActions
+@onready var quick_buttons: Control = land_quick_buttons
+@onready var land_pause_button: TextureButton = %PauseButton
+@onready var ocean_pause_button: TextureButton = %OceanPauseButton
+@onready var pause_button: TextureButton = land_pause_button
+@onready var land_restart_button: TextureButton = %RestartButton
+@onready var ocean_restart_button: TextureButton = %OceanRestartButton
+@onready var restart_button: TextureButton = land_restart_button
+@onready var land_pause_button_label: Label = %PauseButtonLabel
+@onready var ocean_pause_button_label: Label = %OceanPauseButtonLabel
+@onready var pause_button_label: Label = land_pause_button_label
+@onready var land_restart_button_label: Label = %RestartButtonLabel
+@onready var ocean_restart_button_label: Label = %OceanRestartButtonLabel
+@onready var restart_button_label: Label = land_restart_button_label
 @onready var first_move_guide = %FirstMoveGuide
 @onready var pause_overlay: Control = %PauseOverlay
 @onready var pause_menu_frame_artwork: NinePatchRect = %PauseMenuFrameArtwork
@@ -259,6 +279,7 @@ enum ScanPhase {
 @onready var pause_restart_button: Button = %PauseRestartButton
 @onready var level_select_button: Button = %LevelSelectButton
 @onready var pause_settings_button: Button = %PauseSettingsButton
+@onready var pause_help_button: Button = %PauseHelpButton
 @onready var main_menu_button: Button = %MainMenuButton
 @onready var exit_game_button: Button = %ExitGameButton
 
@@ -290,40 +311,63 @@ var _scan_target_global_position := Vector2.ZERO
 var _seen_mechanic_guides: Dictionary = {}
 var _queued_mechanic_guides: Array[StringName] = []
 var _active_mechanic_guide_id := &""
+var _land_board_center_offsets := Vector4.ZERO
+var _land_board_center_scale := Vector2.ONE
+var _land_quick_actions_position := Vector2.ZERO
+var _badge_celebration: BadgeCelebration
+
+
+func _optional_label(path: NodePath) -> Label:
+	var existing := get_node_or_null(path) as Label
+	return existing if existing != null else Label.new()
+
+
+func _optional_separator(path: NodePath) -> HSeparator:
+	var existing := get_node_or_null(path) as HSeparator
+	return existing if existing != null else HSeparator.new()
 
 
 func _ready() -> void:
+	_capture_land_editor_layout()
+	if Engine.is_editor_hint():
+		land_tabletop_actors.visible = false
+		pause_overlay.visible = editor_preview_pause_menu
+		return
+	_badge_celebration = BADGE_CELEBRATION_SCENE.instantiate() as BadgeCelebration
+	add_child(_badge_celebration)
+	_badge_celebration.book_requested.connect(
+		func(level_number: int) -> void:
+			badge_book_requested.emit(level_number)
+	)
+	for layout_preview in [
+		land_robot_layout,
+		land_ecology_layout,
+		land_monster_layout,
+		ocean_robot_layout,
+		ocean_ecology_layout,
+		ocean_monster_layout,
+	]:
+		layout_preview.visible = false
 	_apply_handmade_interface()
 	resized.connect(_on_main_resized)
 	call_deferred("_apply_land_interface_transform")
-	if Engine.is_editor_hint():
-		pause_overlay.visible = editor_preview_pause_menu
-		return
-	board.state_changed.connect(_on_state_changed)
-	board.board_interacted.connect(_on_board_interacted)
-	board.flags_changed.connect(_on_flags_changed)
-	board.reveal_completed.connect(_on_reveal_completed)
-	board.flag_completed.connect(_on_flag_completed)
-	board.chord_completed.connect(_on_chord_completed)
-	board.scan_target_requested.connect(_on_scan_target_requested)
-	board.scan_cancel_requested.connect(_cancel_scan_targeting)
-	board.scan_completed.connect(_on_scan_completed)
-	board.pollution_nodes_changed.connect(_on_pollution_nodes_changed)
-	board.tidal_zone_changed.connect(_on_tidal_zone_changed)
-	board.current_path_feedback.connect(_on_current_path_feedback)
-	board.mobile_current_state_changed.connect(_on_mobile_current_state_changed)
-	board.drifting_mine_state_changed.connect(_on_drifting_mine_state_changed)
+	for chapter_board in [land_board, ocean_board]:
+		_connect_board_signals(chapter_board)
 	land_tabletop_actors.scan_activation_requested.connect(_request_scan_mode)
-	scan_fallback_button.pressed.connect(_request_scan_mode)
+	land_scan_fallback_button.pressed.connect(_request_scan_mode)
+	ocean_scan_fallback_button.pressed.connect(_request_scan_mode)
 	first_move_guide.exit_requested.connect(_on_tutorial_exit_requested)
 	first_move_guide.next_requested.connect(_on_tutorial_next_requested)
 	first_move_guide.dialogue_completed.connect(_on_mechanic_dialogue_completed)
-	restart_button.pressed.connect(_on_primary_button_pressed)
-	pause_button.pressed.connect(_on_pause_button_pressed)
+	land_pause_button.pressed.connect(_on_left_quick_button_pressed)
+	land_restart_button.pressed.connect(_on_right_quick_button_pressed)
+	ocean_pause_button.pressed.connect(_on_left_quick_button_pressed)
+	ocean_restart_button.pressed.connect(_on_right_quick_button_pressed)
 	resume_button.pressed.connect(_on_resume_button_pressed)
 	pause_restart_button.pressed.connect(_on_pause_restart_button_pressed)
 	level_select_button.pressed.connect(_on_level_select_button_pressed)
 	pause_settings_button.pressed.connect(_on_pause_settings_button_pressed)
+	pause_help_button.pressed.connect(func() -> void: help_requested.emit())
 	main_menu_button.pressed.connect(_on_main_menu_button_pressed)
 	exit_game_button.pressed.connect(_on_exit_game_button_pressed)
 	if auto_start:
@@ -333,33 +377,37 @@ func _ready() -> void:
 	set_process(true)
 
 
+func _connect_board_signals(target_board: MinesweeperBoard) -> void:
+	target_board.state_changed.connect(_on_state_changed)
+	target_board.board_interacted.connect(_on_board_interacted)
+	target_board.flags_changed.connect(_on_flags_changed)
+	target_board.reveal_completed.connect(_on_reveal_completed)
+	target_board.flag_completed.connect(_on_flag_completed)
+	target_board.chord_completed.connect(_on_chord_completed)
+	target_board.scan_target_requested.connect(_on_scan_target_requested)
+	target_board.scan_cancel_requested.connect(_cancel_scan_targeting)
+	target_board.scan_completed.connect(_on_scan_completed)
+	target_board.pollution_nodes_changed.connect(_on_pollution_nodes_changed)
+	target_board.tidal_zone_changed.connect(_on_tidal_zone_changed)
+	target_board.current_path_feedback.connect(_on_current_path_feedback)
+	target_board.mobile_current_state_changed.connect(_on_mobile_current_state_changed)
+	target_board.drifting_mine_state_changed.connect(_on_drifting_mine_state_changed)
+
+
 func _apply_handmade_interface() -> void:
 	land_desk_background.texture = _load_runtime_texture(LAND_DESK_BACKGROUND_PATH)
 	ocean_desk_background.texture = _load_runtime_texture(OCEAN_DESK_BACKGROUND_PATH)
-	ocean_board_tray_frame.texture = _load_runtime_texture(OCEAN_BOARD_TRAY_FRAME_PATH)
+	ocean_stage_art.texture = _load_runtime_texture(OCEAN_STAGE_BODY_PATH)
 	level_one_background.texture = _load_runtime_texture(LEVEL_ONE_BACKGROUND_PATH)
 	land_unified_shadow.texture = _load_runtime_texture(LAND_UNIFIED_SHADOW_PATH)
-	board_tray.texture = _load_runtime_texture(LEVEL_ONE_BOARD_TRAY_PATH)
+	land_unified_shadow.visible = false
+	land_top_attachment.texture = _load_runtime_texture(LAND_TOP_ATTACHMENT_PATH)
+	land_mine_counter_frame.texture = _load_runtime_texture(LAND_COUNTER_FRAME_PATH)
+	land_timer_counter_frame.texture = _load_runtime_texture(LAND_COUNTER_FRAME_PATH)
+	land_robot_emblem.texture = _load_runtime_texture(LAND_ROBOT_EMBLEM_PATH)
+	land_mine_counter_icon.texture = _load_runtime_texture(LAND_COUNTER_ICON_PATH)
+	land_timer_counter_icon.texture = _load_runtime_texture(LAND_TIMER_ICON_PATH)
 	_apply_land_decorative_texture(LAND_DECORATIVE_HEALTHY_PATHS[0])
-	right_guardian_a.texture = _load_runtime_texture(LEVEL_ONE_SIDE_GUARDIAN_B_PATH)
-	right_guardian_b.texture = _load_runtime_texture(LEVEL_ONE_SIDE_GUARDIAN_A_PATH)
-	left_sprout_guardian_left.texture = _load_runtime_texture(
-		LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH
-	)
-	left_sprout_guardian_right.texture = _load_runtime_texture(
-		LEVEL_ONE_SPROUT_GUARDIAN_RIGHT_PATH
-	)
-	var seed_texture := _load_runtime_texture(LEVEL_ONE_SEED_STICKER_PATH)
-	seed_decoration_a.texture = seed_texture
-	seed_decoration_b.texture = seed_texture
-	var bud_sprout_texture := _load_runtime_texture(LEVEL_ONE_BUD_SPROUT_PATH)
-	bud_sprout_decoration_a.texture = bud_sprout_texture
-	var leaf_sprout_texture := _load_runtime_texture(LEVEL_ONE_LEAF_SPROUT_PATH)
-	leaf_sprout_decoration_a.texture = leaf_sprout_texture
-	var curved_note_texture := _load_runtime_texture(LEVEL_ONE_STATUS_NOTE_PATH)
-	info_note_artwork.texture = curved_note_texture
-	status_note_artwork.texture = curved_note_texture
-	info_back_artwork.texture = _load_runtime_texture(LEVEL_ONE_STRAIGHT_NOTE_PATH)
 	pause_menu_frame_artwork.visible = false
 	var pause_panel := pause_menu_frame_artwork.get_parent() as PanelContainer
 	var pause_panel_style := StyleBoxFlat.new()
@@ -371,17 +419,17 @@ func _apply_handmade_interface() -> void:
 	pause_panel.add_theme_stylebox_override("panel", pause_panel_style)
 	_apply_texture_button_states(
 		pause_button,
-		_load_runtime_texture(LAND_PAUSE_NORMAL_PATH),
-		_load_runtime_texture(LAND_PAUSE_HOVER_PATH),
-		_load_runtime_texture(LAND_PAUSE_FOCUS_PATH),
-		_load_runtime_texture(LAND_PAUSE_PRESSED_PATH)
-	)
-	_apply_texture_button_states(
-		restart_button,
 		_load_runtime_texture(LAND_REGENERATE_NORMAL_PATH),
 		_load_runtime_texture(LAND_REGENERATE_HOVER_PATH),
 		_load_runtime_texture(LAND_REGENERATE_FOCUS_PATH),
 		_load_runtime_texture(LAND_REGENERATE_PRESSED_PATH)
+	)
+	_apply_texture_button_states(
+		restart_button,
+		_load_runtime_texture(LAND_SETTINGS_NORMAL_PATH),
+		_load_runtime_texture(LAND_SETTINGS_HOVER_PATH),
+		_load_runtime_texture(LAND_SETTINGS_FOCUS_PATH),
+		_load_runtime_texture(LAND_SETTINGS_PRESSED_PATH)
 	)
 	_apply_handmade_typography()
 	var paper_normal := _load_texture_style(PAPER_BUTTON_PATH)
@@ -396,10 +444,74 @@ func _apply_handmade_interface() -> void:
 			pause_restart_button,
 			level_select_button,
 			pause_settings_button,
+			pause_help_button,
 			main_menu_button,
 			exit_game_button,
 		]:
 			_apply_paper_button(button, paper_normal, paper_selected, paper_pressed)
+
+
+func _capture_land_editor_layout() -> void:
+	_land_board_center_offsets = Vector4(
+		land_board_center.offset_left,
+		land_board_center.offset_top,
+		land_board_center.offset_right,
+		land_board_center.offset_bottom
+	)
+	_land_board_center_scale = land_board_center.scale
+	_land_quick_actions_position = land_quick_buttons.position
+
+
+func _apply_land_actor_layout() -> void:
+	land_tabletop_actors.configure_land_layout(
+		Rect2(land_robot_layout.position, land_robot_layout.size),
+		Rect2(land_ecology_layout.position, land_ecology_layout.size),
+		Rect2(land_monster_layout.position, land_monster_layout.size)
+	)
+
+
+func _apply_ocean_actor_layout() -> void:
+	land_tabletop_actors.configure_ocean_layout(
+		Rect2(ocean_robot_layout.position, ocean_robot_layout.size),
+		Rect2(ocean_ecology_layout.position, ocean_ecology_layout.size),
+		Rect2(ocean_monster_layout.position, ocean_monster_layout.size)
+	)
+
+
+func _select_chapter_interface(uses_land_stage: bool) -> void:
+	board = land_board if uses_land_stage else ocean_board
+	environment_panel = land_environment_panel if uses_land_stage else ocean_environment_panel
+	hud_panel = land_hud_panel if uses_land_stage else ocean_hud_panel
+	time_title = land_time_title
+	time_separator = land_time_separator
+	flags_row = land_flags_row if uses_land_stage else ocean_flags_row
+	subtitle_label = land_subtitle_label if uses_land_stage else ocean_subtitle_label
+	level_summary_label = land_level_summary_label if uses_land_stage else ocean_level_summary_label
+	objective_label = land_objective_label if uses_land_stage else ocean_objective_label
+	status_label = land_status_label if uses_land_stage else ocean_status_label
+	flags_label = land_flags_label
+	timer_label = land_timer_label
+	instructions_label = land_instructions_label if uses_land_stage else ocean_instructions_label
+	scan_fallback_row = land_scan_fallback_row if uses_land_stage else ocean_scan_fallback_row
+	scan_fallback_status = land_scan_fallback_status if uses_land_stage else ocean_scan_fallback_status
+	scan_fallback_button = land_scan_fallback_button if uses_land_stage else ocean_scan_fallback_button
+	ocean_scan_dots = land_scan_dots if uses_land_stage else ocean_v2_scan_dots
+	quick_buttons = land_quick_buttons if uses_land_stage else ocean_quick_buttons
+	pause_button = land_pause_button if uses_land_stage else ocean_pause_button
+	restart_button = land_restart_button if uses_land_stage else ocean_restart_button
+	pause_button_label = land_pause_button_label if uses_land_stage else ocean_pause_button_label
+	restart_button_label = land_restart_button_label if uses_land_stage else ocean_restart_button_label
+	mine_counter_label = land_mine_counter_label if uses_land_stage else ocean_mine_counter_label
+	top_timer_counter_label = land_timer_counter_label if uses_land_stage else ocean_timer_counter_label
+
+
+func _restore_land_editor_layout() -> void:
+	land_board_center.offset_left = _land_board_center_offsets.x
+	land_board_center.offset_top = _land_board_center_offsets.y
+	land_board_center.offset_right = _land_board_center_offsets.z
+	land_board_center.offset_bottom = _land_board_center_offsets.w
+	land_board_center.scale = _land_board_center_scale
+	land_quick_buttons.position = _land_quick_actions_position
 
 
 func _on_main_resized() -> void:
@@ -407,57 +519,21 @@ func _on_main_resized() -> void:
 
 
 func _apply_land_interface_transform() -> void:
-	if not is_instance_valid(page_margin):
+	if not is_instance_valid(land_layout) or not is_instance_valid(ocean_layout):
 		return
-	var uses_land_stage := current_level_index < GreenSweeperLevels.LAND_LEVELS.size()
-	var board_horizontal_shift := 0.0 if uses_land_stage else OCEAN_BOARD_HORIZONTAL_SHIFT
-	var board_vertical_shift := 0.0 if uses_land_stage else OCEAN_BOARD_VERTICAL_SHIFT
-	board_center.offset_left = board_horizontal_shift
-	board_center.offset_right = board_horizontal_shift
-	board_center.offset_top = BOARD_CENTER_VERTICAL_INSET + board_vertical_shift
-	board_center.offset_bottom = BOARD_CENTER_VERTICAL_INSET + board_vertical_shift
-	board_center.pivot_offset = board_center.size * 0.5
-	board_center.scale = (
-		Vector2.ONE
-		if uses_land_stage
-		else Vector2.ONE * OCEAN_BOARD_SCALE
-	)
-	if uses_land_stage:
-		page_margin.anchor_left = 0.0
-		page_margin.anchor_top = 0.0
-		page_margin.anchor_right = 1.0
-		page_margin.anchor_bottom = 1.0
-		page_margin.offset_left = 0.0
-		page_margin.offset_top = 0.0
-		page_margin.offset_right = 0.0
-		page_margin.offset_bottom = 0.0
-		var land_scale := LAND_INTERFACE_SCALE
-		var land_width := LAND_INTERFACE_DESIGN_WIDTH * land_scale
-		var land_offset := Vector2(
-			(size.x - land_width) * 0.5,
-			LAND_INTERFACE_TOP_OFFSET + maxf(size.y - 720.0, 0.0) * 0.5
-		)
-		for stage_control in [land_unified_shadow, level_one_background, page_margin]:
-			stage_control.scale = Vector2.ONE * land_scale
-			stage_control.position = land_offset
-		return
-
-	page_margin.anchor_left = 0.0
-	page_margin.anchor_top = 0.0
-	page_margin.anchor_right = 0.0
-	page_margin.anchor_bottom = 0.0
-	page_margin.offset_left = 0.0
-	page_margin.offset_top = 0.0
-	page_margin.offset_right = OCEAN_INTERFACE_DESIGN_SIZE.x
-	page_margin.offset_bottom = OCEAN_INTERFACE_DESIGN_SIZE.y
-	var ocean_scale := maxf(
-		size.x / OCEAN_INTERFACE_DESIGN_SIZE.x,
+	var viewport_fit := minf(
+		size.x / LAND_INTERFACE_DESIGN_WIDTH,
 		size.y / OCEAN_INTERFACE_DESIGN_SIZE.y
 	)
-	var ocean_offset := (size - OCEAN_INTERFACE_DESIGN_SIZE * ocean_scale) * 0.5
-	for stage_control in [ocean_stage, page_margin]:
-		stage_control.scale = Vector2.ONE * ocean_scale
-		stage_control.position = ocean_offset
+	var interface_scale := LAND_INTERFACE_SCALE * viewport_fit
+	var interface_position := Vector2(
+		(size.x - LAND_INTERFACE_DESIGN_WIDTH * interface_scale) * 0.5,
+		LAND_INTERFACE_TOP_OFFSET * viewport_fit
+	)
+	land_layout.scale = Vector2.ONE * interface_scale
+	land_layout.position = interface_position
+	ocean_layout.scale = Vector2.ONE * interface_scale
+	ocean_layout.position = interface_position
 
 
 func _apply_handmade_typography() -> void:
@@ -465,10 +541,18 @@ func _apply_handmade_typography() -> void:
 	if font == null:
 		push_error("Level interface font could not be loaded: %s" % HANDMADE_FONT_PATH)
 		return
-	_apply_font_to_tree(environment_panel, font)
-	_apply_font_to_tree(hud_panel, font)
-	_apply_font_to_tree(quick_buttons, font)
-	_apply_font_to_tree(pause_overlay, font)
+	for interface_root in [
+		land_environment_panel,
+		ocean_environment_panel,
+		land_hud_panel,
+		ocean_hud_panel,
+		land_top_hud,
+		ocean_top_hud,
+		land_quick_buttons,
+		ocean_quick_buttons,
+		pause_overlay,
+	]:
+		_apply_font_to_tree(interface_root, font)
 
 
 func _apply_font_to_tree(node: Node, font: Font) -> void:
@@ -492,38 +576,6 @@ func _load_runtime_texture(path: String) -> Texture2D:
 func _apply_land_decorative_texture(path: String) -> void:
 	if is_instance_valid(land_tabletop_actors):
 		land_tabletop_actors.set_plant_texture(path)
-	var texture := _load_runtime_texture(path)
-	if texture == null:
-		return
-	left_decorative_sprout.texture = texture
-	var texture_size := texture.get_size()
-	var scale_factor := minf(
-		LAND_DECORATIVE_MAX_SIZE.x / texture_size.x,
-		LAND_DECORATIVE_MAX_SIZE.y / texture_size.y
-	)
-	var display_size := texture_size * scale_factor
-	left_decorative_sprout.position = Vector2(
-		LAND_DECORATIVE_CENTER_X - display_size.x * 0.5,
-		LAND_DECORATIVE_BASELINE_Y - display_size.y
-	)
-	left_decorative_sprout.size = display_size
-	left_decorative_sprout.pivot_offset = Vector2(
-		display_size.x * 0.5,
-		display_size.y * 0.91
-	)
-
-
-func _apply_land_stickers(state: int) -> void:
-	if not is_instance_valid(land_sticker_sets):
-		return
-	land_sticker_sets.visible = current_level_index < 5
-	if current_level_index >= 5:
-		return
-	land_sticker_sets.call(
-		"show_level",
-		current_level_index,
-		state == MinesweeperBoard.GameState.WON
-	)
 
 
 func _load_texture_style(path: String) -> StyleBoxTexture:
@@ -581,28 +633,24 @@ func _apply_chapter_quick_buttons(uses_land_stage: bool) -> void:
 	if uses_land_stage:
 		_apply_texture_button_states(
 			pause_button,
-			_load_runtime_texture(LAND_PAUSE_NORMAL_PATH),
-			_load_runtime_texture(LAND_PAUSE_HOVER_PATH),
-			_load_runtime_texture(LAND_PAUSE_FOCUS_PATH),
-			_load_runtime_texture(LAND_PAUSE_PRESSED_PATH)
-		)
-		_apply_texture_button_states(
-			restart_button,
 			_load_runtime_texture(LAND_REGENERATE_NORMAL_PATH),
 			_load_runtime_texture(LAND_REGENERATE_HOVER_PATH),
 			_load_runtime_texture(LAND_REGENERATE_FOCUS_PATH),
 			_load_runtime_texture(LAND_REGENERATE_PRESSED_PATH)
 		)
-		pause_button_slot.add_theme_constant_override(
-			"margin_right",
-			LAND_PAUSE_BUTTON_SHIFT
-		)
-		quick_buttons.position = (
-			LAND_QUICK_BUTTON_POSITION
-			- Vector2(LAND_PAUSE_BUTTON_SHIFT * 0.5, 0.0)
+		_apply_texture_button_states(
+			restart_button,
+			_load_runtime_texture(LAND_SETTINGS_NORMAL_PATH),
+			_load_runtime_texture(LAND_SETTINGS_HOVER_PATH),
+			_load_runtime_texture(LAND_SETTINGS_FOCUS_PATH),
+			_load_runtime_texture(LAND_SETTINGS_PRESSED_PATH)
 		)
 		pause_button_label.add_theme_color_override("font_color", LAND_QUICK_BUTTON_LABEL_COLOR)
 		restart_button_label.add_theme_color_override("font_color", LAND_QUICK_BUTTON_LABEL_COLOR)
+		pause_button.tooltip_text = "TXT_0143"
+		restart_button.tooltip_text = "TXT_0146"
+		pause_button_label.text = tr("TXT_0144")
+		restart_button_label.text = tr("TXT_0148")
 		return
 
 	_apply_texture_button_states(
@@ -619,43 +667,23 @@ func _apply_chapter_quick_buttons(uses_land_stage: bool) -> void:
 		_load_runtime_texture(OCEAN_REGENERATE_FOCUS_PATH),
 		_load_runtime_texture(OCEAN_REGENERATE_PRESSED_PATH)
 	)
-	pause_button_slot.add_theme_constant_override("margin_right", 0)
-	quick_buttons.position = OCEAN_QUICK_BUTTON_POSITION
 	pause_button_label.add_theme_color_override("font_color", OCEAN_QUICK_BUTTON_LABEL_COLOR)
 	restart_button_label.add_theme_color_override("font_color", OCEAN_QUICK_BUTTON_LABEL_COLOR)
+	pause_button.tooltip_text = "TXT_0143"
+	restart_button.tooltip_text = "TXT_0146"
+	pause_button_label.text = tr("TXT_0144")
+	restart_button_label.text = tr("TXT_0148")
 
 
 func _apply_guardian_state(state: int) -> void:
-	var is_failure := state == MinesweeperBoard.GameState.LOST
 	if is_instance_valid(land_tabletop_actors):
-		land_tabletop_actors.set_failure(is_failure)
-	left_sprout_guardian_left.texture = _load_runtime_texture(
-		LEVEL_ONE_SPROUT_GUARDIAN_LEFT_PATH
-	)
-	left_sprout_guardian_right.texture = _load_runtime_texture(
-		FAILURE_LEFT_GUARDIAN_PATH
-		if is_failure
-		else LEVEL_ONE_SPROUT_GUARDIAN_RIGHT_PATH
-	)
-	right_guardian_a.texture = _load_runtime_texture(
-		FAILURE_RIGHT_WHITE_GUARDIAN_PATH
-		if is_failure
-		else LEVEL_ONE_SIDE_GUARDIAN_B_PATH
-	)
-	right_guardian_b.texture = _load_runtime_texture(
-		FAILURE_RIGHT_YELLOW_GUARDIAN_PATH
-		if is_failure
-		else LEVEL_ONE_SIDE_GUARDIAN_A_PATH
-	)
+		land_tabletop_actors.set_failure(
+			state == MinesweeperBoard.GameState.LOST
+		)
 
 
 func _set_level_one_reaction(state: int) -> void:
-	victory_animation_player.play(&"RESET")
-	victory_animation_player.advance(0.0)
 	_apply_guardian_state(state)
-	seed_decoration_a.visible = false
-	seed_decoration_b.visible = false
-	leaf_sprout_decoration_a.visible = false
 	if is_instance_valid(land_tabletop_actors):
 		land_tabletop_actors.play_reaction(
 			state == MinesweeperBoard.GameState.WON,
@@ -714,6 +742,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
+	if is_instance_valid(_badge_celebration):
+		_badge_celebration.hide_award()
 	_clear_scan_ability()
 	_active_mechanic_guide_id = &""
 	_queued_mechanic_guides.clear()
@@ -726,37 +756,35 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 		GreenSweeperLevels.PLAYABLE_LEVELS.size() - 1
 	)
 	var uses_level_one_stage := current_level_index < GreenSweeperLevels.LAND_LEVELS.size()
+	_select_chapter_interface(uses_level_one_stage)
+	land_board.set_interaction_enabled(false)
+	ocean_board.set_interaction_enabled(false)
+	_restore_land_editor_layout()
 	call_deferred("_apply_land_interface_transform")
-	ocean_stage.visible = not uses_level_one_stage
+	land_layout.visible = uses_level_one_stage
+	ocean_layout.visible = not uses_level_one_stage
 	land_desk_background.visible = uses_level_one_stage
-	level_one_background.visible = uses_level_one_stage
-	land_unified_shadow.visible = uses_level_one_stage
-	eco_showcase.visible = false
-	board_tray.visible = false
-	board_shadow.visible = false
+	land_unified_shadow.visible = false
+	land_top_hud.visible = uses_level_one_stage
+	ocean_top_hud.visible = not uses_level_one_stage
+	time_title.visible = false
+	timer_label.visible = false
+	time_separator.visible = false
+	flags_row.visible = false
 	land_tabletop_actors.visible = true
 	scan_fallback_row.visible = false
 	_apply_chapter_quick_buttons(uses_level_one_stage)
-	left_decorative_sprout.visible = false
-	bud_sprout_decoration_a.visible = false
-	right_guardian_a.visible = false
-	right_guardian_b.visible = false
-	left_sprout_guardian_left.visible = false
-	left_sprout_guardian_right.visible = false
-	right_guardian_a_shadow.visible = false
-	right_guardian_b_shadow.visible = false
-	left_sprout_guardian_left_shadow.visible = false
-	left_sprout_guardian_right_shadow.visible = false
+	if uses_level_one_stage:
+		_apply_land_actor_layout()
+	else:
+		_apply_ocean_actor_layout()
 	land_tabletop_actors.configure_for_level(current_level_index + 1)
 	_set_level_one_reaction(MinesweeperBoard.GameState.READY)
 	if uses_level_one_stage:
 		_apply_land_decorative_texture(
 			str(LAND_DECORATIVE_HEALTHY_PATHS[current_level_index])
 		)
-		boss_stage.visible = false
-		_apply_land_stickers(MinesweeperBoard.GameState.READY)
-	else:
-		boss_stage.visible = false
+	boss_stage.visible = false
 	_tutorial_dismissed_for_session = false
 	_tutorial_step = (
 		TutorialStep.FIRST_REVEAL
@@ -778,15 +806,14 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	board.scale = Vector2.ONE
 	board.set_interaction_enabled(true)
 	_initialize_scan_ability()
-	eco_showcase.call("set_environment", board.level_number)
-	subtitle_label.text = tr("第%d关 · %s") % [
+	subtitle_label.text = tr("TXT_0095") % [
 		board.level_number,
 		tr(board.level_name),
 	]
-	level_summary_label.text = tr("%d × %d %s\n污染核心 %d") % [
+	level_summary_label.text = tr("TXT_0099") % [
 		board.column_count,
 		board.row_count,
-		tr("六边形棋盘") if board.topology == &"hex_pointy_odd_r" else tr("棋盘"),
+		tr("TXT_0102") if board.topology == &"hex_pointy_odd_r" else tr("TXT_0101"),
 		board.core_count,
 	]
 	_on_pollution_nodes_changed(
@@ -893,7 +920,8 @@ func _record_adaptive_attempt_result(state: int) -> void:
 
 func set_operation_mode(mode: int) -> void:
 	_operation_mode = 1 if mode == 1 else 0
-	board.set_operation_mode(_operation_mode)
+	land_board.set_operation_mode(_operation_mode)
+	ocean_board.set_operation_mode(_operation_mode)
 	_refresh_instructions()
 	_refresh_first_move_guide()
 
@@ -905,14 +933,14 @@ func get_operation_mode() -> int:
 func refresh_localized_interface() -> void:
 	if not is_instance_valid(board):
 		return
-	subtitle_label.text = tr("第%d关 · %s") % [
+	subtitle_label.text = tr("TXT_0095") % [
 		board.level_number,
 		tr(board.level_name),
 	]
-	level_summary_label.text = tr("%d × %d %s\n污染核心 %d") % [
+	level_summary_label.text = tr("TXT_0099") % [
 		board.column_count,
 		board.row_count,
-		tr("六边形棋盘") if board.topology == &"hex_pointy_odd_r" else tr("棋盘"),
+		tr("TXT_0102") if board.topology == &"hex_pointy_odd_r" else tr("TXT_0101"),
 		board.core_count,
 	]
 	_refresh_instructions()
@@ -931,6 +959,8 @@ func refresh_localized_interface() -> void:
 	first_move_guide.refresh_localized_text()
 	if board.has_method("refresh_localized_text"):
 		board.call("refresh_localized_text")
+	if is_instance_valid(_badge_celebration):
+		_badge_celebration.refresh_language()
 
 
 func _refresh_localized_state_copy() -> void:
@@ -941,36 +971,42 @@ func _refresh_localized_state_copy() -> void:
 				and not _tutorial_dismissed_for_session
 				and _tutorial_step == TutorialStep.FIRST_REVEAL
 			)
-			status_label.text = tr("引导中") if tutorial_ready else tr("准备中")
-			restart_button_label.text = tr("重新\n生成")
-			pause_button_label.text = tr("暂停\nEsc")
+			status_label.text = tr("TXT_0133") if tutorial_ready else tr("TXT_0129")
+			restart_button_label.text = tr("TXT_0144")
+			pause_button_label.text = tr("TXT_0147")
 		MinesweeperBoard.GameState.PLAYING:
-			status_label.text = tr("净化中")
-			restart_button_label.text = tr("重新\n开始")
-			pause_button_label.text = tr("暂停\nEsc")
+			status_label.text = tr("TXT_0130")
+			restart_button_label.text = tr("TXT_0145")
+			pause_button_label.text = tr("TXT_0147")
 		MinesweeperBoard.GameState.WON:
-			pause_button_label.text = tr("菜单\nEsc")
+			pause_button_label.text = tr("TXT_0148")
 			if board.level_number == 7:
-				status_label.text = tr("古林净化完成！")
-				restart_button_label.text = tr("下一\n章节")
+				status_label.text = tr("TXT_0138")
+				restart_button_label.text = tr("TXT_0051")
 			elif board.level_number == 14:
-				status_label.text = tr("海洋净化完成！")
-				restart_button_label.text = tr("返回\n地图")
+				status_label.text = tr("TXT_0139")
+				restart_button_label.text = tr("TXT_0053")
 			elif _has_next_level_in_chapter():
-				status_label.text = tr("净化完成")
-				restart_button_label.text = tr("下一关")
+				status_label.text = tr("TXT_0136")
+				restart_button_label.text = tr("TXT_0052")
 			else:
-				status_label.text = tr("%s净化完成！") % tr(board.level_name)
-				restart_button_label.text = tr("再来一局")
+				status_label.text = tr("TXT_0137") % tr(board.level_name)
+				restart_button_label.text = tr("TXT_0141")
 		MinesweeperBoard.GameState.LOST:
 			var wrong_flag_count := board.get_wrong_flag_count()
 			status_label.text = (
-				tr("污染触发 · %d个误标") % wrong_flag_count
+				tr("TXT_0151") % wrong_flag_count
 				if wrong_flag_count > 0
-				else tr("污染触发")
+				else tr("TXT_0150")
 			)
-			restart_button_label.text = tr("重新\n开始")
-			pause_button_label.text = tr("菜单\nEsc")
+			restart_button_label.text = tr("TXT_0145")
+			pause_button_label.text = tr("TXT_0148")
+	_apply_land_quick_button_copy()
+
+
+func _apply_land_quick_button_copy() -> void:
+	pause_button_label.text = restart_button_label.text
+	restart_button_label.text = tr("TXT_0148")
 
 
 func set_seen_mechanic_guides(guide_ids: Array) -> void:
@@ -1000,7 +1036,7 @@ func _refresh_instructions() -> void:
 		var ocean_rules := PackedStringArray()
 		if board.reef_edge_count > 0:
 			ocean_rules.append(
-				tr("礁带阻断六邻接；数字不统计另一侧，礁带端点不会出现0格")
+				tr("TXT_0166")
 			)
 		if board.mobile_current_enabled:
 			var mobile_group_count := board.mobile_current_group_count
@@ -1011,65 +1047,65 @@ func _refresh_instructions() -> void:
 				board.mobile_current_core_count / maxi(1, mobile_group_count)
 			)
 			var mobile_group_label := (
-				tr("上下两组")
+				tr("TXT_0167")
 				if mobile_group_count == 2
 				else (
-					tr("上中下三组")
+					tr("TXT_0168")
 					if mobile_group_count == 3
-					else tr("%d组") % mobile_group_count
+					else tr("TXT_0169") % mobile_group_count
 				)
 			)
 			ocean_rules.append(
-				tr("%s漂流物，每组%d个候选且包含%d个真水雷")
+				tr("TXT_0170")
 				% [mobile_group_label, candidates_per_group, cores_per_group]
 			)
 			ocean_rules.append(
-				tr("左键翻开安全浮标，右键标记水雷；完成后保留数字与标记并停止漂流")
+				tr("TXT_0171")
 			)
 			ocean_rules.append(
-				tr("%s每%d秒轮流移动，普通棋盘的公开与隐藏数字实时更新")
+				tr("TXT_0172")
 				% [mobile_group_label, roundi(board.mobile_current_step_seconds)]
 			)
 			ocean_rules.append(
-				tr("任一组真水雷未标记便流出过滤边界时，本局立即失败")
+				tr("TXT_0173")
 			)
 		if board.drifting_mine_enabled:
 			ocean_rules.append(
-				tr("漂流污染源每20秒移向右前方；每次移动后全盘数字实时更新")
+				tr("TXT_0174")
 			)
 			ocean_rules.append(
-				tr("中心不可操作；浅蓝两圈内最多18格全部按普通扫雷处理")
+				tr("TXT_0175")
 			)
 			ocean_rules.append(
-				tr("污染场完成即可净化；未完成便流出过滤边界则失败")
+				tr("TXT_0176")
 			)
 		if board.tidal_zone_count > 0:
 			ocean_rules.append(
-				tr("边界数字只统计已退潮区域；净化当前潮区后解锁并更新下一潮区")
+				tr("TXT_0177")
 			)
 			ocean_rules.append(
-				tr("未解锁时状态栏会提示剩余安全格及错误标记数量")
+				tr("TXT_0178")
 			)
 		ocean_rules.append(
-			tr("方向键 / W S A D 移动 · J净化 · K标记 · C扫描")
+			tr("TXT_0158")
 			if _operation_mode == 1
-			else tr("左键净化 · 右键标记 · 双击展开 · C扫描")
+			else tr("TXT_0157")
 		)
 		instructions_label.text = "\n".join(ocean_rules)
 		return
 	if board.pollution_node_count > 0:
 		var node_rule := (
-			tr("切断三条根系锚点以削弱污染母株")
+			tr("TXT_0179")
 			if board.level_number == 7
-			else tr("污染节点不可操作，会计入邻近数字")
+			else tr("TXT_0180")
 		)
 		instructions_label.text = (
 			node_rule
-			+ tr("\n翻开节点邻近安全格 · 标记邻近污染核心")
+			+ tr("TXT_0181")
 			+ (
-				tr("\n方向键 / W S A D 移动 · J净化 · K标记 · C扫描")
+				tr("TXT_0386")
 				if _operation_mode == 1
-				else tr("\n左键净化 · 右键标记 · C扫描")
+				else tr("TXT_0162")
 			)
 		)
 		return
@@ -1081,15 +1117,15 @@ func _refresh_instructions() -> void:
 	)
 	if _operation_mode == 1:
 		instructions_label.text = (
-			tr("方向键 / W S A D 移动")
-			+ tr("\nJ 净化 · K 标记 · C 扫描")
-			+ tr("\n鼠标仍可使用")
+			tr("TXT_0159")
+			+ tr("TXT_0160")
+			+ tr("TXT_0161")
 		)
 	else:
 		instructions_label.text = (
-			(tr("引导进行中") if tutorial_active else tr("首点可能污染"))
-			+ tr("\n左键净化 · 右键标记 · C扫描")
-			+ tr("\n双击数字快速展开")
+			(tr("TXT_0135") if tutorial_active else tr("TXT_0164"))
+			+ tr("TXT_0162")
+			+ tr("TXT_0163")
 		)
 
 
@@ -1218,39 +1254,39 @@ func _refresh_first_move_guide() -> void:
 		TutorialStep.FIRST_REVEAL:
 			if board.game_state == MinesweeperBoard.GameState.READY:
 				target_index = board.guide_cell_index
-				title = "小芽带你认识棋盘"
-				action = "移动到这里按 J 翻开" if _operation_mode == 1 else "左键翻开这个安全建议格"
-				hint = "白色=未净化 · 黄色=安全建议"
+				title = "TXT_0399"
+				action = "TXT_0434" if _operation_mode == 1 else "TXT_0401"
+				hint = "TXT_0432"
 			else:
 				target_index = _find_unrevealed_safe_index()
-				title = "继续观察"
-				action = "移动后按 J 再翻一格" if _operation_mode == 1 else "再左键翻开一个白色格"
-				hint = "找到数字后，清扫者会继续说明"
+				title = "TXT_0449"
+				action = "TXT_0435" if _operation_mode == 1 else "TXT_0390"
+				hint = "TXT_0406"
 		TutorialStep.NUMBER_INFO:
 			target_index = _tutorial_number_index
-			title = "这是数字格"
-			action = "绿色=安全，数字=周围污染数"
-			hint = "按 Enter 或点下一步继续" if _operation_mode == 1 else "例如 1 表示周围有 1 个污染核心"
+			title = "TXT_0453"
+			action = "TXT_0450"
+			hint = "TXT_0410" if _operation_mode == 1 else "TXT_0389"
 			show_next = true
 		TutorialStep.MARK_CORE:
 			target_index = _tutorial_target_index
-			title = "检测种子"
+			title = "TXT_0418"
 			var removing_wrong_flag := (
 				_is_valid_tutorial_index(target_index)
 				and board.flagged[target_index]
 				and not board.mines[target_index]
 			)
 			if removing_wrong_flag:
-				action = "按 K 取消这个错误标记" if _operation_mode == 1 else "右键取消这个错误标记"
-				hint = "种子放错会阻止数字快速展开"
+				action = "TXT_0411" if _operation_mode == 1 else "TXT_0396"
+				hint = "TXT_0433"
 			else:
-				action = "按 K 放下检测种子" if _operation_mode == 1 else "右键放下检测种子"
-				hint = "把数字周围的污染核心全部标记"
+				action = "TXT_0412" if _operation_mode == 1 else "TXT_0397"
+				hint = "TXT_0407"
 		TutorialStep.CHORD:
 			target_index = _tutorial_number_index
-			title = "快速展开"
-			action = "选中数字后按 J" if _operation_mode == 1 else "双击这个数字"
-			hint = "标记正确后，会展开周围安全格"
+			title = "TXT_0403"
+			action = "TXT_0454" if _operation_mode == 1 else "TXT_0394"
+			hint = "TXT_0417"
 
 	if not _is_valid_tutorial_index(target_index):
 		first_move_guide.hide_guide()
@@ -1336,7 +1372,7 @@ func _clear_scan_ability() -> void:
 			true,
 			false
 		)
-		land_tabletop_actors.set_scan_activation_enabled(false, "扫描尚未准备")
+		land_tabletop_actors.set_scan_activation_enabled(false, tr("TXT_0184"))
 
 
 func _initialize_scan_ability() -> void:
@@ -1487,20 +1523,20 @@ func _refresh_scan_ui() -> void:
 		and not _session_paused
 		and board.game_state == MinesweeperBoard.GameState.PLAYING
 	)
-	var tooltip := tr("扫描尚未准备")
+	var tooltip := tr("TXT_0184")
 	match _scan_phase:
 		ScanPhase.LOCKED_FIRST_REVEAL:
-			tooltip = tr("先完成第一次净化，再启动生态扫描")
+			tooltip = tr("TXT_0185")
 		ScanPhase.CHARGING:
-			tooltip = tr("扫描充能 %d/%d") % [_scan_energy, _scan_threshold]
+			tooltip = tr("TXT_0186") % [_scan_energy, _scan_threshold]
 		ScanPhase.READY:
-			tooltip = tr("点击机器人或按 C，选择一个格子扫描")
+			tooltip = tr("TXT_0187")
 		ScanPhase.TARGETING:
-			tooltip = tr("请选择隐藏格；Esc、右键或 C 取消")
+			tooltip = tr("TXT_0189")
 		ScanPhase.RESOLVING:
-			tooltip = tr("正在扫描")
+			tooltip = tr("TXT_0191")
 		ScanPhase.FINISHED:
-			tooltip = tr("本局已经结束")
+			tooltip = tr("TXT_0192")
 	land_tabletop_actors.set_scan_activation_enabled(
 		activation_enabled,
 		tooltip
@@ -1509,20 +1545,20 @@ func _refresh_scan_ui() -> void:
 		scan_fallback_row.visible = false
 		scan_fallback_button.disabled = not activation_enabled
 		scan_fallback_button.tooltip_text = tooltip
-		var fallback_text := tr("未启用")
+		var fallback_text := tr("TXT_0193")
 		match _scan_phase:
 			ScanPhase.LOCKED_FIRST_REVEAL:
-				fallback_text = tr("首翻后可用")
+				fallback_text = tr("TXT_0194")
 			ScanPhase.CHARGING:
 				fallback_text = "%d/%d" % [_scan_energy, _scan_threshold]
 			ScanPhase.READY:
-				fallback_text = tr("扫描就绪")
+				fallback_text = tr("TXT_0195")
 			ScanPhase.TARGETING:
-				fallback_text = tr("选择格子")
+				fallback_text = tr("TXT_0196")
 			ScanPhase.RESOLVING:
-				fallback_text = tr("扫描中")
+				fallback_text = tr("TXT_0197")
 			ScanPhase.FINISHED:
-				fallback_text = tr("本局结束")
+				fallback_text = tr("TXT_0198")
 		scan_fallback_status.text = fallback_text
 		var filled_count := mini(
 			3,
@@ -1583,7 +1619,7 @@ func _on_tutorial_exit_requested() -> void:
 	first_move_guide.hide_guide()
 	_refresh_instructions()
 	if board.game_state in [MinesweeperBoard.GameState.READY, MinesweeperBoard.GameState.PLAYING]:
-		status_label.text = tr("自由净化")
+		status_label.text = tr("TXT_0132")
 	call_deferred("_show_next_queued_mechanic_guide")
 
 
@@ -1701,7 +1737,7 @@ func _complete_tutorial() -> void:
 	_refresh_instructions()
 	_refresh_scan_ui()
 	if board.game_state == MinesweeperBoard.GameState.PLAYING:
-		status_label.text = tr("引导完成")
+		status_label.text = tr("TXT_0134")
 	call_deferred("_show_next_queued_mechanic_guide")
 
 
@@ -1745,7 +1781,6 @@ func _on_state_changed(state: int) -> void:
 		_finish_scan_ability()
 	_record_adaptive_attempt_result(state)
 	_set_level_one_reaction(state)
-	_apply_land_stickers(state)
 	if current_level_index < LAND_DECORATIVE_HEALTHY_PATHS.size():
 		var decorative_sprout_path: String = (
 			LAND_DECORATIVE_FAILED_PATHS[current_level_index]
@@ -1755,7 +1790,6 @@ func _on_state_changed(state: int) -> void:
 		_apply_land_decorative_texture(decorative_sprout_path)
 	match state:
 		MinesweeperBoard.GameState.READY:
-			eco_showcase.call("set_reaction", 0)
 			_reset_timer()
 			var tutorial_ready := (
 				board.level_number == 1
@@ -1763,69 +1797,84 @@ func _on_state_changed(state: int) -> void:
 				and _tutorial_step == TutorialStep.FIRST_REVEAL
 			)
 			status_label.text = (
-				tr("潮区 %d/%d · 准备") % [
+				tr("TXT_0182") % [
 					board.active_tidal_zone_index + 1,
 					board.tidal_zone_count,
 				]
 				if board.tidal_zone_count > 0
-				else (tr("引导中") if tutorial_ready else tr("准备中"))
+				else (tr("TXT_0133") if tutorial_ready else tr("TXT_0129"))
 			)
-			restart_button_label.text = tr("重新\n生成")
-			pause_button_label.text = tr("暂停\nEsc")
+			restart_button_label.text = tr("TXT_0144")
+			pause_button_label.text = tr("TXT_0147")
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.PLAYING:
-			eco_showcase.call("set_reaction", 0)
 			_start_timer()
 			status_label.text = (
-				tr("潮区 %d/%d · 净化中") % [
+				tr("TXT_0183") % [
 					board.active_tidal_zone_index + 1,
 					board.tidal_zone_count,
 				]
 				if board.tidal_zone_count > 0
-				else tr("净化中")
+				else tr("TXT_0130")
 			)
-			restart_button_label.text = tr("重新\n开始")
-			pause_button_label.text = tr("暂停\nEsc")
+			restart_button_label.text = tr("TXT_0145")
+			pause_button_label.text = tr("TXT_0147")
 			pause_button.disabled = false
 		MinesweeperBoard.GameState.WON:
-			eco_showcase.call("set_reaction", 1)
 			_pause_timer()
-			pause_button_label.text = tr("菜单\nEsc")
+			pause_button_label.text = tr("TXT_0148")
 			pause_button.disabled = false
 			if board.level_number == 7:
-				status_label.text = tr("古林净化完成！")
-				restart_button_label.text = tr("下一\n章节")
+				status_label.text = tr("TXT_0138")
+				restart_button_label.text = tr("TXT_0051")
 				_chapter_advance_available = true
 			elif board.level_number == 14:
-				status_label.text = tr("海洋净化完成！")
-				restart_button_label.text = tr("返回\n地图")
+				status_label.text = tr("TXT_0139")
+				restart_button_label.text = tr("TXT_0053")
 				_chapter_advance_available = true
 			elif _has_next_level_in_chapter():
-				status_label.text = tr("净化完成")
-				restart_button_label.text = tr("下一关")
+				status_label.text = tr("TXT_0136")
+				restart_button_label.text = tr("TXT_0052")
 				_advance_available = true
 			else:
-				status_label.text = tr("%s净化完成！") % tr(board.level_name)
-				restart_button_label.text = tr("再来一局")
+				status_label.text = tr("TXT_0137") % tr(board.level_name)
+				restart_button_label.text = tr("TXT_0141")
 			if not _completion_emitted:
 				_completion_emitted = true
 				AudioManager.play_level_win(board.level_number)
 				level_completed.emit(board.level_number, get_elapsed_ms())
+				if board.level_number <= 14:
+					call_deferred("_show_badge_celebration", board.level_number)
 		MinesweeperBoard.GameState.LOST:
 			AudioManager.play_fail()
-			eco_showcase.call("set_reaction", 2)
 			_pause_timer()
-			pause_button_label.text = tr("菜单\nEsc")
+			pause_button_label.text = tr("TXT_0148")
 			pause_button.disabled = false
 			var wrong_flag_count := board.get_wrong_flag_count()
 			status_label.text = (
-				tr("污染触发 · %d个误标") % wrong_flag_count
+				tr("TXT_0151") % wrong_flag_count
 				if wrong_flag_count > 0
-				else tr("污染触发")
+				else tr("TXT_0150")
 			)
 			_on_flags_changed(board.used_flags, board.get_runtime_mine_count())
-			restart_button_label.text = tr("重新\n开始")
+			restart_button_label.text = tr("TXT_0145")
+	_apply_land_quick_button_copy()
 	_refresh_first_move_guide()
+
+
+func _show_badge_celebration(level_number: int) -> void:
+	if (
+		is_instance_valid(_badge_celebration)
+		and board.game_state == MinesweeperBoard.GameState.WON
+		and board.level_number == level_number
+	):
+		_badge_celebration.show_award(level_number)
+
+
+func continue_after_badge_book() -> void:
+	if board.game_state != MinesweeperBoard.GameState.WON:
+		return
+	_on_primary_button_pressed()
 
 
 func _has_next_level_in_chapter() -> bool:
@@ -1837,32 +1886,32 @@ func _has_next_level_in_chapter() -> bool:
 func _on_pollution_nodes_changed(cleansed_count: int, total_count: int) -> void:
 	if board.drifting_mine_enabled:
 		objective_label.text = (
-			tr("漂流污染源已净化\n继续清理其余污染")
+			tr("TXT_0121")
 			if board.drifting_mine_resolved
-			else tr("净化两圈污染场\n处理中心周围全部普通格")
+			else tr("TXT_0119")
 		)
 	elif board.mobile_current_enabled:
 		var group_count := board.mobile_current_group_count
 		var group_core_count := int(
 			board.mobile_current_core_count / maxi(1, group_count)
 		)
-		objective_label.text = tr("辨认%d组漂流物\n每组%d个真水雷 · 任一流出即失败") % [
+		objective_label.text = tr("TXT_0118") % [
 			group_count,
 			group_core_count,
 		]
 	elif board.level_number == 7 and total_count > 0:
-		objective_label.text = tr("污染母株\n根系锚点 %d/%d") % [
+		objective_label.text = tr("TXT_0117") % [
 			cleansed_count,
 			total_count,
 		]
 	elif total_count > 0:
-		objective_label.text = tr("净化污染节点 %d/%d\n恢复%s生态") % [
+		objective_label.text = tr("TXT_0116") % [
 			cleansed_count,
 			total_count,
 			tr(board.level_name),
 		]
 	else:
-		objective_label.text = tr("清除所有污染核心\n恢复%s生态") % tr(board.level_name)
+		objective_label.text = tr("TXT_0115") % tr(board.level_name)
 
 
 func _on_current_path_feedback(text: String) -> void:
@@ -1871,34 +1920,43 @@ func _on_current_path_feedback(text: String) -> void:
 
 func _on_mobile_current_state_changed(resolved: bool) -> void:
 	if resolved and board.game_state == MinesweeperBoard.GameState.PLAYING:
-		objective_label.text = tr("漂流水雷已拦截\n继续净化其余安全格")
+		objective_label.text = tr("TXT_0120")
 
 
 func _on_drifting_mine_state_changed(resolved: bool) -> void:
 	if resolved and board.game_state == MinesweeperBoard.GameState.PLAYING:
-		objective_label.text = tr("漂流污染源已净化\n继续清理其余污染")
+		objective_label.text = tr("TXT_0121")
 
 
 func _on_tidal_zone_changed(active_zone_index: int, zone_count: int) -> void:
 	if zone_count <= 0:
 		return
-	objective_label.text = tr("推进潮汐区 %d/%d\n翻开当前区全部安全格") % [
+	objective_label.text = tr("TXT_0122") % [
 		active_zone_index + 1,
 		zone_count,
 	]
 	if board.game_state == MinesweeperBoard.GameState.READY:
-		status_label.text = tr("潮区 %d/%d · 准备") % [active_zone_index + 1, zone_count]
+		status_label.text = tr("TXT_0182") % [active_zone_index + 1, zone_count]
 	elif board.game_state == MinesweeperBoard.GameState.PLAYING:
-		status_label.text = tr("潮区 %d/%d · 净化中") % [active_zone_index + 1, zone_count]
+		status_label.text = tr("TXT_0183") % [active_zone_index + 1, zone_count]
 	_refresh_instructions()
 
 
 func _on_flags_changed(used_flags: int, max_flags: int) -> void:
 	flags_label.text = "%d/%d" % [used_flags, max_flags]
+	mine_counter_label.text = "%d/%d" % [used_flags, max_flags]
 	if board.game_state == MinesweeperBoard.GameState.LOST:
 		var wrong_flag_count := board.get_wrong_flag_count()
 		if wrong_flag_count > 0:
-			flags_label.text += tr(" · 误标%d") % wrong_flag_count
+			flags_label.text += tr("TXT_0152") % wrong_flag_count
+
+
+func _on_left_quick_button_pressed() -> void:
+	_on_primary_button_pressed()
+
+
+func _on_right_quick_button_pressed() -> void:
+	_on_pause_button_pressed()
 
 
 func _on_primary_button_pressed() -> void:
@@ -1976,7 +2034,9 @@ func _update_timer_label() -> void:
 	var minutes := int(elapsed_ms / 60000)
 	var seconds := int(elapsed_ms / 1000) % 60
 	var tenths := int(elapsed_ms / 100) % 10
-	timer_label.text = "%02d:%02d.%d" % [minutes, seconds, tenths]
+	var display_time := "%02d:%02d.%d" % [minutes, seconds, tenths]
+	timer_label.text = display_time
+	top_timer_counter_label.text = display_time
 
 
 func _requested_level_index() -> int:

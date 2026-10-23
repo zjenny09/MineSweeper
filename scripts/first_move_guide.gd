@@ -15,7 +15,9 @@ const TARGET_GAP := 12.0
 @export var editor_preview := true
 
 @onready var bubble_root: Control = %GuideBubbleRoot
+@onready var character_rig: Control = %GuideCharacterRig
 @onready var mascot: TextureRect = %GuideMascot
+@onready var claw: TextureRect = %GuideClaw
 @onready var title_label: Label = %GuideTitle
 @onready var action_label: Label = %GuideAction
 @onready var hint_label: Label = %GuideHint
@@ -50,9 +52,9 @@ func _ready() -> void:
 	exit_button.pressed.connect(_on_exit_pressed)
 	resized.connect(_on_resized)
 	if Engine.is_editor_hint():
-		_title_text = "小芽带你到安全起点啦！"
-		_action_text = "点这里开始第一次净化"
-		_hint_text = "这是安全建议，也可以选择别处"
+		_title_text = "TXT_0241"
+		_action_text = "TXT_0244"
+		_hint_text = "TXT_0246"
 		visible = editor_preview
 		_refresh_copy()
 		call_deferred("_update_bubble_position")
@@ -92,15 +94,17 @@ func _apply_locale_layout() -> void:
 	var english := TranslationServer.get_locale().begins_with("en")
 	if english:
 		bubble_root.size = Vector2(560.0, 212.0)
-		mascot.position = Vector2(22.0, 60.0)
+		character_rig.position = Vector2(22.0, 60.0)
+		character_rig.size = Vector2(100.0, 72.0)
 		mascot.size = Vector2(64.0, 64.0)
-		title_label.position = Vector2(94.0, 22.0)
-		title_label.size = Vector2(440.0, 30.0)
-		action_label.position = Vector2(94.0, 56.0)
-		action_label.size = Vector2(440.0, 66.0)
+		claw.size = Vector2(32.0, 32.0)
+		title_label.position = Vector2(116.0, 22.0)
+		title_label.size = Vector2(418.0, 30.0)
+		action_label.position = Vector2(116.0, 56.0)
+		action_label.size = Vector2(418.0, 66.0)
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		hint_label.position = Vector2(94.0, 126.0)
-		hint_label.size = Vector2(440.0, 34.0)
+		hint_label.position = Vector2(116.0, 126.0)
+		hint_label.size = Vector2(418.0, 34.0)
 		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		next_button_artwork.position = Vector2(258.0, 168.0)
 		next_button_artwork.size = Vector2(132.0, 34.0)
@@ -112,15 +116,17 @@ func _apply_locale_layout() -> void:
 		exit_button.size = exit_button_artwork.size
 		return
 	bubble_root.size = Vector2(484.0, 175.853)
-	mascot.position = Vector2(24.0, 43.0)
+	character_rig.position = Vector2(24.0, 43.0)
+	character_rig.size = Vector2(100.0, 72.0)
 	mascot.size = Vector2(64.0, 64.0)
-	title_label.position = Vector2(96.0, 31.0)
-	title_label.size = Vector2(360.0, 26.0)
-	action_label.position = Vector2(96.0, 62.0)
-	action_label.size = Vector2(360.0, 22.0)
+	claw.size = Vector2(32.0, 32.0)
+	title_label.position = Vector2(116.0, 31.0)
+	title_label.size = Vector2(340.0, 26.0)
+	action_label.position = Vector2(116.0, 62.0)
+	action_label.size = Vector2(340.0, 22.0)
 	action_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	hint_label.position = Vector2(96.0, 89.0)
-	hint_label.size = Vector2(360.0, 19.0)
+	hint_label.position = Vector2(116.0, 89.0)
+	hint_label.size = Vector2(340.0, 19.0)
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	next_button_artwork.position = Vector2(220.0, 119.5)
 	next_button_artwork.size = Vector2(108.0, 32.0)
@@ -266,7 +272,7 @@ func is_keyboard_mode() -> bool:
 func get_action_text() -> String:
 	if not _action_text.is_empty():
 		return tr(_action_text)
-	return tr("按 J 从这里开始") if _keyboard_mode else tr("点这里开始第一次净化")
+	return tr("TXT_0245") if _keyboard_mode else tr("TXT_0244")
 
 
 func refresh_localized_text() -> void:
@@ -323,29 +329,29 @@ func _update_bubble_position() -> void:
 func _refresh_copy() -> void:
 	var title := _title_text
 	if title.is_empty():
-		title = "小芽带你到安全起点啦！" if _keyboard_mode else "小芽找到安全起点啦！"
+		title = "TXT_0241" if _keyboard_mode else "TXT_0242"
 	title_label.text = tr(title)
 	action_label.text = get_action_text()
 	hint_label.text = (
 		tr(_hint_text)
 		if not _hint_text.is_empty()
-		else tr("这是安全建议，也可以选择别处")
+		else tr("TXT_0246")
 	)
 	if _dialogue_mode:
 		next_button.visible = true
 		next_button.disabled = false
 		next_button.text = (
-			tr("开始探索")
+			tr("TXT_0247")
 			if _dialogue_page_index >= _dialogue_pages.size() - 1
-			else tr("继续听")
+			else tr("TXT_0248")
 		)
-		exit_button.text = tr("跳过介绍")
+		exit_button.text = tr("TXT_0249")
 		next_button_artwork.visible = true
 		exit_button_artwork.visible = true
 		exit_button.visible = true
 		return
-	next_button.text = tr("下一步")
-	exit_button.text = tr("退出引导")
+	next_button.text = tr("TXT_0250")
+	exit_button.text = tr("TXT_0251")
 	next_button.visible = _show_next_button
 	next_button.disabled = not _show_next_button
 	exit_button.visible = true
@@ -458,9 +464,9 @@ func _update_dialogue_page() -> void:
 			or _dialogue_page_index >= _dialogue_pages.size():
 		return
 	var page := _dialogue_pages[_dialogue_page_index]
-	_title_text = str(page.get("title", "小芽想告诉你"))
+	_title_text = str(page.get("title", "TXT_0243"))
 	_action_text = str(page.get("text", ""))
-	_hint_text = str(page.get("hint", "留一点未知，亲自走近看看吧。"))
+	_hint_text = str(page.get("hint", "TXT_0252"))
 	_refresh_copy()
 
 

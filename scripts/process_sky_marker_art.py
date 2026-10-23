@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = (
     ROOT
     / "docs"
+    / "art"
     / "ui_history"
     / "天空关卡棋盘概念图"
     / "右键标记"

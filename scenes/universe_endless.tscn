@@ -57,7 +57,7 @@ offset_right = 430.0
 offset_bottom = 45.0
 theme_override_colors/font_color = Color(0.69, 0.91, 1, 1)
 theme_override_font_sizes/font_size = 28
-text = "宇宙篇 · 无尽星航"
+text = "TXT_0059"
 
 [node name="SubtitleLabel" type="Label" parent="Header"]
 unique_name_in_owner = true
@@ -68,7 +68,7 @@ offset_right = 620.0
 offset_bottom = 70.0
 theme_override_colors/font_color = Color(0.49, 0.68, 0.82, 1)
 theme_override_font_sizes/font_size = 14
-text = "有发光连线才属于邻接 · 净化星云后宇宙会继续生长"
+text = "TXT_0382"
 
 [node name="TimerLabel" type="Label" parent="Header"]
 unique_name_in_owner = true
@@ -110,7 +110,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.88, 0.96, 1)
 theme_override_font_sizes/font_size = 16
-text = "已净化星云\n0"
+text = "TXT_0343"
 horizontal_alignment = 1
 
 [node name="StarsLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
@@ -118,7 +118,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.88, 0.96, 1)
 theme_override_font_sizes/font_size = 16
-text = "净化星核\n0"
+text = "TXT_0345"
 horizontal_alignment = 1
 
 [node name="DistanceLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
@@ -126,7 +126,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.88, 0.96, 1)
 theme_override_font_sizes/font_size = 16
-text = "航行距离\n0 光年"
+text = "TXT_0347"
 horizontal_alignment = 1
 
 [node name="DisturbanceLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
@@ -134,7 +134,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.77, 0.62, 0.95, 1)
 theme_override_font_sizes/font_size = 15
-text = "宇宙扰动\n1/5"
+text = "TXT_0349"
 horizontal_alignment = 1
 
 [node name="ShieldLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
@@ -142,7 +142,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.54, 0.82, 1, 1)
 theme_override_font_sizes/font_size = 15
-text = "航行护盾\n2/2"
+text = "TXT_0339"
 horizontal_alignment = 1
 
 [node name="FlagsLabel" type="Label" parent="LeftPanel/LeftMargin/Stats"]
@@ -150,7 +150,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.83, 0.45, 1)
 theme_override_font_sizes/font_size = 15
-text = "污染标记 0/0"
+text = "TXT_0341"
 horizontal_alignment = 1
 
 [node name="BoardFrame" type="Panel" parent="."]
@@ -233,23 +233,23 @@ theme_override_constants/separation = 14
 [node name="PauseButton" type="Button" parent="RightPanel/RightMargin/Controls"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "暂停航行"
+text = "TXT_0353"
 
 [node name="RestartButton" type="Button" parent="RightPanel/RightMargin/Controls"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "新宇宙"
+text = "TXT_0355"
 
 [node name="MapButton" type="Button" parent="RightPanel/RightMargin/Controls"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "返回天空篇"
+text = "TXT_0038"
 
 [node name="RuleLabel" type="Label" parent="RightPanel/RightMargin/Controls"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.73, 0.84, 1)
 theme_override_font_sizes/font_size = 13
-text = "左键净化\n右键污染标记\n点击数字展开\n\n紫色弧线也是邻接\n会连接远距离星核\n\n首次净化保护\n附近两颗邻星\n误触核心消耗护盾\n\n航行越深\n星网结构越丰富"
+text = "TXT_0400"
 horizontal_alignment = 1
 
 [node name="StatusPanel" type="Panel" parent="."]
@@ -269,7 +269,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.72, 0.91, 1, 1)
 theme_override_font_sizes/font_size = 15
-text = "星图生成中"
+text = "TXT_0381"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -310,33 +310,38 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.92, 1, 1)
 theme_override_font_sizes/font_size = 26
-text = "航行暂停"
+text = "TXT_0352"
 horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "继续航行"
+text = "TXT_0354"
 
 [node name="PauseRestartButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "开启新宇宙"
+text = "TXT_0356"
 
 [node name="PauseSettingsButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "设置"
+text = "TXT_0007"
+
+[node name="PauseHelpButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TXT_0461"
 
 [node name="PauseMainMenuButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "返回欢迎界面"
+text = "TXT_0033"
 
 [node name="PauseExitButton" type="Button" parent="PauseOverlay/PausePanel/PauseVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "退出游戏"
+text = "TXT_0009"
 
 [node name="FailureOverlay" type="ColorRect" parent="."]
 unique_name_in_owner = true
@@ -373,7 +378,7 @@ theme_override_constants/separation = 22
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.54, 0.78, 1)
 theme_override_font_sizes/font_size = 28
-text = "远征暂时中断"
+text = "TXT_0357"
 horizontal_alignment = 1
 
 [node name="FailureSummary" type="Label" parent="FailureOverlay/FailurePanel/FailureVBox"]
@@ -381,15 +386,15 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 17
-text = "本次远征抵达 0 光年"
+text = "TXT_0351"
 horizontal_alignment = 1
 
 [node name="NewUniverseButton" type="Button" parent="FailureOverlay/FailurePanel/FailureVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "开启新宇宙"
+text = "TXT_0356"
 
 [node name="FailureMapButton" type="Button" parent="FailureOverlay/FailurePanel/FailureVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "返回天空篇"
+text = "TXT_0038"

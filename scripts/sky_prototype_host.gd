@@ -56,19 +56,19 @@ func _mount_sky_board() -> void:
 	)
 	_sky_board.connect("first_reveal", Callable(_game, "_start_timer"))
 
-	(_game.get_node("%SubtitleLabel") as Label).text = "第15关 · 云冠（球面原型）"
+	(_game.get_node("%SubtitleLabel") as Label).text = tr("TXT_0098")
 	(_game.get_node("%LevelSummaryLabel") as Label).text = (
-		"12个五边形 + 20个六边形\n污染核心 6"
+		tr("TXT_0103")
 	)
 	(_game.get_node("%ObjectiveLabel") as Label).text = (
-		"旋转足球烯球面，净化全部安全面"
+		tr("TXT_0124")
 	)
 	(_game.get_node("%InstructionsLabel") as Label).text = (
-		"拖拽旋转 · 左键净化 · 右键标记\n"
-		+ "方向键选择 · W S A D旋转 · J翻开 · K标记"
+		tr("TXT_0409")
+		+ tr("TXT_0227")
 	)
 	flags_label.text = "0/6"
-	status_label.text = "旋转球面，寻找安全起点"
+	status_label.text = tr("TXT_0228")
 
 	var restart_button := _game.get_node("%RestartButton") as BaseButton
 	for connection in restart_button.pressed.get_connections():

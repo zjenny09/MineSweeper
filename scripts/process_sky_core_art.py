@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "docs" / "ui_history" / "污染核心史莱姆"
+SOURCE = ROOT / "docs" / "art" / "ui_history" / "污染核心史莱姆"
 OUTPUT = ROOT / "assets" / "art" / "sky_levels" / "markers"
 SOURCES = {
     "sky_pollution_core_cloud.png": "天空污染核心.png",

@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SKY_SOURCE = (
     ROOT
     / "docs"
+    / "art"
     / "ui_history"
     / "天空关卡棋盘概念图"
     / "棋盘与棋盘格"
@@ -15,6 +16,7 @@ SKY_SOURCE = (
 OCEAN_SOURCE = (
     ROOT
     / "docs"
+    / "art"
     / "ui_history"
     / "海洋关卡棋盘概念图"
     / "棋盘和棋盘格"
@@ -25,6 +27,7 @@ SKY_LEVEL_SELECT = ROOT / "assets" / "art" / "level_select"
 SKY_LEVEL_MAP_SOURCE = (
     ROOT
     / "docs"
+    / "art"
     / "ui_history"
     / "天空关卡棋盘概念图"
     / "关卡地图"

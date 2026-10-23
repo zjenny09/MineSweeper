@@ -35,7 +35,7 @@
 - 删除灰蓝摄影背景、右下水印和沙地底座之外的落地投影。
 - 正常/枯萎对必须使用相同画布、底线和视觉中心，切换时不得跳位。
 - 第10关保留完整鲸落微缩生态构图，等比缩放，不横向压扁。
-- 不覆盖 `docs/ui_history` 中的源图。
+- 不覆盖 `docs/art/ui_history` 中的源图。
 - 自动抠图只作为初稿；未经四色背景和游戏实画面检查，不标记为正式通过。
 
 ### 视觉与测试
@@ -141,7 +141,7 @@ assets/art/ocean_levels/actors/
 - `assets/art/ocean_levels/actors/level_09_kelp_wilted.png`
 - `assets/art/ocean_levels/actors/level_10_whale_fall_healthy.png`
 - `assets/art/ocean_levels/actors/level_10_whale_fall_wilted.png`
-- `docs/asset_reviews/ocean_actors/level_06_cutout_review.png` 至 `level_10_cutout_review.png`
+- `docs/art/asset_reviews/ocean_actors/level_06_cutout_review.png` 至 `level_10_cutout_review.png`
 
 处理结果：
 

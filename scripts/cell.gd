@@ -19,25 +19,34 @@ enum ProceduralVisual {
 const ART := preload("res://scripts/art_catalog.gd")
 const BIOSENSOR_SPEED := 2.7
 const WILT_SPEED := 1.8
-const SPROUT_PATH := ART.MARKER_FLAG_SPROUT_HEALTHY
-const WILTED_SPROUT_PATH := ART.MARKER_FLAG_SPROUT_WILTED
-const UPROOTED_SPROUT_PATH := ART.MARKER_FLAG_SPROUT_UPROOTED
-const SLIME_PATH := ART.MARKER_POLLUTION_CORE_SLIME
-const OCEAN_CORAL_NORMAL_PATH := ART.OCEAN_MARKER_CORAL_NORMAL
-const OCEAN_CORAL_FAILED_PATH := ART.OCEAN_MARKER_CORAL_FAILED
-const OCEAN_CORE_MONSTER_PATH := ART.OCEAN_POLLUTION_CORE_MONSTER
-const OCEAN_MONSTER_WRONG_PATH := ART.OCEAN_MARKER_MONSTER_WRONG
-const LEVEL_ONE_TILE_PAPER_PATH := ART.LEVEL_01_CELL_HIDDEN
-const LEVEL_ONE_TILE_HOVER_PATH := ART.LEVEL_01_CELL_HOVER
-const LEVEL_ONE_TILE_KEYBOARD_PATH := ART.LEVEL_01_CELL_KEYBOARD_FOCUS
-const LEVEL_ONE_TILE_REVEALED_PATH := ART.LEVEL_01_CELL_REVEALED
-const LEVEL_ONE_TILE_POLLUTED_PATH := ART.LEVEL_01_CELL_POLLUTED
-const LEVEL_THREE_OBSTACLE_MOSSY_STONE_PATH := ART.LEVEL_03_OBSTACLE_MOSSY_STONE
-const LEVEL_FOUR_POLLUTION_NODE_ACTIVE_PATH := ART.LEVEL_04_POLLUTION_NODE_ACTIVE
-const LEVEL_FOUR_POLLUTION_NODE_CLEANSED_PATH := ART.LEVEL_04_POLLUTION_NODE_CLEANSED
-const OCEAN_TILE_HIDDEN_PATH := ART.OCEAN_CELL_HIDDEN
-const OCEAN_TILE_REVEALED_PATH := ART.OCEAN_CELL_REVEALED
-const OCEAN_TILE_POLLUTED_PATH := ART.OCEAN_CELL_POLLUTED
+const SPROUT_PATH := ART.LAND_V2_MARKER_HEALTHY
+const WILTED_SPROUT_PATH := ART.LAND_V2_MARKER_WILTED
+const UPROOTED_SPROUT_PATH := ART.LAND_V2_MARKER_WRONG
+const SLIME_PATH := ART.LAND_V2_POLLUTION_SLIME
+const OCEAN_CORAL_NORMAL_PATH := ART.OCEAN_V2_MARKER
+const OCEAN_CORAL_FAILED_PATH := ART.OCEAN_V2_MARKER_FAILED
+const OCEAN_CORE_MONSTER_PATH := ART.OCEAN_V2_OCTOPUS_ALERT
+const OCEAN_DRIFTING_MINE_PATH := ART.OCEAN_V2_MINE
+const OCEAN_MINE_FLOATING_CELL_PATH := ART.OCEAN_V2_MINE_FLOATING_CELL
+const OCEAN_MONSTER_WRONG_PATH := ART.OCEAN_V2_MARKER_WRONG
+const OCEAN_TIDAL_LOCKED_CELL_PATH := ART.OCEAN_V2_TIDAL_LOCKED_CELL
+const LEVEL_ONE_TILE_PAPER_PATH := ART.LAND_V2_CELL_HIDDEN
+const LEVEL_ONE_TILE_HOVER_PATH := ART.LAND_V2_CELL_HIDDEN
+const LEVEL_ONE_TILE_KEYBOARD_PATH := ART.LAND_V2_CELL_HIDDEN
+const LEVEL_ONE_TILE_REVEALED_PATH := ART.LAND_V2_CELL_REVEALED
+const LEVEL_ONE_TILE_POLLUTED_PATH := ART.LAND_V2_CELL_POLLUTED
+const LAND_DIGIT_PATHS := ART.LAND_V2_DIGIT_PATHS
+const LEVEL_THREE_OBSTACLE_MOSSY_STONE_PATH := ART.LAND_V2_MECHANIC_OBSTACLE
+const LEVEL_FOUR_POLLUTION_NODE_ACTIVE_PATH := ART.LAND_V2_POLLUTION_NODE_ACTIVE
+const LEVEL_FOUR_POLLUTION_NODE_CLEANSED_PATH := ART.LAND_V2_POLLUTION_NODE_CLEANSED
+const BOSS_ROOT_ACTIVE_STRAIGHT_PATH := ART.LAND_V2_ROOT_ACTIVE_STRAIGHT
+const BOSS_ROOT_ACTIVE_CORNER_PATH := ART.LAND_V2_ROOT_ACTIVE_CORNER
+const BOSS_ROOT_CLEANSED_STRAIGHT_PATH := ART.LAND_V2_ROOT_CLEANSED_STRAIGHT
+const BOSS_ROOT_CLEANSED_CORNER_PATH := ART.LAND_V2_ROOT_CLEANSED_CORNER
+const OCEAN_TILE_HIDDEN_PATH := ART.OCEAN_V2_CELL_HIDDEN
+const OCEAN_TILE_REVEALED_PATH := ART.OCEAN_V2_CELL_REVEALED
+const OCEAN_TILE_POLLUTED_PATH := ART.OCEAN_V2_CELL_POLLUTED
+const OCEAN_DIGIT_PATHS := ART.OCEAN_V2_DIGIT_PATHS
 const LEVEL_ONE_FONT_PATH := ART.UI_FONT
 const LEVEL_ONE_FONT_SIZE := 30
 const HEX_TOPOLOGY := &"hex_pointy_odd_r"
@@ -88,14 +97,14 @@ const NUMBER_COLORS := {
 	8: Color("676257"),
 }
 const LEVEL_ONE_NUMBER_COLORS := {
-	1: Color("e8f2ff"),
-	2: Color("d7f3c5"),
-	3: Color("ffd49a"),
-	4: Color("e0d2ff"),
-	5: Color("ffc6ba"),
-	6: Color("bfeee6"),
-	7: Color("fff0bd"),
-	8: Color("f4eee0"),
+	1: Color("315f8a"),
+	2: Color("3d7547"),
+	3: Color("a3473f"),
+	4: Color("66508a"),
+	5: Color("81443c"),
+	6: Color("337576"),
+	7: Color("34342f"),
+	8: Color("676257"),
 }
 const OCEAN_NUMBER_COLORS := {
 	1: Color("174f73"),
@@ -139,6 +148,8 @@ var _is_obstacle := false
 var _is_boss_tree_cell := false
 var _obstacle_connections := 0
 var _is_pollution_node := false
+var _is_boss_root_segment := false
+var _boss_root_connections := 0
 var _pollution_node_cleansed := false
 var _board_won := false
 var _board_lost := false
@@ -176,6 +187,8 @@ var _uprooted_sprout_texture: Texture2D
 var _slime_texture: Texture2D
 
 static var _level_one_texture_cache: Dictionary = {}
+static var _land_digit_textures: Array[Texture2D] = []
+static var _ocean_digit_textures: Array[Texture2D] = []
 static var _level_one_font: FontFile
 static var _level_three_obstacle_paper_texture: Texture2D
 static var _level_three_obstacle_mossy_stone_texture: Texture2D
@@ -183,13 +196,20 @@ static var _pollution_node_active_base_texture: Texture2D
 static var _pollution_node_cleansed_base_texture: Texture2D
 static var _pollution_node_active_texture: Texture2D
 static var _pollution_node_cleansed_texture: Texture2D
+static var _boss_root_active_straight_texture: Texture2D
+static var _boss_root_active_corner_texture: Texture2D
+static var _boss_root_cleansed_straight_texture: Texture2D
+static var _boss_root_cleansed_corner_texture: Texture2D
 static var _ocean_hidden_texture: Texture2D
 static var _ocean_revealed_texture: Texture2D
 static var _ocean_polluted_texture: Texture2D
 static var _ocean_coral_normal_texture: Texture2D
 static var _ocean_coral_failed_texture: Texture2D
 static var _ocean_core_monster_texture: Texture2D
+static var _ocean_drifting_mine_texture: Texture2D
+static var _ocean_mine_floating_cell_texture: Texture2D
 static var _ocean_monster_wrong_texture: Texture2D
+static var _ocean_tidal_locked_texture: Texture2D
 
 
 func _ready() -> void:
@@ -197,6 +217,16 @@ func _ready() -> void:
 	_wilted_sprout_texture = _load_runtime_texture(WILTED_SPROUT_PATH)
 	_uprooted_sprout_texture = _load_runtime_texture(UPROOTED_SPROUT_PATH)
 	_slime_texture = _load_runtime_texture(SLIME_PATH)
+	if _land_digit_textures.is_empty():
+		for digit_path in LAND_DIGIT_PATHS:
+			var digit_texture := _load_runtime_texture(str(digit_path))
+			if digit_texture != null:
+				_land_digit_textures.append(digit_texture)
+	if _ocean_digit_textures.is_empty():
+		for digit_path in OCEAN_DIGIT_PATHS:
+			var digit_texture := _load_runtime_texture(str(digit_path))
+			if digit_texture != null:
+				_ocean_digit_textures.append(digit_texture)
 	if _is_obstacle:
 		if _level_three_obstacle_paper_texture == null:
 			_level_three_obstacle_paper_texture = _load_runtime_texture(
@@ -223,6 +253,23 @@ func _ready() -> void:
 			_pollution_node_cleansed_texture = _load_runtime_texture(
 				LEVEL_FOUR_POLLUTION_NODE_CLEANSED_PATH
 			)
+	if _is_boss_root_segment:
+		if _boss_root_active_straight_texture == null:
+			_boss_root_active_straight_texture = _load_runtime_texture(
+				BOSS_ROOT_ACTIVE_STRAIGHT_PATH
+			)
+		if _boss_root_active_corner_texture == null:
+			_boss_root_active_corner_texture = _load_runtime_texture(
+				BOSS_ROOT_ACTIVE_CORNER_PATH
+			)
+		if _boss_root_cleansed_straight_texture == null:
+			_boss_root_cleansed_straight_texture = _load_runtime_texture(
+				BOSS_ROOT_CLEANSED_STRAIGHT_PATH
+			)
+		if _boss_root_cleansed_corner_texture == null:
+			_boss_root_cleansed_corner_texture = _load_runtime_texture(
+				BOSS_ROOT_CLEANSED_CORNER_PATH
+			)
 	_configure_styles()
 	pressed.connect(_on_pressed)
 	mouse_entered.connect(queue_redraw)
@@ -246,6 +293,11 @@ func setup(
 	_is_boss_tree_cell = is_boss_tree_cell
 	_obstacle_connections = obstacle_connections
 	_is_pollution_node = is_pollution_node
+
+
+func configure_boss_root_segment(is_segment: bool, connections: int) -> void:
+	_is_boss_root_segment = is_segment
+	_boss_root_connections = connections
 
 
 func set_hex_fill_ratio(value: float) -> void:
@@ -340,9 +392,9 @@ func render_state(
 	_tidal_locked = tidal_locked
 	_set_text_color(DEFAULT_COLOR)
 	_is_pollution_node = is_pollution_node
+	_pollution_node_cleansed = pollution_node_cleansed
 
 	if _is_pollution_node:
-		_pollution_node_cleansed = pollution_node_cleansed
 		_clear_procedural_visual()
 		_is_revealed = false
 		_is_flagged = false
@@ -386,13 +438,12 @@ func render_state(
 		_set_biosensor_target(true, solved_mine)
 	elif is_revealed and adjacent_count > 0:
 		_clear_procedural_visual()
-		text = str(adjacent_count)
-		var number_colors := NUMBER_COLORS
 		if _uses_level_one_art():
-			number_colors = LEVEL_ONE_NUMBER_COLORS
-		elif _is_hex:
-			number_colors = OCEAN_NUMBER_COLORS
-		_set_text_color(number_colors.get(adjacent_count, DEFAULT_COLOR))
+			text = ""
+		else:
+			text = str(adjacent_count)
+			var number_colors := OCEAN_NUMBER_COLORS if _is_hex else NUMBER_COLORS
+			_set_text_color(number_colors.get(adjacent_count, DEFAULT_COLOR))
 	elif is_revealed:
 		_clear_procedural_visual()
 	elif is_guided:
@@ -463,54 +514,54 @@ func _update_tooltip() -> void:
 		tooltip_text = ""
 		return
 	if _tidal_locked:
-		tooltip_text = tr("潮汐锁定：先完成当前潮区")
+		tooltip_text = tr("TXT_0208")
 	elif _is_pollution_node:
 		if _drifting_mine_active:
 			if _drifting_mine_resolved:
-				tooltip_text = tr("漂流污染源已净化")
+				tooltip_text = tr("TXT_0209")
 			else:
-				tooltip_text = tr("中心污染源不可直接操作；完成浅蓝两圈普通格即可净化")
+				tooltip_text = tr("TXT_0210")
 		else:
 			tooltip_text = (
-				tr("污染节点已净化")
+				tr("TXT_0211")
 				if _pollution_node_cleansed
-				else tr("正确处理周围所有格子以净化污染节点")
+				else tr("TXT_0212")
 			)
 	elif _is_obstacle:
-		tooltip_text = tr("遗迹障碍：不可净化、标记或扫描")
+		tooltip_text = tr("TXT_0213")
 	elif _scan_target_mode:
 		tooltip_text = (
-			tr("点击扫描此格；右键取消")
+			tr("TXT_0214")
 			if _scan_candidate
-			else tr("此格不可扫描；右键取消")
+			else tr("TXT_0215")
 		)
 	elif _mobile_current_active:
 		tooltip_text = (
-			tr("漂流水雷已拦截")
+			tr("TXT_0216")
 			if _mobile_current_resolved
-			else tr("漂流候选物：左键翻开，右键标记；当前组四个之中两个是真水雷")
+			else tr("TXT_0217")
 		)
 	elif _mobile_current_corridor:
-		tooltip_text = tr("洋流水道：等待浅蓝区域经过")
+		tooltip_text = tr("TXT_0218")
 	elif not _current_endpoint_countdowns.is_empty():
 		var countdown := _current_endpoint_countdowns[0]
-		tooltip_text = tr("洋流终点：再净化%d格，未锚定污染将向下游漂移") % countdown
+		tooltip_text = tr("TXT_0219") % countdown
 	elif _is_confirmed:
-		tooltip_text = tr("机器人已确认这里存在污染核心")
+		tooltip_text = tr("TXT_0220")
 	elif _is_flagged:
 		tooltip_text = (
-			tr("珊瑚已标记疑似污染源")
+			tr("TXT_0221")
 			if _is_hex
-			else tr("小芽已标记疑似污染源")
+			else tr("TXT_0222")
 		)
 	elif _is_guided:
-		tooltip_text = tr("建议从这里开始（也可以忽略）")
+		tooltip_text = tr("TXT_0223")
 	elif _is_revealed and _adjacent_count == 0:
-		tooltip_text = tr("空白净化区")
+		tooltip_text = tr("TXT_0224")
 	elif _is_revealed:
-		tooltip_text = tr("邻近污染核心：%d；双击可快速展开") % _adjacent_count
+		tooltip_text = tr("TXT_0225") % _adjacent_count
 	else:
-		tooltip_text = tr("左键净化，右键标记污染核心")
+		tooltip_text = tr("TXT_0207")
 
 
 func refresh_localized_tooltip() -> void:
@@ -839,8 +890,16 @@ func _configure_hex_styles() -> void:
 		_ocean_coral_failed_texture = _load_runtime_texture(OCEAN_CORAL_FAILED_PATH)
 	if _ocean_core_monster_texture == null:
 		_ocean_core_monster_texture = _load_runtime_texture(OCEAN_CORE_MONSTER_PATH)
+	if _ocean_drifting_mine_texture == null:
+		_ocean_drifting_mine_texture = _load_runtime_texture(OCEAN_DRIFTING_MINE_PATH)
+	if _ocean_mine_floating_cell_texture == null:
+		_ocean_mine_floating_cell_texture = _load_runtime_texture(
+			OCEAN_MINE_FLOATING_CELL_PATH
+		)
 	if _ocean_monster_wrong_texture == null:
 		_ocean_monster_wrong_texture = _load_runtime_texture(OCEAN_MONSTER_WRONG_PATH)
+	if _ocean_tidal_locked_texture == null:
+		_ocean_tidal_locked_texture = _load_runtime_texture(OCEAN_TIDAL_LOCKED_CELL_PATH)
 	_configure_ocean_typography()
 
 
@@ -857,11 +916,11 @@ func _configure_ocean_typography() -> void:
 
 func _configure_level_one_styles() -> void:
 	_hidden_style = _make_texture_style(LEVEL_ONE_TILE_PAPER_PATH)
-	_hover_style = _make_texture_style(LEVEL_ONE_TILE_HOVER_PATH)
-	_pressed_style = _hover_style
+	_hover_style = _hidden_style
+	_pressed_style = _hidden_style
 	_revealed_style = _make_texture_style(LEVEL_ONE_TILE_REVEALED_PATH)
-	_guide_style = _make_texture_style(LEVEL_ONE_TILE_KEYBOARD_PATH)
-	_guide_hover_style = _guide_style
+	_guide_style = _hidden_style
+	_guide_hover_style = _hidden_style
 	_selected_hidden_style = _hidden_style
 	_selected_revealed_style = _revealed_style
 	_selected_guide_style = _hidden_style
@@ -881,8 +940,8 @@ func _configure_level_one_typography() -> void:
 			return
 	add_theme_font_override("font", _level_one_font)
 	add_theme_font_size_override("font_size", LEVEL_ONE_FONT_SIZE)
-	add_theme_color_override("font_outline_color", Color("173522"))
-	add_theme_constant_override("outline_size", 3)
+	add_theme_color_override("font_outline_color", Color(1.0, 0.98, 0.88, 0.88))
+	add_theme_constant_override("outline_size", 2)
 
 
 func _apply_visual_style() -> void:
@@ -1013,6 +1072,9 @@ func _ocean_texture_for_state(state: StringName) -> Texture2D:
 
 
 func _ocean_base_texture() -> Texture2D:
+	if _mobile_current_active and not _is_revealed \
+			and _ocean_mine_floating_cell_texture != null:
+		return _ocean_mine_floating_cell_texture
 	if _board_lost:
 		var loss_state: StringName = (
 			&"hidden"
@@ -1065,14 +1127,23 @@ func _draw_hex_cell() -> void:
 
 func _draw_mobile_current_overlay() -> void:
 	var points := _full_hex_points()
-	var fill_color := (
-		Color(0.48, 0.87, 0.79, 0.34)
-		if _mobile_current_resolved
-		else Color(0.45, 0.82, 0.91, 0.38).lerp(
-			Color(0.62, 0.95, 0.98, 0.62),
-			_mobile_current_warning
+	var uses_floating_art := _ocean_mine_floating_cell_texture != null
+	var fill_color: Color
+	if uses_floating_art:
+		fill_color = (
+			Color(0.48, 0.87, 0.79, 0.16)
+			if _mobile_current_resolved
+			else Color(0.95, 0.76, 0.30, _mobile_current_warning * 0.20)
 		)
-	)
+	else:
+		fill_color = (
+			Color(0.48, 0.87, 0.79, 0.34)
+			if _mobile_current_resolved
+			else Color(0.45, 0.82, 0.91, 0.38).lerp(
+				Color(0.62, 0.95, 0.98, 0.62),
+				_mobile_current_warning
+			)
+		)
 	draw_colored_polygon(points, fill_color)
 	points.append(points[0])
 	var border_color := Color(0.22, 0.64, 0.76, 0.78).lerp(
@@ -1080,7 +1151,7 @@ func _draw_mobile_current_overlay() -> void:
 		_mobile_current_warning
 	)
 	draw_polyline(points, border_color, maxf(2.0, minf(size.x, size.y) * 0.035), true)
-	if _mobile_current_resolved:
+	if _mobile_current_resolved or _ocean_mine_floating_cell_texture != null:
 		return
 	var unit := minf(size.x, size.y)
 	var center := size * 0.5
@@ -1222,24 +1293,13 @@ func _draw_current_endpoint_badge() -> void:
 func _draw_tidal_lock_overlay() -> void:
 	if not _is_hex or not _tidal_locked:
 		return
+	var radius := minf(size.y * 0.5, size.x / HEX_HORIZONTAL_FACTOR) * _hex_fill_ratio
+	var texture_size := Vector2(HEX_HORIZONTAL_FACTOR * radius, radius * 2.0)
+	var texture_rect := Rect2((size - texture_size) * 0.5, texture_size)
+	if _ocean_tidal_locked_texture != null:
+		draw_texture_rect(_ocean_tidal_locked_texture, texture_rect, false)
+		return
 	draw_colored_polygon(_hex_points(), OCEAN_FUTURE_TINT)
-	var unit := minf(size.x, size.y)
-	var center := size * 0.5
-	var body_rect := Rect2(
-		center + Vector2(-unit * 0.13, -unit * 0.01),
-		Vector2(unit * 0.26, unit * 0.22)
-	)
-	draw_rect(body_rect, OCEAN_LOCK_COLOR, true)
-	draw_arc(
-		center + Vector2(0.0, -unit * 0.01),
-		unit * 0.10,
-		PI,
-		TAU,
-		18,
-		OCEAN_LOCK_COLOR,
-		maxf(2.5, unit * 0.055),
-		true
-	)
 
 
 func _draw_ocean_boundaries() -> void:
@@ -1335,27 +1395,25 @@ func _draw_drifting_mine() -> void:
 	_draw_hex_cell()
 	var unit := minf(size.x, size.y)
 	var center := size * 0.5
-	var body_radius := unit * 0.21
-	var body_color := Color("315f78").lerp(Color("d88a3d"), _drifting_mine_warning)
-	var edge_color := Color("173f55").lerp(Color("8d4828"), _drifting_mine_warning)
+	var body_radius := unit * 0.26
+	var mine_color := Color.WHITE.lerp(
+		Color(1.0, 0.62, 0.48),
+		_drifting_mine_warning * 0.48
+	)
 	if _drifting_mine_resolved:
-		body_color = Color("4ea987")
-		edge_color = Color("d9f2d7")
+		mine_color = Color(0.56, 0.92, 0.76, 0.84)
 	elif _drifting_mine_disarm_ready:
-		body_color = Color("d99845")
-		edge_color = Color("fff0a8")
-	for spike_index in 8:
-		var angle := float(spike_index) * TAU / 8.0
-		var direction := Vector2(cos(angle), sin(angle))
-		draw_line(
-			center + direction * body_radius * 0.78,
-			center + direction * body_radius * 1.42,
-			edge_color,
-			maxf(2.0, unit * 0.045),
-			true
+		mine_color = Color(1.0, 0.90, 0.58, 1.0)
+	if _ocean_drifting_mine_texture != null:
+		var mine_size := Vector2.ONE * unit * 0.64
+		draw_texture_rect(
+			_ocean_drifting_mine_texture,
+			Rect2(center - mine_size * 0.5, mine_size),
+			false,
+			mine_color
 		)
-	draw_circle(center, body_radius, body_color)
-	draw_arc(center, body_radius, 0.0, TAU, 28, edge_color, maxf(2.0, unit * 0.04), true)
+	else:
+		draw_circle(center, body_radius, Color("315f78"))
 	if _drifting_mine_total_locks > 0:
 		var shell_radius := unit * 0.34
 		var shell_width := maxf(3.4, unit * 0.070)
@@ -1420,11 +1478,6 @@ func _draw_drifting_mine() -> void:
 			true
 		)
 	else:
-		draw_circle(
-			center + Vector2(-body_radius * 0.28, -body_radius * 0.30),
-			body_radius * 0.20,
-			Color(0.76, 0.94, 0.96, 0.82)
-		)
 		for trail_index in 3:
 			var trail_y := center.y + (float(trail_index) - 1.0) * unit * 0.10
 			draw_line(
@@ -1440,13 +1493,9 @@ func _draw_pollution_node() -> void:
 	if _drifting_mine_active:
 		_draw_drifting_mine()
 		return
-	var base_texture := (
-		_pollution_node_cleansed_base_texture
-		if _pollution_node_cleansed
-		else _pollution_node_active_base_texture
-	)
-	if base_texture != null:
-		draw_texture_rect(base_texture, Rect2(Vector2.ZERO, size), false)
+	if _is_boss_root_segment:
+		_draw_boss_root_segment()
+		return
 	var node_texture := (
 		_pollution_node_cleansed_texture
 		if _pollution_node_cleansed
@@ -1454,6 +1503,50 @@ func _draw_pollution_node() -> void:
 	)
 	if node_texture != null:
 		draw_texture_rect(node_texture, Rect2(Vector2.ZERO, size), false)
+		return
+	var base_texture := (
+		_pollution_node_cleansed_base_texture
+		if _pollution_node_cleansed
+		else _pollution_node_active_base_texture
+	)
+	if base_texture != null:
+		draw_texture_rect(base_texture, Rect2(Vector2.ZERO, size), false)
+
+
+func _draw_boss_root_segment() -> void:
+	var north_south := OBSTACLE_NORTH | OBSTACLE_SOUTH
+	var east_west := OBSTACLE_EAST | OBSTACLE_WEST
+	var is_straight := (
+		(_boss_root_connections & north_south) == north_south
+		or (_boss_root_connections & east_west) == east_west
+	)
+	var root_texture: Texture2D
+	var rotation := 0.0
+	if is_straight:
+		root_texture = (
+			_boss_root_cleansed_straight_texture
+			if _pollution_node_cleansed
+			else _boss_root_active_straight_texture
+		)
+		if (_boss_root_connections & north_south) == north_south:
+			rotation = PI * 0.5
+	else:
+		root_texture = (
+			_boss_root_cleansed_corner_texture
+			if _pollution_node_cleansed
+			else _boss_root_active_corner_texture
+		)
+		if _boss_root_connections == (OBSTACLE_NORTH | OBSTACLE_WEST):
+			rotation = PI * 0.5
+		elif _boss_root_connections == (OBSTACLE_NORTH | OBSTACLE_EAST):
+			rotation = PI
+		elif _boss_root_connections == (OBSTACLE_EAST | OBSTACLE_SOUTH):
+			rotation = -PI * 0.5
+	if root_texture == null:
+		return
+	draw_set_transform(size * 0.5, rotation, Vector2.ONE)
+	draw_texture_rect(root_texture, Rect2(size * -0.5, size), false)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _draw_boss_tree_cell() -> void:
@@ -1461,8 +1554,7 @@ func _draw_boss_tree_cell() -> void:
 		draw_texture_rect(
 			_level_three_obstacle_paper_texture,
 			Rect2(Vector2.ZERO, size),
-			false,
-			Color("76a96b") if _board_won else Color("55465f")
+			false
 		)
 
 
@@ -1484,6 +1576,9 @@ func _draw_obstacle_cell() -> void:
 
 
 func _draw() -> void:
+	if _is_boss_root_segment:
+		_draw_boss_root_segment()
+		return
 	if _is_pollution_node:
 		_draw_pollution_node()
 		return
@@ -1502,6 +1597,7 @@ func _draw() -> void:
 	_draw_hex_cell()
 	_draw_drifting_mine_neighbor()
 	_draw_tidal_lock_overlay()
+	_draw_land_digit()
 	_draw_focus_outline()
 	_draw_scan_target()
 	match procedural_visual:
@@ -1534,6 +1630,28 @@ func _draw() -> void:
 func _draw_hex_number() -> void:
 	if not _is_hex or text.is_empty():
 		return
+	if (
+		_is_revealed
+		and procedural_visual == ProceduralVisual.NONE
+		and _adjacent_count >= 1
+		and _adjacent_count <= _ocean_digit_textures.size()
+	):
+		var texture := _ocean_digit_textures[_adjacent_count - 1]
+		if texture != null:
+			var texture_size := texture.get_size()
+			var unit := minf(size.x, size.y)
+			var maximum_size := Vector2.ONE * unit * 0.66
+			var scale_factor := minf(
+				maximum_size.x / texture_size.x,
+				maximum_size.y / texture_size.y
+			)
+			var display_size := texture_size * scale_factor
+			draw_texture_rect(
+				texture,
+				Rect2((size - display_size) * 0.5, display_size),
+				false
+			)
+			return
 	var font := get_theme_font("font")
 	var font_size := get_theme_font_size("font_size")
 	var text_size := font.get_string_size(
@@ -1760,6 +1878,33 @@ func _draw_ocean_coral(
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
+func _draw_land_digit() -> void:
+	if (
+		_is_hex
+		or not _is_revealed
+		or procedural_visual != ProceduralVisual.NONE
+		or _adjacent_count < 1
+		or _adjacent_count > _land_digit_textures.size()
+	):
+		return
+	var texture := _land_digit_textures[_adjacent_count - 1]
+	if texture == null:
+		return
+	var texture_size := texture.get_size()
+	var unit := minf(size.x, size.y)
+	var maximum_size := Vector2.ONE * unit * 0.82
+	var scale_factor := minf(
+		maximum_size.x / texture_size.x,
+		maximum_size.y / texture_size.y
+	)
+	var display_size := texture_size * scale_factor
+	draw_texture_rect(
+		texture,
+		Rect2((size - display_size) * 0.5, display_size),
+		false
+	)
+
+
 func _draw_biosensor() -> void:
 	var unit := minf(size.x, size.y)
 	var progress := clampf(biosensor_progress, 0.0, 1.0)
@@ -1794,7 +1939,13 @@ func _draw_static_sprout(texture: Texture2D, scale_factor: float) -> void:
 
 func _draw_sludge_core() -> void:
 	var unit := minf(size.x, size.y)
-	var texture := _ocean_core_monster_texture if _is_hex else _slime_texture
+	var texture := _slime_texture
+	if _is_hex:
+		texture = (
+			_ocean_drifting_mine_texture
+			if _mobile_current_active or _drifting_mine_active
+			else _ocean_core_monster_texture
+		)
 	if unit <= 1.0 or texture == null:
 		return
 	var appear := clampf(_oil_time / 0.42, 0.08, 1.0)

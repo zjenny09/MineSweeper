@@ -18,6 +18,9 @@ func _run_tests() -> void:
 	_test_save_and_load()
 	_test_schema_one_scan_migration()
 	_test_schema_two_ocean_migration()
+	_test_schema_six_universe_migration()
+	_test_universe_board_tracking()
+	_test_schema_seven_universe_validation()
 	_test_scan_limits_and_grant()
 	_test_legacy_display_migration()
 	_test_removed_level_migration()
@@ -42,13 +45,18 @@ func _run_tests() -> void:
 func _test_defaults() -> void:
 	var store = SaveStore.new(TEST_PATH)
 	var data: Dictionary = store.get_data()
-	_check(data["schema_version"] == 3, "default schema version should be 3")
+	_check(data["schema_version"] == 7, "default schema version should be 7")
 	_check(store.get_last_played_level() == 0, "default last played level should be 0")
 	_check(not store.has_seen_first_move_guide(), "new saves should show the first-move guide")
 	_check(store.get_scan_energy() == 0, "new saves should start with empty scan energy")
 	_check(not store.has_claimed_level_one_scan_grant(), "new saves should not pre-claim the level-one grant")
-	_check(data["levels"].size() == 10, "defaults should contain all ten levels")
-	for number in range(1, 11):
+	_check(store.get_universe_boards_created() == 0, "new saves should start with no universe boards")
+	_check(
+		not store.has_triggered_universe_thousand_milestone(),
+		"new saves should not pre-claim the thousand-board milestone"
+	)
+	_check(data["levels"].size() == 21, "defaults should contain all twenty-one levels")
+	for number in range(1, 22):
 		_check(not store.is_level_completed(number), "level %d should default to incomplete" % number)
 		_check(store.get_best_time_ms(number) == -1, "level %d should default to no best time" % number)
 	_check(is_equal_approx(store.get_master_volume(), 1.0), "default volume should be 1")
@@ -65,6 +73,7 @@ func _test_save_and_load() -> void:
 	store.mark_first_move_guide_seen()
 	_check(store.claim_level_one_scan_grant(), "the first level-one grant claim should succeed")
 	store.set_scan_energy(7)
+	_check(not store.record_universe_board_created(), "the first universe board should not claim the milestone")
 	store.set_master_volume(0.35)
 	store.set_fullscreen(true)
 	store.set_operation_mode(1)
@@ -76,6 +85,11 @@ func _test_save_and_load() -> void:
 	_check(loaded.has_seen_first_move_guide(), "first-move guide state should persist")
 	_check(loaded.get_scan_energy() == 7, "shared scan energy should persist")
 	_check(loaded.has_claimed_level_one_scan_grant(), "the one-time scan grant should persist")
+	_check(loaded.get_universe_boards_created() == 1, "universe board count should persist")
+	_check(
+		not loaded.has_triggered_universe_thousand_milestone(),
+		"unclaimed universe milestone state should persist"
+	)
 	_check(loaded.is_level_completed(1), "completion should persist")
 	_check(loaded.get_best_time_ms(1) == 4200, "best time should persist")
 	_check(is_equal_approx(loaded.get_master_volume(), 0.35), "volume should persist")
@@ -96,10 +110,11 @@ func _test_schema_one_scan_migration() -> void:
 	file.close()
 	var loaded = SaveStore.new(TEST_PATH)
 	var migrated: Dictionary = loaded.load_data()
-	_check(migrated["schema_version"] == 3, "schema-one saves should normalize to schema three")
+	_check(migrated["schema_version"] == 7, "schema-one saves should normalize to schema seven")
 	_check(loaded.get_last_played_level() == 2, "schema migration should preserve progress")
 	_check(loaded.get_scan_energy() == 0, "schema-one saves should migrate with empty energy")
 	_check(not loaded.has_claimed_level_one_scan_grant(), "schema-one saves should leave the one-time grant available")
+	_check(loaded.get_universe_boards_created() == 0, "schema-one saves should start universe progress at zero")
 	_cleanup()
 
 
@@ -121,13 +136,130 @@ func _test_schema_two_ocean_migration() -> void:
 	file.close()
 	var loaded = SaveStore.new(TEST_PATH)
 	var migrated: Dictionary = loaded.load_data()
-	_check(migrated["schema_version"] == 3, "schema-two saves should normalize to schema three")
+	_check(migrated["schema_version"] == 7, "schema-two saves should normalize to schema seven")
 	_check(loaded.get_last_played_level() == 2, "schema-two migration should preserve land progress")
 	_check(loaded.is_level_completed(1), "schema-two migration should preserve land completion")
 	_check(loaded.get_scan_energy() == 7, "schema-two migration should preserve scan energy")
-	_check(migrated["levels"].size() == 10, "schema-two migration should add five ocean levels")
+	_check(migrated["levels"].size() == 21, "schema-two migration should add all current levels")
 	for number in range(6, 11):
 		_check(not loaded.is_level_completed(number), "migrated ocean level %d should start incomplete" % number)
+	_cleanup()
+
+
+func _test_schema_six_universe_migration() -> void:
+	_cleanup()
+	var source_store = SaveStore.new(TEST_PATH)
+	var schema_six_data: Dictionary = source_store.get_data()
+	schema_six_data["schema_version"] = 6
+	schema_six_data.erase("universe")
+	schema_six_data["last_played_level"] = 21
+	for number in range(1, 22):
+		schema_six_data["levels"][str(number)] = {
+			"completed": true,
+			"best_time_ms": 1000 + number,
+		}
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(schema_six_data))
+	file.close()
+	var loaded = SaveStore.new(TEST_PATH)
+	var migrated: Dictionary = loaded.load_data()
+	_check(migrated["schema_version"] == 7, "schema-six saves should normalize to schema seven")
+	_check(migrated["levels"].size() == 21, "schema-six migration should keep all twenty-one levels")
+	_check(loaded.get_last_played_level() == 21, "schema-six migration should preserve level 21 as the continue target")
+	for number in range(1, 22):
+		_check(loaded.is_level_completed(number), "schema-six migration should preserve level %d completion" % number)
+		_check(
+			loaded.get_best_time_ms(number) == 1000 + number,
+			"schema-six migration should preserve level %d best time" % number
+		)
+	_check(loaded.get_universe_boards_created() == 0, "schema-six migration should add a zero universe count")
+	_check(
+		not loaded.has_triggered_universe_thousand_milestone(),
+		"schema-six migration should add an unclaimed universe milestone"
+	)
+	_cleanup()
+
+
+func _test_universe_board_tracking() -> void:
+	_cleanup()
+	var store = SaveStore.new(TEST_PATH)
+	var claimed_early := false
+	for _index in range(999):
+		if store.record_universe_board_created():
+			claimed_early = true
+	_check(not claimed_early, "the universe milestone should not trigger before one thousand boards")
+	_check(store.get_universe_boards_created() == 999, "every universe board should increment the count")
+	_check(
+		not store.has_triggered_universe_thousand_milestone(),
+		"the universe milestone should remain unclaimed at 999 boards"
+	)
+	_check(store.record_universe_board_created(), "the thousandth universe board should claim the milestone")
+	_check(store.get_universe_boards_created() == 1000, "the milestone claim should retain the thousandth increment")
+	_check(
+		store.has_triggered_universe_thousand_milestone(),
+		"the thousandth universe board should update milestone state immediately"
+	)
+	_check(
+		not store.record_universe_board_created(),
+		"universe milestone claims after the first should return false"
+	)
+	_check(store.get_universe_boards_created() == 1001, "universe board count should continue past the milestone")
+	_check(store.save_data(), "universe progress should save")
+	var loaded = SaveStore.new(TEST_PATH)
+	loaded.load_data()
+	_check(loaded.get_universe_boards_created() == 1001, "universe board count should survive reload")
+	_check(
+		loaded.has_triggered_universe_thousand_milestone(),
+		"claimed universe milestone state should survive reload"
+	)
+	_cleanup()
+
+
+func _test_schema_seven_universe_validation() -> void:
+	_cleanup()
+	var source_store = SaveStore.new(TEST_PATH)
+	var valid_data: Dictionary = source_store.get_data()
+	valid_data["levels"]["1"] = {
+		"completed": true,
+		"best_time_ms": 1234,
+	}
+	var invalid_universes: Array = [
+		null,
+		[],
+		{},
+		{"boards_created": 0},
+		{"thousand_milestone_triggered": false},
+		{"boards_created": -1, "thousand_milestone_triggered": false},
+		{"boards_created": 1.5, "thousand_milestone_triggered": false},
+		{"boards_created": 0, "thousand_milestone_triggered": 0},
+	]
+	for fixture_index in invalid_universes.size():
+		var malformed_data := valid_data.duplicate(true)
+		malformed_data["universe"] = invalid_universes[fixture_index]
+		var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+		file.store_string(JSON.stringify(malformed_data))
+		file.close()
+		var loaded = SaveStore.new(TEST_PATH)
+		loaded.load_data()
+		_check(
+			not loaded.is_level_completed(1),
+			"schema-seven universe fixture %d should fail strict validation" % fixture_index
+		)
+	valid_data["universe"] = {
+		"boards_created": 42,
+		"thousand_milestone_triggered": false,
+	}
+	var valid_file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	valid_file.store_string(JSON.stringify(valid_data))
+	valid_file.close()
+	var valid_loaded = SaveStore.new(TEST_PATH)
+	valid_loaded.load_data()
+	_check(valid_loaded.is_level_completed(1), "valid schema-seven universe data should load")
+	_check(valid_loaded.get_universe_boards_created() == 42, "valid schema-seven universe count should load")
+	_check(
+		not valid_loaded.has_triggered_universe_thousand_milestone(),
+		"valid schema-seven milestone state should load"
+	)
 	_cleanup()
 
 
@@ -189,7 +321,7 @@ func _test_removed_level_migration() -> void:
 	loaded.load_data()
 	_check(loaded.get_last_played_level() == 0, "removed level 6 should not remain the continue target")
 	_check(loaded.has_seen_first_move_guide(), "legacy play progress should keep the guide dismissed")
-	_check(loaded.get_data()["levels"].size() == 10, "migration should create all current level records")
+	_check(loaded.get_data()["levels"].size() == 21, "migration should create all current level records")
 	_check(not loaded.is_level_completed(6), "removed level 6 should not become ocean level 6 progress")
 	_cleanup()
 

@@ -8,23 +8,25 @@ const ART := preload("res://scripts/art_catalog.gd")
 const DESIGN_SIZE := Vector2(1280.0, 720.0)
 const TABLETOP_BACK_Y := 616.0
 const TABLETOP_FRONT_Y := 682.0
-const LAND_ROBOT_SLOT_POSITION := Vector2(570.0, 656.0)
-const LAND_PLANT_SLOT_POSITION := Vector2(640.0, 656.0)
-const LAND_MONSTER_SLOT_POSITION := Vector2(710.0, 648.0)
+const LAND_ROBOT_SLOT_POSITION := Vector2(70.0, 670.0)
+const LAND_PLANT_SLOT_POSITION := Vector2(600.0, 690.0)
+const LAND_MONSTER_SLOT_POSITION := Vector2(1210.0, 670.0)
+const LAND_VICTORY_ECOLOGY_SLOT_POSITION := Vector2(600.0, 700.0)
 const OCEAN_ROBOT_SLOT_POSITION := Vector2(530.0, 700.0)
 const SKY_ROBOT_SLOT_POSITION := Vector2(500.0, 696.0)
 const SKY_MONSTER_SLOT_POSITION := Vector2(755.0, 698.0)
 const SKY_DOT_SLOT_POSITION := Vector2(640.0, 696.0)
 const ANEMONE_SLOT_POSITION := Vector2(625.0, 700.0)
 const OCEAN_ECOLOGY_SLOT_POSITION := Vector2(665.0, 700.0)
-const LAND_ECOLOGY_MAX_SIZE := Vector2(60.0, 52.0)
+const LAND_ECOLOGY_MAX_SIZE := Vector2(400.0, 180.0)
+const LAND_VICTORY_ECOLOGY_MAX_SIZE := Vector2(400.0, 200.0)
 const ANEMONE_MAX_SIZE := Vector2(59.0, 46.0)
 const OCEAN_ECOLOGY_MAX_SIZE := Vector2(59.0, 46.0)
 const JELLYFISH_MAX_SIZE := Vector2(78.0, 64.0)
 const FISH_SCHOOL_MAX_SIZE := Vector2(95.0, 54.0)
 const TRENCH_MAX_SIZE := Vector2(88.0, 58.0)
 const WHALE_FALL_MAX_SIZE := Vector2(95.0, 48.0)
-const SKY_ECOLOGY_MAX_SIZE := Vector2(58.0, 40.0)
+const SKY_ECOLOGY_MAX_SIZE := Vector2(360.0, 130.0)
 const VICTORY_CYCLE := 1.2
 const VICTORY_ROBOT_HEIGHT := 26.0
 const VICTORY_ARM_RAISE := 1.92
@@ -33,14 +35,19 @@ const FAILURE_FALL_DURATION := 0.62
 const FAILURE_SETTLE_DURATION := 0.20
 const FAILURE_FALL_ROTATION := deg_to_rad(-96.0)
 const FAILURE_REST_ROTATION := deg_to_rad(-88.0)
-const FAILURE_BODY_PATH := ART.LAND_ROBOT_FAILURE_BODY
-const FAILURE_LEFT_ARM_PATH := ART.WELCOME_ROBOT_ARM_LEFT
-const FAILURE_RIGHT_ARM_PATH := ART.WELCOME_ROBOT_ARM_RIGHT
-const FAILURE_BODY_MAX_SIZE := Vector2(68.0, 90.0)
+const FAILURE_BODY_PATH := ART.LAND_V2_ROBOT_RIGHT_FRONT_TORSO
+const LAND_ROBOT_ARM_PATH := ART.LAND_V2_ROBOT_ARM
+const LEGACY_LEFT_ARM_PATH := ART.WELCOME_ROBOT_ARM_LEFT
+const LEGACY_RIGHT_ARM_PATH := ART.WELCOME_ROBOT_ARM_RIGHT
+const FAILURE_BODY_MAX_SIZE := Vector2(120.0, 100.0)
 const FAILURE_SPROUT_MAX_SIZE := Vector2(22.0, 22.0)
 const FAILURE_SPROUT_OFFSET := Vector2(-10.0, -62.0)
 const FAILURE_ARM_REFERENCE_HEIGHT := 831.0
 const FAILURE_ARM_TARGET_HEIGHT := 90.0
+const LAND_ARM_TARGET_HEIGHT := 58.0
+const LAND_ARM_SHOULDER_RATIO := 0.095
+const LAND_LEFT_SHOULDER := Vector2(-24.0, -54.0)
+const LAND_RIGHT_SHOULDER := Vector2(24.0, -54.0)
 const FAILURE_LEFT_SHOULDER := Vector2(-35.4, -54.9)
 const FAILURE_RIGHT_SHOULDER := Vector2(26.7, -54.9)
 const SKY_VICTORY_LEFT_SHOULDER := Vector2(-38.0, -80.0)
@@ -58,6 +65,21 @@ const VICTORY_DOT_BASES: Array[Vector2] = [
 	Vector2(-4.0, -66.0),
 	Vector2(12.0, -58.0),
 ]
+const LAND_ROBOT_DOT_BASES: Array[Vector2] = [
+	Vector2(-18.0, -108.0),
+	Vector2(0.0, -116.0),
+	Vector2(18.0, -108.0),
+]
+const OCEAN_ROBOT_DOT_BASES: Array[Vector2] = [
+	Vector2(-18.0, -180.0),
+	Vector2(0.0, -188.0),
+	Vector2(18.0, -180.0),
+]
+const SKY_ROBOT_DOT_BASES: Array[Vector2] = [
+	Vector2(-18.0, -182.373),
+	Vector2(0.0, -190.373),
+	Vector2(18.0, -182.373),
+]
 
 enum ReactionMode {
 	READY,
@@ -72,33 +94,49 @@ enum ScanAnimation {
 	RESULT_MINE,
 }
 
-const LAND_ROBOT_PATH := ART.LEVEL_01_GUARDIAN_LEFT_ROBOT
-const LAND_MONSTER_PATH := ART.LAND_TABLETOP_PAPER_MONSTER
-const OCEAN_ROBOT_PATH := ART.OCEAN_PROTAGONIST_ROBOT
-const OCEAN_REACTION_BODY_PATH := ART.OCEAN_PROTAGONIST_REACTION_BODY
-const OCEAN_MONSTER_PATH := ART.OCEAN_PROTAGONIST_MONSTER
-const OCEAN_MONSTER_CRYING_PATH := ART.OCEAN_PROTAGONIST_MONSTER_CRYING
-const SKY_ROBOT_PATH := ART.SKY_PROTAGONIST_ROBOT
-const SKY_VICTORY_BODY_PATH := ART.SKY_PROTAGONIST_VICTORY_BODY
-const SKY_FAILURE_BODY_PATH := ART.SKY_PROTAGONIST_FAILURE_BODY
-const SKY_PLANE_PATH := ART.SKY_PROTAGONIST_PLANE
-const SKY_MONSTER_PATH := ART.SKY_PROTAGONIST_MONSTER
-const LAND_ROBOT_MAX_SIZE := Vector2(60.0, 90.0)
+const LAND_ROBOT_PATH := ART.LAND_V2_ROBOT_RIGHT_FRONT
+const LAND_ROBOT_IDLE_PATHS := ART.LAND_V2_ROBOT_IDLE_PATHS
+const LAND_ROBOT_RIGHT_FRONT_INDEX := 2
+const LAND_ROBOT_IDLE_SWAP_MIN := 1.8
+const LAND_ROBOT_IDLE_SWAP_MAX := 3.6
+const LAND_MONSTER_PATH := ART.LAND_V2_SLIME_DEFIANT_A
+const LAND_MONSTER_DEFIANT_PATHS := ART.LAND_V2_SLIME_DEFIANT_PATHS
+const LAND_MONSTER_MOCK_PATH := ART.LAND_V2_SLIME_MOCK
+const LAND_MONSTER_DEFEATED_PATH := ART.LAND_V2_SLIME_DEFEATED
+const OCEAN_ROBOT_PATH := ART.OCEAN_V2_ROBOT_RIGHT_FRONT
+const OCEAN_ROBOT_IDLE_PATHS := ART.OCEAN_V2_ROBOT_IDLE_PATHS
+const OCEAN_ROBOT_RIGHT_FRONT_INDEX := 2
+const OCEAN_REACTION_BODY_PATH := ART.OCEAN_V2_ROBOT_FRONT_TORSO
+const OCEAN_ROBOT_ARM_PATH := ART.OCEAN_V2_ROBOT_ARM
+const OCEAN_MONSTER_PATH := ART.OCEAN_V2_OCTOPUS_ALERT
+const OCEAN_MONSTER_DEFIANT_PATHS := ART.OCEAN_V2_OCTOPUS_DEFIANT_PATHS
+const OCEAN_MONSTER_MOCK_PATHS := ART.OCEAN_V2_OCTOPUS_MOCK_PATHS
+const OCEAN_MONSTER_DEFEATED_PATH := ART.OCEAN_V2_OCTOPUS_DEFEATED
+const SKY_ROBOT_PATH := ART.LAND_V2_ROBOT_RIGHT_FRONT
+const SKY_VICTORY_BODY_PATH := ART.LAND_V2_ROBOT_RIGHT_FRONT
+const SKY_FAILURE_BODY_PATH := ART.LAND_V2_ROBOT_RIGHT_FRONT
+const SKY_PLANE_PATH := ART.SKY_V2_SKYCRAFT
+const SKY_MONSTER_PATH := ART.SKY_V2_HAZE_ALERT
+const SKY_MONSTER_DEFIANT_PATHS := ART.SKY_V2_HAZE_DEFIANT_PATHS
+const SKY_MONSTER_MOCK_PATHS := ART.SKY_V2_HAZE_MOCK_PATHS
+const SKY_MONSTER_DEFEATED_PATH := ART.SKY_V2_HAZE_DEFEATED
+const LAND_ROBOT_MAX_SIZE := Vector2(120.0, 100.0)
 const OCEAN_ROBOT_MAX_SIZE := Vector2(68.0, 94.0)
-const SKY_ROBOT_MAX_SIZE := Vector2(120.0, 108.0)
-const SKY_FAILURE_ROBOT_MAX_SIZE := Vector2(126.0, 70.0)
-const SKY_PLANE_MAX_SIZE := Vector2(154.0, 58.0)
-const SKY_ROBOT_RIDE_OFFSET := Vector2(0.0, -18.0)
-const SKY_PLANE_RIDE_OFFSET := Vector2(0.0, 8.0)
-const LAND_MONSTER_MAX_SIZE := Vector2(52.0, 52.0)
+const SKY_ROBOT_MAX_SIZE := Vector2(112.0, 153.0)
+const SKY_FAILURE_ROBOT_MAX_SIZE := Vector2(112.0, 153.0)
+const SKY_PLANE_MAX_SIZE := Vector2(182.0, 110.0)
+const SKY_ROBOT_RIDE_OFFSET := Vector2(0.0, -54.0)
+const SKY_PLANE_RIDE_OFFSET := Vector2.ZERO
+const LAND_MONSTER_MAX_SIZE := Vector2(120.0, 100.0)
 const OCEAN_MONSTER_MAX_SIZE := Vector2(68.0, 68.0)
 const OCEAN_MONSTER_LEFT_EYE_PIXEL := Vector2(193.4, 296.2)
 const OCEAN_MONSTER_RIGHT_EYE_PIXEL := Vector2(273.2, 305.6)
-const SKY_MONSTER_MAX_SIZE := Vector2(112.0, 84.0)
+const SKY_MONSTER_MAX_SIZE := Vector2(117.0, 110.0)
 
 @onready var design_plane: Node2D = %DesignPlane
 @onready var robot_sprite: Sprite2D = %RobotSprite
 @onready var plant_sprite: Sprite2D = %PlantSprite
+@onready var victory_ecology_sprite: Sprite2D = %VictoryEcologySprite
 @onready var monster_sprite: Sprite2D = %MonsterSprite
 @onready var sky_robot_plane_motion: Node2D = %SkyRobotPlaneMotion
 @onready var sky_robot_plane_sprite: Sprite2D = %SkyRobotPlaneSprite
@@ -185,10 +223,51 @@ var _filled_dot_count := 0
 var _dot_pop_index := -1
 var _dot_pop_time := 0.0
 var _charge_pulse_time := 0.0
+var _land_monster_variant_index := 0
+var _land_monster_next_swap_time := 0.0
+var _land_monster_random := RandomNumberGenerator.new()
+var _land_robot_variant_index := LAND_ROBOT_RIGHT_FRONT_INDEX
+var _land_robot_idle_time := 0.0
+var _land_robot_next_swap_time := 0.0
+var _land_robot_random := RandomNumberGenerator.new()
+var _land_robot_slot_position := LAND_ROBOT_SLOT_POSITION
+var _land_plant_slot_position := LAND_PLANT_SLOT_POSITION
+var _land_monster_slot_position := LAND_MONSTER_SLOT_POSITION
+var _land_victory_ecology_position := LAND_VICTORY_ECOLOGY_SLOT_POSITION
+var _land_robot_target_size := LAND_ROBOT_MAX_SIZE
+var _land_plant_target_size := LAND_ECOLOGY_MAX_SIZE
+var _land_monster_target_size := LAND_MONSTER_MAX_SIZE
+var _land_robot_slot_scale := Vector2.ONE
+var _land_plant_slot_scale := Vector2.ONE
+var _land_monster_slot_scale := Vector2.ONE
+var _ocean_robot_slot_position := OCEAN_ROBOT_SLOT_POSITION
+var _ocean_ecology_slot_position := OCEAN_ECOLOGY_SLOT_POSITION
+var _ocean_monster_slot_position := Vector2(800.0, 700.0)
+var _ocean_robot_target_size := OCEAN_ROBOT_MAX_SIZE
+var _ocean_ecology_target_size := LAND_ECOLOGY_MAX_SIZE
+var _ocean_monster_target_size := OCEAN_MONSTER_MAX_SIZE
+var _ocean_monster_variant_index := 0
+var _ocean_monster_next_swap_time := 0.0
+var _ocean_robot_variant_index := OCEAN_ROBOT_RIGHT_FRONT_INDEX
+var _ocean_robot_idle_time := 0.0
+var _ocean_robot_next_swap_time := 0.0
+var _sky_robot_slot_position := SKY_ROBOT_SLOT_POSITION
+var _sky_ecology_slot_position := SKY_DOT_SLOT_POSITION
+var _sky_monster_slot_position := SKY_MONSTER_SLOT_POSITION
+var _sky_robot_target_size := SKY_ROBOT_MAX_SIZE
+var _sky_craft_target_size := SKY_PLANE_MAX_SIZE
+var _sky_ecology_target_size := SKY_ECOLOGY_MAX_SIZE
+var _sky_monster_target_size := SKY_MONSTER_MAX_SIZE
+var _sky_robot_local_offset := SKY_ROBOT_RIDE_OFFSET
+var _sky_plane_local_offset := SKY_PLANE_RIDE_OFFSET
+var _sky_monster_variant_index := 0
+var _sky_monster_next_swap_time := 0.0
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_land_monster_random.randomize()
+	_land_robot_random.randomize()
 	resized.connect(_update_design_transform)
 	robot_hotspot.pressed.connect(_on_robot_hotspot_pressed)
 	scan_hint_button.pressed.connect(_on_robot_hotspot_pressed)
@@ -201,24 +280,13 @@ func _ready() -> void:
 	)
 	robot_failure_sprout.position += FAILURE_SPROUT_OFFSET
 	robot_failure_sprout.visible = false
-	_setup_failure_arm(
-		robot_failure_left_arm_sprite,
-		FAILURE_LEFT_ARM_PATH,
-		FAILURE_LEFT_ARM_PIVOT
-	)
-	_setup_failure_arm(
-		robot_failure_right_arm_sprite,
-		FAILURE_RIGHT_ARM_PATH,
-		FAILURE_RIGHT_ARM_PIVOT
-	)
-	robot_failure_left_arm.position = FAILURE_LEFT_SHOULDER
-	robot_failure_right_arm.position = FAILURE_RIGHT_SHOULDER
+	_setup_land_robot_rig()
 	_setup_actor(monster_sprite, LAND_MONSTER_PATH, LAND_MONSTER_MAX_SIZE)
 	_apply_perspective_scales()
 	_update_design_transform()
 	_reset_reaction()
 	set_scan_meter(0, 1, true, false)
-	set_scan_activation_enabled(false, "完成首次净化后可使用生态扫描")
+	set_scan_activation_enabled(false, tr("TXT_0203"))
 
 
 func _process(delta: float) -> void:
@@ -236,7 +304,7 @@ func _process(delta: float) -> void:
 				_update_failure_reaction()
 	if _reaction_mode == ReactionMode.READY:
 		_update_scan_visuals(step)
-		_update_ocean_robot_idle()
+		_update_ocean_robot_idle(step)
 	if _uses_sky_actors:
 		_update_sky_robot_plane_flight()
 	_refresh_processing()
@@ -246,6 +314,7 @@ func set_plant_texture(path: String) -> void:
 	if _uses_ocean_ecology:
 		return
 	_setup_actor(plant_sprite, path, LAND_ECOLOGY_MAX_SIZE)
+	_refresh_land_slot_scales()
 
 
 func set_land_plant_visible(visible: bool) -> void:
@@ -256,23 +325,25 @@ func set_land_plant_visible(visible: bool) -> void:
 
 
 func _configure_protagonists(use_ocean_art: bool) -> void:
-	robot_failure_left_arm.position = FAILURE_LEFT_SHOULDER
-	robot_failure_right_arm.position = FAILURE_RIGHT_SHOULDER
-	_setup_actor(
-		robot_sprite,
-		OCEAN_ROBOT_PATH if use_ocean_art else LAND_ROBOT_PATH,
-		OCEAN_ROBOT_MAX_SIZE if use_ocean_art else LAND_ROBOT_MAX_SIZE
-	)
-	_setup_actor(
-		robot_failure_body,
-		OCEAN_REACTION_BODY_PATH if use_ocean_art else FAILURE_BODY_PATH,
-		OCEAN_ROBOT_MAX_SIZE if use_ocean_art else FAILURE_BODY_MAX_SIZE
-	)
+	if use_ocean_art:
+		_ocean_robot_variant_index = OCEAN_ROBOT_RIGHT_FRONT_INDEX
+		_ocean_robot_idle_time = 0.0
+		_ocean_robot_next_swap_time = _land_robot_random.randf_range(
+			LAND_ROBOT_IDLE_SWAP_MIN,
+			LAND_ROBOT_IDLE_SWAP_MAX
+		)
+		_set_ocean_robot_view(_ocean_robot_variant_index)
+		_setup_ocean_robot_rig()
+	else:
+		_set_land_robot_view(LAND_ROBOT_RIGHT_FRONT_INDEX)
+		_setup_land_robot_rig()
 	_setup_actor(
 		monster_sprite,
 		OCEAN_MONSTER_PATH if use_ocean_art else LAND_MONSTER_PATH,
 		OCEAN_MONSTER_MAX_SIZE if use_ocean_art else LAND_MONSTER_MAX_SIZE
 	)
+	if not use_ocean_art:
+		_refresh_land_slot_scales()
 	robot_failure_sprout.visible = false
 	robot_failure_left_arm.visible = true
 	robot_failure_right_arm.visible = true
@@ -283,24 +354,148 @@ func _configure_protagonists(use_ocean_art: bool) -> void:
 
 func _setup_sky_reaction_body(path: String, maximum_size: Vector2) -> void:
 	_setup_actor(robot_failure_body, path, maximum_size)
-	robot_failure_body.position += SKY_ROBOT_RIDE_OFFSET
+	robot_failure_body.position += _sky_robot_local_offset
 
 
 func _configure_sky_protagonists() -> void:
 	_sky_flight_time = 0.0
+	_setup_failure_arm(
+		robot_failure_left_arm_sprite,
+		LEGACY_LEFT_ARM_PATH,
+		FAILURE_LEFT_ARM_PIVOT
+	)
+	_setup_failure_arm(
+		robot_failure_right_arm_sprite,
+		LEGACY_RIGHT_ARM_PATH,
+		FAILURE_RIGHT_ARM_PIVOT
+	)
 	robot_failure_left_arm.position = SKY_VICTORY_LEFT_SHOULDER
 	robot_failure_right_arm.position = SKY_VICTORY_RIGHT_SHOULDER
-	_setup_actor(robot_sprite, SKY_ROBOT_PATH, SKY_ROBOT_MAX_SIZE)
-	robot_sprite.position += SKY_ROBOT_RIDE_OFFSET
-	_setup_sky_reaction_body(SKY_VICTORY_BODY_PATH, SKY_ROBOT_MAX_SIZE)
-	_setup_actor(sky_robot_plane_sprite, SKY_PLANE_PATH, SKY_PLANE_MAX_SIZE)
-	_setup_actor(monster_sprite, SKY_MONSTER_PATH, SKY_MONSTER_MAX_SIZE)
+	robot_failure_left_arm.z_index = 0
+	robot_failure_right_arm.z_index = 0
+	_setup_actor(robot_sprite, SKY_ROBOT_PATH, _sky_robot_target_size)
+	robot_sprite.position += _sky_robot_local_offset
+	_setup_sky_reaction_body(SKY_VICTORY_BODY_PATH, _sky_robot_target_size)
+	_setup_actor(sky_robot_plane_sprite, SKY_PLANE_PATH, _sky_craft_target_size)
+	_setup_actor(
+		monster_sprite,
+		str(SKY_MONSTER_DEFIANT_PATHS[0]),
+		_sky_monster_target_size
+	)
 	sky_robot_plane_motion.visible = true
 	robot_failure_sprout.visible = false
-	robot_failure_left_arm.visible = true
-	robot_failure_right_arm.visible = true
+	robot_failure_left_arm.visible = false
+	robot_failure_right_arm.visible = false
 	ocean_cry_mouth_cover.visible = false
 	ocean_cry_mouth.visible = false
+
+
+func configure_land_layout(
+	robot_rect: Rect2,
+	ecology_rect: Rect2,
+	monster_rect: Rect2
+) -> void:
+	_land_robot_slot_position = Vector2(
+		robot_rect.get_center().x,
+		robot_rect.end.y
+	)
+	_land_plant_slot_position = Vector2(
+		ecology_rect.get_center().x,
+		ecology_rect.end.y
+	)
+	_land_monster_slot_position = Vector2(
+		monster_rect.get_center().x,
+		monster_rect.end.y
+	)
+	_land_victory_ecology_position = Vector2(
+		ecology_rect.get_center().x,
+		ecology_rect.end.y + 10.0
+	)
+	_land_robot_target_size = Vector2(
+		maxf(1.0, robot_rect.size.x),
+		maxf(1.0, robot_rect.size.y)
+	)
+	_land_plant_target_size = Vector2(
+		maxf(1.0, ecology_rect.size.x),
+		maxf(1.0, ecology_rect.size.y)
+	)
+	_land_monster_target_size = Vector2(
+		maxf(1.0, monster_rect.size.x),
+		maxf(1.0, monster_rect.size.y)
+	)
+	_refresh_land_slot_scales()
+
+
+func configure_ocean_layout(
+	robot_rect: Rect2,
+	ecology_rect: Rect2,
+	monster_rect: Rect2
+) -> void:
+	_ocean_robot_slot_position = Vector2(
+		robot_rect.get_center().x,
+		robot_rect.end.y
+	)
+	_ocean_ecology_slot_position = Vector2(
+		ecology_rect.get_center().x,
+		ecology_rect.end.y
+	)
+	_ocean_monster_slot_position = Vector2(
+		monster_rect.get_center().x,
+		monster_rect.end.y
+	)
+	_ocean_robot_target_size = Vector2(
+		maxf(1.0, robot_rect.size.x),
+		maxf(1.0, robot_rect.size.y)
+	)
+	_ocean_ecology_target_size = Vector2(
+		maxf(1.0, ecology_rect.size.x),
+		maxf(1.0, ecology_rect.size.y)
+	)
+	_ocean_monster_target_size = Vector2(
+		maxf(1.0, monster_rect.size.x),
+		maxf(1.0, monster_rect.size.y)
+	)
+
+
+func configure_sky_layout(
+	robot_rect: Rect2,
+	craft_rect: Rect2,
+	ecology_rect: Rect2,
+	monster_rect: Rect2
+) -> void:
+	_sky_robot_slot_position = Vector2(
+		craft_rect.get_center().x,
+		craft_rect.end.y
+	)
+	_sky_ecology_slot_position = Vector2(
+		ecology_rect.get_center().x,
+		ecology_rect.end.y
+	)
+	_sky_monster_slot_position = Vector2(
+		monster_rect.get_center().x,
+		monster_rect.end.y
+	)
+	_sky_robot_target_size = Vector2(
+		maxf(1.0, robot_rect.size.x),
+		maxf(1.0, robot_rect.size.y)
+	)
+	_sky_craft_target_size = Vector2(
+		maxf(1.0, craft_rect.size.x),
+		maxf(1.0, craft_rect.size.y)
+	)
+	_sky_ecology_target_size = Vector2(
+		maxf(1.0, ecology_rect.size.x),
+		maxf(1.0, ecology_rect.size.y)
+	)
+	_sky_monster_target_size = Vector2(
+		maxf(1.0, monster_rect.size.x),
+		maxf(1.0, monster_rect.size.y)
+	)
+	_sky_robot_local_offset = Vector2(
+		robot_rect.get_center().x - craft_rect.get_center().x,
+		robot_rect.end.y - craft_rect.end.y
+	)
+	_sky_plane_local_offset = Vector2.ZERO
 
 
 func configure_for_level(level_number: int) -> void:
@@ -308,69 +503,78 @@ func configure_for_level(level_number: int) -> void:
 	_uses_ocean_ecology = level_number >= 8
 	_uses_sky_actors = false
 	_configure_protagonists(_uses_ocean_ecology)
+	if _uses_ocean_ecology:
+		victory_ecology_sprite.visible = false
+		_ocean_monster_variant_index = 0
+		_ocean_monster_next_swap_time = _land_monster_random.randf_range(1.2, 2.3)
+	else:
+		_land_robot_variant_index = LAND_ROBOT_RIGHT_FRONT_INDEX
+		_land_robot_idle_time = 0.0
+		_land_robot_next_swap_time = _land_robot_random.randf_range(
+			LAND_ROBOT_IDLE_SWAP_MIN,
+			LAND_ROBOT_IDLE_SWAP_MAX
+		)
+		_land_monster_variant_index = 0
+		_land_monster_next_swap_time = _land_monster_random.randf_range(1.2, 2.3)
+		var victory_index := clampi(
+			level_number - 1,
+			0,
+			ART.LAND_V2_VICTORY_ECOLOGY_PATHS.size() - 1
+		)
+		_setup_actor(
+			victory_ecology_sprite,
+			str(ART.LAND_V2_VICTORY_ECOLOGY_PATHS[victory_index]),
+			LAND_VICTORY_ECOLOGY_MAX_SIZE
+		)
+		victory_ecology_sprite.scale *= _land_plant_slot_scale
+		victory_ecology_sprite.position += _land_victory_ecology_position
+		victory_ecology_sprite.visible = false
 	plant_sprite.visible = true
 	actor_slots[1].visible = true
 	actor_slots[0].position = (
-		OCEAN_ROBOT_SLOT_POSITION
+		_ocean_robot_slot_position
 		if _uses_ocean_ecology
-		else LAND_ROBOT_SLOT_POSITION
+		else _land_robot_slot_position
 	)
-	if level_number == 8:
-		actor_slots[1].position = ANEMONE_SLOT_POSITION
-	elif _uses_ocean_ecology:
-		actor_slots[1].position = OCEAN_ECOLOGY_SLOT_POSITION
-	else:
-		actor_slots[1].position = LAND_PLANT_SLOT_POSITION
-	if _uses_ocean_ecology:
-		var ecology_x := actor_slots[1].position.x
-		var robot_x := actor_slots[0].position.x
-		actor_slots[2].position = Vector2(
-			ecology_x + (ecology_x - robot_x),
-			OCEAN_ECOLOGY_SLOT_POSITION.y
-		)
-	else:
-		actor_slots[2].position = LAND_MONSTER_SLOT_POSITION
+	actor_slots[1].position = (
+		_ocean_ecology_slot_position
+		if _uses_ocean_ecology
+		else _land_plant_slot_position
+	)
+	actor_slots[2].position = (
+		_ocean_monster_slot_position
+		if _uses_ocean_ecology
+		else _land_monster_slot_position
+	)
 	actor_slots[2].visible = true
 	plant_shadow.visible = not _uses_ocean_ecology and level_number != 7
-	_victory_dot_bases = VICTORY_DOT_BASES.duplicate()
-	if level_number == 7:
-		_victory_dot_bases = [
-			Vector2(-16.0, -58.0),
-			Vector2(0.0, -66.0),
-			Vector2(16.0, -58.0),
-		]
+	_move_scan_dots_to_robot()
+	_victory_dot_bases = (
+		OCEAN_ROBOT_DOT_BASES.duplicate()
+		if _uses_ocean_ecology
+		else LAND_ROBOT_DOT_BASES.duplicate()
+	)
 	if _uses_ocean_ecology:
 		var ecology_index := clampi(
 			level_number - 8,
 			0,
-			ART.OCEAN_ACTOR_HEALTHY_PATHS.size() - 1
+			ART.OCEAN_V2_ECOLOGY_PATHS.size() - 1
 		)
-		_healthy_ecology_path = str(ART.OCEAN_ACTOR_HEALTHY_PATHS[ecology_index])
-		_wilted_ecology_path = str(ART.OCEAN_ACTOR_WILTED_PATHS[ecology_index])
-		if level_number == 8:
-			_ecology_max_size = ANEMONE_MAX_SIZE
-		elif level_number == 11:
-			_ecology_max_size = JELLYFISH_MAX_SIZE
-		elif level_number == 12:
-			_ecology_max_size = FISH_SCHOOL_MAX_SIZE
-		elif level_number == 13:
-			_ecology_max_size = TRENCH_MAX_SIZE
-		elif level_number == 14:
-			_ecology_max_size = WHALE_FALL_MAX_SIZE
-		else:
-			_ecology_max_size = OCEAN_ECOLOGY_MAX_SIZE
-		var dot_y := -_ecology_max_size.y - 24.0
-		_victory_dot_bases = [
-			Vector2(-20.0, dot_y + 8.0),
-			Vector2(-4.0, dot_y),
-			Vector2(12.0, dot_y + 8.0),
-		]
+		_healthy_ecology_path = str(ART.OCEAN_V2_ECOLOGY_PATHS[ecology_index])
+		_wilted_ecology_path = str(
+			ART.OCEAN_V2_ECOLOGY_POLLUTED_PATHS[ecology_index]
+		)
+		_ecology_max_size = _ocean_ecology_target_size
 		_setup_actor(plant_sprite, _healthy_ecology_path, _ecology_max_size)
+		_set_ocean_robot_view(_ocean_robot_variant_index)
+		_setup_ocean_robot_rig()
+		_setup_actor(monster_sprite, OCEAN_MONSTER_PATH, _ocean_monster_target_size)
 	else:
 		_healthy_ecology_path = ""
 		_wilted_ecology_path = ""
 		_ecology_max_size = LAND_ECOLOGY_MAX_SIZE
 	_apply_perspective_scales()
+	_update_design_transform()
 	_reset_reaction()
 
 
@@ -378,13 +582,16 @@ func configure_for_sky(level_number: int = 15) -> void:
 	_level_number = clampi(level_number, 15, 21)
 	_uses_ocean_ecology = false
 	_uses_sky_actors = true
+	victory_ecology_sprite.visible = false
+	_sky_monster_variant_index = 0
+	_sky_monster_next_swap_time = _land_monster_random.randf_range(1.2, 2.3)
 	_configure_sky_protagonists()
-	actor_slots[0].position = SKY_ROBOT_SLOT_POSITION
+	actor_slots[0].position = _sky_robot_slot_position
 	actor_slots[0].visible = true
-	actor_slots[1].position = SKY_DOT_SLOT_POSITION
+	actor_slots[1].position = _sky_ecology_slot_position
 	actor_slots[1].visible = true
 	plant_sprite.visible = true
-	actor_slots[2].position = SKY_MONSTER_SLOT_POSITION
+	actor_slots[2].position = _sky_monster_slot_position
 	actor_slots[2].visible = true
 	robot_shadow.visible = false
 	plant_shadow.visible = false
@@ -392,19 +599,23 @@ func configure_for_sky(level_number: int = 15) -> void:
 	var ecology_index := clampi(
 		_level_number - 15,
 		0,
-		ART.SKY_ECOLOGY_HEALTHY_PATHS.size() - 1
+		ART.SKY_V2_ECOLOGY_PATHS.size() - 1
 	)
-	_healthy_ecology_path = str(ART.SKY_ECOLOGY_HEALTHY_PATHS[ecology_index])
-	_wilted_ecology_path = str(ART.SKY_ECOLOGY_FAILED_PATHS[ecology_index])
-	_ecology_max_size = SKY_ECOLOGY_MAX_SIZE
-	var dot_y := -_ecology_max_size.y - 18.0
-	_victory_dot_bases = [
-		Vector2(-20.0, dot_y + 8.0),
-		Vector2(-4.0, dot_y),
-		Vector2(12.0, dot_y + 8.0),
-	]
+	_healthy_ecology_path = str(ART.SKY_V2_ECOLOGY_PATHS[ecology_index])
+	_wilted_ecology_path = str(
+		ART.SKY_V2_ECOLOGY_POLLUTED_PATHS[ecology_index]
+	)
+	_ecology_max_size = _sky_ecology_target_size
+	_move_scan_dots_to_robot()
+	_victory_dot_bases = SKY_ROBOT_DOT_BASES.duplicate()
 	_setup_actor(plant_sprite, _healthy_ecology_path, _ecology_max_size)
+	_setup_actor(
+		monster_sprite,
+		str(SKY_MONSTER_DEFIANT_PATHS[_sky_monster_variant_index]),
+		_sky_monster_target_size
+	)
 	_apply_perspective_scales()
+	_update_design_transform()
 	_reset_reaction()
 
 
@@ -414,6 +625,11 @@ func get_ecology_texture_path() -> String:
 
 func uses_ocean_ecology() -> bool:
 	return _uses_ocean_ecology
+
+
+func _move_scan_dots_to_robot() -> void:
+	if victory_dots.get_parent() != actor_slots[0]:
+		victory_dots.reparent(actor_slots[0], false)
 
 
 func set_failure(failed: bool) -> void:
@@ -458,20 +674,19 @@ func set_scan_activation_enabled(enabled: bool, tooltip: String) -> void:
 	robot_hotspot.tooltip_text = "" if _scan_paused else _scan_tooltip
 	scan_hint_button.disabled = not enabled
 	scan_hint_button.tooltip_text = "" if _scan_paused else _scan_tooltip
-	scan_hint_button.visible = (
-		_scan_animation == ScanAnimation.TARGETING
-		or (_reaction_mode == ReactionMode.READY and not _scan_used)
+	var targeting := _scan_animation == ScanAnimation.TARGETING
+	var ready_prompt := (
+		enabled
+		and _reaction_mode == ReactionMode.READY
+		and not _scan_used
 	)
-	if _scan_animation == ScanAnimation.TARGETING:
-		scan_hint_button.text = tr("选择格子 · Esc取消")
-	elif _scan_show_charge_status and not enabled:
-		scan_hint_button.text = tr("扫描 %d/%d · C") % [_scan_energy, _scan_threshold]
-	elif _scan_locked:
-		scan_hint_button.text = tr("首翻后扫描 · C")
-	elif _scan_energy < _scan_threshold:
-		scan_hint_button.text = tr("扫描 %d/%d · C") % [_scan_energy, _scan_threshold]
+	scan_hint_button.visible = targeting or ready_prompt
+	if targeting:
+		scan_hint_button.text = tr("TXT_0202")
+	elif ready_prompt:
+		scan_hint_button.text = tr("TXT_0201")
 	else:
-		scan_hint_button.text = tr("点机器人扫描 · C")
+		scan_hint_button.text = ""
 	_refresh_processing()
 
 
@@ -481,7 +696,7 @@ func begin_scan_targeting() -> void:
 	_scan_animation = ScanAnimation.TARGETING
 	_scan_time = 0.0
 	scan_hint_button.visible = true
-	scan_hint_button.text = tr("选择格子 · Esc取消")
+	scan_hint_button.text = tr("TXT_0202")
 	scan_beam.visible = false
 	_refresh_processing()
 
@@ -531,19 +746,47 @@ func play_reaction(won: bool, failed: bool) -> void:
 			if failed
 			else _healthy_ecology_path
 		)
+	var land_result := (won or failed) and not _uses_ocean_ecology and not _uses_sky_actors
+	victory_ecology_sprite.visible = false
+	if land_result:
+		actor_slots[1].visible = true
+		plant_sprite.visible = true
+		plant_shadow.visible = _level_number != 7
 	if _uses_sky_actors and (won or failed):
 		_setup_sky_reaction_body(
 			SKY_FAILURE_BODY_PATH if failed else SKY_VICTORY_BODY_PATH,
-			SKY_FAILURE_ROBOT_MAX_SIZE if failed else SKY_ROBOT_MAX_SIZE
+			_sky_robot_target_size
 		)
-		robot_failure_left_arm.visible = not failed
-		robot_failure_right_arm.visible = not failed
-	if _uses_ocean_ecology and failed:
+		robot_failure_left_arm.visible = false
+		robot_failure_right_arm.visible = false
 		_setup_actor(
 			monster_sprite,
-			OCEAN_MONSTER_CRYING_PATH,
-			OCEAN_MONSTER_MAX_SIZE
+			(
+				str(SKY_MONSTER_MOCK_PATHS[0])
+				if failed
+				else SKY_MONSTER_DEFEATED_PATH
+			),
+			_sky_monster_target_size
 		)
+	elif _uses_ocean_ecology and failed:
+		_setup_actor(
+			monster_sprite,
+			str(OCEAN_MONSTER_MOCK_PATHS[0]),
+			_ocean_monster_target_size
+		)
+	elif _uses_ocean_ecology and won:
+		_setup_actor(
+			monster_sprite,
+			OCEAN_MONSTER_DEFEATED_PATH,
+			_ocean_monster_target_size
+		)
+	elif not _uses_sky_actors and (won or failed):
+		_setup_actor(
+			monster_sprite,
+			LAND_MONSTER_DEFEATED_PATH if won else LAND_MONSTER_MOCK_PATH,
+			LAND_MONSTER_MAX_SIZE
+		)
+		_refresh_land_slot_scales()
 	if won:
 		_reaction_mode = ReactionMode.VICTORY
 		_reaction_processing = true
@@ -581,8 +824,16 @@ func _reset_reaction() -> void:
 	_reaction_mode = ReactionMode.READY
 	_reaction_time = 0.0
 	_reaction_processing = false
+	victory_ecology_sprite.visible = false
+	if not _uses_ocean_ecology and not _uses_sky_actors:
+		actor_slots[1].visible = true
+		plant_sprite.visible = true
+		plant_shadow.visible = _level_number != 7
 	robot_failure_motion.visible = true
 	robot_fallen_pose.visible = false
+	robot_fallen_pose.position = Vector2.ZERO
+	robot_failure_left_arm.visible = true
+	robot_failure_right_arm.visible = true
 	robot_failure_left_arm.rotation = 0.0
 	robot_failure_right_arm.rotation = 0.0
 	robot_failure_body.modulate = Color.WHITE
@@ -605,8 +856,50 @@ func _reset_reaction() -> void:
 	for shadow in actor_shadows:
 		shadow.scale = Vector2.ONE
 		shadow.modulate = Color.WHITE
+	robot_shadow.visible = not _uses_sky_actors
+	monster_shadow.visible = not _uses_sky_actors
 	if _uses_ocean_ecology:
-		_setup_actor(monster_sprite, OCEAN_MONSTER_PATH, OCEAN_MONSTER_MAX_SIZE)
+		_ocean_robot_variant_index = OCEAN_ROBOT_RIGHT_FRONT_INDEX
+		_ocean_robot_idle_time = 0.0
+		_ocean_robot_next_swap_time = _land_robot_random.randf_range(
+			LAND_ROBOT_IDLE_SWAP_MIN,
+			LAND_ROBOT_IDLE_SWAP_MAX
+		)
+		_set_ocean_robot_view(_ocean_robot_variant_index)
+		_setup_ocean_robot_rig()
+		_ocean_monster_variant_index = 0
+		_ocean_monster_next_swap_time = _scan_time + _land_monster_random.randf_range(1.2, 2.3)
+		_setup_actor(monster_sprite, OCEAN_MONSTER_PATH, _ocean_monster_target_size)
+	elif _uses_sky_actors:
+		robot_failure_left_arm.visible = false
+		robot_failure_right_arm.visible = false
+		_sky_monster_variant_index = 0
+		_sky_monster_next_swap_time = (
+			_scan_time + _land_monster_random.randf_range(1.2, 2.3)
+		)
+		_setup_actor(
+			monster_sprite,
+			str(SKY_MONSTER_DEFIANT_PATHS[_sky_monster_variant_index]),
+			_sky_monster_target_size
+		)
+	elif not _uses_sky_actors:
+		_land_robot_variant_index = LAND_ROBOT_RIGHT_FRONT_INDEX
+		_land_robot_idle_time = 0.0
+		_land_robot_next_swap_time = _land_robot_random.randf_range(
+			LAND_ROBOT_IDLE_SWAP_MIN,
+			LAND_ROBOT_IDLE_SWAP_MAX
+		)
+		_set_land_robot_view(_land_robot_variant_index)
+		_land_monster_variant_index = 0
+		_land_monster_next_swap_time = (
+			_scan_time + _land_monster_random.randf_range(1.2, 2.3)
+		)
+		_setup_actor(
+			monster_sprite,
+			str(LAND_MONSTER_DEFIANT_PATHS[_land_monster_variant_index]),
+			LAND_MONSTER_MAX_SIZE
+		)
+		_refresh_land_slot_scales()
 	_apply_scan_meter_visuals()
 	_refresh_processing()
 
@@ -619,7 +912,7 @@ func _update_robot_celebration(cycle_time: float, cycle_phase: float) -> void:
 		robot_lift,
 		VICTORY_ROBOT_HEIGHT
 	)
-	if _uses_ocean_ecology or _uses_sky_actors:
+	if _uses_sky_actors:
 		robot_motion.position.x += sin(cycle_phase * 2.0) * 2.4
 		robot_motion.rotation = sin(cycle_phase) * 0.12
 	else:
@@ -635,9 +928,16 @@ func _update_robot_celebration(cycle_time: float, cycle_phase: float) -> void:
 func _update_victory_reaction() -> void:
 	var cycle_time := fmod(_reaction_time, VICTORY_CYCLE)
 	var cycle_phase := cycle_time / VICTORY_CYCLE * TAU
+	_update_robot_celebration(cycle_time, cycle_phase)
+	if not _uses_ocean_ecology and not _uses_sky_actors:
+		monster_motion.position = Vector2.ZERO
+		monster_motion.rotation = 0.0
+		monster_motion.scale = Vector2.ONE
+		monster_shadow.scale = Vector2.ONE
+		monster_shadow.modulate = Color.WHITE
+		return
 	var plant_lift := _bounce_lift(cycle_time, 0.18, 0.48)
 	var monster_lift := _bounce_lift(cycle_time, 0.36, 0.48)
-	_update_robot_celebration(cycle_time, cycle_phase)
 	_apply_victory_bounce(plant_motion, plant_shadow, plant_lift, 8.0)
 	_apply_victory_bounce(monster_motion, monster_shadow, monster_lift, 7.0)
 	monster_motion.rotation = -sin(cycle_phase) * 0.025
@@ -689,6 +989,25 @@ func _sprite_pixel_to_parent(sprite: Sprite2D, pixel: Vector2) -> Vector2:
 
 
 func _update_monster_failure() -> void:
+	if not _uses_ocean_ecology and not _uses_sky_actors:
+		var mock_phase := _reaction_time * 7.2
+		var mock_lift := maxf(0.0, sin(mock_phase))
+		monster_motion.position = Vector2(
+			sin(mock_phase * 0.5) * 1.8,
+			-mock_lift * 3.5
+		)
+		monster_motion.rotation = sin(mock_phase * 0.5) * 0.055
+		monster_motion.scale = Vector2(
+			1.0 + mock_lift * 0.025,
+			1.0 - mock_lift * 0.02
+		)
+		monster_shadow.scale = Vector2(
+			1.0 - mock_lift * 0.10,
+			1.0 - mock_lift * 0.06
+		)
+		monster_shadow.modulate.a = lerpf(1.0, 0.72, mock_lift)
+		monster_tears.visible = false
+		return
 	var cry_time := maxf(0.0, _reaction_time - 0.12)
 	var cry_frame := int(floor(cry_time * 8.0))
 	var tremble: float = float([-0.7, 0.6, -0.4, 0.8, -0.6, 0.3][cry_frame % 6])
@@ -697,6 +1016,9 @@ func _update_monster_failure() -> void:
 	monster_motion.scale = Vector2(1.03, 0.95)
 	monster_shadow.scale = Vector2(1.06, 0.88)
 	monster_shadow.modulate.a = 0.78
+	if _uses_sky_actors:
+		monster_tears.visible = false
+		return
 	monster_tears.visible = cry_time > 0.0
 	var tear_phase := fmod(cry_time, 0.72) / 0.72
 	if _uses_ocean_ecology:
@@ -870,6 +1192,20 @@ func _update_land_robot_failure() -> void:
 
 func _update_monster_idle() -> void:
 	if _uses_sky_actors:
+		if _scan_time >= _sky_monster_next_swap_time:
+			var variant_count := SKY_MONSTER_DEFIANT_PATHS.size()
+			if variant_count > 1:
+				_sky_monster_variant_index = (
+					_sky_monster_variant_index + 1
+				) % variant_count
+				_setup_actor(
+					monster_sprite,
+					str(SKY_MONSTER_DEFIANT_PATHS[_sky_monster_variant_index]),
+					_sky_monster_target_size
+				)
+			_sky_monster_next_swap_time = (
+				_scan_time + _land_monster_random.randf_range(1.2, 2.3)
+			)
 		var sky_phase := _scan_time * 1.18
 		monster_motion.position = Vector2(
 			sin(sky_phase * 0.62) * 3.6,
@@ -881,6 +1217,20 @@ func _update_monster_idle() -> void:
 		monster_shadow.modulate = Color.WHITE
 		return
 	if _uses_ocean_ecology:
+		if _scan_time >= _ocean_monster_next_swap_time:
+			var variant_count := OCEAN_MONSTER_DEFIANT_PATHS.size()
+			if variant_count > 0:
+				_ocean_monster_variant_index = (
+					_ocean_monster_variant_index + 1
+				) % variant_count
+				_setup_actor(
+					monster_sprite,
+					str(OCEAN_MONSTER_DEFIANT_PATHS[_ocean_monster_variant_index]),
+					_ocean_monster_target_size
+				)
+			_ocean_monster_next_swap_time = (
+				_scan_time + _land_monster_random.randf_range(1.2, 2.3)
+			)
 		var float_phase := _scan_time * 1.35
 		var float_lift := sin(float_phase)
 		monster_motion.position = Vector2(
@@ -898,6 +1248,22 @@ func _update_monster_idle() -> void:
 		)
 		monster_shadow.modulate.a = 0.70 - float_lift * 0.12
 		return
+	if _scan_time >= _land_monster_next_swap_time:
+		var variant_count := LAND_MONSTER_DEFIANT_PATHS.size()
+		if variant_count > 1:
+			_land_monster_variant_index = (
+				_land_monster_variant_index
+				+ _land_monster_random.randi_range(1, variant_count - 1)
+			) % variant_count
+			_setup_actor(
+				monster_sprite,
+				str(LAND_MONSTER_DEFIANT_PATHS[_land_monster_variant_index]),
+				LAND_MONSTER_MAX_SIZE
+			)
+			_refresh_land_slot_scales()
+		_land_monster_next_swap_time = (
+			_scan_time + _land_monster_random.randf_range(1.2, 2.3)
+		)
 	var breath := sin(_scan_time * TAU / 3.6)
 	var cycle_time := fmod(_scan_time + 1.1, MONSTER_IDLE_CYCLE)
 	var hop := 0.0
@@ -945,6 +1311,7 @@ func _update_scan_visuals(delta: float) -> void:
 		_scan_time += delta
 		_update_monster_idle()
 
+	_update_robot_charge_wave()
 	_update_ocean_ecology_idle()
 	if _charge_pulse_time > 0.0:
 		var pulse := sin((1.0 - _charge_pulse_time / 0.42) * PI)
@@ -955,6 +1322,30 @@ func _update_scan_visuals(delta: float) -> void:
 	_update_scan_dot_positions()
 
 
+func _update_robot_charge_wave() -> void:
+	if _uses_sky_actors or _reaction_mode != ReactionMode.READY:
+		return
+	var show_articulated_pose := _scan_available and not _scan_used
+	if show_articulated_pose and robot_failure_motion.visible:
+		if _uses_ocean_ecology:
+			_setup_ocean_robot_rig()
+		else:
+			_set_land_robot_view(LAND_ROBOT_RIGHT_FRONT_INDEX)
+	robot_failure_motion.visible = not show_articulated_pose
+	robot_fallen_pose.visible = show_articulated_pose
+	if not show_articulated_pose:
+		robot_failure_left_arm.rotation = 0.0
+		robot_failure_right_arm.rotation = 0.0
+		return
+	var greeting_wave := sin(_scan_time * 2.4)
+	robot_failure_left_arm.rotation = 2.08 + greeting_wave * 0.18
+	robot_failure_right_arm.rotation = 0.0
+	robot_fallen_pose.position = Vector2.ZERO
+	robot_failure_body.modulate = Color.WHITE
+	robot_failure_left_arm_sprite.modulate = Color.WHITE
+	robot_failure_right_arm_sprite.modulate = Color.WHITE
+
+
 func _update_sky_robot_plane_flight() -> void:
 	var flight_phase := _sky_flight_time * 0.92
 	var shared_position := Vector2(
@@ -962,7 +1353,7 @@ func _update_sky_robot_plane_flight() -> void:
 		sin(flight_phase) * 2.6
 	)
 	var shared_rotation := sin(flight_phase * 0.63) * 0.012
-	sky_robot_plane_motion.position = SKY_PLANE_RIDE_OFFSET + shared_position
+	sky_robot_plane_motion.position = _sky_plane_local_offset + shared_position
 	sky_robot_plane_motion.rotation = shared_rotation
 	if _reaction_mode == ReactionMode.READY:
 		robot_failure_motion.position = shared_position
@@ -976,25 +1367,52 @@ func _update_sky_robot_plane_flight() -> void:
 			robot_motion.rotation += shared_rotation
 
 
-func _update_ocean_robot_idle() -> void:
+func _update_ocean_robot_idle(delta: float) -> void:
 	if _uses_sky_actors:
 		return
-	if not _uses_ocean_ecology:
+	var charge_pose := _scan_available and not _scan_used
+	if _scan_animation != ScanAnimation.NONE or charge_pose:
 		robot_failure_motion.position = Vector2.ZERO
 		robot_failure_motion.scale = Vector2.ONE
 		robot_failure_motion.rotation = 0.0
 		return
-	var water_phase := _scan_time * 1.42
-	var refraction := sin(water_phase * 0.91)
-	robot_failure_motion.position = Vector2(
-		sin(water_phase * 0.64) * 1.8,
-		sin(water_phase) * 1.4
-	)
-	robot_failure_motion.scale = Vector2(
-		1.0 + refraction * 0.012,
-		1.0 - refraction * 0.014
-	)
-	robot_failure_motion.rotation = sin(water_phase * 0.53) * 0.009
+	if _uses_ocean_ecology:
+		_ocean_robot_idle_time += delta
+		if _ocean_robot_idle_time >= _ocean_robot_next_swap_time:
+			var variant_count := OCEAN_ROBOT_IDLE_PATHS.size()
+			if variant_count > 1:
+				_ocean_robot_variant_index = (
+					_ocean_robot_variant_index
+					+ _land_robot_random.randi_range(1, variant_count - 1)
+				) % variant_count
+				_set_ocean_robot_view(_ocean_robot_variant_index)
+			_ocean_robot_next_swap_time = (
+				_ocean_robot_idle_time
+				+ _land_robot_random.randf_range(
+					LAND_ROBOT_IDLE_SWAP_MIN,
+					LAND_ROBOT_IDLE_SWAP_MAX
+				)
+			)
+	else:
+		_land_robot_idle_time += delta
+		if _land_robot_idle_time >= _land_robot_next_swap_time:
+			var variant_count := LAND_ROBOT_IDLE_PATHS.size()
+			if variant_count > 1:
+				_land_robot_variant_index = (
+					_land_robot_variant_index
+					+ _land_robot_random.randi_range(1, variant_count - 1)
+				) % variant_count
+				_set_land_robot_view(_land_robot_variant_index)
+			_land_robot_next_swap_time = (
+				_land_robot_idle_time
+				+ _land_robot_random.randf_range(
+					LAND_ROBOT_IDLE_SWAP_MIN,
+					LAND_ROBOT_IDLE_SWAP_MAX
+				)
+			)
+	robot_failure_motion.position = Vector2.ZERO
+	robot_failure_motion.scale = Vector2.ONE
+	robot_failure_motion.rotation = 0.0
 
 
 func _update_ocean_ecology_idle() -> void:
@@ -1098,7 +1516,7 @@ func _reset_scan_animation() -> void:
 	scan_beam.visible = false
 	scan_beam.modulate = Color.WHITE
 	scan_hint_button.visible = _scan_available
-	scan_hint_button.text = tr("点机器人扫描 · C")
+	scan_hint_button.text = tr("TXT_0201")
 	robot_scan_motion.position = Vector2.ZERO
 	robot_scan_motion.scale = Vector2.ONE
 	robot_scan_motion.rotation = 0.0
@@ -1161,6 +1579,94 @@ func _apply_victory_bounce(
 	shadow.modulate.a = lerpf(1.0, 0.55, lift)
 
 
+func _setup_land_robot_rig() -> void:
+	_setup_actor(robot_failure_body, FAILURE_BODY_PATH, FAILURE_BODY_MAX_SIZE)
+	_setup_articulated_arm(robot_failure_left_arm_sprite, true)
+	_setup_articulated_arm(robot_failure_right_arm_sprite, false)
+	robot_failure_left_arm.position = LAND_LEFT_SHOULDER
+	robot_failure_right_arm.position = LAND_RIGHT_SHOULDER
+	robot_failure_left_arm.z_index = 1
+	robot_failure_right_arm.z_index = -1
+	robot_failure_left_arm.visible = true
+	robot_failure_right_arm.visible = true
+
+
+func _setup_ocean_robot_rig() -> void:
+	var rig_size := _ocean_robot_target_size
+	if robot_sprite.texture != null:
+		rig_size = (
+			Vector2(_get_visible_rect(robot_sprite.texture).size)
+			* robot_sprite.scale.abs()
+		)
+	_setup_actor(
+		robot_failure_body,
+		OCEAN_REACTION_BODY_PATH,
+		rig_size
+	)
+	if robot_failure_body.texture == null:
+		return
+	var body_size := (
+		Vector2(_get_visible_rect(robot_failure_body.texture).size)
+		* robot_failure_body.scale.abs()
+	)
+	var arm_height := maxf(1.0, body_size.y * 0.58)
+	_setup_robot_arm(
+		robot_failure_left_arm_sprite,
+		OCEAN_ROBOT_ARM_PATH,
+		arm_height,
+		true
+	)
+	_setup_robot_arm(
+		robot_failure_right_arm_sprite,
+		OCEAN_ROBOT_ARM_PATH,
+		arm_height,
+		false
+	)
+	var shoulder_y := -body_size.y * 0.50
+	var shoulder_x := body_size.x * 0.37
+	robot_failure_left_arm.position = Vector2(-shoulder_x, shoulder_y)
+	robot_failure_right_arm.position = Vector2(shoulder_x, shoulder_y)
+	robot_failure_left_arm.z_index = 1
+	robot_failure_right_arm.z_index = -1
+	robot_failure_left_arm.visible = true
+	robot_failure_right_arm.visible = true
+
+
+func _setup_articulated_arm(sprite: Sprite2D, mirror_x: bool) -> void:
+	_setup_robot_arm(
+		sprite,
+		LAND_ROBOT_ARM_PATH,
+		LAND_ARM_TARGET_HEIGHT,
+		mirror_x
+	)
+
+
+func _setup_robot_arm(
+	sprite: Sprite2D,
+	path: String,
+	target_height: float,
+	mirror_x: bool
+) -> void:
+	var texture := _load_texture(path)
+	if texture == null:
+		return
+	var visible_rect := _get_visible_rect(texture)
+	var target_scale := target_height / maxf(float(visible_rect.size.y), 1.0)
+	sprite.texture = texture
+	sprite.scale = Vector2(-target_scale if mirror_x else target_scale, target_scale)
+	var texture_center := texture.get_size() * 0.5
+	var visible_shoulder_center := Vector2(
+		float(visible_rect.position.x) + float(visible_rect.size.x) * 0.5,
+		float(visible_rect.position.y)
+			+ float(visible_rect.size.y) * LAND_ARM_SHOULDER_RATIO
+	)
+	var local_offset := visible_shoulder_center - texture_center
+	sprite.position = Vector2(
+		-local_offset.x * sprite.scale.x,
+		-local_offset.y * sprite.scale.y
+	)
+
+
 func _setup_failure_arm(
 	sprite: Sprite2D,
 	path: String,
@@ -1176,9 +1682,39 @@ func _setup_failure_arm(
 
 
 func _apply_ecology_texture(path: String) -> void:
-	var texture := _load_texture(path)
-	if texture != null:
-		plant_sprite.texture = texture
+	_setup_actor(plant_sprite, path, _ecology_max_size)
+	_refresh_land_slot_scales()
+
+
+func _set_land_robot_view(variant_index: int) -> void:
+	if LAND_ROBOT_IDLE_PATHS.is_empty():
+		return
+	_land_robot_variant_index = wrapi(
+		variant_index,
+		0,
+		LAND_ROBOT_IDLE_PATHS.size()
+	)
+	_setup_actor(
+		robot_sprite,
+		str(LAND_ROBOT_IDLE_PATHS[_land_robot_variant_index]),
+		LAND_ROBOT_MAX_SIZE
+	)
+	_refresh_land_slot_scales()
+
+
+func _set_ocean_robot_view(variant_index: int) -> void:
+	if OCEAN_ROBOT_IDLE_PATHS.is_empty():
+		return
+	_ocean_robot_variant_index = wrapi(
+		variant_index,
+		0,
+		OCEAN_ROBOT_IDLE_PATHS.size()
+	)
+	_setup_actor(
+		robot_sprite,
+		str(OCEAN_ROBOT_IDLE_PATHS[_ocean_robot_variant_index]),
+		_ocean_robot_target_size
+	)
 
 
 func _setup_actor(sprite: Sprite2D, path: String, maximum_size: Vector2) -> void:
@@ -1222,6 +1758,37 @@ func _get_visible_rect(texture: Texture2D) -> Rect2i:
 	return Rect2i(minimum, maximum - minimum + Vector2i.ONE)
 
 
+func _land_slot_scale_for(sprite: Sprite2D, target_size: Vector2) -> Vector2:
+	if sprite.texture == null:
+		return Vector2.ONE
+	var visible_size := (
+		Vector2(_get_visible_rect(sprite.texture).size)
+		* sprite.scale.abs()
+	)
+	return Vector2(
+		maxf(0.05, target_size.x / maxf(visible_size.x, 1.0)),
+		maxf(0.05, target_size.y / maxf(visible_size.y, 1.0))
+	)
+
+
+func _refresh_land_slot_scales() -> void:
+	if _uses_ocean_ecology or _uses_sky_actors:
+		return
+	_land_robot_slot_scale = _land_slot_scale_for(
+		robot_sprite,
+		_land_robot_target_size
+	)
+	_land_plant_slot_scale = _land_slot_scale_for(
+		plant_sprite,
+		_land_plant_target_size
+	)
+	_land_monster_slot_scale = _land_slot_scale_for(
+		monster_sprite,
+		_land_monster_target_size
+	)
+	_apply_perspective_scales()
+
+
 func _load_texture(path: String) -> Texture2D:
 	if _texture_cache.has(path):
 		return _texture_cache[path] as Texture2D
@@ -1240,6 +1807,15 @@ func _load_texture(path: String) -> Texture2D:
 
 
 func _apply_perspective_scales() -> void:
+	if not _uses_ocean_ecology and not _uses_sky_actors:
+		actor_slots[0].scale = _land_robot_slot_scale
+		actor_slots[1].scale = _land_plant_slot_scale
+		actor_slots[2].scale = _land_monster_slot_scale
+		return
+	if _uses_ocean_ecology:
+		for slot in actor_slots:
+			slot.scale = Vector2.ONE
+		return
 	for slot in actor_slots:
 		var depth := clampf(
 			(slot.position.y - TABLETOP_BACK_Y)
@@ -1253,6 +1829,14 @@ func _apply_perspective_scales() -> void:
 
 func _update_design_transform() -> void:
 	if not is_instance_valid(design_plane) or size.x <= 0.0 or size.y <= 0.0:
+		return
+	if not _uses_sky_actors:
+		var fit_scale := minf(size.x / DESIGN_SIZE.x, size.y / DESIGN_SIZE.y)
+		design_plane.scale = Vector2.ONE * fit_scale
+		design_plane.position = Vector2(
+			(size.x - DESIGN_SIZE.x * fit_scale) * 0.5,
+			0.0
+		)
 		return
 	var cover_scale := maxf(size.x / DESIGN_SIZE.x, size.y / DESIGN_SIZE.y)
 	design_plane.scale = Vector2.ONE * cover_scale

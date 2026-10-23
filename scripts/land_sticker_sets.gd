@@ -2,14 +2,14 @@
 extends Control
 
 const LEVEL_PREVIEWS := [
-	{"name": "萌芽", "grid": 5, "cores": 5},
-	{"name": "灌木", "grid": 6, "cores": 8},
-	{"name": "湿地", "grid": 8, "cores": 9},
-	{"name": "草原", "grid": 10, "cores": 17},
-	{"name": "森林", "grid": 12, "cores": 28},
+	{"name": "TXT_0073", "grid": 5, "cores": 5},
+	{"name": "TXT_0074", "grid": 6, "cores": 8},
+	{"name": "TXT_0075", "grid": 8, "cores": 9},
+	{"name": "TXT_0076", "grid": 10, "cores": 17},
+	{"name": "TXT_0077", "grid": 12, "cores": 28},
 ]
 
-@export_enum("第1关:1", "第2关:2", "第3关:3", "第4关:4", "第5关:5") var preview_level := 1:
+@export_enum("TXT_0443", "TXT_0444", "TXT_0445", "TXT_0446", "TXT_0447") var preview_level := 1:
 	set(value):
 		preview_level = clampi(value, 1, 5)
 		if is_inside_tree():
@@ -44,6 +44,13 @@ func show_level(level_index: int, show_victory_sticker: bool) -> void:
 		victory_sticker.visible = preview_level == 1 and show_victory_sticker
 
 
+func _preview_copy(key: String, chinese: String, english: String) -> String:
+	var translated := tr(key)
+	if translated != key:
+		return translated
+	return chinese if TranslationServer.get_locale().begins_with("zh") else english
+
+
 func _refresh_preview() -> void:
 	if not is_inside_tree():
 		return
@@ -65,24 +72,39 @@ func _refresh_preview() -> void:
 		preview_grid.call("set_grid_size", int(level_data["grid"]))
 	if is_instance_valid(left_preview_text):
 		left_preview_text.visible = standalone_editor_preview
-		left_preview_text.text = (
-			"第%d关 · %s\n%d × %d 棋盘\n污染核心 %d\n\n"
-			+ "净化目标\n清除所有污染核心\n恢复%s生态\n\n"
-			+ "操作方法\n左键净化 · 右键标记\n双击数字快速展开"
-		) % [
-			preview_level,
-			str(level_data["name"]),
-			int(level_data["grid"]),
-			int(level_data["grid"]),
-			int(level_data["cores"]),
-			str(level_data["name"]),
-		]
+		if standalone_editor_preview:
+			var heading := _preview_copy(
+				"TXT_0436",
+				"第%d关 · %s\n%d × %d 棋盘\n污染核心 %d\n\n",
+				"Level %d · %s\n%d × %d Board\nPollution Cores %d\n\n"
+			)
+			var objective := _preview_copy(
+				"TXT_0392",
+				"净化目标\n清除所有污染核心\n恢复%s生态\n\n",
+				"Objective\nClear every Pollution Core\nRestore the %s ecosystem\n\n"
+			)
+			var controls := _preview_copy(
+				"TXT_0165",
+				"操作方法\n左键净化 · 右键标记\n双击数字快速展开",
+				"Controls\nLeft: Reveal · Right: Flag\nDouble-click numbers to expand"
+			)
+			left_preview_text.text = (heading + objective + controls) % [
+				preview_level,
+				tr(str(level_data["name"])),
+				int(level_data["grid"]),
+				int(level_data["grid"]),
+				int(level_data["cores"]),
+				tr(str(level_data["name"])),
+			]
 	if is_instance_valid(right_preview_text):
 		right_preview_text.visible = standalone_editor_preview
-		right_preview_text.text = (
-			"净化时间\n00:00.0\n\n污染核心    0/%d\n\n净化状态\n准备中"
-			% int(level_data["cores"])
-		)
+		if standalone_editor_preview:
+			var status := _preview_copy(
+				"TXT_0391",
+				"净化时间\n00:00.0\n\n污染核心    0/%d\n\n净化状态\n准备中",
+				"Clear Time\n00:00.0\n\nPollution Cores    0/%d\n\nStatus\nReady"
+			)
+			right_preview_text.text = status % int(level_data["cores"])
 	for level_number in range(1, 6):
 		var sticker_group := get_node_or_null("Level%dStickers" % level_number) as Control
 		if sticker_group != null:

@@ -53,6 +53,12 @@ script = ExtResource("1_tabletop")
 unique_name_in_owner = true
 y_sort_enabled = true
 
+[node name="VictoryEcologySprite" type="Sprite2D" parent="DesignPlane"]
+unique_name_in_owner = true
+visible = false
+z_index = -20
+position = Vector2(600, 700)
+
 [node name="ScanBeam" type="Line2D" parent="DesignPlane"]
 unique_name_in_owner = true
 visible = false
@@ -65,16 +71,16 @@ antialiased = true
 
 [node name="RobotSlot" type="Node2D" parent="DesignPlane"]
 unique_name_in_owner = true
-position = Vector2(570, 656)
+position = Vector2(70, 670)
 
 [node name="RobotShadow" type="Control" parent="DesignPlane/RobotSlot"]
 unique_name_in_owner = true
 z_index = -1
-offset_left = -42.0
+offset_left = -60.0
 offset_top = -12.0
-offset_right = 42.0
+offset_right = 60.0
 offset_bottom = 12.0
-pivot_offset = Vector2(42, 12)
+pivot_offset = Vector2(60, 12)
 mouse_filter = 2
 script = ExtResource("2_shadow")
 center_y_ratio = 0.5
@@ -158,23 +164,23 @@ antialiased = true
 [node name="RobotHotspot" type="Button" parent="DesignPlane/RobotSlot"]
 unique_name_in_owner = true
 z_index = 5
-offset_left = -34.0
-offset_top = -96.0
-offset_right = 34.0
-offset_bottom = 4.0
+offset_left = -60.0
+offset_top = -100.0
+offset_right = 60.0
+offset_bottom = 0.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 flat = true
-tooltip_text = "完成首次净化后可使用生态扫描"
+tooltip_text = "TXT_0203"
 
 [node name="ScanHintButton" type="Button" parent="DesignPlane/RobotSlot"]
 unique_name_in_owner = true
 visible = false
 z_index = 6
-offset_left = -50.0
-offset_top = -124.0
-offset_right = 50.0
-offset_bottom = -100.0
+offset_left = -58.0
+offset_top = -152.0
+offset_right = 58.0
+offset_bottom = -126.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(0.055, 0.255, 0.13, 1)
@@ -184,11 +190,11 @@ theme_override_font_sizes/font_size = 10
 theme_override_styles/normal = SubResource("StyleBox_scan_hint")
 theme_override_styles/hover = SubResource("StyleBox_scan_hint_hover")
 theme_override_styles/pressed = SubResource("StyleBox_scan_hint_hover")
-text = "点机器人扫描 · C"
+text = "TXT_0201"
 
 [node name="PlantSlot" type="Node2D" parent="DesignPlane"]
 unique_name_in_owner = true
-position = Vector2(640, 656)
+position = Vector2(600, 690)
 
 [node name="PlantShadow" type="Control" parent="DesignPlane/PlantSlot"]
 unique_name_in_owner = true
@@ -240,16 +246,16 @@ theme_override_styles/panel = ExtResource("3_dot_style")
 
 [node name="MonsterSlot" type="Node2D" parent="DesignPlane"]
 unique_name_in_owner = true
-position = Vector2(710, 648)
+position = Vector2(1210, 670)
 
 [node name="MonsterShadow" type="Control" parent="DesignPlane/MonsterSlot"]
 unique_name_in_owner = true
 z_index = -1
-offset_left = -30.0
+offset_left = -60.0
 offset_top = -10.0
-offset_right = 30.0
+offset_right = 60.0
 offset_bottom = 10.0
-pivot_offset = Vector2(30, 10)
+pivot_offset = Vector2(60, 10)
 mouse_filter = 2
 script = ExtResource("2_shadow")
 center_y_ratio = 0.5

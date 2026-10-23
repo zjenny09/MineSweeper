@@ -1,12 +1,12 @@
 extends Node
 
 const AUDIO_ROOT := "res://assets/audio/"
-const BGM_PATHS := {
-	&"menu": AUDIO_ROOT + "menu_select_bgm.wav",
-	&"land": AUDIO_ROOT + "forest_papercut_bgm.wav",
-	&"ocean": AUDIO_ROOT + "ocean_papercut_bgm.wav",
-	&"sky": AUDIO_ROOT + "sky_papercut_bgm.wav",
-	&"universe": AUDIO_ROOT + "sky_papercut_bgm.wav",
+const BGM_STREAMS := {
+	&"menu": preload("res://assets/audio/menu_select_bgm.wav"),
+	&"land": preload("res://assets/audio/forest_papercut_bgm.wav"),
+	&"ocean": preload("res://assets/audio/ocean_papercut_bgm.wav"),
+	&"sky": preload("res://assets/audio/sky_papercut_bgm.wav"),
+	&"universe": preload("res://assets/audio/sky_papercut_bgm.wav"),
 }
 const BGM_VOLUMES := {
 	&"menu": 0.76,
@@ -18,7 +18,8 @@ const BGM_VOLUMES := {
 const MENU_SELECT_PATH := AUDIO_ROOT + "sfx_menu_select.wav"
 const MENU_BACK_PATH := AUDIO_ROOT + "sfx_menu_back.wav"
 const OCEAN_REVEAL_PATH := AUDIO_ROOT + "sfx_clear_bubbles.wav"
-const SKY_REVEAL_PATH := AUDIO_ROOT + "sfx_sky_wind.wav"
+const SKY_REVEAL_PATH := AUDIO_ROOT + "sfx_menu_select.wav"
+const SKY_BREEZE_PATH := AUDIO_ROOT + "sfx_sky_wind.wav"
 const LAND_WIN_PATH := AUDIO_ROOT + "sfx_win_flower_SUCCESS.wav"
 const OCEAN_WIN_PATH := AUDIO_ROOT + "sfx_win_ocean_SUCCESS.wav"
 const SKY_WIN_PATH := AUDIO_ROOT + "sfx_win_sky_SUCCESS.wav"
@@ -104,17 +105,17 @@ func play_bgm(track: StringName) -> void:
 		return
 	if _current_bgm == track and _bgm_player.playing:
 		return
-	var path := str(BGM_PATHS.get(track, ""))
-	if path.is_empty():
-		stop_bgm()
-		return
-	var stream := _load_audio_stream(path, true)
+	var stream := BGM_STREAMS.get(track) as AudioStream
 	if stream == null:
+		stop_bgm()
+		push_error("Background music stream is unavailable: %s" % track)
 		return
 	_current_bgm = track
+	_bgm_player.stop()
 	_bgm_player.stream = stream
+	_bgm_player.stream_paused = false
 	_bgm_player.volume_db = linear_to_db(float(BGM_VOLUMES.get(track, 0.62)))
-	_bgm_player.play()
+	_bgm_player.play(0.0)
 
 
 func stop_bgm() -> void:
@@ -141,7 +142,11 @@ func play_ocean_reveal() -> void:
 
 
 func play_sky_reveal() -> void:
-	_play_sfx(_gameplay_player, SKY_REVEAL_PATH, 0.67)
+	_play_sfx(_gameplay_player, SKY_REVEAL_PATH, 0.62)
+
+
+func play_sky_breeze() -> void:
+	_play_sfx(_gameplay_player, SKY_BREEZE_PATH, 0.72)
 
 
 func play_level_win(level_number: int) -> void:
@@ -160,6 +165,8 @@ func play_fail() -> void:
 func _create_player(player_name: String) -> AudioStreamPlayer:
 	var player := AudioStreamPlayer.new()
 	player.name = player_name
+	player.bus = &"Master"
+	player.max_polyphony = 1
 	player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(player)
 	return player
@@ -172,7 +179,7 @@ func _play_sfx(
 ) -> void:
 	if not sfx_enabled:
 		return
-	var stream := _load_audio_stream(path, false)
+	var stream := _load_audio_stream(path)
 	if stream == null:
 		return
 	player.stop()
@@ -181,23 +188,14 @@ func _play_sfx(
 	player.play()
 
 
-func _load_audio_stream(path: String, loop: bool) -> AudioStream:
-	var cache_key := "%s|%s" % [path, loop]
-	if _stream_cache.has(cache_key):
-		return _stream_cache[cache_key] as AudioStream
-	var stream: AudioStream
-	if loop and path.get_extension().to_lower() == "wav":
-		stream = AudioStreamWAV.load_from_file(
-			ProjectSettings.globalize_path(path)
-		)
-	if stream == null:
-		stream = load(path) as AudioStream
+func _load_audio_stream(path: String) -> AudioStream:
+	if _stream_cache.has(path):
+		return _stream_cache[path] as AudioStream
+	var stream := load(path) as AudioStream
 	if stream == null:
 		push_error("Audio stream could not be loaded: %s" % path)
 		return null
-	if loop and stream is AudioStreamWAV:
-		(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_FORWARD
-	_stream_cache[cache_key] = stream
+	_stream_cache[path] = stream
 	return stream
 
 

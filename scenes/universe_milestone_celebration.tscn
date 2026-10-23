@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/universe_milestone_celebration.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/art/badge_hall/universe/ecology/07_trophy.png" id="2_trophy"]
+[ext_resource type="FontFile" path="res://assets/art/common/fonts/ui_handwritten_zh.ttf" id="3_font"]
+
+[node name="UniverseMilestoneCelebration" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+z_index = 400
+script = ExtResource("1_script")
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -430.0
+offset_top = -72.0
+offset_right = 430.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(430, 72)
+theme_override_colors/font_color = Color(1, 0.87, 0.38, 1)
+theme_override_colors/font_shadow_color = Color(0.07, 0.05, 0.16, 0.9)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 54
+text = "TXT_0476"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Trophy" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -175.0
+offset_right = 150.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_trophy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TrophyNameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = 126.0
+offset_right = 380.0
+offset_bottom = 192.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(380, 33)
+theme_override_colors/font_color = Color(1, 0.88, 0.45, 1)
+theme_override_colors/font_shadow_color = Color(0.09, 0.05, 0.18, 0.9)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 30
+text = "TXT_0478"
+horizontal_alignment = 1
+vertical_alignment = 1

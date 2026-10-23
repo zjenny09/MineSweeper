@@ -15,11 +15,20 @@ __pycache__/
 .claude_*.png
 .claude_*.png.import
 design/
-docs/asset_reviews/
-docs/ui_history/
-docs/ocean_*.png
-docs/ocean_*.png.import
+docs/art/asset_reviews/
+docs/art/ui_history/*
+!docs/art/ui_history/README.md
+!docs/art/ui_history/2026-08-22_level1_sprout-guide_v1.png
+!docs/art/ui_history/2026-08-22_welcome_abstract-recolor_v3.png
+!docs/art/ui_history/2026-08-22_welcome_flat-landscape_v1.png
+!docs/art/ui_history/2026-08-22_welcome_fullscreen-overlay_v4.png
+!docs/art/ui_history/2026-08-22_welcome_fused-handdrawn_v2.png
+!docs/art/ui_history/2026-08-22_welcome_grounded-motion_v6.png
+!docs/art/ui_history/2026-08-22_welcome_irregular-trees_v5.png
+docs/art/previews/ocean_*.png
+docs/art/previews/ocean_*.png.import
 docs/*.docx
+docs/**/*.docx
 
 # Unused legacy visual exports
 assets/ui/level1/

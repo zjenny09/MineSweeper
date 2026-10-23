@@ -3,7 +3,7 @@ extends RefCounted
 
 const LEVEL_1 := {
 	"number": 1,
-	"name": "萌芽",
+	"name": "TXT_0073",
 	"size": Vector2i(5, 5),
 	"core_count": 5,
 	"first_move_guide": true,
@@ -11,7 +11,7 @@ const LEVEL_1 := {
 
 const LEVEL_2 := {
 	"number": 2,
-	"name": "灌木",
+	"name": "TXT_0074",
 	"size": Vector2i(6, 6),
 	"core_count": 8,
 	"first_move_guide": false,
@@ -19,7 +19,7 @@ const LEVEL_2 := {
 
 const LEVEL_3 := {
 	"number": 3,
-	"name": "湿地",
+	"name": "TXT_0075",
 	"size": Vector2i(8, 8),
 	"core_count": 9,
 	"first_move_guide": false,
@@ -29,7 +29,7 @@ const LEVEL_3 := {
 
 const LEVEL_4 := {
 	"number": 4,
-	"name": "草原",
+	"name": "TXT_0076",
 	"size": Vector2i(9, 9),
 	"core_count": 12,
 	"first_move_guide": false,
@@ -38,7 +38,7 @@ const LEVEL_4 := {
 
 const LEVEL_5 := {
 	"number": 5,
-	"name": "林缘",
+	"name": "TXT_0415",
 	"size": Vector2i(10, 10),
 	"core_count": 13,
 	"first_move_guide": false,
@@ -48,7 +48,7 @@ const LEVEL_5 := {
 
 const LEVEL_6 := {
 	"number": 6,
-	"name": "密林",
+	"name": "TXT_0078",
 	"size": Vector2i(12, 12),
 	"core_count": 17,
 	"first_move_guide": false,
@@ -58,18 +58,17 @@ const LEVEL_6 := {
 
 const LEVEL_7 := {
 	"number": 7,
-	"name": "古林",
+	"name": "TXT_0079",
 	"size": Vector2i(13, 13),
 	"core_count": 20,
 	"first_move_guide": false,
 	"pollution_node_count": 3,
 	"boss": true,
-	"obstacle_cluster_count": 2,
 }
 
 const OCEAN_LEVEL_1 := {
 	"number": 8,
-	"name": "海葵",
+	"name": "TXT_0082",
 	"size": Vector2i(6, 6),
 	"core_count": 7,
 	"first_move_guide": false,
@@ -78,7 +77,7 @@ const OCEAN_LEVEL_1 := {
 
 const OCEAN_LEVEL_2 := {
 	"number": 9,
-	"name": "海草",
+	"name": "TXT_0080",
 	"size": Vector2i(8, 7),
 	"core_count": 10,
 	"first_move_guide": false,
@@ -90,7 +89,7 @@ const OCEAN_LEVEL_2 := {
 
 const OCEAN_LEVEL_3 := {
 	"number": 10,
-	"name": "珊瑚",
+	"name": "TXT_0081",
 	"size": Vector2i(9, 8),
 	"core_count": 14,
 	"first_move_guide": false,
@@ -103,7 +102,7 @@ const OCEAN_LEVEL_3 := {
 
 const OCEAN_LEVEL_4 := {
 	"number": 11,
-	"name": "水母",
+	"name": "TXT_0083",
 	"size": Vector2i(10, 9),
 	"core_count": 17,
 	"first_move_guide": false,
@@ -123,7 +122,7 @@ const OCEAN_LEVEL_4 := {
 
 const OCEAN_LEVEL_5 := {
 	"number": 12,
-	"name": "鱼群",
+	"name": "TXT_0084",
 	"size": Vector2i(11, 10),
 	"core_count": 21,
 	"first_move_guide": false,
@@ -144,7 +143,7 @@ const OCEAN_LEVEL_5 := {
 
 const OCEAN_LEVEL_6 := {
 	"number": 13,
-	"name": "海沟",
+	"name": "TXT_0085",
 	"size": Vector2i(12, 11),
 	"core_count": 25,
 	"first_move_guide": false,
@@ -166,7 +165,7 @@ const OCEAN_LEVEL_6 := {
 
 const OCEAN_LEVEL_7 := {
 	"number": 14,
-	"name": "鲸落",
+	"name": "TXT_0086",
 	"size": Vector2i(13, 12),
 	"core_count": 30,
 	"first_move_guide": false,
@@ -194,28 +193,28 @@ const OCEAN_LEVEL_7 := {
 
 const SKY_LEVEL_1 := {
 	"number": 15,
-	"name": "云冠",
+	"name": "TXT_0087",
 	"core_count": 6,
 	"face_count": 32,
-	"structure_name": "32格足球烯",
+	"structure_name": "TXT_0104",
 	"topology": &"fullerene_32",
 }
 
 const SKY_LEVEL_2 := {
 	"number": 16,
-	"name": "风环",
+	"name": "TXT_0088",
 	"core_count": 8,
 	"face_count": 42,
-	"structure_name": "42格二频云球",
+	"structure_name": "TXT_0105",
 	"topology": &"goldberg_42",
 }
 
 const SKY_LEVEL_3 := {
 	"number": 17,
-	"name": "虹桥",
+	"name": "TXT_0089",
 	"core_count": 15,
 	"face_count": 92,
-	"structure_name": "92格三频云球",
+	"structure_name": "TXT_0106",
 	"topology": &"goldberg_92",
 	"breeze_assists": -1,
 	"breeze_trigger_chance": 0.20,
@@ -223,10 +222,10 @@ const SKY_LEVEL_3 := {
 
 const SKY_LEVEL_4 := {
 	"number": 18,
-	"name": "浮岛",
+	"name": "TXT_0090",
 	"core_count": 26,
 	"face_count": 162,
-	"structure_name": "162格四频云球",
+	"structure_name": "TXT_0107",
 	"topology": &"goldberg_162",
 	"breeze_assists": -1,
 	"breeze_trigger_chance": 0.20,
@@ -234,10 +233,10 @@ const SKY_LEVEL_4 := {
 
 const SKY_LEVEL_5 := {
 	"number": 19,
-	"name": "云脊",
+	"name": "TXT_0091",
 	"core_count": 40,
 	"face_count": 252,
-	"structure_name": "252格五频云球",
+	"structure_name": "TXT_0108",
 	"topology": &"goldberg_252",
 	"breeze_assists": -1,
 	"breeze_trigger_chance": 0.20,
@@ -247,29 +246,30 @@ const SKY_LEVEL_5 := {
 
 const SKY_LEVEL_6 := {
 	"number": 20,
-	"name": "雷眼",
+	"name": "TXT_0092",
 	"core_count": 58,
 	"face_count": 362,
-	"structure_name": "362格六频云球",
+	"structure_name": "TXT_0109",
 	"topology": &"goldberg_362",
 	"breeze_assists": -1,
 	"breeze_trigger_chance": 0.20,
 	"storm_guard_assists": 1,
 	"storm_guard_trigger_chance": 0.70,
+	"boss_eye_count": 3,
 }
 
 const SKY_LEVEL_7 := {
 	"number": 21,
-	"name": "天宫",
+	"name": "TXT_0093",
 	"core_count": 78,
 	"face_count": 492,
-	"structure_name": "492格七频云球",
+	"structure_name": "TXT_0110",
 	"topology": &"goldberg_492",
 	"breeze_assists": -1,
 	"breeze_trigger_chance": 0.20,
 	"storm_guard_assists": 1,
 	"storm_guard_trigger_chance": 0.70,
-	"boss_eye_count": 3,
+	"boss_eye_count": 5,
 	"boss": true,
 }
 

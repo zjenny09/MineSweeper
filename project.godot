@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Green Sweeper"
 config/description="A level-based ecological Minesweeper game."
-config/version="0.7.0"
+config/version="0.8.0"
 run/main_scene="res://scenes/shell.tscn"
 config/features=PackedStringArray("4.7")
 
@@ -33,8 +33,8 @@ window/size/min_height=540
 
 [internationalization]
 
+locale/translations=PackedStringArray("res://localization/green_sweeper.zh_CN.po", "res://localization/green_sweeper.en.po")
 locale/fallback="zh_CN"
-locale/translations=PackedStringArray("res://localization/green_sweeper.en.po")
 
 [rendering]
 

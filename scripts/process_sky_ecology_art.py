@@ -9,7 +9,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "docs" / "ui_history" / "天空关卡棋盘概念图"
+SOURCE_ROOT = ROOT / "docs" / "art" / "ui_history" / "天空关卡棋盘概念图"
 OUTPUT_ROOT = ROOT / "assets" / "art" / "sky_levels" / "ecology"
 CANVAS_SIZE = (768, 768)
 CANVAS_MARGIN = 28

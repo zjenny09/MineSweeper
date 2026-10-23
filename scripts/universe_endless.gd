@@ -2,28 +2,34 @@ extends Control
 
 const ART := preload("res://scripts/art_catalog.gd")
 const MECHANIC_DIALOGUE_SCENE := preload("res://scenes/mechanic_dialogue.tscn")
+const UNIVERSE_MILESTONE_SCENE := preload(
+	"res://scenes/universe_milestone_celebration.tscn"
+)
 const UNIVERSE_GUIDE := {
 	"id": &"universe_star_chains",
 	"pages": [
-		{"title": "小芽：宇宙棋盘要看连线", "text": "两颗星核之间有线才算相邻，距离远近并不重要。", "hint": "没有连线的星核互不影响。"},
-		{"title": "小芽：直线和弧线都有效", "text": "银灰色直线和青蓝色弧线都表示正常相邻。", "hint": "数字是所有直接相连星核中的污染总数。"},
-		{"title": "小芽：星舰有两层护盾", "text": "误触污染会消耗一层护盾，并自动标记那颗星核。", "hint": "两层护盾都用完后，再误触才会结束远征。"},
+		{"title": "TXT_0323", "text": "TXT_0324", "hint": "TXT_0325"},
+		{"title": "TXT_0326", "text": "TXT_0327", "hint": "TXT_0328"},
+		{"title": "TXT_0329", "text": "TXT_0330", "hint": "TXT_0331"},
 	],
 }
 const WORMHOLE_GUIDE := {
 	"id": &"universe_wormholes",
 	"pages": [
-		{"title": "小芽：紫色连线是虫洞", "text": "虫洞两端的星核即使离得很远，也算直接相邻。", "hint": "数字会把虫洞另一端的污染计算进去。"},
-		{"title": "小芽：把它当成普通连线", "text": "判断数字时，沿紫色线找到另一端一起计算。", "hint": "除了距离很远，规则和其他连线完全相同。"},
+		{"title": "TXT_0332", "text": "TXT_0333", "hint": "TXT_0334"},
+		{"title": "TXT_0335", "text": "TXT_0336", "hint": "TXT_0337"},
 	],
 }
 
 signal level_select_requested
 signal main_menu_requested
 signal settings_requested
+signal help_requested
 signal exit_game_requested
 signal scan_energy_changed(energy: int)
 signal mechanic_guide_completed(guide_id: StringName)
+signal universe_board_created
+signal universe_milestone_finished
 
 @export var auto_start := true
 
@@ -45,6 +51,7 @@ signal mechanic_guide_completed(guide_id: StringName)
 @onready var resume_button: Button = %ResumeButton
 @onready var pause_restart_button: Button = %PauseRestartButton
 @onready var pause_settings_button: Button = %PauseSettingsButton
+@onready var pause_help_button: Button = %PauseHelpButton
 @onready var pause_main_menu_button: Button = %PauseMainMenuButton
 @onready var pause_exit_button: Button = %PauseExitButton
 @onready var failure_overlay: Control = %FailureOverlay
@@ -68,14 +75,23 @@ var _craft_time := 0.0
 var _warp_active := false
 var _nebula_speed := 0.055
 var _mechanic_dialogue: FirstMoveGuide
+var _milestone_celebration: UniverseMilestoneCelebration
 var _seen_mechanic_guides: Dictionary = {}
 var _active_mechanic_guide_id := &""
+var _universe_milestone_active := false
+var _waiting_in_badge_hall := false
 
 
 func _ready() -> void:
 	_mechanic_dialogue = MECHANIC_DIALOGUE_SCENE.instantiate() as FirstMoveGuide
 	add_child(_mechanic_dialogue)
 	_mechanic_dialogue.dialogue_completed.connect(_on_mechanic_dialogue_completed)
+	_milestone_celebration = UNIVERSE_MILESTONE_SCENE.instantiate() \
+			as UniverseMilestoneCelebration
+	add_child(_milestone_celebration)
+	_milestone_celebration.finished.connect(
+		_on_universe_milestone_cinematic_finished
+	)
 	board.flags_changed.connect(_on_flags_changed)
 	board.board_interacted.connect(_on_board_interacted)
 	board.shield_changed.connect(_on_shield_changed)
@@ -92,6 +108,7 @@ func _ready() -> void:
 	resume_button.pressed.connect(_set_paused.bind(false))
 	pause_restart_button.pressed.connect(_restart_from_pause)
 	pause_settings_button.pressed.connect(func() -> void: settings_requested.emit())
+	pause_help_button.pressed.connect(func() -> void: help_requested.emit())
 	pause_main_menu_button.pressed.connect(func() -> void: main_menu_requested.emit())
 	pause_exit_button.pressed.connect(func() -> void: exit_game_requested.emit())
 	new_universe_button.pressed.connect(_start_new_universe)
@@ -117,11 +134,13 @@ func refresh_localized_interface() -> void:
 	_on_flags_changed(_used_flags, _total_mines)
 	if failure_overlay.visible:
 		failure_summary.text = (
-			tr("本次远征抵达 %d 光年\n净化星云 %d 片 · 净化星核 %d 颗")
+			tr("TXT_0350")
 			% [_distance, _regions, _purified_stars]
 		)
 	if is_instance_valid(_mechanic_dialogue):
 		_mechanic_dialogue.refresh_localized_text()
+	if is_instance_valid(_milestone_celebration):
+		_milestone_celebration.refresh_localized_text()
 	if board.has_method("refresh_localized_text"):
 		board.call("refresh_localized_text")
 
@@ -139,10 +158,66 @@ func set_first_move_guide_enabled(_enabled: bool) -> void:
 
 
 func _on_region_started(region_index: int, wormhole_count: int) -> void:
+	universe_board_created.emit()
+	if _universe_milestone_active:
+		return
 	if region_index == 0:
 		_request_mechanic_guide(UNIVERSE_GUIDE)
 	elif wormhole_count > 0:
 		_request_mechanic_guide(WORMHOLE_GUIDE)
+
+
+func show_thousand_board_celebration() -> void:
+	if _universe_milestone_active or not is_instance_valid(_milestone_celebration):
+		return
+	_universe_milestone_active = true
+	_waiting_in_badge_hall = false
+	_paused = false
+	pause_overlay.visible = false
+	failure_overlay.visible = false
+	_pause_timer()
+	board.process_mode = Node.PROCESS_MODE_DISABLED
+	board.call("set_interaction_enabled", false)
+	for button in [
+		pause_button,
+		restart_button,
+		map_button,
+		pause_restart_button,
+		new_universe_button,
+		failure_map_button,
+	]:
+		button.disabled = true
+	_milestone_celebration.play()
+
+
+func continue_after_universe_milestone_hall() -> void:
+	if not _universe_milestone_active or not _waiting_in_badge_hall:
+		return
+	_waiting_in_badge_hall = false
+	_universe_milestone_active = false
+	if is_instance_valid(_milestone_celebration):
+		_milestone_celebration.visible = false
+	for button in [
+		pause_button,
+		restart_button,
+		map_button,
+		pause_restart_button,
+		new_universe_button,
+		failure_map_button,
+	]:
+		button.disabled = false
+	board.process_mode = Node.PROCESS_MODE_INHERIT
+	if not failure_overlay.visible:
+		board.call("set_interaction_enabled", true)
+		_resume_timer()
+
+
+func _on_universe_milestone_cinematic_finished() -> void:
+	if not _universe_milestone_active or _waiting_in_badge_hall:
+		return
+	_waiting_in_badge_hall = true
+	_milestone_celebration.visible = false
+	universe_milestone_finished.emit()
 
 
 func _request_mechanic_guide(guide_data: Dictionary) -> void:
@@ -223,6 +298,8 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _universe_milestone_active:
+		return
 	if not _active_mechanic_guide_id.is_empty() \
 			and event.is_action_pressed("ui_cancel"):
 		_set_paused(not _paused)
@@ -234,6 +311,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _start_new_universe() -> void:
+	if _universe_milestone_active:
+		return
 	_set_paused(false)
 	failure_overlay.visible = false
 	_regions = 0
@@ -266,6 +345,8 @@ func _restart_from_pause() -> void:
 
 
 func _set_paused(value: bool) -> void:
+	if _universe_milestone_active:
+		return
 	_paused = value
 	pause_overlay.visible = value
 	board.process_mode = (
@@ -287,13 +368,13 @@ func _on_warp_changed(active: bool) -> void:
 func _on_shield_changed(remaining: int, capacity: int) -> void:
 	_shield_remaining = remaining
 	_shield_capacity = capacity
-	shield_label.text = tr("航行护盾\n%d/%d") % [remaining, capacity]
+	shield_label.text = tr("TXT_0338") % [remaining, capacity]
 
 
 func _on_flags_changed(used_flags: int, total_mines: int) -> void:
 	_used_flags = used_flags
 	_total_mines = total_mines
-	flags_label.text = tr("污染标记 %d/%d") % [used_flags, total_mines]
+	flags_label.text = tr("TXT_0340") % [used_flags, total_mines]
 
 
 func _on_voyage_stats_changed(
@@ -319,7 +400,7 @@ func _on_expedition_failed(
 	AudioManager.play_fail()
 	_refresh_stats()
 	failure_summary.text = (
-		tr("本次远征抵达 %d 光年\n净化星云 %d 片 · 净化星核 %d 颗")
+		tr("TXT_0350")
 		% [distance, regions, purified_stars]
 	)
 	failure_overlay.visible = true
@@ -327,10 +408,10 @@ func _on_expedition_failed(
 
 
 func _refresh_stats() -> void:
-	regions_label.text = tr("已净化星云\n%d") % _regions
-	stars_label.text = tr("净化星核\n%d") % _purified_stars
-	distance_label.text = tr("航行距离\n%d 光年") % _distance
-	disturbance_label.text = tr("宇宙扰动\n%d/5") % clampi(
+	regions_label.text = tr("TXT_0342") % _regions
+	stars_label.text = tr("TXT_0344") % _purified_stars
+	distance_label.text = tr("TXT_0346") % _distance
+	disturbance_label.text = tr("TXT_0348") % clampi(
 		1 + int(_regions / 2),
 		1,
 		5
@@ -431,6 +512,7 @@ func _apply_interface_style() -> void:
 		resume_button,
 		pause_restart_button,
 		pause_settings_button,
+		pause_help_button,
 		pause_main_menu_button,
 		pause_exit_button,
 		new_universe_button,

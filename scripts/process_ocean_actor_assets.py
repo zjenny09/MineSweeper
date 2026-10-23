@@ -10,9 +10,9 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ROOT = ROOT / "docs" / "ui_history" / "海洋关卡棋盘概念图"
+SOURCE_ROOT = ROOT / "docs" / "art" / "ui_history" / "海洋关卡棋盘概念图"
 OUTPUT_ROOT = ROOT / "assets" / "art" / "ocean_levels" / "actors"
-REVIEW_ROOT = ROOT / "docs" / "asset_reviews" / "ocean_actors"
+REVIEW_ROOT = ROOT / "docs" / "art" / "asset_reviews" / "ocean_actors"
 CANVAS_SIZE = (1024, 1024)
 BASELINE_Y = 958
 SIDE_MARGIN = 54

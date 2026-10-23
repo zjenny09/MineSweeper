@@ -685,7 +685,7 @@ theme_override_constants/outline_size = 3
 theme_override_constants/shadow_outline_size = 1
 theme_override_fonts/font = SubResource("FontFile_qqijv")
 theme_override_font_sizes/font_size = 42
-text = "GREEN SWEEPER"
+text = "TXT_0459"
 horizontal_alignment = 1
 
 [node name="ChineseTitle" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox" unique_id=1872142772]
@@ -698,7 +698,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 1
 theme_override_fonts/font = SubResource("FontFile_qqijv")
 theme_override_font_sizes/font_size = 23
-text = "绿色清扫者"
+text = "TXT_0001"
 horizontal_alignment = 1
 
 [node name="Tagline" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox" unique_id=1723744849]
@@ -710,8 +710,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = SubResource("FontFile_qqijv")
 theme_override_font_sizes/font_size = 17
-text = "从一株萌芽出发，
-让沉寂的土地重新呼吸。"
+text = "TXT_0455"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox" unique_id=605113442]
@@ -742,7 +741,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_khbe3")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_e4d3w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_o53q7")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7qeea")
-text = "开始旅程"
+text = "TXT_0002"
 
 [node name="ChooseLevelButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox/ButtonGrid" unique_id=1496495546]
 unique_name_in_owner = true
@@ -760,7 +759,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_iuy8e")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ujph3")
 theme_override_styles/hover = SubResource("StyleBoxTexture_vhip0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_mq2ya")
-text = "关卡选择"
+text = "TXT_0470"
 
 [node name="SettingsButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox/ButtonGrid" unique_id=1049129057]
 unique_name_in_owner = true
@@ -778,7 +777,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_iuy8e")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ujph3")
 theme_override_styles/hover = SubResource("StyleBoxTexture_vhip0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_yqurt")
-text = "游戏设置"
+text = "TXT_0006"
 
 [node name="ExitButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox/ButtonGrid" unique_id=762039636]
 unique_name_in_owner = true
@@ -796,7 +795,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_iuy8e")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ujph3")
 theme_override_styles/hover = SubResource("StyleBoxTexture_vhip0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_6s4fg")
-text = "退出游戏"
+text = "TXT_0009"
 
 [node name="ContinueButton" type="Button" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox" unique_id=1598797164]
 unique_name_in_owner = true
@@ -815,13 +814,13 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_khbe3")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_e4d3w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_o53q7")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_uo6vx")
-text = "继续游戏"
+text = "TXT_0003"
 
 [node name="VersionLabel" type="Label" parent="MainMenu/PageMargin/Columns/MenuPanel/Margin/VBox" unique_id=935715025]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.5157, 0.3561, 0.66)
 theme_override_font_sizes/font_size = 11
-text = "v0.7.0  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇"
+text = "TXT_0012"
 horizontal_alignment = 1
 
 [node name="ShowcasePanel" type="Control" parent="MainMenu" unique_id=705723809]
@@ -867,14 +866,14 @@ visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
 theme_override_font_sizes/font_size = 28
-text = "陆地篇"
+text = "TXT_0057"
 
 [node name="Route" type="Label" parent="MainMenu/ShowcasePanel/ShowcaseText/VBox" unique_id=2143150804]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
 theme_override_font_sizes/font_size = 16
-text = "萌芽  →  灌木  →  湿地  →  草原  →  森林"
+text = "TXT_0094"
 
 [node name="Fill" type="Control" parent="MainMenu/ShowcasePanel/ShowcaseText/VBox" unique_id=987654292]
 layout_mode = 2
@@ -889,8 +888,7 @@ theme_override_colors/font_shadow_color = Color(0.25, 0.28, 0.22, 0.8)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 21
-text = "从第一株萌芽开始，
-让沉寂的土地重新呼吸。"
+text = "TXT_0456"
 horizontal_alignment = 2
 
 [node name="LevelSelect" type="Control" parent="." unique_id=820972911]
@@ -926,7 +924,7 @@ theme_override_colors/font_color = Color(0.1059, 0.302, 0.176, 1)
 theme_override_colors/font_outline_color = Color(1, 0.9608, 0.8314, 0.84)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 38
-text = "陆地探险"
+text = "TXT_0054"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1003,7 +1001,7 @@ offset_right = 350.0
 offset_bottom = 58.0
 theme_override_colors/font_color = Color(0.1059, 0.302, 0.176, 1)
 theme_override_font_sizes/font_size = 20
-text = "当前关卡：01 萌芽"
+text = "TXT_0402"
 vertical_alignment = 1
 
 [node name="SelectedLevelStatusLabel" type="Label" parent="LevelSelect/LevelInfoRoot"]
@@ -1015,7 +1013,7 @@ offset_right = 350.0
 offset_bottom = 92.0
 theme_override_colors/font_color = Color(0.3569, 0.2863, 0.2078, 1)
 theme_override_font_sizes/font_size = 15
-text = "状态：已解锁"
+text = "TXT_0065"
 vertical_alignment = 1
 
 [node name="ProgressLabel" type="Label" parent="LevelSelect/LevelInfoRoot" unique_id=1800725369]
@@ -1027,7 +1025,7 @@ offset_right = 650.0
 offset_bottom = 58.0
 theme_override_colors/font_color = Color(0.1059, 0.302, 0.176, 1)
 theme_override_font_sizes/font_size = 19
-text = "已完成：0 / 5"
+text = "TXT_0063"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1040,7 +1038,7 @@ offset_right = 650.0
 offset_bottom = 92.0
 theme_override_colors/font_color = Color(0.3569, 0.2863, 0.2078, 1)
 theme_override_font_sizes/font_size = 15
-text = "最佳时间：--:--.-"
+text = "TXT_0071"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1052,7 +1050,7 @@ offset_right = 850.0
 offset_bottom = 90.0
 theme_override_colors/font_color = Color(0.3569, 0.2863, 0.2078, 0.9)
 theme_override_font_sizes/font_size = 13
-text = "单击选择地图节点\n再次点击进入关卡"
+text = "TXT_0072"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1063,9 +1061,9 @@ anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_left = -160.0
-offset_top = 84.0
+offset_top = 30.0
 offset_right = -84.0
-offset_bottom = 256.0
+offset_bottom = 300.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/separation = 10
@@ -1075,30 +1073,44 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
-text = "返回关卡"
+text = "TXT_0034"
+
+[node name="LevelHelpButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(76, 38)
+layout_mode = 2
+focus_mode = 1
+text = "TXT_0461"
+
+[node name="LevelBadgeBookButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(76, 38)
+layout_mode = 2
+focus_mode = 1
+text = "TXT_0463"
 
 [node name="LevelPreviousChapterButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
-text = "上一章节"
-tooltip_text = "进入天空篇"
+text = "TXT_0049"
+tooltip_text = "TXT_0040"
 
 [node name="LevelNextChapterButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
-text = "下一章节"
-tooltip_text = "进入海洋篇"
+text = "TXT_0050"
+tooltip_text = "TXT_0039"
 
 [node name="LevelWelcomeButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
-text = "返回首页"
+text = "TXT_0032"
 
 [node name="Settings" type="Control" parent="." unique_id=500472135]
 unique_name_in_owner = true
@@ -1132,13 +1144,13 @@ theme_override_constants/margin_bottom = 46
 
 [node name="VBox" type="VBoxContainer" parent="Settings/Center/Panel/Margin" unique_id=1669362670]
 layout_mode = 2
-theme_override_constants/separation = 22
+theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="Settings/Center/Panel/Margin/VBox" unique_id=1053242006]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
 theme_override_font_sizes/font_size = 32
-text = "设置"
+text = "TXT_0007"
 
 [node name="VolumeRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox" unique_id=2040048299]
 layout_mode = 2
@@ -1148,7 +1160,7 @@ theme_override_constants/separation = 18
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
-text = "主音量"
+text = "TXT_0013"
 
 [node name="VolumeSlider" type="HSlider" parent="Settings/Center/Panel/Margin/VBox/VolumeRow" unique_id=142945283]
 unique_name_in_owner = true
@@ -1173,7 +1185,7 @@ theme_override_constants/separation = 18
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
-text = "声音开关"
+text = "TXT_0014"
 
 [node name="BgmToggleButton" type="CheckButton" parent="Settings/Center/Panel/Margin/VBox/AudioToggleRow"]
 unique_name_in_owner = true
@@ -1181,7 +1193,7 @@ custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 button_pressed = true
 theme_override_font_sizes/font_size = 16
-text = "背景音乐：开启"
+text = "TXT_0015"
 
 [node name="SfxToggleButton" type="CheckButton" parent="Settings/Center/Panel/Margin/VBox/AudioToggleRow"]
 unique_name_in_owner = true
@@ -1189,7 +1201,7 @@ custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 button_pressed = true
 theme_override_font_sizes/font_size = 16
-text = "游戏音效：开启"
+text = "TXT_0017"
 
 [node name="DisplayModeRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox" unique_id=2041682414]
 layout_mode = 2
@@ -1199,7 +1211,7 @@ theme_override_constants/separation = 18
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
-text = "显示模式"
+text = "TXT_0021"
 
 [node name="DisplayModeOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/DisplayModeRow" unique_id=421522293]
 unique_name_in_owner = true
@@ -1216,7 +1228,7 @@ theme_override_constants/separation = 18
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
-text = "操作方式"
+text = "TXT_0025"
 
 [node name="OperationModeOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/OperationModeRow" unique_id=631579745]
 unique_name_in_owner = true
@@ -1233,7 +1245,7 @@ theme_override_constants/separation = 18
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
-text = "语言 / Language"
+text = "TXT_0028"
 
 [node name="LanguageOption" type="OptionButton" parent="Settings/Center/Panel/Margin/VBox/LanguageRow"]
 unique_name_in_owner = true
@@ -1246,7 +1258,25 @@ theme_override_font_sizes/font_size = 16
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 0.72)
 theme_override_font_sizes/font_size = 14
-text = "设置会自动保存；横屏基准为1280 × 720"
+text = "TXT_0030"
+
+[node name="SettingsLinkRow" type="HBoxContainer" parent="Settings/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SettingsHelpButton" type="Button" parent="Settings/Center/Panel/Margin/VBox/SettingsLinkRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TXT_0461"
+
+[node name="SettingsBadgeBookButton" type="Button" parent="Settings/Center/Panel/Margin/VBox/SettingsLinkRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TXT_0470"
 
 [node name="Fill" type="Control" parent="Settings/Center/Panel/Margin/VBox" unique_id=1494931188]
 layout_mode = 2
@@ -1256,4 +1286,67 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "返回主菜单"
+text = "TXT_0031"
+
+[node name="Help" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center" type="CenterContainer" parent="Help"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Help/Center"]
+custom_minimum_size = Vector2(1040, 680)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_panel")
+
+[node name="Margin" type="MarginContainer" parent="Help/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 54
+theme_override_constants/margin_top = 34
+theme_override_constants/margin_right = 54
+theme_override_constants/margin_bottom = 30
+
+[node name="VBox" type="VBoxContainer" parent="Help/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="HelpTitle" type="Label" parent="Help/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2745, 0.6157, 0.3961, 1)
+theme_override_font_sizes/font_size = 30
+text = "TXT_0461"
+horizontal_alignment = 1
+
+[node name="HelpText" type="RichTextLabel" parent="Help/Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 530)
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 2
+theme_override_colors/default_color = Color(0.1647, 0.2392, 0.1843, 1)
+theme_override_colors/font_selected_color = Color(1, 1, 1, 1)
+theme_override_colors/selection_color = Color(0.2745, 0.6157, 0.3961, 0.45)
+theme_override_font_sizes/normal_font_size = 15
+text = "TXT_0462"
+fit_content = false
+scroll_active = true
+selection_enabled = true
+autowrap_mode = 2
+
+[node name="HelpBackButton" type="Button" parent="Help/Center/Panel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "TXT_0031"

@@ -1,6 +1,20 @@
 class_name ArtCatalog
 extends RefCounted
 
+const STABLE_IDS := preload("res://scripts/art_ids.gd")
+
+
+static func path_for(asset_id: StringName) -> String:
+	return STABLE_IDS.path_for(asset_id)
+
+
+static func short_name_for(asset_id: StringName) -> StringName:
+	return STABLE_IDS.short_name_for(asset_id)
+
+
+static func id_for_path(path: String) -> StringName:
+	return STABLE_IDS.id_for_path(path)
+
 const UI_FONT := "res://assets/art/common/fonts/ui_handwritten_zh.ttf"
 
 const MENU_PRIMARY_NORMAL := "res://assets/art/common/buttons/menu_primary_normal.svg"
@@ -48,6 +62,95 @@ const SKY_DESKTOP_BACKGROUND := \
 		"res://assets/art/sky_levels/background/sky_desktop_clean.png"
 const SKY_BOARD_FRAME := \
 		"res://assets/art/sky_levels/stage/sky_board_frame.png"
+const SKY_V2_BACKGROUND := \
+		"res://assets/art/sky_v2/background/sky_background.png"
+const SKY_V2_STAGE_BODY := \
+		"res://assets/art/sky_v2/stage/sky_triptych_stage.png"
+const SKY_V2_TOP_ATTACHMENT := \
+		"res://assets/art/sky_v2/hud/top_attachment_strip.png"
+const SKY_V2_COUNTER_FRAME := \
+		"res://assets/art/land_v2/hud/counter_frame.png"
+const SKY_V2_ROBOT_EMBLEM := \
+		"res://assets/art/land_v2/hud/robot_emblem_smile.png"
+const SKY_V2_COUNTER_ICON := \
+		"res://assets/art/sky_v2/hud/plane_counter_icon.png"
+const SKY_V2_TIMER_ICON := \
+		"res://assets/art/land_v2/hud/timer_icon.png"
+const SKY_V2_RESTART_BUTTON := \
+		"res://assets/art/sky_v2/buttons/restart_button.png"
+const SKY_V2_SETTINGS_BUTTON := \
+		"res://assets/art/sky_v2/buttons/settings_button.png"
+const SKY_V2_MARKER := "res://assets/art/sky_v2/markers/sky_marker.png"
+const SKY_V2_MARKER_FAILED := \
+		"res://assets/art/sky_v2/markers/sky_marker_failed.png"
+const SKY_V2_MARKER_WRONG := \
+		"res://assets/art/sky_v2/markers/sky_marker_wrong.png"
+const SKY_V2_STORM_EYE_BODY := \
+		"res://assets/art/sky_v2/mechanics/storm_eye_body.png"
+const SKY_V2_STORM_EYE_RING := \
+		"res://assets/art/sky_v2/mechanics/storm_eye_ring.png"
+const SKY_V2_STORM_EYE_STAR := \
+		"res://assets/art/sky_v2/mechanics/storm_eye_star.png"
+const SKY_V2_STORM_EYE_LIGHTNING := \
+		"res://assets/art/sky_v2/mechanics/storm_eye_lightning.png"
+const SKY_V2_DIGIT_PATHS := [
+	"res://assets/art/sky_v2/digits/digit_1.png",
+	"res://assets/art/sky_v2/digits/digit_2.png",
+	"res://assets/art/sky_v2/digits/digit_3.png",
+	"res://assets/art/sky_v2/digits/digit_4.png",
+	"res://assets/art/sky_v2/digits/digit_5.png",
+	"res://assets/art/sky_v2/digits/digit_6.png",
+]
+const SKY_V2_HAZE_ALERT := \
+		"res://assets/art/sky_v2/characters/haze_alert.png"
+const SKY_V2_HAZE_DEFIANT_PATHS := [
+	"res://assets/art/sky_v2/characters/haze_defiant.png",
+	"res://assets/art/sky_v2/characters/haze_defiant_left.png",
+]
+const SKY_V2_HAZE_MOCK_PATHS := [
+	"res://assets/art/sky_v2/characters/haze_mock.png",
+	"res://assets/art/sky_v2/characters/haze_mock_left.png",
+	"res://assets/art/sky_v2/characters/haze_mock_right.png",
+]
+const SKY_V2_HAZE_DEFEATED := \
+		"res://assets/art/sky_v2/characters/haze_defeated.png"
+const SKY_V2_SKYCRAFT := "res://assets/art/sky_v2/characters/skycraft.png"
+const SKY_V2_ECOLOGY_PATHS := [
+	"res://assets/art/sky_v2/ecology/level_15_cloud_crown.png",
+	"res://assets/art/sky_v2/ecology/level_16_wind_ring.png",
+	"res://assets/art/sky_v2/ecology/level_17_rainbow_bridge.png",
+	"res://assets/art/sky_v2/ecology/level_18_floating_isles.png",
+	"res://assets/art/sky_v2/ecology/level_19_cloud_ridge.png",
+	"res://assets/art/sky_v2/ecology/level_20_storm_eye.png",
+	"res://assets/art/sky_v2/ecology/level_21_sky_palace.png",
+]
+const SKY_V2_ECOLOGY_POLLUTED_PATHS := [
+	"res://assets/art/sky_v2/ecology/polluted/level_15_cloud_crown.png",
+	"res://assets/art/sky_v2/ecology/polluted/level_16_wind_ring.png",
+	"res://assets/art/sky_v2/ecology/polluted/level_17_rainbow_bridge.png",
+	"res://assets/art/sky_v2/ecology/polluted/level_18_floating_isles.png",
+	"res://assets/art/sky_v2/ecology/polluted/level_19_cloud_ridge.png",
+	"res://assets/art/sky_v2/ecology/polluted/level_20_storm_eye.png",
+	"res://assets/art/sky_v2/ecology/polluted/level_21_sky_palace.png",
+]
+const SKY_BADGE_ZH_PATHS := [
+	"res://assets/art/sky_v2/badges/zh/level_15_cloud_crown.png",
+	"res://assets/art/sky_v2/badges/zh/level_16_wind_ring.png",
+	"res://assets/art/sky_v2/badges/zh/level_17_rainbow_bridge.png",
+	"res://assets/art/sky_v2/badges/zh/level_18_floating_isles.png",
+	"res://assets/art/sky_v2/badges/zh/level_19_cloud_ridge.png",
+	"res://assets/art/sky_v2/badges/zh/level_20_storm_eye.png",
+	"res://assets/art/sky_v2/badges/zh/level_21_sky_palace.png",
+]
+const SKY_BADGE_EN_PATHS := [
+	"res://assets/art/sky_v2/badges/en/level_15_cloud_crown.png",
+	"res://assets/art/sky_v2/badges/en/level_16_wind_ring.png",
+	"res://assets/art/sky_v2/badges/en/level_17_rainbow_bridge.png",
+	"res://assets/art/sky_v2/badges/en/level_18_floating_isles.png",
+	"res://assets/art/sky_v2/badges/en/level_19_cloud_ridge.png",
+	"res://assets/art/sky_v2/badges/en/level_20_storm_eye.png",
+	"res://assets/art/sky_v2/badges/en/level_21_sky_palace.png",
+]
 const OCEAN_BOARD_TRAY_FRAME := \
 		"res://assets/art/ocean_levels/stage/ocean_board_tray_frame.png"
 const OCEAN_CELL_HIDDEN := \
@@ -111,6 +214,328 @@ const LAND_UNIFIED_STAGE_BODY := \
 		"res://assets/art/land_levels/stage/unified_land_stage_body_grayblue.png"
 const LAND_UNIFIED_STAGE_SHADOW := \
 		"res://assets/art/land_levels/stage/unified_land_stage_shadow_grayblue.png"
+
+const LAND_V2_BACKGROUND := "res://assets/art/land_v2/background/land_valley_background.png"
+const LAND_V2_STAGE_BODY := "res://assets/art/land_v2/stage/land_triptych_stage.png"
+const LAND_V2_TOP_ATTACHMENT := "res://assets/art/land_v2/hud/top_attachment_strip.png"
+const LAND_V2_COUNTER_FRAME := "res://assets/art/land_v2/hud/counter_frame.png"
+const LAND_V2_ROBOT_EMBLEM := "res://assets/art/land_v2/hud/robot_emblem_smile.png"
+const LAND_V2_COUNTER_ICON := "res://assets/art/land_v2/hud/sprout_counter_icon.png"
+const LAND_V2_TIMER_ICON := "res://assets/art/land_v2/hud/timer_icon.png"
+const LAND_V2_PAUSE_BUTTON := "res://assets/art/land_v2/buttons/pause_button.png"
+const LAND_V2_RESTART_BUTTON := "res://assets/art/land_v2/buttons/restart_button.png"
+const LAND_V2_SETTINGS_BUTTON := "res://assets/art/land_v2/buttons/settings_button.png"
+const LAND_V2_VINE_LEFT := "res://assets/art/land_v2/decorations/vine_left.png"
+const LAND_V2_VINE_RIGHT := "res://assets/art/land_v2/decorations/vine_right.png"
+const LAND_V2_CELL_HIDDEN := "res://assets/art/land_v2/cells/cell_hidden.png"
+const LAND_V2_CELL_REVEALED := "res://assets/art/land_v2/cells/cell_revealed.png"
+const LAND_V2_CELL_POLLUTED := "res://assets/art/land_v2/cells/cell_polluted.png"
+const LAND_V2_DIGIT_1 := "res://assets/art/land_v2/digits/digit_1.png"
+const LAND_V2_DIGIT_2 := "res://assets/art/land_v2/digits/digit_2.png"
+const LAND_V2_DIGIT_3 := "res://assets/art/land_v2/digits/digit_3.png"
+const LAND_V2_DIGIT_4 := "res://assets/art/land_v2/digits/digit_4.png"
+const LAND_V2_DIGIT_5 := "res://assets/art/land_v2/digits/digit_5.png"
+const LAND_V2_DIGIT_6 := "res://assets/art/land_v2/digits/digit_6.png"
+const LAND_V2_DIGIT_7 := "res://assets/art/land_v2/digits/digit_7.png"
+const LAND_V2_DIGIT_8 := "res://assets/art/land_v2/digits/digit_8.png"
+const LAND_V2_DIGIT_PATHS := [
+	LAND_V2_DIGIT_1,
+	LAND_V2_DIGIT_2,
+	LAND_V2_DIGIT_3,
+	LAND_V2_DIGIT_4,
+	LAND_V2_DIGIT_5,
+	LAND_V2_DIGIT_6,
+	LAND_V2_DIGIT_7,
+	LAND_V2_DIGIT_8,
+]
+const LAND_V2_MARKER_HEALTHY := "res://assets/art/land_v2/markers/sprout_healthy.png"
+const LAND_V2_MARKER_WILTED := "res://assets/art/land_v2/markers/sprout_wilted.png"
+const LAND_V2_MARKER_WRONG := "res://assets/art/land_v2/markers/wrong_flag_feedback.png"
+const LAND_V2_POLLUTION_SLIME := \
+		"res://assets/art/land_v2/characters/pollution_slime_alert.png"
+const LAND_V2_SLIME_DEFIANT_A := \
+		"res://assets/art/land_v2/characters/pollution_slime_defiant_a.png"
+const LAND_V2_SLIME_DEFIANT_B := \
+		"res://assets/art/land_v2/characters/pollution_slime_defiant_b.png"
+const LAND_V2_SLIME_DEFIANT_C := \
+		"res://assets/art/land_v2/characters/pollution_slime_defiant_c.png"
+const LAND_V2_SLIME_DEFIANT_PATHS := [
+	LAND_V2_SLIME_DEFIANT_A,
+	LAND_V2_SLIME_DEFIANT_B,
+	LAND_V2_SLIME_DEFIANT_C,
+]
+const LAND_V2_SLIME_MOCK := \
+		"res://assets/art/land_v2/characters/pollution_slime_mock.png"
+const LAND_V2_SLIME_DEFEATED := \
+		"res://assets/art/land_v2/characters/pollution_slime_defeated.png"
+const LAND_V2_ROBOT_LEFT_FRONT := \
+		"res://assets/art/land_v2/characters/sprout_robot_left_front.png"
+const LAND_V2_ROBOT_FRONT := "res://assets/art/land_v2/characters/sprout_robot_front.png"
+const LAND_V2_ROBOT_RIGHT_FRONT := \
+		"res://assets/art/land_v2/characters/sprout_robot_right_front.png"
+const LAND_V2_ROBOT_IDLE_PATHS := [
+	LAND_V2_ROBOT_LEFT_FRONT,
+	LAND_V2_ROBOT_FRONT,
+	LAND_V2_ROBOT_RIGHT_FRONT,
+]
+const LAND_V2_ROBOT_RIGHT_FRONT_TORSO := \
+		"res://assets/art/land_v2/characters/sprout_robot_right_front_torso.png"
+const LAND_V2_ROBOT_ARM := "res://assets/art/land_v2/characters/sprout_robot_arm.png"
+const LAND_V2_ROBOT_CLAW := "res://assets/art/land_v2/characters/sprout_robot_claw.png"
+const LAND_V2_L01_SPROUT_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_01_sprout_healthy.png"
+const LAND_V2_L01_SPROUT_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_01_sprout_polluted.png"
+const LAND_V2_L02_SHRUB_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_02_shrub_healthy.png"
+const LAND_V2_L02_SHRUB_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_02_shrub_polluted.png"
+const LAND_V2_L03_WETLAND_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_03_wetland_healthy.png"
+const LAND_V2_L03_WETLAND_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_03_wetland_polluted.png"
+const LAND_V2_L04_GRASSLAND_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_04_grassland_healthy.png"
+const LAND_V2_L04_GRASSLAND_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_04_grassland_polluted.png"
+const LAND_V2_L05_FOREST_EDGE_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_05_forest_edge_healthy.png"
+const LAND_V2_L05_FOREST_EDGE_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_05_forest_edge_polluted.png"
+const LAND_V2_L06_DENSE_FOREST_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_06_dense_forest_healthy.png"
+const LAND_V2_L06_DENSE_FOREST_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_06_dense_forest_polluted.png"
+const LAND_V2_L07_ANCIENT_FOREST_HEALTHY := \
+		"res://assets/art/land_v2/ecology/level_07_ancient_forest_healthy.png"
+const LAND_V2_L07_ANCIENT_FOREST_POLLUTED := \
+		"res://assets/art/land_v2/ecology/level_07_ancient_forest_polluted.png"
+const LAND_V2_ECOLOGY_HEALTHY_PATHS := [
+	LAND_V2_L01_SPROUT_HEALTHY,
+	LAND_V2_L02_SHRUB_HEALTHY,
+	LAND_V2_L03_WETLAND_HEALTHY,
+	LAND_V2_L04_GRASSLAND_HEALTHY,
+	LAND_V2_L05_FOREST_EDGE_HEALTHY,
+	LAND_V2_L06_DENSE_FOREST_HEALTHY,
+	LAND_V2_L07_ANCIENT_FOREST_HEALTHY,
+]
+const LAND_V2_ECOLOGY_POLLUTED_PATHS := [
+	LAND_V2_L01_SPROUT_POLLUTED,
+	LAND_V2_L02_SHRUB_POLLUTED,
+	LAND_V2_L03_WETLAND_POLLUTED,
+	LAND_V2_L04_GRASSLAND_POLLUTED,
+	LAND_V2_L05_FOREST_EDGE_POLLUTED,
+	LAND_V2_L06_DENSE_FOREST_POLLUTED,
+	LAND_V2_L07_ANCIENT_FOREST_POLLUTED,
+]
+
+const LAND_V2_L01_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_01_sprout_victory.png"
+const LAND_V2_L02_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_02_shrub_victory.png"
+const LAND_V2_L03_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_03_wetland_victory.png"
+const LAND_V2_L04_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_04_grassland_victory.png"
+const LAND_V2_L05_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_05_forest_edge_victory.png"
+const LAND_V2_L06_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_06_dense_forest_victory.png"
+const LAND_V2_L07_VICTORY_ECOLOGY := \
+		"res://assets/art/land_v2/ecology/victory/level_07_ancient_forest_victory.png"
+const LAND_V2_VICTORY_ECOLOGY_PATHS := [
+	LAND_V2_L01_VICTORY_ECOLOGY,
+	LAND_V2_L02_VICTORY_ECOLOGY,
+	LAND_V2_L03_VICTORY_ECOLOGY,
+	LAND_V2_L04_VICTORY_ECOLOGY,
+	LAND_V2_L05_VICTORY_ECOLOGY,
+	LAND_V2_L06_VICTORY_ECOLOGY,
+	LAND_V2_L07_VICTORY_ECOLOGY,
+]
+
+const BADGE_HALL_BACKGROUND := "res://assets/art/badge_hall/background.png"
+const BADGE_HALL_LAND_STAGE_INITIAL := \
+		"res://assets/art/badge_hall/land/stage_initial.png"
+const BADGE_HALL_LAND_STAGE_COMPLETE := \
+		"res://assets/art/badge_hall/land/stage_complete.png"
+const BADGE_HALL_LAND_ECOLOGY_PATHS := [
+	"res://assets/art/badge_hall/land/ecology/01_sprout.png",
+	"res://assets/art/badge_hall/land/ecology/02_shrub.png",
+	"res://assets/art/badge_hall/land/ecology/03_wetland.png",
+	"res://assets/art/badge_hall/land/ecology/04_grassland.png",
+	"res://assets/art/badge_hall/land/ecology/05_forest_edge.png",
+	"res://assets/art/badge_hall/land/ecology/06_dense_forest.png",
+	"res://assets/art/badge_hall/land/ecology/07_ancient_forest.png",
+]
+const BADGE_HALL_LAND_BOOK_COVER := \
+		"res://assets/art/badge_hall/land/book_cover.png"
+const BADGE_HALL_OCEAN_STAGE_INITIAL := \
+		"res://assets/art/badge_hall/ocean/stage_initial.png"
+const BADGE_HALL_OCEAN_STAGE_COMPLETE := \
+		"res://assets/art/badge_hall/ocean/stage_complete.png"
+const BADGE_HALL_OCEAN_ECOLOGY_PATHS := [
+	"res://assets/art/badge_hall/ocean/ecology/01_anemone.png",
+	"res://assets/art/badge_hall/ocean/ecology/02_seagrass.png",
+	"res://assets/art/badge_hall/ocean/ecology/03_coral.png",
+	"res://assets/art/badge_hall/ocean/ecology/04_jellyfish.png",
+	"res://assets/art/badge_hall/ocean/ecology/05_fish_school.png",
+	"res://assets/art/badge_hall/ocean/ecology/06_trench.png",
+	"res://assets/art/badge_hall/ocean/ecology/07_whale_fall.png",
+]
+const BADGE_HALL_OCEAN_BOOK_COVER := \
+		"res://assets/art/badge_hall/ocean/book_cover.png"
+const BADGE_HALL_OCEAN_SHELL_FRAME_TOP := \
+		"res://assets/art/badge_hall/ocean/shell_frame_top.png"
+const BADGE_HALL_SKY_STAGE_INITIAL := \
+		"res://assets/art/badge_hall/sky/stage_initial.png"
+const BADGE_HALL_SKY_STAGE_COMPLETE := \
+		"res://assets/art/badge_hall/sky/stage_complete.png"
+const BADGE_HALL_SKY_ECOLOGY_PATHS := [
+	"res://assets/art/badge_hall/sky/ecology/01_cloud_crown.png",
+	"res://assets/art/badge_hall/sky/ecology/02_wind_ring.png",
+	"res://assets/art/badge_hall/sky/ecology/03_rainbow_bridge.png",
+	"res://assets/art/badge_hall/sky/ecology/04_floating_isles.png",
+	"res://assets/art/badge_hall/sky/ecology/05_cloud_ridge.png",
+	"res://assets/art/badge_hall/sky/ecology/06_storm_eye.png",
+	"res://assets/art/badge_hall/sky/ecology/07_sky_palace.png",
+]
+const BADGE_HALL_SKY_BOOK_COVER := \
+		"res://assets/art/badge_hall/sky/book_cover.png"
+const BADGE_HALL_UNIVERSE_STAGE := \
+		"res://assets/art/badge_hall/universe/stage.png"
+const BADGE_HALL_UNIVERSE_ASTEROID := \
+		"res://assets/art/badge_hall/universe/ecology/01_asteroid.png"
+const BADGE_HALL_UNIVERSE_PLANET := \
+		"res://assets/art/badge_hall/universe/ecology/02_planet.png"
+const BADGE_HALL_UNIVERSE_CLUSTER := \
+		"res://assets/art/badge_hall/universe/ecology/03_star_cluster.png"
+const BADGE_HALL_UNIVERSE_GALAXY_OUTER := \
+		"res://assets/art/badge_hall/universe/ecology/04_galaxy_outer.png"
+const BADGE_HALL_UNIVERSE_GALAXY_SPIRAL := \
+		"res://assets/art/badge_hall/universe/ecology/05_galaxy_spiral.png"
+const BADGE_HALL_UNIVERSE_GALAXY_CORE := \
+		"res://assets/art/badge_hall/universe/ecology/06_galaxy_core.png"
+const BADGE_HALL_UNIVERSE_TROPHY := \
+		"res://assets/art/badge_hall/universe/ecology/07_trophy.png"
+
+const LAND_BADGE_BOOK := "res://assets/art/land_v2/badges/badge_book.png"
+const LAND_BADGE_PAGE_TURN := "res://assets/art/land_v2/badges/page_turn.png"
+const LAND_BADGE_ZH_PATHS := [
+	"res://assets/art/land_v2/badges/zh/level_01_sprout.png",
+	"res://assets/art/land_v2/badges/zh/level_02_shrub.png",
+	"res://assets/art/land_v2/badges/zh/level_03_wetland.png",
+	"res://assets/art/land_v2/badges/zh/level_04_grassland.png",
+	"res://assets/art/land_v2/badges/zh/level_05_forest_edge.png",
+	"res://assets/art/land_v2/badges/zh/level_06_dense_forest.png",
+	"res://assets/art/land_v2/badges/zh/level_07_ancient_forest.png",
+]
+const LAND_BADGE_EN_PATHS := [
+	"res://assets/art/land_v2/badges/en/level_01_sprout.png",
+	"res://assets/art/land_v2/badges/en/level_02_shrub.png",
+	"res://assets/art/land_v2/badges/en/level_03_wetland.png",
+	"res://assets/art/land_v2/badges/en/level_04_grassland.png",
+	"res://assets/art/land_v2/badges/en/level_05_forest_edge.png",
+	"res://assets/art/land_v2/badges/en/level_06_dense_forest.png",
+	"res://assets/art/land_v2/badges/en/level_07_ancient_forest.png",
+]
+
+const LAND_V2_MECHANIC_OBSTACLE := "res://assets/art/land_v2/mechanics/obstacle.png"
+const LAND_V2_POLLUTION_NODE_ACTIVE := "res://assets/art/land_v2/mechanics/pollution_node_active.png"
+const LAND_V2_POLLUTION_NODE_CLEANSED := "res://assets/art/land_v2/mechanics/pollution_node_cleansed.png"
+const LAND_V2_ROOT_ACTIVE_STRAIGHT := "res://assets/art/land_v2/mechanics/root_active_straight.png"
+const LAND_V2_ROOT_ACTIVE_CORNER := "res://assets/art/land_v2/mechanics/root_active_corner.png"
+const LAND_V2_ROOT_CLEANSED_STRAIGHT := "res://assets/art/land_v2/mechanics/root_cleansed_straight.png"
+const LAND_V2_ROOT_CLEANSED_CORNER := "res://assets/art/land_v2/mechanics/root_cleansed_corner.png"
+const LAND_V2_BOSS_TREE_ACTIVE := "res://assets/art/land_v2/mechanics/boss_tree_active.png"
+const LAND_V2_BOSS_TREE_CLEANSED := "res://assets/art/land_v2/mechanics/boss_tree_cleansed.png"
+
+const OCEAN_V2_BACKGROUND := "res://assets/art/ocean_v2/background/ocean_background.png"
+const OCEAN_V2_STAGE_BODY := "res://assets/art/ocean_v2/stage/ocean_triptych_stage.png"
+const OCEAN_V2_TOP_ATTACHMENT := "res://assets/art/ocean_v2/hud/top_attachment_strip.png"
+const OCEAN_V2_COUNTER_FRAME := "res://assets/art/ocean_v2/hud/counter_frame.png"
+const OCEAN_V2_ROBOT_EMBLEM := "res://assets/art/ocean_v2/hud/robot_emblem_smile.png"
+const OCEAN_V2_COUNTER_ICON := "res://assets/art/ocean_v2/hud/shell_counter_icon.png"
+const OCEAN_V2_TIMER_ICON := "res://assets/art/ocean_v2/hud/timer_icon.png"
+const OCEAN_V2_RESTART_BUTTON := "res://assets/art/ocean_v2/buttons/restart_button.png"
+const OCEAN_V2_SETTINGS_BUTTON := "res://assets/art/ocean_v2/buttons/settings_button.png"
+const OCEAN_V2_SEAWEED_LEFT := "res://assets/art/ocean_v2/decorations/seaweed_left.png"
+const OCEAN_V2_CELL_HIDDEN := "res://assets/art/ocean_v2/cells/cell_hidden.png"
+const OCEAN_V2_CELL_REVEALED := "res://assets/art/ocean_v2/cells/cell_revealed.png"
+const OCEAN_V2_CELL_POLLUTED := "res://assets/art/ocean_v2/cells/cell_polluted.png"
+const OCEAN_V2_MINE := "res://assets/art/ocean_v2/mechanics/mine.png"
+const OCEAN_V2_MINE_FLOATING_CELL := \
+		"res://assets/art/ocean_v2/mechanics/mine_floating_cell.png"
+const OCEAN_V2_MINE_STOP_LINE := "res://assets/art/ocean_v2/mechanics/mine_stop_line.png"
+const OCEAN_V2_TIDAL_LOCKED_CELL := "res://assets/art/ocean_v2/mechanics/tidal_locked_cell.png"
+const OCEAN_V2_DIGIT_PATHS := [
+	"res://assets/art/ocean_v2/digits/digit_1.png",
+	"res://assets/art/ocean_v2/digits/digit_2.png",
+	"res://assets/art/ocean_v2/digits/digit_3.png",
+	"res://assets/art/ocean_v2/digits/digit_4.png",
+	"res://assets/art/ocean_v2/digits/digit_5.png",
+	"res://assets/art/ocean_v2/digits/digit_6.png",
+]
+const OCEAN_V2_MARKER := "res://assets/art/ocean_v2/markers/ocean_marker.png"
+const OCEAN_V2_MARKER_FAILED := "res://assets/art/ocean_v2/markers/ocean_marker_failed.png"
+const OCEAN_V2_MARKER_WRONG := "res://assets/art/ocean_v2/markers/ocean_marker_wrong.png"
+const OCEAN_V2_ECOLOGY_PATHS := [
+	"res://assets/art/ocean_v2/ecology/level_08_anemone.png",
+	"res://assets/art/ocean_v2/ecology/level_09_seagrass.png",
+	"res://assets/art/ocean_v2/ecology/level_10_coral.png",
+	"res://assets/art/ocean_v2/ecology/level_11_jellyfish.png",
+	"res://assets/art/ocean_v2/ecology/level_12_fish_school.png",
+	"res://assets/art/ocean_v2/ecology/level_13_trench.png",
+	"res://assets/art/ocean_v2/ecology/level_14_whale_fall.png",
+]
+const OCEAN_V2_ECOLOGY_POLLUTED_PATHS := [
+	"res://assets/art/ocean_v2/ecology/polluted/level_08_anemone.png",
+	"res://assets/art/ocean_v2/ecology/polluted/level_09_seagrass.png",
+	"res://assets/art/ocean_v2/ecology/polluted/level_10_coral.png",
+	"res://assets/art/ocean_v2/ecology/polluted/level_11_jellyfish.png",
+	"res://assets/art/ocean_v2/ecology/polluted/level_12_fish_school.png",
+	"res://assets/art/ocean_v2/ecology/polluted/level_13_trench.png",
+	"res://assets/art/ocean_v2/ecology/polluted/level_14_whale_fall.png",
+]
+const OCEAN_BADGE_ZH_PATHS := [
+	"res://assets/art/ocean_v2/badges/zh/level_08_anemone.png",
+	"res://assets/art/ocean_v2/badges/zh/level_09_seagrass.png",
+	"res://assets/art/ocean_v2/badges/zh/level_10_coral.png",
+	"res://assets/art/ocean_v2/badges/zh/level_11_jellyfish.png",
+	"res://assets/art/ocean_v2/badges/zh/level_12_fish_school.png",
+	"res://assets/art/ocean_v2/badges/zh/level_13_trench.png",
+	"res://assets/art/ocean_v2/badges/zh/level_14_whale_fall.png",
+]
+const OCEAN_BADGE_EN_PATHS := [
+	"res://assets/art/ocean_v2/badges/en/level_08_anemone.png",
+	"res://assets/art/ocean_v2/badges/en/level_09_seagrass.png",
+	"res://assets/art/ocean_v2/badges/en/level_10_coral.png",
+	"res://assets/art/ocean_v2/badges/en/level_11_jellyfish.png",
+	"res://assets/art/ocean_v2/badges/en/level_12_fish_school.png",
+	"res://assets/art/ocean_v2/badges/en/level_13_trench.png",
+	"res://assets/art/ocean_v2/badges/en/level_14_whale_fall.png",
+]
+const OCEAN_V2_ROBOT_FRONT := "res://assets/art/ocean_v2/characters/ocean_robot_front.png"
+const OCEAN_V2_ROBOT_LEFT_FRONT := "res://assets/art/ocean_v2/characters/ocean_robot_left_front.png"
+const OCEAN_V2_ROBOT_RIGHT_FRONT := "res://assets/art/ocean_v2/characters/ocean_robot_right_front.png"
+const OCEAN_V2_ROBOT_IDLE_PATHS := [
+	OCEAN_V2_ROBOT_LEFT_FRONT,
+	OCEAN_V2_ROBOT_FRONT,
+	OCEAN_V2_ROBOT_RIGHT_FRONT,
+]
+const OCEAN_V2_ROBOT_FRONT_TORSO := "res://assets/art/ocean_v2/characters/ocean_robot_front_torso.png"
+const OCEAN_V2_ROBOT_ARM := "res://assets/art/ocean_v2/characters/ocean_robot_arm.png"
+const OCEAN_V2_OCTOPUS_ALERT := "res://assets/art/ocean_v2/characters/octopus_alert.png"
+const OCEAN_V2_OCTOPUS_DEFIANT_PATHS := [
+	"res://assets/art/ocean_v2/characters/octopus_defiant_left.png",
+	"res://assets/art/ocean_v2/characters/octopus_defiant.png",
+	"res://assets/art/ocean_v2/characters/octopus_defiant_right.png",
+]
+const OCEAN_V2_OCTOPUS_MOCK_PATHS := [
+	"res://assets/art/ocean_v2/characters/octopus_mock_left.png",
+	"res://assets/art/ocean_v2/characters/octopus_mock.png",
+	"res://assets/art/ocean_v2/characters/octopus_mock_right.png",
+]
+const OCEAN_V2_OCTOPUS_DEFEATED := "res://assets/art/ocean_v2/characters/octopus_defeated.png"
 
 const LAND_PAUSE_NORMAL := "res://assets/art/land_levels/buttons/pause_normal.png"
 const LAND_PAUSE_HOVER := "res://assets/art/land_levels/buttons/pause_hover.png"

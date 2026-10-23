@@ -58,17 +58,7 @@ offset_right = 282.0
 offset_bottom = 532.0
 theme_override_colors/font_color = Color(0.15, 0.2, 0.12, 0.94)
 theme_override_font_sizes/font_size = 13
-text = "第1关 · 萌芽
-5 × 5 棋盘
-污染核心 5
-
-净化目标
-清除所有污染核心
-恢复萌芽生态
-
-操作方法
-左键净化 · 右键标记
-双击数字快速展开"
+text = ""
 autowrap_mode = 2
 
 [node name="RightPreviewText" type="Label" parent="." unique_id=1385235140]
@@ -79,13 +69,7 @@ offset_right = 1172.0
 offset_bottom = 414.0
 theme_override_colors/font_color = Color(0.2, 0.15, 0.1, 0.94)
 theme_override_font_sizes/font_size = 14
-text = "净化时间
-00:00.0
-
-污染核心    0/5
-
-净化状态
-准备中"
+text = ""
 horizontal_alignment = 1
 autowrap_mode = 2
 

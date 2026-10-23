@@ -123,7 +123,15 @@ func _test_repeatable_scan(main_scene: Control, board: MinesweeperBoard) -> void
 	main_scene.call("_request_scan_mode")
 	main_scene.call("_on_scan_target_requested", mine_index)
 	_expect(board.confirmed[mine_index], "Scanning a mine creates an authoritative marker.")
-	_expect(board.used_flags == board.core_count + 1, "A scanned mine may exceed the ordinary flag cap.")
+	_expect(board.used_flags == board.core_count, "A scan keeps the marker count within the board limit.")
+	var remaining_wrong_flags := 0
+	for flagged_index in ordinary_flags:
+		if board.flagged[flagged_index]:
+			remaining_wrong_flags += 1
+	_expect(
+		remaining_wrong_flags == board.core_count - 1,
+		"A full marker budget replaces exactly one wrong marker."
+	)
 	_expect(flag_events[0] == 0, "A scan-created marker is not a manual flag action.")
 	_expect(main_scene.get_scan_energy() == 0, "A valid scan atomically consumes all 12 energy.")
 	_expect(main_scene.get_scan_phase() == main_scene.ScanPhase.CHARGING, "A scan returns to charging.")

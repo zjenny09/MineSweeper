@@ -4,6 +4,8 @@ extends Control
 const GAME_SCENE: PackedScene = preload("res://scenes/main.tscn")
 const SKY_GAME_SCENE: PackedScene = preload("res://scenes/sky_level_15_prototype.tscn")
 const UNIVERSE_GAME_SCENE: PackedScene = preload("res://scenes/universe_endless.tscn")
+const BADGE_BOOK_SCENE: PackedScene = preload("res://scenes/badge_book.tscn")
+const BADGE_HALL_SCENE: PackedScene = preload("res://scenes/badge_hall.tscn")
 const SAVE_STORE_SCRIPT: Script = preload("res://scripts/save_store.gd")
 const OCEAN_ROUTE_SCRIPT: Script = preload("res://scripts/ocean_level_route.gd")
 const ART := preload("res://scripts/art_catalog.gd")
@@ -67,7 +69,7 @@ const MECHANIC_GUIDE_FIRST_LEVELS := {
 	&"sky_sphere": 15,
 	&"sky_breeze": 17,
 	&"storm_shield": 19,
-	&"storm_eyes": 21,
+	&"storm_eyes": 20,
 }
 
 @export var save_path := "user://save_v1.json"
@@ -98,6 +100,8 @@ const MECHANIC_GUIDE_FIRST_LEVELS := {
 @onready var selected_level_status_label: Label = %SelectedLevelStatusLabel
 @onready var selected_best_time_label: Label = %SelectedBestTimeLabel
 @onready var level_back_button: Button = %LevelBackButton
+@onready var level_help_button: Button = %LevelHelpButton
+@onready var level_badge_book_button: Button = %LevelBadgeBookButton
 @onready var level_previous_chapter_button: Button = %LevelPreviousChapterButton
 @onready var level_next_chapter_button: Button = %LevelNextChapterButton
 @onready var level_welcome_button: Button = %LevelWelcomeButton
@@ -108,15 +112,29 @@ const MECHANIC_GUIDE_FIRST_LEVELS := {
 @onready var display_mode_option: OptionButton = %DisplayModeOption
 @onready var operation_mode_option: OptionButton = %OperationModeOption
 @onready var language_option: OptionButton = %LanguageOption
+@onready var settings_help_button: Button = %SettingsHelpButton
+@onready var settings_badge_book_button: Button = %SettingsBadgeBookButton
 @onready var settings_back_button: Button = %SettingsBackButton
+@onready var help_page: Control = %Help
+@onready var help_text: RichTextLabel = %HelpText
+@onready var help_back_button: Button = %HelpBackButton
 
 var save_store
 var active_game: Control
+var badge_book: BadgeBook
+var badge_hall: BadgeHall
 var _record_progress := true
 var _persist_scan_state := true
 var _persist_guide_state := true
+var _persist_universe_progress := true
+var _universe_milestone_hall_pending := false
 var _session_seen_mechanic_guides: Dictionary = {}
 var _settings_return_to_game := false
+var _help_return_page := &"level_select"
+var _badge_hall_return_page := &"main_menu"
+var _badge_book_return_page := &"level_select"
+var _badge_book_victory_level := 0
+var _badge_book_chapter := &"land"
 var _level_select_return_to_game := false
 var _level_select_chapter := &"land"
 var _selected_level_number := 1
@@ -142,6 +160,18 @@ func _ready() -> void:
 	_apply_level_select_art()
 	if Engine.is_editor_hint():
 		return
+	badge_book = BADGE_BOOK_SCENE.instantiate() as BadgeBook
+	add_child(badge_book)
+	badge_book.closed.connect(_close_badge_book)
+	badge_book.next_level_requested.connect(_continue_from_badge_book)
+	badge_book.return_to_victory_requested.connect(_return_to_victory_from_badge_book)
+	badge_book.hall_requested.connect(_show_badge_hall_from_book)
+	badge_hall = BADGE_HALL_SCENE.instantiate() as BadgeHall
+	add_child(badge_hall)
+	badge_hall.chapter_book_requested.connect(
+		_on_badge_hall_chapter_book_requested
+	)
+	badge_hall.exit_requested.connect(_close_badge_hall)
 	save_store = SAVE_STORE_SCRIPT.new(save_path)
 	save_store.load_data()
 	TranslationServer.set_locale(save_store.get_language())
@@ -164,7 +194,7 @@ func _ready() -> void:
 		start_cli_level(requested_level)
 	else:
 		if requested_level < 0:
-			push_error("无效启动参数；请使用 --level=1 至 --level=21 或 --universe。")
+			push_error(tr("TXT_0414"))
 		show_main_menu()
 
 
@@ -240,6 +270,8 @@ func _apply_level_select_art() -> void:
 		return
 	for button in [
 		level_back_button,
+		level_help_button,
+		level_badge_book_button,
 		level_previous_chapter_button,
 		level_next_chapter_button,
 		level_welcome_button,
@@ -283,26 +315,26 @@ func _apply_level_select_chapter_art() -> void:
 		else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	)
 	if sky:
-		level_select_title.text = tr("天空探险")
+		level_select_title.text = tr("TXT_0056")
 		level_select_title.add_theme_color_override("font_color", Color("49658f"))
-		level_previous_chapter_button.text = tr("← 海洋篇")
-		level_previous_chapter_button.tooltip_text = tr("返回海洋篇")
-		level_next_chapter_button.text = tr("宇宙篇 →")
-		level_next_chapter_button.tooltip_text = tr("进入无尽宇宙")
+		level_previous_chapter_button.text = tr("TXT_0044")
+		level_previous_chapter_button.tooltip_text = tr("TXT_0037")
+		level_next_chapter_button.text = tr("TXT_0048")
+		level_next_chapter_button.tooltip_text = tr("TXT_0042")
 	elif ocean:
-		level_select_title.text = tr("海洋探险")
+		level_select_title.text = tr("TXT_0055")
 		level_select_title.add_theme_color_override("font_color", Color("175c70"))
-		level_previous_chapter_button.text = tr("← 陆地篇")
-		level_previous_chapter_button.tooltip_text = tr("返回陆地篇")
-		level_next_chapter_button.text = tr("天空篇 →")
-		level_next_chapter_button.tooltip_text = tr("进入天空篇")
+		level_previous_chapter_button.text = tr("TXT_0043")
+		level_previous_chapter_button.tooltip_text = tr("TXT_0036")
+		level_next_chapter_button.text = tr("TXT_0047")
+		level_next_chapter_button.tooltip_text = tr("TXT_0040")
 	else:
-		level_select_title.text = tr("陆地探险")
+		level_select_title.text = tr("TXT_0054")
 		level_select_title.add_theme_color_override("font_color", Color("1b4d2d"))
-		level_previous_chapter_button.text = tr("← 天空篇")
-		level_previous_chapter_button.tooltip_text = tr("返回天空篇")
-		level_next_chapter_button.text = tr("海洋篇 →")
-		level_next_chapter_button.tooltip_text = tr("进入海洋篇")
+		level_previous_chapter_button.text = tr("TXT_0045")
+		level_previous_chapter_button.tooltip_text = tr("TXT_0038")
+		level_next_chapter_button.text = tr("TXT_0046")
+		level_next_chapter_button.tooltip_text = tr("TXT_0039")
 	var shortcut_font_size := (
 		10
 		if save_store != null and save_store.get_language() == LANGUAGE_ENGLISH
@@ -310,6 +342,8 @@ func _apply_level_select_chapter_art() -> void:
 	)
 	for button in [
 		level_back_button,
+		level_help_button,
+		level_badge_book_button,
 		level_previous_chapter_button,
 		level_next_chapter_button,
 		level_welcome_button,
@@ -406,7 +440,16 @@ func _unhandled_input(event: InputEvent) -> void:
 				return
 	if not event.is_action_pressed("ui_cancel"):
 		return
-	if settings_page.visible:
+	if is_instance_valid(badge_book) and badge_book.visible:
+		badge_book.request_close()
+		get_viewport().set_input_as_handled()
+	elif is_instance_valid(badge_hall) and badge_hall.visible:
+		_close_badge_hall()
+		get_viewport().set_input_as_handled()
+	elif help_page.visible:
+		_close_help()
+		get_viewport().set_input_as_handled()
+	elif settings_page.visible:
 		_close_settings()
 		get_viewport().set_input_as_handled()
 	elif level_select.visible:
@@ -450,7 +493,7 @@ func show_level_select(preserve_active_game: bool = false) -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = tr("返回关卡")
+	level_back_button.text = tr("TXT_0034")
 	level_back_button.grab_focus()
 
 
@@ -458,6 +501,157 @@ func show_settings(return_to_game: bool = false) -> void:
 	_settings_return_to_game = return_to_game and is_instance_valid(active_game)
 	_show_only(settings_page)
 	volume_slider.grab_focus()
+
+
+func _show_help(return_page: StringName) -> void:
+	_help_return_page = return_page
+	_show_only(help_page)
+	help_text.scroll_to_line(0)
+	help_text.grab_focus()
+
+
+func _close_help() -> void:
+	if _help_return_page == &"game" and is_instance_valid(active_game):
+		_show_only(game_host)
+		var pause_help := active_game.get_node_or_null("%PauseHelpButton") as Button
+		if pause_help != null:
+			pause_help.grab_focus()
+		return
+	if _help_return_page == &"settings":
+		_show_only(settings_page)
+		settings_help_button.grab_focus()
+		return
+	_show_only(level_select)
+	level_help_button.grab_focus()
+
+
+func _completed_level_numbers(extra_level: int = 0) -> Array[int]:
+	var completed_levels: Array[int] = []
+	for level_number in range(1, 22):
+		if save_store.is_level_completed(level_number):
+			completed_levels.append(level_number)
+	if extra_level > 0 and extra_level not in completed_levels:
+		completed_levels.append(extra_level)
+	return completed_levels
+
+
+func _show_badge_hall(
+	return_page: StringName,
+	focus_chapter: StringName = &"land"
+) -> void:
+	_badge_hall_return_page = return_page
+	badge_hall.set_completed_levels(_completed_level_numbers())
+	badge_hall.set_universe_progress(
+		save_store.get_universe_boards_created(),
+		save_store.has_triggered_universe_thousand_milestone()
+	)
+	_show_only(badge_hall)
+	badge_hall.focus_chapter(focus_chapter)
+
+
+func _close_badge_hall() -> void:
+	badge_hall.visible = false
+	if _badge_hall_return_page == &"settings":
+		_show_only(settings_page)
+		settings_badge_book_button.grab_focus()
+		return
+	if _badge_hall_return_page == &"game" and is_instance_valid(active_game):
+		_show_only(game_host)
+		if _universe_milestone_hall_pending:
+			_universe_milestone_hall_pending = false
+			if active_game.has_method("continue_after_universe_milestone_hall"):
+				active_game.call("continue_after_universe_milestone_hall")
+		var advance_button := active_game.get_node_or_null("%RestartButton") as Control
+		if advance_button != null:
+			advance_button.grab_focus()
+		return
+	if _badge_hall_return_page == &"main_menu":
+		_show_only(main_menu)
+		choose_level_button.grab_focus()
+		return
+	_show_only(level_select)
+	level_badge_book_button.grab_focus()
+
+
+func _on_badge_hall_chapter_book_requested(chapter: StringName) -> void:
+	_show_badge_book(&"badge_hall", 0, chapter)
+
+
+func _show_badge_hall_from_book() -> void:
+	var return_page := _badge_hall_return_page
+	if _badge_book_return_page == &"game":
+		return_page = &"game"
+	elif _badge_book_return_page != &"badge_hall":
+		return_page = _badge_book_return_page
+	badge_book.visible = false
+	_show_badge_hall(return_page, _badge_book_chapter)
+
+
+func _show_badge_book(
+	return_page: StringName,
+	victory_level: int = 0,
+	chapter: StringName = &""
+) -> void:
+	_badge_book_return_page = return_page
+	_badge_book_victory_level = victory_level
+	if chapter != &"":
+		_badge_book_chapter = chapter
+	elif victory_level >= 15:
+		_badge_book_chapter = &"sky"
+	elif victory_level >= 8:
+		_badge_book_chapter = &"ocean"
+	else:
+		_badge_book_chapter = &"land"
+	_show_only(badge_book)
+	badge_book.open_book(
+		_completed_level_numbers(victory_level),
+		return_page,
+		victory_level,
+		chapter
+	)
+
+
+func _close_badge_book() -> void:
+	badge_book.visible = false
+	if _badge_book_return_page == &"badge_hall":
+		_show_badge_hall(_badge_hall_return_page, _badge_book_chapter)
+		return
+	if _badge_book_return_page == &"settings":
+		_show_only(settings_page)
+		settings_badge_book_button.grab_focus()
+		return
+	if _badge_book_return_page == &"game" and is_instance_valid(active_game):
+		_return_to_victory_from_badge_book()
+		return
+	if _badge_book_return_page == &"main_menu":
+		_show_only(main_menu)
+		choose_level_button.grab_focus()
+		return
+	_show_only(level_select)
+	level_badge_book_button.grab_focus()
+
+
+func _continue_from_badge_book() -> void:
+	if _badge_book_return_page != &"game" or not is_instance_valid(active_game):
+		return
+	badge_book.visible = false
+	_show_only(game_host)
+	active_game.call("continue_after_badge_book")
+	_badge_book_return_page = &"level_select"
+	_badge_book_victory_level = 0
+
+
+func _return_to_victory_from_badge_book() -> void:
+	if not is_instance_valid(active_game):
+		show_level_select()
+		return
+	badge_book.visible = false
+	_show_only(game_host)
+	var advance_button := active_game.get_node_or_null("%RestartButton") as Control
+	if advance_button != null:
+		advance_button.grab_focus()
+	_badge_book_return_page = &"level_select"
+	_badge_book_victory_level = 0
 
 
 func _close_settings() -> void:
@@ -485,13 +679,19 @@ func _start_universe_mode(persist_guides: bool = true) -> void:
 	_record_progress = false
 	_persist_scan_state = false
 	_persist_guide_state = persist_guides
+	_persist_universe_progress = persist_guides
 	active_game = UNIVERSE_GAME_SCENE.instantiate() as Control
 	active_game.set("auto_start", false)
 	game_host.add_child(active_game)
 	active_game.level_select_requested.connect(_on_universe_return_to_sky)
 	active_game.main_menu_requested.connect(show_main_menu)
 	active_game.settings_requested.connect(_on_game_settings_requested)
+	active_game.help_requested.connect(_on_game_help_requested)
 	active_game.mechanic_guide_completed.connect(_on_game_mechanic_guide_completed)
+	active_game.universe_board_created.connect(_on_universe_board_created)
+	active_game.universe_milestone_finished.connect(
+		_on_universe_milestone_finished
+	)
 	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
 	active_game.call(
 		"set_seen_mechanic_guides",
@@ -501,6 +701,30 @@ func _start_universe_mode(persist_guides: bool = true) -> void:
 	active_game.call("start_endless", 0)
 	active_game.call("set_operation_mode", save_store.get_operation_mode())
 	LOCALIZATION_STYLE.apply(active_game, save_store.get_language())
+
+
+func _on_universe_board_created() -> void:
+	if not _persist_universe_progress:
+		return
+	var should_trigger: bool = bool(
+		save_store.record_universe_board_created()
+	)
+	if not save_store.save_data():
+		save_store.load_data()
+		push_error("Universe lifetime progress could not be saved.")
+		return
+	if should_trigger and is_instance_valid(active_game) \
+			and active_game.has_method("show_thousand_board_celebration"):
+		active_game.call("show_thousand_board_celebration")
+
+
+func _on_universe_milestone_finished() -> void:
+	if not is_instance_valid(active_game):
+		return
+	_universe_milestone_hall_pending = true
+	_show_badge_hall(&"game", &"universe")
+	if badge_hall.has_method("play_universe_trophy_placement"):
+		badge_hall.call("play_universe_trophy_placement")
 
 
 func _on_universe_return_to_sky() -> void:
@@ -513,7 +737,7 @@ func _on_universe_return_to_sky() -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = tr("返回关卡")
+	level_back_button.text = tr("TXT_0034")
 	level_back_button.grab_focus()
 
 
@@ -544,14 +768,23 @@ func parse_level_argument(arguments: PackedStringArray) -> int:
 func _connect_controls() -> void:
 	start_button.pressed.connect(_on_start_journey_pressed)
 	continue_button.pressed.connect(_on_continue_pressed)
-	choose_level_button.pressed.connect(show_level_select)
+	choose_level_button.pressed.connect(_show_badge_hall.bind(&"main_menu"))
 	settings_button.pressed.connect(show_settings)
 	exit_button.pressed.connect(func() -> void: get_tree().quit())
 	level_back_button.pressed.connect(_on_level_back_pressed)
+	level_help_button.pressed.connect(_show_help.bind(&"level_select"))
+	level_badge_book_button.pressed.connect(
+		_show_badge_hall.bind(&"level_select")
+	)
 	level_previous_chapter_button.pressed.connect(_on_previous_chapter_pressed)
 	level_next_chapter_button.pressed.connect(_on_next_chapter_pressed)
 	level_welcome_button.pressed.connect(show_main_menu)
+	settings_help_button.pressed.connect(_show_help.bind(&"settings"))
+	settings_badge_book_button.pressed.connect(
+		_show_badge_hall.bind(&"settings")
+	)
 	settings_back_button.pressed.connect(_close_settings)
+	help_back_button.pressed.connect(_close_help)
 	volume_slider.value_changed.connect(_on_volume_changed)
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	bgm_toggle_button.toggled.connect(_on_bgm_toggled)
@@ -588,6 +821,9 @@ func _start_level_number(
 	active_game.chapter_advance_requested.connect(_on_game_chapter_advance_requested)
 	active_game.main_menu_requested.connect(show_main_menu)
 	active_game.settings_requested.connect(_on_game_settings_requested)
+	active_game.help_requested.connect(_on_game_help_requested)
+	if active_game.has_signal("badge_book_requested"):
+		active_game.connect("badge_book_requested", _on_game_badge_book_requested)
 	active_game.mechanic_guide_completed.connect(_on_game_mechanic_guide_completed)
 	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
 	active_game.call(
@@ -755,13 +991,13 @@ func _seen_mechanic_guides_for_level(
 	assume_previous_guides: bool
 ) -> Array[String]:
 	var guide_ids := _combined_seen_mechanic_guides()
-	if not assume_previous_guides:
-		return guide_ids
 	for guide_key in MECHANIC_GUIDE_FIRST_LEVELS:
-		if int(MECHANIC_GUIDE_FIRST_LEVELS[guide_key]) >= level_number:
-			continue
+		var first_level := int(MECHANIC_GUIDE_FIRST_LEVELS[guide_key])
 		var guide_id := str(guide_key)
-		if guide_id not in guide_ids:
+		if first_level == level_number:
+			guide_ids.erase(guide_id)
+		elif assume_previous_guides and first_level < level_number \
+				and guide_id not in guide_ids:
 			guide_ids.append(guide_id)
 	return guide_ids
 
@@ -797,6 +1033,14 @@ func _on_game_level_select_requested() -> void:
 
 func _on_game_settings_requested() -> void:
 	show_settings(true)
+
+
+func _on_game_help_requested() -> void:
+	_show_help(&"game")
+
+
+func _on_game_badge_book_requested(level_number: int) -> void:
+	_show_badge_book(&"game", level_number)
 
 
 func _rebuild_level_cards() -> void:
@@ -837,7 +1081,7 @@ func _rebuild_level_cards() -> void:
 
 	for level in chapter_levels:
 		_create_level_marker(level)
-	progress_label.text = tr("已完成：%d / %d") % [
+	progress_label.text = tr("TXT_0062") % [
 		completed_count,
 		chapter_levels.size(),
 	]
@@ -940,7 +1184,7 @@ func _create_level_marker(level: Dictionary) -> void:
 		if save_store.get_language() == LANGUAGE_ENGLISH
 		else marker_name
 	)
-	button.tooltip_text = tr("选择第%d关 · %s") % [level_number, marker_name]
+	button.tooltip_text = tr("TXT_0061") % [level_number, marker_name]
 	var marker_texture := _marker_texture_for_level(level_number)
 	if marker_texture != null:
 		var marker_style := StyleBoxTexture.new()
@@ -1034,7 +1278,7 @@ func _update_level_selection_info() -> void:
 	var level: Dictionary = GreenSweeperLevels.get_level_by_number(_selected_level_number)
 	if level.is_empty():
 		return
-	selected_level_label.text = tr("当前关卡：%02d %s") % [
+	selected_level_label.text = tr("TXT_0060") % [
 		_selected_level_number,
 		tr(str(level.name)),
 	]
@@ -1044,19 +1288,19 @@ func _update_level_selection_info() -> void:
 		_selected_level_number == save_store.get_last_played_level()
 		and not completed
 	)
-	var status: String = tr("未解锁")
+	var status: String = tr("TXT_0066")
 	if completed:
-		status = tr("已完成")
+		status = tr("TXT_0069")
 	elif in_progress:
-		status = tr("正在进行")
+		status = tr("TXT_0068")
 	elif unlocked:
-		status = tr("已解锁")
-	selected_level_status_label.text = tr("状态：%s") % status
+		status = tr("TXT_0067")
+	selected_level_status_label.text = tr("TXT_0064") % status
 	var best_time: int = save_store.get_best_time_ms(_selected_level_number)
 	selected_best_time_label.text = (
-		tr("最佳时间：%s") % _format_time(best_time)
+		tr("TXT_0070") % _format_time(best_time)
 		if best_time >= 0
-		else tr("最佳时间：--:--.-")
+		else tr("TXT_0071")
 	)
 
 
@@ -1118,32 +1362,32 @@ func _refresh_continue_button() -> void:
 	continue_button.disabled = not can_continue
 	if can_continue:
 		var level: Dictionary = GreenSweeperLevels.get_level_by_number(last_level)
-		continue_button.text = tr("继续游戏 · %02d %s") % [
+		continue_button.text = tr("TXT_0004") % [
 			last_level,
 			tr(str(level.name)),
 		]
-		continue_button.tooltip_text = tr("重新生成上次游玩的关卡")
+		continue_button.tooltip_text = tr("TXT_0011")
 	else:
-		continue_button.text = tr("继续游戏")
-		continue_button.tooltip_text = tr("开始第一局后即可继续")
+		continue_button.text = tr("TXT_0003")
+		continue_button.tooltip_text = tr("TXT_0010")
 
 
 func _refresh_settings_options() -> void:
 	display_mode_option.clear()
-	display_mode_option.add_item(tr("窗口模式（1280 × 720）"), 0)
-	display_mode_option.add_item(tr("最大化窗口"), 1)
-	display_mode_option.add_item(tr("无边框全屏"), 2)
+	display_mode_option.add_item(tr("TXT_0022"), 0)
+	display_mode_option.add_item(tr("TXT_0023"), 1)
+	display_mode_option.add_item(tr("TXT_0024"), 2)
 	display_mode_option.select(save_store.get_window_mode())
 	operation_mode_option.clear()
-	operation_mode_option.add_item(tr("鼠标操作"), 0)
+	operation_mode_option.add_item(tr("TXT_0026"), 0)
 	operation_mode_option.add_item(
-		tr("键盘操作（方向键 / W S A D + J / K）"),
+		tr("TXT_0027"),
 		1
 	)
 	operation_mode_option.select(save_store.get_operation_mode())
 	language_option.clear()
-	language_option.add_item(tr("简体中文"), 0)
-	language_option.add_item("English", 1)
+	language_option.add_item(tr("TXT_0029"), 0)
+	language_option.add_item(tr("TXT_0460"), 1)
 	language_option.select(1 if save_store.get_language() == LANGUAGE_ENGLISH else 0)
 
 
@@ -1186,11 +1430,11 @@ func _refresh_audio_toggle_buttons() -> void:
 	var sfx_enabled: bool = save_store.is_sfx_enabled()
 	bgm_toggle_button.set_pressed_no_signal(bgm_enabled)
 	sfx_toggle_button.set_pressed_no_signal(sfx_enabled)
-	bgm_toggle_button.text = tr("背景音乐：%s") % (
-		tr("开启") if bgm_enabled else tr("关闭")
+	bgm_toggle_button.text = tr("TXT_0016") % (
+		tr("TXT_0019") if bgm_enabled else tr("TXT_0020")
 	)
-	sfx_toggle_button.text = tr("游戏音效：%s") % (
-		tr("开启") if sfx_enabled else tr("关闭")
+	sfx_toggle_button.text = tr("TXT_0018") % (
+		tr("TXT_0019") if sfx_enabled else tr("TXT_0020")
 	)
 
 
@@ -1223,6 +1467,10 @@ func _on_language_selected(index: int) -> void:
 	if is_instance_valid(active_game) \
 			and active_game.has_method("refresh_localized_interface"):
 		active_game.call("refresh_localized_interface")
+	if is_instance_valid(badge_book):
+		badge_book.refresh_language()
+	if is_instance_valid(badge_hall):
+		badge_hall.refresh_language()
 	LOCALIZATION_STYLE.apply(self, language)
 
 
@@ -1260,12 +1508,18 @@ func _show_only(page: Control) -> void:
 	main_menu.visible = page == main_menu
 	level_select.visible = page == level_select
 	settings_page.visible = page == settings_page
+	help_page.visible = page == help_page
 	game_host.visible = page == game_host
+	if is_instance_valid(badge_book):
+		badge_book.visible = page == badge_book
+	if is_instance_valid(badge_hall):
+		badge_hall.visible = page == badge_hall
 	if page == main_menu or page == level_select:
 		AudioManager.play_menu_bgm()
 
 
 func _destroy_active_game() -> void:
+	_universe_milestone_hall_pending = false
 	if not is_instance_valid(active_game):
 		active_game = null
 		return

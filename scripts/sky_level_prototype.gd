@@ -6,12 +6,15 @@ signal level_select_requested
 signal chapter_advance_requested
 signal main_menu_requested
 signal settings_requested
+signal help_requested
+signal badge_book_requested(level_number: int)
 signal exit_game_requested
 signal pause_changed(is_paused: bool)
 signal scan_energy_changed(energy: int)
 signal mechanic_guide_completed(guide_id: StringName)
 
 const SKY_SPHERE_BOARD_SCRIPT := preload("res://scripts/sky_sphere_board.gd")
+const BADGE_CELEBRATION_SCENE := preload("res://scenes/badge_celebration.tscn")
 const LEVELS := preload("res://scripts/level_data.gd")
 const ART := preload("res://scripts/art_catalog.gd")
 const SCAN_CAPACITY := 12
@@ -21,29 +24,29 @@ const SKY_MECHANIC_GUIDES := {
 	15: {
 		"id": &"sky_sphere",
 		"pages": [
-			{"title": "小芽：这次棋盘变成了球", "text": "云球没有边界，转到背面后仍是同一张棋盘。", "hint": "只有共享一条边的云格才算相邻。"},
-			{"title": "小芽：先学会转动云球", "text": "鼠标拖拽或W S A D旋转，方向键切换选中的云格。", "hint": "J翻开、K标记，扫雷规则和之前一样。"},
+			{"title": "TXT_0299", "text": "TXT_0300", "hint": "TXT_0301"},
+			{"title": "TXT_0302", "text": "TXT_0303", "hint": "TXT_0304"},
 		],
 	},
 	17: {
 		"id": &"sky_breeze",
 		"pages": [
-			{"title": "小芽：这一关会出现微风", "text": "你翻开安全格时，微风有时会额外处理一个隐藏格。", "hint": "它会翻开安全格，或自动标出污染。"},
-			{"title": "小芽：云球会转向目标", "text": "微风触发后，画面会转到发生变化的那一格。", "hint": "这是随机帮助，其他判断仍由你完成。"},
+			{"title": "TXT_0305", "text": "TXT_0306", "hint": "TXT_0307"},
+			{"title": "TXT_0308", "text": "TXT_0309", "hint": "TXT_0310"},
 		],
 	},
 	19: {
 		"id": &"storm_shield",
 		"pages": [
-			{"title": "小芽：这一关有一次云盾", "text": "如果误触污染，云盾有可能帮你挡住这次失败。", "hint": "每局最多成功一次，而且不保证触发。"},
-			{"title": "小芽：触发后会自动标记", "text": "被云盾挡住的污染格会直接留下标记。", "hint": "云盾只是保护，最好仍然根据数字推理。"},
+			{"title": "TXT_0311", "text": "TXT_0312", "hint": "TXT_0313"},
+			{"title": "TXT_0314", "text": "TXT_0315", "hint": "TXT_0316"},
 		],
 	},
-	21: {
+	20: {
 		"id": &"storm_eyes",
 		"pages": [
-			{"title": "小芽：安全数字上出现了雷眼", "text": "雷眼可能藏在云球背面，边缘箭头会指向它。", "hint": "雷眼所在的格子本身是安全的。"},
-			{"title": "小芽：正确标完周围污染", "text": "确认雷眼周围的污染都已标记后，双击雷眼数字。", "hint": "一共击破三个雷眼，就能完成这一关。"},
+			{"title": "TXT_0317", "text": "TXT_0318", "hint": "TXT_0319"},
+			{"title": "TXT_0320", "text": "TXT_0321", "hint": "TXT_0322"},
 		],
 	},
 }
@@ -63,14 +66,21 @@ enum ScanPhase {
 @onready var board_center := find_child("BoardCenter", true, false) as CenterContainer
 @onready var board_host := find_child("Board", true, false) as Control
 @onready var sky_stage := find_child("SkyStage", true, false) as Control
-@onready var page_margin := find_child("PageMargin", true, false) as MarginContainer
+@onready var page_margin := find_child("PageMargin", true, false) as Control
 @onready var subtitle_label := find_child("SubtitleLabel", true, false) as Label
-@onready var level_summary_label := find_child("LevelSummaryLabel", true, false) as Label
+@onready var level_summary_label: Label = _optional_label("%LevelSummaryLabel")
 @onready var objective_label := find_child("ObjectiveLabel", true, false) as Label
 @onready var instructions_label := find_child("InstructionsLabel", true, false) as Label
-@onready var flags_label := find_child("FlagsLabel", true, false) as Label
+@onready var flags_label: Label = _optional_label("%FlagsLabel")
 @onready var status_label := find_child("StatusLabel", true, false) as Label
-@onready var timer_label := find_child("TimerLabel", true, false) as Label
+@onready var timer_label: Label = _optional_label("%TimerLabel")
+@onready var sky_mine_counter_label: Label = %SkyMineCounterLabel
+@onready var sky_timer_counter_label: Label = %SkyTimerCounterLabel
+@onready var sky_robot_layout: TextureRect = %SkyRobot
+@onready var sky_scan_dot_preview: Control = %SkyScanDotPreview
+@onready var sky_craft_layout: TextureRect = %SkyCraft
+@onready var sky_ecology_layout: TextureRect = %SkyEcology
+@onready var sky_monster_layout: TextureRect = %SkyMonster
 @onready var pause_button := find_child("PauseButton", true, false) as TextureButton
 @onready var restart_button := find_child("RestartButton", true, false) as TextureButton
 @onready var pause_overlay := find_child("PauseOverlay", true, false) as Control
@@ -79,6 +89,7 @@ enum ScanPhase {
 @onready var exit_game_button := find_child("ExitGameButton", true, false) as Button
 @onready var level_select_button := find_child("LevelSelectButton", true, false) as Button
 @onready var pause_settings_button := find_child("PauseSettingsButton", true, false) as Button
+@onready var pause_help_button := find_child("PauseHelpButton", true, false) as Button
 @onready var main_menu_button := find_child("MainMenuButton", true, false) as Button
 @onready var restart_button_label := find_child("RestartButtonLabel", true, false) as Label
 @onready var tabletop_actors := find_child("LandTabletopActors", true, false) as Control
@@ -98,17 +109,51 @@ var _scan_energy := 0
 var _scan_target_global_position := Vector2.ZERO
 var _used_flags := 0
 var _maximum_flags := 0
+var _operation_mode := 0
 var _cleared_boss_eyes := 0
 var _total_boss_eyes := 0
 var _seen_mechanic_guides: Dictionary = {}
 var _active_mechanic_guide_id := &""
+var _pause_menu_buttons: Array[Button] = []
+var _pause_menu_index := 0
+var _pause_menu_primary_style: StyleBox
+var _pause_menu_secondary_style: StyleBox
+var _badge_celebration: BadgeCelebration
+
+
+func _optional_label(path: NodePath) -> Label:
+	var existing := get_node_or_null(path) as Label
+	return existing if existing != null else Label.new()
 
 
 func _ready() -> void:
 	_prepare_copied_interface()
+	_badge_celebration = BADGE_CELEBRATION_SCENE.instantiate() as BadgeCelebration
+	add_child(_badge_celebration)
+	_badge_celebration.book_requested.connect(
+		func(level_number: int) -> void:
+			badge_book_requested.emit(level_number)
+	)
+	_configure_pause_menu_keyboard_focus()
 	resized.connect(_on_interface_resized)
 	call_deferred("_apply_interface_transform")
 	_mount_sky_sphere()
+	tabletop_actors.call(
+		"configure_sky_layout",
+		Rect2(sky_robot_layout.position, sky_robot_layout.size),
+		Rect2(sky_craft_layout.position, sky_craft_layout.size),
+		Rect2(sky_ecology_layout.position, sky_ecology_layout.size),
+		Rect2(sky_monster_layout.position, sky_monster_layout.size)
+	)
+	for layout_preview in [
+		sky_robot_layout,
+		sky_scan_dot_preview,
+		sky_craft_layout,
+		sky_ecology_layout,
+		sky_monster_layout,
+	]:
+		layout_preview.visible = false
+	tabletop_actors.visible = true
 	tabletop_actors.call("configure_for_sky")
 	tabletop_actors.connect("scan_activation_requested", _request_scan_mode)
 	first_move_guide.dialogue_completed.connect(_on_mechanic_dialogue_completed)
@@ -119,11 +164,76 @@ func _ready() -> void:
 	pause_restart_button.pressed.connect(_restart_from_pause)
 	level_select_button.pressed.connect(_on_level_select_pressed)
 	pause_settings_button.pressed.connect(func() -> void: settings_requested.emit())
+	pause_help_button.pressed.connect(func() -> void: help_requested.emit())
 	main_menu_button.pressed.connect(_on_main_menu_pressed)
 	exit_game_button.pressed.connect(func() -> void: exit_game_requested.emit())
 	set_process(true)
 	if auto_start:
 		start_level(14, 0)
+
+
+func _configure_pause_menu_keyboard_focus() -> void:
+	_pause_menu_buttons = [
+		resume_button,
+		pause_restart_button,
+		level_select_button,
+		pause_settings_button,
+		pause_help_button,
+		main_menu_button,
+		exit_game_button,
+	]
+	_pause_menu_primary_style = resume_button.get_theme_stylebox("normal")
+	_pause_menu_secondary_style = pause_restart_button.get_theme_stylebox("normal")
+	for button_index in _pause_menu_buttons.size():
+		var button := _pause_menu_buttons[button_index]
+		button.focus_mode = Control.FOCUS_NONE
+		button.mouse_entered.connect(_set_pause_menu_index.bind(button_index))
+	_refresh_pause_menu_button_styles()
+
+
+func _set_pause_menu_index(button_index: int) -> void:
+	if button_index < 0 or button_index >= _pause_menu_buttons.size():
+		return
+	_pause_menu_index = button_index
+	_focus_pause_menu_button()
+
+
+func _move_pause_menu_focus(step: int) -> void:
+	if _pause_menu_buttons.is_empty():
+		return
+	_pause_menu_index = wrapi(
+		_pause_menu_index + step,
+		0,
+		_pause_menu_buttons.size()
+	)
+	_focus_pause_menu_button()
+
+
+func _refresh_pause_menu_button_styles() -> void:
+	if _pause_menu_primary_style == null or _pause_menu_secondary_style == null:
+		return
+	for button_index in _pause_menu_buttons.size():
+		var button := _pause_menu_buttons[button_index]
+		var selected := _paused and button_index == _pause_menu_index
+		button.add_theme_stylebox_override(
+			"normal",
+			_pause_menu_primary_style if selected else _pause_menu_secondary_style
+		)
+		button.add_theme_stylebox_override("hover", _pause_menu_primary_style)
+		button.add_theme_stylebox_override("pressed", _pause_menu_primary_style)
+		button.add_theme_stylebox_override("focus", _pause_menu_primary_style)
+
+
+func _focus_pause_menu_button() -> void:
+	if not _paused or _pause_menu_buttons.is_empty():
+		return
+	_refresh_pause_menu_button_styles()
+
+
+func _activate_pause_menu_focus() -> void:
+	if _pause_menu_buttons.is_empty():
+		return
+	_pause_menu_buttons[_pause_menu_index].emit_signal("pressed")
 
 
 func _on_interface_resized() -> void:
@@ -155,11 +265,11 @@ func _apply_interface_transform() -> void:
 
 func _prepare_copied_interface() -> void:
 	var sky_background := find_child("SkyDeskBackground", true, false) as TextureRect
-	var latest_background := _load_source_texture(ART.SKY_DESKTOP_BACKGROUND)
+	var latest_background := _load_source_texture(ART.SKY_V2_BACKGROUND)
 	if sky_background != null and latest_background != null:
 		sky_background.texture = latest_background
 	var sky_frame := find_child("SkyBoardFrame", true, false) as TextureRect
-	var latest_frame := _load_source_texture(ART.SKY_BOARD_FRAME)
+	var latest_frame := _load_source_texture(ART.SKY_V2_STAGE_BODY)
 	if sky_frame != null and latest_frame != null:
 		sky_frame.texture = latest_frame
 	for node_name in [
@@ -192,16 +302,16 @@ func _prepare_copied_interface() -> void:
 		var node := find_child(node_name, true, false) as CanvasItem
 		if node != null:
 			node.visible = false
-	_apply_ocean_button_art()
-	subtitle_label.text = tr("第15关 · 云冠")
-	level_summary_label.text = tr("12个五边形 + 20个六边形\n污染核心 6")
-	objective_label.text = tr("旋转球面，净化全部安全面")
+	_apply_sky_button_art()
+	subtitle_label.text = tr("TXT_0097")
+	level_summary_label.text = tr("TXT_0103")
+	objective_label.text = tr("TXT_0123")
 	instructions_label.text = (
-		tr("拖拽旋转 · 左键净化 · 右键标记 · C扫描\n")
-		+ tr("方向键选择 · W S A D旋转 · J翻开 · K标记")
+		tr("TXT_0226")
+		+ tr("TXT_0227")
 	)
 	flags_label.text = "0/6"
-	status_label.text = tr("旋转球面，寻找安全起点")
+	status_label.text = tr("TXT_0228")
 	pause_overlay.visible = false
 	_update_timer_label()
 
@@ -217,17 +327,25 @@ func _load_source_texture(path: String) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
-func _apply_ocean_button_art() -> void:
-	pause_button.texture_normal = load(ART.OCEAN_PAUSE_NORMAL)
-	pause_button.texture_hover = load(ART.OCEAN_PAUSE_HOVER)
-	pause_button.texture_focused = load(ART.OCEAN_PAUSE_FOCUS)
-	pause_button.texture_pressed = load(ART.OCEAN_PAUSE_PRESSED)
-	restart_button.texture_normal = load(ART.OCEAN_REGENERATE_NORMAL)
-	restart_button.texture_hover = load(ART.OCEAN_REGENERATE_HOVER)
-	restart_button.texture_focused = load(ART.OCEAN_REGENERATE_FOCUS)
-	restart_button.texture_pressed = load(ART.OCEAN_REGENERATE_PRESSED)
-	(find_child("PauseButtonLabel", true, false) as Label).add_theme_color_override("font_color", Color("123f5e"))
-	(find_child("RestartButtonLabel", true, false) as Label).add_theme_color_override("font_color", Color("123f5e"))
+func _apply_sky_button_art() -> void:
+	var settings_texture := load(ART.SKY_V2_SETTINGS_BUTTON) as Texture2D
+	var restart_texture := load(ART.SKY_V2_RESTART_BUTTON) as Texture2D
+	pause_button.texture_normal = settings_texture
+	pause_button.texture_hover = settings_texture
+	pause_button.texture_focused = settings_texture
+	pause_button.texture_pressed = settings_texture
+	restart_button.texture_normal = restart_texture
+	restart_button.texture_hover = restart_texture
+	restart_button.texture_focused = restart_texture
+	restart_button.texture_pressed = restart_texture
+	(find_child("PauseButtonLabel", true, false) as Label).add_theme_color_override(
+		"font_color",
+		Color("123f5e")
+	)
+	(find_child("RestartButtonLabel", true, false) as Label).add_theme_color_override(
+		"font_color",
+		Color("123f5e")
+	)
 
 
 func _mount_sky_sphere() -> void:
@@ -236,12 +354,14 @@ func _mount_sky_sphere() -> void:
 	_sky_board.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_sky_board.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	board_center.add_child(_sky_board)
+	_sky_board.call("set_operation_mode", _operation_mode)
 	_sky_board.connect(
 		"flags_changed",
 		func(used_flags: int, max_flags: int) -> void:
 			_used_flags = used_flags
 			_maximum_flags = max_flags
 			flags_label.text = "%d/%d" % [used_flags, max_flags]
+			sky_mine_counter_label.text = "%d/%d" % [used_flags, max_flags]
 	)
 	_sky_board.connect(
 		"status_changed",
@@ -251,6 +371,7 @@ func _mount_sky_sphere() -> void:
 	_sky_board.connect("first_reveal", _on_first_reveal)
 	_sky_board.connect("board_interacted", _on_board_interacted)
 	_sky_board.connect("face_revealed", AudioManager.play_sky_reveal)
+	_sky_board.connect("breeze_effect_started", AudioManager.play_sky_breeze)
 	_sky_board.connect("scan_energy_earned", _award_scan_energy)
 	_sky_board.connect("scan_target_requested", _on_scan_target_requested)
 	_sky_board.connect("scan_cancel_requested", _cancel_scan_targeting)
@@ -261,6 +382,8 @@ func _mount_sky_sphere() -> void:
 
 
 func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
+	if is_instance_valid(_badge_celebration):
+		_badge_celebration.hide_award()
 	_active_mechanic_guide_id = &""
 	first_move_guide.hide_guide()
 	current_level_index = clampi(
@@ -273,7 +396,7 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	var core_count := int(level["core_count"])
 	var face_count := int(level.get("face_count", 32))
 	var structure_name := str(
-		level.get("structure_name", tr("%d格云球") % face_count)
+		level.get("structure_name", tr("TXT_0111") % face_count)
 	)
 	var breeze_uses := int(level.get("breeze_assists", 0))
 	var breeze_chance := float(level.get("breeze_trigger_chance", 0.0))
@@ -301,35 +424,38 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 		storm_guard_chance,
 		boss_eye_count
 	)
-	subtitle_label.text = tr("第%d关 · %s") % [level_number, tr(str(level["name"]))]
-	level_summary_label.text = tr("%s · 共%d格\n污染核心 %d") % [
+	subtitle_label.text = tr("TXT_0095") % [level_number, tr(str(level["name"]))]
+	level_summary_label.text = tr("TXT_0100") % [
 		tr(structure_name),
 		face_count,
 		core_count,
 	]
-	objective_label.text = tr("旋转球面，净化全部安全面")
+	objective_label.text = tr("TXT_0123")
 	if boss_eye_count > 0:
 		objective_label.text = (
-			tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d")
+			tr("TXT_0125")
 			% boss_eye_count
 		)
 	elif storm_guard_uses != 0:
-		objective_label.text = tr("随机助益翻格或标雷 · 云盾保护概率拦截踩雷")
+		objective_label.text = tr("TXT_0127")
 	elif breeze_uses != 0:
-		objective_label.text = tr("净化时可能触发随机翻格或自动标雷")
+		objective_label.text = tr("TXT_0128")
 	_used_flags = 0
 	_maximum_flags = core_count
 	flags_label.text = "0/%d" % core_count
-	status_label.text = tr("旋转球面，寻找安全起点")
-	restart_button_label.text = tr("重新生成")
+	sky_mine_counter_label.text = "0/%d" % core_count
+	status_label.text = tr("TXT_0228")
+	restart_button_label.text = tr("TXT_0142")
 	_initialize_scan_ability()
 	visible = true
 	level_started.emit(level_number)
 	call_deferred("_show_level_mechanic_guide")
 
 
-func set_operation_mode(_mode: int) -> void:
-	pass
+func set_operation_mode(mode: int) -> void:
+	_operation_mode = 1 if mode == 1 else 0
+	if is_instance_valid(_sky_board):
+		_sky_board.call("set_operation_mode", _operation_mode)
 
 
 func refresh_localized_interface() -> void:
@@ -337,47 +463,50 @@ func refresh_localized_interface() -> void:
 	var level_number := int(level["number"])
 	var core_count := int(level["core_count"])
 	var face_count := int(level.get("face_count", 32))
-	var structure_name := str(level.get("structure_name", tr("%d格云球") % face_count))
-	subtitle_label.text = tr("第%d关 · %s") % [
+	var structure_name := str(level.get("structure_name", tr("TXT_0111") % face_count))
+	subtitle_label.text = tr("TXT_0095") % [
 		level_number,
 		tr(str(level["name"])),
 	]
-	level_summary_label.text = tr("%s · 共%d格\n污染核心 %d") % [
+	level_summary_label.text = tr("TXT_0100") % [
 		tr(structure_name),
 		face_count,
 		core_count,
 	]
 	instructions_label.text = (
-		tr("拖拽旋转 · 左键净化 · 右键标记 · C扫描\n")
-		+ tr("方向键选择 · W S A D旋转 · J翻开 · K标记")
+		tr("TXT_0226")
+		+ tr("TXT_0227")
 	)
 	if _total_boss_eyes > 0:
 		objective_label.text = (
-			tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d")
+			tr("TXT_0126")
 			% [_cleared_boss_eyes, _total_boss_eyes]
 		)
 	elif int(level.get("storm_guard_assists", 0)) != 0:
-		objective_label.text = tr("随机助益翻格或标雷 · 云盾保护概率拦截踩雷")
+		objective_label.text = tr("TXT_0127")
 	elif int(level.get("breeze_assists", 0)) != 0:
-		objective_label.text = tr("净化时可能触发随机翻格或自动标雷")
+		objective_label.text = tr("TXT_0128")
 	else:
-		objective_label.text = tr("旋转球面，净化全部安全面")
+		objective_label.text = tr("TXT_0123")
 	flags_label.text = "%d/%d" % [_used_flags, _maximum_flags]
+	sky_mine_counter_label.text = "%d/%d" % [_used_flags, _maximum_flags]
 	if _round_finished:
 		if _gameplay_state == 2:
 			restart_button_label.text = (
-				tr("下一关")
+				tr("TXT_0052")
 				if current_level_index < LEVELS.PLAYABLE_LEVELS.size() - 1
-				else tr("进入宇宙篇")
+				else tr("TXT_0041")
 			)
 		else:
-			restart_button_label.text = tr("重新生成")
+			restart_button_label.text = tr("TXT_0142")
 	elif not _round_started:
-		status_label.text = tr("旋转球面，寻找安全起点")
-		restart_button_label.text = tr("重新生成")
+		status_label.text = tr("TXT_0228")
+		restart_button_label.text = tr("TXT_0142")
 	else:
-		status_label.text = tr("净化进行中")
+		status_label.text = tr("TXT_0131")
 	_refresh_scan_ui()
+	if is_instance_valid(_badge_celebration):
+		_badge_celebration.refresh_language()
 	first_move_guide.refresh_localized_text()
 	if is_instance_valid(_sky_board) \
 			and _sky_board.has_method("refresh_localized_text"):
@@ -397,6 +526,17 @@ func set_first_move_guide_enabled(_enabled: bool) -> void:
 
 
 func _process(_delta: float) -> void:
+	if _paused and pause_overlay.visible and is_visible_in_tree():
+		if Input.is_action_just_pressed("ui_up") \
+				or Input.is_action_just_pressed("ui_left"):
+			_move_pause_menu_focus(-1)
+		elif Input.is_action_just_pressed("ui_down") \
+				or Input.is_action_just_pressed("ui_right"):
+			_move_pause_menu_focus(1)
+		elif Input.is_action_just_pressed("ui_accept"):
+			_activate_pause_menu_focus()
+		_focus_pause_menu_button()
+		return
 	if _timer_running:
 		_update_timer_label()
 
@@ -457,6 +597,7 @@ func _on_mechanic_dialogue_completed(guide_id: StringName) -> void:
 	if not _paused and not _round_finished:
 		_sky_board.call("set_interaction_enabled", true)
 		_sky_board.process_mode = Node.PROCESS_MODE_INHERIT
+		_sky_board.call_deferred("_restore_keyboard_focus")
 		tabletop_actors.call("set_scan_paused", false)
 		_resume_timer()
 
@@ -495,7 +636,7 @@ func _on_boss_eye_hit(
 	_cleared_boss_eyes = cleared_eyes
 	_total_boss_eyes = total_eyes
 	objective_label.text = (
-		tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d")
+		tr("TXT_0126")
 		% [cleared_eyes, total_eyes]
 	)
 
@@ -511,14 +652,30 @@ func _on_gameplay_state_changed(state: int) -> void:
 	if state == 2:
 		AudioManager.play_level_win(current_level_index + 1)
 		level_completed.emit(current_level_index + 1, _elapsed_before_segment_ms)
+		call_deferred("_show_badge_celebration", current_level_index + 1)
 		restart_button_label.text = (
-			tr("下一关")
+			tr("TXT_0052")
 			if current_level_index < LEVELS.PLAYABLE_LEVELS.size() - 1
-			else tr("进入宇宙篇")
+			else tr("TXT_0041")
 		)
 	else:
 		AudioManager.play_fail()
-		restart_button_label.text = tr("重新生成")
+		restart_button_label.text = tr("TXT_0142")
+
+
+func _show_badge_celebration(level_number: int) -> void:
+	if (
+		is_instance_valid(_badge_celebration)
+		and _gameplay_state == 2
+		and current_level_index + 1 == level_number
+	):
+		_badge_celebration.show_award(level_number)
+
+
+func continue_after_badge_book() -> void:
+	if _gameplay_state != 2:
+		return
+	_on_primary_button_pressed()
 
 
 func _on_primary_button_pressed() -> void:
@@ -546,14 +703,14 @@ func _restart_sky_board() -> void:
 	_round_started = false
 	_gameplay_state = 0
 	tabletop_actors.call("play_reaction", false, false)
-	restart_button_label.text = tr("重新生成")
+	restart_button_label.text = tr("TXT_0142")
 	var level: Dictionary = LEVELS.PLAYABLE_LEVELS[current_level_index]
 	var boss_eye_count := int(level.get("boss_eye_count", 0))
 	_cleared_boss_eyes = 0
 	_total_boss_eyes = boss_eye_count
 	if boss_eye_count > 0:
 		objective_label.text = (
-			tr("持续净化等待雷眼 · 正确标记周围污染并双击击破 0/%d")
+			tr("TXT_0125")
 			% boss_eye_count
 		)
 	_reset_timer()
@@ -578,8 +735,12 @@ func _set_paused(value: bool) -> void:
 	tabletop_actors.call("set_scan_paused", value or guide_active)
 	if value:
 		_pause_timer()
+		_pause_menu_index = 0
+		call_deferred("_focus_pause_menu_button")
 	else:
 		_resume_timer()
+		_sky_board.call_deferred("grab_focus")
+	_refresh_pause_menu_button_styles()
 	pause_changed.emit(value)
 
 
@@ -625,7 +786,7 @@ func _request_scan_mode() -> void:
 	_scan_phase = ScanPhase.TARGETING
 	_sky_board.call("set_scan_target_mode", true)
 	tabletop_actors.call("begin_scan_targeting")
-	status_label.text = tr("选择一个隐藏格进行生态扫描")
+	status_label.text = tr("TXT_0204")
 	_refresh_scan_ui()
 
 
@@ -651,8 +812,9 @@ func _on_scan_target_requested(face_index: int) -> void:
 func _on_scan_completed(_face_index: int, result: int) -> void:
 	_scan_phase = ScanPhase.FINISHED if _round_finished else ScanPhase.CHARGING
 	tabletop_actors.call("play_scan_result", result, _scan_target_global_position)
-	status_label.text = tr("扫描确认：污染核心") if result == 1 else tr("扫描确认：安全面")
+	status_label.text = tr("TXT_0205") if result == 1 else tr("TXT_0206")
 	_refresh_scan_ui()
+	_sky_board.call_deferred("_restore_keyboard_focus")
 
 
 func _cancel_scan_targeting() -> void:
@@ -661,8 +823,9 @@ func _cancel_scan_targeting() -> void:
 	_sky_board.call("set_scan_target_mode", false)
 	_scan_phase = ScanPhase.READY
 	tabletop_actors.call("cancel_scan_targeting")
-	status_label.text = tr("净化进行中")
+	status_label.text = tr("TXT_0131")
 	_refresh_scan_ui()
+	_sky_board.call_deferred("_restore_keyboard_focus")
 
 
 func _finish_scan_ability() -> void:
@@ -688,18 +851,18 @@ func _refresh_scan_ui() -> void:
 		and not _paused
 		and not _round_finished
 	)
-	var tooltip := tr("完成首次净化后可使用生态扫描")
+	var tooltip := tr("TXT_0203")
 	match _scan_phase:
 		ScanPhase.CHARGING:
-			tooltip = tr("扫描充能 %d/%d") % [_scan_energy, SCAN_CAPACITY]
+			tooltip = tr("TXT_0186") % [_scan_energy, SCAN_CAPACITY]
 		ScanPhase.READY:
-			tooltip = tr("点击机器人或按 C，选择隐藏格扫描")
+			tooltip = tr("TXT_0188")
 		ScanPhase.TARGETING:
-			tooltip = tr("选择隐藏格；Esc、右键或 C 取消")
+			tooltip = tr("TXT_0190")
 		ScanPhase.RESOLVING:
-			tooltip = tr("正在扫描")
+			tooltip = tr("TXT_0191")
 		ScanPhase.FINISHED:
-			tooltip = tr("本局已经结束")
+			tooltip = tr("TXT_0192")
 	tabletop_actors.call("set_scan_activation_enabled", enabled, tooltip)
 
 
@@ -740,4 +903,6 @@ func _update_timer_label() -> void:
 	var minutes := int(elapsed_ms / 60000)
 	var seconds := int(elapsed_ms / 1000) % 60
 	var tenths := int(elapsed_ms / 100) % 10
-	timer_label.text = "%02d:%02d.%d" % [minutes, seconds, tenths]
+	var formatted_time := "%02d:%02d.%d" % [minutes, seconds, tenths]
+	timer_label.text = formatted_time
+	sky_timer_counter_label.text = formatted_time

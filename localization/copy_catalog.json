@@ -1,0 +1,6606 @@
+{
+  "schema": 1,
+  "id_format": "TXT_####",
+  "source_of_truth": "docs/copy/GAME_COPY_CATALOG.xlsx",
+  "entries": [
+    {
+      "id": "TXT_0001",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "绿色清扫者",
+      "en": "Green Sweeper",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:701"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0002",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "开始旅程",
+      "en": "Start Journey",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:744"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0003",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "继续游戏",
+      "en": "Continue",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1474",
+        "scenes/shell.tscn:817",
+        "scenes/sky_level_15_prototype.tscn:1269",
+        "scripts/shell.gd:1371"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0004",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "继续游戏 · %02d %s",
+      "en": "Continue · %02d %s",
+      "placeholders": [
+        "%02d",
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1365"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0005",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "关卡选择",
+      "en": "Level Select",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0006",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "游戏设置",
+      "en": "Settings",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:780"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0007",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "设置",
+      "en": "Settings",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1525",
+        "scenes/shell.tscn:1153",
+        "scenes/sky_level_15_prototype.tscn:1308",
+        "scenes/universe_endless.tscn:329"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0008",
+      "category": "品牌与主菜单",
+      "status": "非独立显示",
+      "zh_CN": "退出",
+      "en": "Exit",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0009",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "退出游戏",
+      "en": "Exit Game",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1576",
+        "scenes/shell.tscn:798",
+        "scenes/sky_level_15_prototype.tscn:1347",
+        "scenes/universe_endless.tscn:344"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0010",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "开始第一局后即可继续",
+      "en": "Play your first game to enable Continue",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1372"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0011",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "重新生成上次游玩的关卡",
+      "en": "Regenerate the last level you played",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1369"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0012",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "v0.7.0  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇",
+      "en": "v0.7.0  ·  Land + Ocean + Sky + Universe",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:823"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0013",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "主音量",
+      "en": "Master Volume",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1163"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0014",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "声音开关",
+      "en": "Audio",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1188"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0015",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "背景音乐：开启",
+      "en": "Music: On",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1196"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0016",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "背景音乐：%s",
+      "en": "Music: %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1433"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0017",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "游戏音效：开启",
+      "en": "Sound Effects: On",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1204"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0018",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "游戏音效：%s",
+      "en": "Sound Effects: %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1436"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0019",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "开启",
+      "en": "On",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1434",
+        "scripts/shell.gd:1437"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0020",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "关闭",
+      "en": "Off",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1434",
+        "scripts/shell.gd:1437"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0021",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "显示模式",
+      "en": "Display Mode",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1214"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0022",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "窗口模式（1280 × 720）",
+      "en": "Windowed (1280 × 720)",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1377"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0023",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "最大化窗口",
+      "en": "Maximized Window",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1378"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0024",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "无边框全屏",
+      "en": "Borderless Fullscreen",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1379"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0025",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "操作方式",
+      "en": "Controls",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1231"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0026",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "鼠标操作",
+      "en": "Mouse",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1382"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0027",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "键盘操作（方向键 / W S A D + J / K）",
+      "en": "Keyboard (Arrows / W S A D + J / K)",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1384"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0028",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "语言 / Language",
+      "en": "Language",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1248"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0029",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "简体中文",
+      "en": "Simplified Chinese",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1389"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0030",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "设置会自动保存；横屏基准为1280 × 720",
+      "en": "Settings save automatically · Landscape baseline: 1280 × 720",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1261"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0031",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "返回主菜单",
+      "en": "Back to Main Menu",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1559",
+        "scenes/shell.tscn:1289",
+        "scenes/shell.tscn:1352",
+        "scenes/sky_level_15_prototype.tscn:1334"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0032",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回首页",
+      "en": "Back to Home",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1113"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0033",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回欢迎界面",
+      "en": "Back to Welcome Screen",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:339"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0034",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回关卡",
+      "en": "Back to Level",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1076",
+        "scripts/shell.gd:496",
+        "scripts/shell.gd:740"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0035",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "关卡选择",
+      "en": "Level Select",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1508",
+        "scenes/sky_level_15_prototype.tscn:1295"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0036",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回陆地篇",
+      "en": "Back to Land",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:328"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0037",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回海洋篇",
+      "en": "Back to Ocean",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:321"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0038",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回天空篇",
+      "en": "Back to Sky",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:246",
+        "scenes/universe_endless.tscn:400",
+        "scripts/shell.gd:335"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0039",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "进入海洋篇",
+      "en": "Enter Ocean Chapter",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1106",
+        "scripts/shell.gd:337"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0040",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "进入天空篇",
+      "en": "Enter Sky Chapter",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1098",
+        "scripts/shell.gd:330"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0041",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "进入宇宙篇",
+      "en": "Enter Universe Chapter",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:496",
+        "scripts/sky_level_prototype.gd:657"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0042",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "进入无尽宇宙",
+      "en": "Enter the Endless Universe",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:323"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0043",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "← 陆地篇",
+      "en": "← Land",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:327"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0044",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "← 海洋篇",
+      "en": "← Ocean",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:320"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0045",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "← 天空篇",
+      "en": "← Sky",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:334"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0046",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "海洋篇 →",
+      "en": "Ocean →",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:336"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0047",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "天空篇 →",
+      "en": "Sky →",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:329"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0048",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "宇宙篇 →",
+      "en": "Universe →",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:322"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0049",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "上一章节",
+      "en": "Previous Chapter",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1097"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0050",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "下一章节",
+      "en": "Next Chapter",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1105"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0051",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "下一\n章节",
+      "en": "Next\nChapter",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:985",
+        "scripts/main.gd:1829"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0052",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "下一关",
+      "en": "Next Level",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:991",
+        "scripts/main.gd:1837",
+        "scripts/sky_level_prototype.gd:494",
+        "scripts/sky_level_prototype.gd:655"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0053",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "返回\n地图",
+      "en": "Back to\nMap",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:988",
+        "scripts/main.gd:1833"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0054",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "陆地探险",
+      "en": "Land Expedition",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:927",
+        "scripts/shell.gd:332"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0055",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "海洋探险",
+      "en": "Ocean Expedition",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:325"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0056",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "天空探险",
+      "en": "Sky Expedition",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:318"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0057",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "陆地篇",
+      "en": "Land",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:869"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0058",
+      "category": "地图与导航",
+      "status": "非独立显示",
+      "zh_CN": "海洋篇",
+      "en": "Ocean",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0059",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "宇宙篇 · 无尽星航",
+      "en": "Universe · Endless Voyage",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:60"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0060",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "当前关卡：%02d %s",
+      "en": "Current Level: %02d %s",
+      "placeholders": [
+        "%02d",
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1281"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0061",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "选择第%d关 · %s",
+      "en": "Select Level %d · %s",
+      "placeholders": [
+        "%d",
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1187"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0062",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "已完成：%d / %d",
+      "en": "Completed: %d / %d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/shell.gd:1084"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0063",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "已完成：0 / 5",
+      "en": "Completed: 0 / 5",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1028"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0064",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "状态：%s",
+      "en": "Status: %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1298"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0065",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "状态：已解锁",
+      "en": "Status: Unlocked",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1016"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0066",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "未解锁",
+      "en": "Locked",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1291"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0067",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "已解锁",
+      "en": "Unlocked",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1297"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0068",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "正在进行",
+      "en": "In Progress",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1295"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0069",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "已完成",
+      "en": "Completed",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1293"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0070",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "最佳时间：%s",
+      "en": "Best Time: %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/shell.gd:1301"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0071",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "最佳时间：--:--.-",
+      "en": "Best Time: --:--.-",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1041",
+        "scripts/shell.gd:1303"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0072",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "单击选择地图节点\n再次点击进入关卡",
+      "en": "Click a map node to select it\nClick again to enter the level",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1053"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0073",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "萌芽",
+      "en": "Sprout",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:5",
+        "scripts/level_data.gd:6"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0074",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "灌木",
+      "en": "Shrubland",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:6",
+        "scripts/level_data.gd:14"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0075",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "湿地",
+      "en": "Wetland",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:7",
+        "scripts/level_data.gd:22"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0076",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "草原",
+      "en": "Grassland",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:8",
+        "scripts/level_data.gd:32"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0077",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "森林",
+      "en": "Forest",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:9"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0078",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "密林",
+      "en": "Deep Forest",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:51"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0079",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "古林",
+      "en": "Ancient Grove",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:61"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0080",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "海草",
+      "en": "Seagrass",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:80"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0081",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "珊瑚",
+      "en": "Coral Reef",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:92"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0082",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "海葵",
+      "en": "Sea Anemone",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:71"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0083",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "水母",
+      "en": "Jellyfish",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:105"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0084",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "鱼群",
+      "en": "Fish Shoal",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:125"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0085",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "海沟",
+      "en": "Ocean Trench",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:146"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0086",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "鲸落",
+      "en": "Whale Fall",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:168"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0087",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "云冠",
+      "en": "Cloud Crown",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:196"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0088",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "风环",
+      "en": "Wind Ring",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:205"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0089",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "虹桥",
+      "en": "Rainbow Bridge",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:214"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0090",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "浮岛",
+      "en": "Floating Isles",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:225"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0091",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "云脊",
+      "en": "Cloud Ridge",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:236"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0092",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "雷眼",
+      "en": "Storm Eye",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:249"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0093",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "天宫",
+      "en": "Sky Palace",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:263"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0094",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "萌芽  →  灌木  →  湿地  →  草原  →  森林",
+      "en": "Sprout  →  Shrubland  →  Wetland  →  Grassland  →  Forest",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:876"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0095",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "第%d关 · %s",
+      "en": "Level %d · %s",
+      "placeholders": [
+        "%d",
+        "%s"
+      ],
+      "sources": [
+        "scripts/main.gd:809",
+        "scripts/main.gd:936",
+        "scripts/sky_level_prototype.gd:425",
+        "scripts/sky_level_prototype.gd:465"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0096",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "第1关 · 萌芽",
+      "en": "Level 1 · Sprout",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:181",
+        "scenes/main.tscn:678",
+        "scenes/sky_level_15_prototype.tscn:425"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0097",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "第15关 · 云冠",
+      "en": "Level 15 · Cloud Crown",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:304"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0098",
+      "category": "旧版原型",
+      "status": "旧版",
+      "zh_CN": "第15关 · 云冠（球面原型）",
+      "en": "Level 15 · Cloud Crown (Sphere Prototype)",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_prototype_host.gd:59"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0099",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "%d × %d %s\n污染核心 %d",
+      "en": "%d × %d %s\nPollution Cores %d",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%s",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:813",
+        "scripts/main.gd:940"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0100",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "%s · 共%d格\n污染核心 %d",
+      "en": "%s · %d Cells\nPollution Cores %d",
+      "placeholders": [
+        "%s",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_level_prototype.gd:426",
+        "scripts/sky_level_prototype.gd:469"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0101",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "棋盘",
+      "en": "Board",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:816",
+        "scripts/main.gd:943"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0102",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "六边形棋盘",
+      "en": "Hex Board",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:816",
+        "scripts/main.gd:943"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0103",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "12个五边形 + 20个六边形\n污染核心 6",
+      "en": "12 Pentagons + 20 Hexagons\nPollution Cores 6",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:305",
+        "scripts/sky_prototype_host.gd:61"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0104",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "32格足球烯",
+      "en": "32-cell Fullerene",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:199"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0105",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "42格二频云球",
+      "en": "42-cell Frequency-2 Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:208"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0106",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "92格三频云球",
+      "en": "92-cell Frequency-3 Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:217"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0107",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "162格四频云球",
+      "en": "162-cell Frequency-4 Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:228"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0108",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "252格五频云球",
+      "en": "252-cell Frequency-5 Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:239"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0109",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "362格六频云球",
+      "en": "362-cell Frequency-6 Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:252"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0110",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "492格七频云球",
+      "en": "492-cell Frequency-7 Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:266"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0111",
+      "category": "关卡名称与棋盘",
+      "status": "运行",
+      "zh_CN": "%d格云球",
+      "en": "%d-cell Cloud Sphere",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_level_prototype.gd:397",
+        "scripts/sky_level_prototype.gd:464"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0112",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化目标",
+      "en": "Objective",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:291",
+        "scenes/main.tscn:846",
+        "scenes/sky_level_15_prototype.tscn:768"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0113",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "操作方法",
+      "en": "Controls",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:189",
+        "scenes/main.tscn:686",
+        "scenes/sky_level_15_prototype.tscn:433"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0114",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "清除所有污染核心",
+      "en": "Clear every Pollution Core",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:299",
+        "scenes/main.tscn:854",
+        "scenes/sky_level_15_prototype.tscn:776"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0115",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "清除所有污染核心\n恢复%s生态",
+      "en": "Clear all Cores\nRestore %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/main.gd:1914"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0116",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化污染节点 %d/%d\n恢复%s生态",
+      "en": "Nodes %d/%d\nRestore %s",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%s"
+      ],
+      "sources": [
+        "scripts/main.gd:1908"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0117",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "污染母株\n根系锚点 %d/%d",
+      "en": "Root Anchors %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1903"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0118",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "辨认%d组漂流物\n每组%d个真水雷 · 任一流出即失败",
+      "en": "Stop %d drift groups\n%d mines each · No escapes",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1898"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0119",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化两圈污染场\n处理中心周围全部普通格",
+      "en": "Clear both rings\nResolve cells around the center",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1891"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0120",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "漂流水雷已拦截\n继续净化其余安全格",
+      "en": "Drifting Mines Intercepted\nContinue clearing the remaining safe cells",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1923"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0121",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "漂流污染源已净化\n继续清理其余污染",
+      "en": "Drifting Source Purified\nContinue clearing the remaining pollution",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1889",
+        "scripts/main.gd:1928"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0122",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "推进潮汐区 %d/%d\n翻开当前区全部安全格",
+      "en": "Tidal Zone %d/%d\nReveal all safe cells",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1934"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0123",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "旋转球面，净化全部安全面",
+      "en": "Rotate the sphere and clear every safe face",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:306",
+        "scripts/sky_level_prototype.gd:431",
+        "scripts/sky_level_prototype.gd:488"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0124",
+      "category": "旧版原型",
+      "status": "旧版",
+      "zh_CN": "旋转足球烯球面，净化全部安全面",
+      "en": "Rotate the fullerene sphere and clear every safe face",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_prototype_host.gd:64"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0125",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "持续净化等待雷眼 · 正确处理雷眼周围格自动击破 0/%d",
+      "en": "Keep clearing until a Storm Eye forms · Resolve every surrounding face to break it automatically 0/%d",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_level_prototype.gd:434",
+        "scripts/sky_level_prototype.gd:711"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0126",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d",
+      "en": "Keep clearing until a Storm Eye forms · Flag its pollution and double-click to break it %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_level_prototype.gd:480",
+        "scripts/sky_level_prototype.gd:637"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0127",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "随机助益翻格或标雷 · 云盾保护概率拦截踩雷",
+      "en": "Random wind may reveal or flag · Cloud Shield may block a mine",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:438",
+        "scripts/sky_level_prototype.gd:484"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0128",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化时可能触发随机翻格或自动标雷",
+      "en": "Clearing may trigger a random reveal or automatic flag",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:440",
+        "scripts/sky_level_prototype.gd:486"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0129",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "准备中",
+      "en": "Ready",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:269",
+        "scenes/main.tscn:874",
+        "scenes/sky_level_15_prototype.tscn:799",
+        "scripts/main.gd:974",
+        "scripts/main.gd:1805"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0130",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化中",
+      "en": "Clearing",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:978",
+        "scripts/main.gd:1818"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0131",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化进行中",
+      "en": "Clearing in Progress",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:504",
+        "scripts/sky_level_prototype.gd:824",
+        "scripts/sky_sphere_board.gd:575",
+        "scripts/sky_sphere_board.gd:1813"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0132",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "自由净化",
+      "en": "Free Clearing",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1622"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0133",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "引导中",
+      "en": "Guide Active",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:974",
+        "scripts/main.gd:1805"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0134",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "引导完成",
+      "en": "Guide Complete",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1740"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0135",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "引导进行中",
+      "en": "Guide in Progress",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1126"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0136",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "净化完成",
+      "en": "Purification Complete",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:990",
+        "scripts/main.gd:1836"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0137",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "%s净化完成！",
+      "en": "%s Purified!",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/main.gd:993",
+        "scripts/main.gd:1840"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0138",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "古林净化完成！",
+      "en": "Ancient Grove Purified!",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:984",
+        "scripts/main.gd:1828"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0139",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "海洋净化完成！",
+      "en": "Ocean Purified!",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:987",
+        "scripts/main.gd:1832"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0140",
+      "category": "目标与游戏状态",
+      "status": "运行",
+      "zh_CN": "球面净化完成",
+      "en": "Sphere Purified",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:577",
+        "scripts/sky_sphere_board.gd:1815"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0141",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "再来一局",
+      "en": "Play Again",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:994",
+        "scripts/main.gd:1841"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0142",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "重新生成",
+      "en": "Regenerate",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:446",
+        "scripts/sky_level_prototype.gd:499",
+        "scripts/sky_level_prototype.gd:502",
+        "scripts/sky_level_prototype.gd:661",
+        "scripts/sky_level_prototype.gd:704"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0143",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "重新开始",
+      "en": "Restart",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:426",
+        "scenes/main.tscn:1017",
+        "scenes/main.tscn:1491",
+        "scenes/sky_level_15_prototype.tscn:939",
+        "scenes/sky_level_15_prototype.tscn:1282",
+        "scripts/main.gd:650",
+        "scripts/main.gd:672"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0144",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "重新生成",
+      "en": "Regenerate",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1005",
+        "scenes/sky_level_15_prototype.tscn:987",
+        "scripts/main.gd:652",
+        "scripts/main.gd:674",
+        "scripts/main.gd:975",
+        "scripts/main.gd:1807"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0145",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "重新开始",
+      "en": "Restart",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:979",
+        "scripts/main.gd:1002",
+        "scripts/main.gd:1820",
+        "scripts/main.gd:1860"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0146",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "暂停 / Esc",
+      "en": "Pause / Esc",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:378",
+        "scenes/main.tscn:954",
+        "scenes/sky_level_15_prototype.tscn:878",
+        "scripts/main.gd:651",
+        "scripts/main.gd:673"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0147",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "暂停 Esc",
+      "en": "Pause Esc",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:414",
+        "scripts/main.gd:976",
+        "scripts/main.gd:980",
+        "scripts/main.gd:1808",
+        "scripts/main.gd:1821"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0148",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "菜单 Esc",
+      "en": "Menu Esc",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:462",
+        "scenes/main.tscn:1068",
+        "scenes/sky_level_15_prototype.tscn:928",
+        "scripts/main.gd:653",
+        "scripts/main.gd:675",
+        "scripts/main.gd:982",
+        "scripts/main.gd:1003",
+        "scripts/main.gd:1009",
+        "scripts/main.gd:1825",
+        "scripts/main.gd:1851"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0149",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "净化暂停",
+      "en": "Purification Paused",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1456",
+        "scenes/sky_level_15_prototype.tscn:1255"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0150",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "污染触发",
+      "en": "Pollution Triggered",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1000",
+        "scripts/main.gd:1857"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0151",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "污染触发 · %d个误标",
+      "en": "Pollution Triggered · %d Wrong Flags",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:998",
+        "scripts/main.gd:1855"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0152",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": " · 误标%d",
+      "en": " · Wrong %d",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1951"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0153",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "已用标记",
+      "en": "Flags Used",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0154",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "污染核心",
+      "en": "Pollution Cores",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0155",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "净化时间",
+      "en": "Clear Time",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0156",
+      "category": "暂停、失败与结算",
+      "status": "运行",
+      "zh_CN": "净化状态",
+      "en": "Status",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:261",
+        "scenes/main.tscn:866",
+        "scenes/sky_level_15_prototype.tscn:791"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0157",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "左键净化 · 右键标记 · 双击展开 · C扫描",
+      "en": "LMB Reveal · RMB Flag · C Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1092"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0158",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "方向键 / W S A D 移动 · J净化 · K标记 · C扫描",
+      "en": "Move Arrows/WASD · J Reveal · K Flag · C Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1090"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0159",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "方向键 / W S A D 移动",
+      "en": "Arrows / W S A D: Move",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1120"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0160",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "\nJ 净化 · K 标记 · C 扫描",
+      "en": "\nJ: Reveal · K: Flag · C: Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1121"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0161",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "\n鼠标仍可使用",
+      "en": "\nMouse controls remain available",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1122"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0162",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "\n左键净化 · 右键标记 · C扫描",
+      "en": "\nLeft: Reveal · Right: Flag · C: Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1108",
+        "scripts/main.gd:1127"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0163",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "\n双击数字快速展开",
+      "en": "\nDouble-click a number to expand",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1128"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0164",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "首点可能污染",
+      "en": "First Reveal May Be a Core",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1126"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0165",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "操作方法\n左键净化 · 右键标记\n双击数字快速展开",
+      "en": "Controls\nLeft: Reveal · Right: Flag\nDouble-click numbers to expand",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:87"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0166",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "礁带阻断六邻接；数字不统计另一侧，礁带端点不会出现0格",
+      "en": "Reefs block links; numbers ignore the far side",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1039"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0167",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "上下两组",
+      "en": "Two Groups",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1050"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0168",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "上中下三组",
+      "en": "Three Groups",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1053"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0169",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "%d组",
+      "en": "%d Groups",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1055"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0170",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "%s漂流物，每组%d个候选且包含%d个真水雷",
+      "en": "%s · %d buoys each · %d mines",
+      "placeholders": [
+        "%s",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1059"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0171",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "左键翻开安全浮标，右键标记水雷；完成后保留数字与标记并停止漂流",
+      "en": "Reveal safe buoys · Flag mines · Solved groups stop",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1063"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0172",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "%s每%d秒轮流移动，普通棋盘的公开与隐藏数字实时更新",
+      "en": "%s · Move every %d sec · Numbers update",
+      "placeholders": [
+        "%s",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1066"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0173",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "任一组真水雷未标记便流出过滤边界时，本局立即失败",
+      "en": "Any unflagged mine escaping = failure",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1070"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0174",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "漂流污染源每20秒移向右前方；每次移动后全盘数字实时更新",
+      "en": "Source moves every 20 sec · Numbers update",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1074"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0175",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "中心不可操作；浅蓝两圈内最多18格全部按普通扫雷处理",
+      "en": "Center is locked · Clear both blue rings normally",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1077"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0176",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "污染场完成即可净化；未完成便流出过滤边界则失败",
+      "en": "Clear both rings before the source escapes",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1080"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0177",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "边界数字只统计已退潮区域；净化当前潮区后解锁并更新下一潮区",
+      "en": "Numbers count open zones · Clear one zone to open the next",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1084"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0178",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "未解锁时状态栏会提示剩余安全格及错误标记数量",
+      "en": "Locked zones show missed cells and wrong flags",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1087"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0179",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "切断三条根系锚点以削弱污染母株",
+      "en": "Sever the three Root Anchors",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1098"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0180",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "污染节点不可操作，会计入邻近数字",
+      "en": "Nodes are locked and count in nearby numbers",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1100"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0181",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "\n翻开节点邻近安全格 · 标记邻近污染核心",
+      "en": "\nReveal safe neighbors · Flag nearby Cores",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1104"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0182",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "潮区 %d/%d · 准备",
+      "en": "Tidal Zone %d/%d · Ready",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1800",
+        "scripts/main.gd:1939"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0183",
+      "category": "操作与章节规则",
+      "status": "运行",
+      "zh_CN": "潮区 %d/%d · 净化中",
+      "en": "Tidal Zone %d/%d · Clearing",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1813",
+        "scripts/main.gd:1941"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0184",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描尚未准备",
+      "en": "Scan Not Ready",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1375",
+        "scripts/main.gd:1526"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0185",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "先完成第一次净化，再启动生态扫描",
+      "en": "Reveal one cell before using Eco Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1529"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0186",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描充能 %d/%d",
+      "en": "Scan Charge %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1531",
+        "scripts/sky_level_prototype.gd:855"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0187",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "点击机器人或按 C，选择一个格子扫描",
+      "en": "Click the robot or press C, then choose a cell to scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1533"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0188",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "点击机器人或按 C，选择隐藏格扫描",
+      "en": "Click the robot or press C, then choose a hidden cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:857"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0189",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "请选择隐藏格；Esc、右键或 C 取消",
+      "en": "Choose a hidden cell · Esc, Right Click, or C to cancel",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1535"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0190",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "选择隐藏格；Esc、右键或 C 取消",
+      "en": "Choose a hidden cell · Esc, Right Click, or C to cancel",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:859"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0191",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "正在扫描",
+      "en": "Scanning",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1537",
+        "scripts/sky_level_prototype.gd:861"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0192",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "本局已经结束",
+      "en": "This game is over",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1539",
+        "scripts/sky_level_prototype.gd:863"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0193",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "未启用",
+      "en": "Unavailable",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1548"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0194",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "首翻后可用",
+      "en": "Available after first reveal",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:343",
+        "scenes/main.tscn:919",
+        "scenes/sky_level_15_prototype.tscn:844",
+        "scripts/main.gd:1551"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0195",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描就绪",
+      "en": "Scan Ready",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1555"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0196",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "选择格子",
+      "en": "Choose a Cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1557"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0197",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描中",
+      "en": "Scanning",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1559"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0198",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "本局结束",
+      "en": "Game Over",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1561"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0199",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描 %d/%d · C",
+      "en": "Scan %d/%d · C",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0200",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "首翻后扫描 · C",
+      "en": "Scan after first reveal · C",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0201",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "按 C 或点击机器人",
+      "en": "Press C or click robot",
+      "placeholders": [],
+      "sources": [
+        "scenes/land_tabletop_actors.tscn:193",
+        "scripts/land_tabletop_actors.gd:687",
+        "scripts/land_tabletop_actors.gd:1516"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0202",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "选择格子 · Esc取消",
+      "en": "Choose a Cell · Esc to Cancel",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_tabletop_actors.gd:685",
+        "scripts/land_tabletop_actors.gd:699"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0203",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "完成首次净化后可使用生态扫描",
+      "en": "Eco Scan becomes available after the first reveal",
+      "placeholders": [],
+      "sources": [
+        "scenes/land_tabletop_actors.tscn:174",
+        "scripts/land_tabletop_actors.gd:289",
+        "scripts/sky_level_prototype.gd:852"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0204",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "选择一个隐藏格进行生态扫描",
+      "en": "Choose a hidden cell for Eco Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:787"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0205",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描确认：污染核心",
+      "en": "Scan Result: Pollution Core",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:813"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0206",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "扫描确认：安全面",
+      "en": "Scan Result: Safe Face",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:813"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0207",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "左键净化，右键标记污染核心",
+      "en": "Left Click to reveal · Right Click to flag Pollution Cores",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:564"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0208",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "潮汐锁定：先完成当前潮区",
+      "en": "Tide Locked: complete the current zone first",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:517"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0209",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "漂流污染源已净化",
+      "en": "Drifting Source Purified",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:521"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0210",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "中心污染源不可直接操作；完成浅蓝两圈普通格即可净化",
+      "en": "The central source cannot be clicked; clear both pale-blue rings to purify it",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:523"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0211",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "污染节点已净化",
+      "en": "Pollution Node Purified",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:526"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0212",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "正确处理周围所有格子以净化污染节点",
+      "en": "Resolve every surrounding cell to purify the Pollution Node",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:528"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0213",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "遗迹障碍：不可净化、标记或扫描",
+      "en": "Ruin Obstacle: cannot be revealed, flagged, or scanned",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:531"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0214",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "点击扫描此格；右键取消",
+      "en": "Click to scan this cell · Right Click to cancel",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:534"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0215",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "此格不可扫描；右键取消",
+      "en": "This cell cannot be scanned · Right Click to cancel",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:536"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0216",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "漂流水雷已拦截",
+      "en": "Drifting Mines Intercepted",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:540"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0217",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "漂流候选物：左键翻开，右键标记；当前组四个之中两个是真水雷",
+      "en": "Drift Candidate: Left Click to reveal, Right Click to flag; two of this group's four buoys are live mines",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:542"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0218",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "洋流水道：等待浅蓝区域经过",
+      "en": "Current Channel: wait for the pale-blue group to pass",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:545"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0219",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "洋流终点：再净化%d格，未锚定污染将向下游漂移",
+      "en": "Current Exit: clear %d more cells before unanchored pollution drifts downstream",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/cell.gd:548"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0220",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "机器人已确认这里存在污染核心",
+      "en": "The robot confirmed a Pollution Core here",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:550"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0221",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "珊瑚已标记疑似污染源",
+      "en": "Suspected source marked with coral",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:553"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0222",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "小芽已标记疑似污染源",
+      "en": "Sprout marked a suspected source",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:555"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0223",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "建议从这里开始（也可以忽略）",
+      "en": "Suggested starting point (optional)",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:558"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0224",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "空白净化区",
+      "en": "Cleared Empty Area",
+      "placeholders": [],
+      "sources": [
+        "scripts/cell.gd:560"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0225",
+      "category": "扫描与格子提示",
+      "status": "运行",
+      "zh_CN": "邻近污染核心：%d；双击可快速展开",
+      "en": "Nearby Pollution Cores: %d · Double-click to expand",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/cell.gd:562"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0226",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "拖拽旋转 · 左键净化 · 右键标记 · C扫描\n",
+      "en": "Drag: Rotate · Left: Reveal · Right: Flag · C: Scan\n",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:308",
+        "scripts/sky_level_prototype.gd:475"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0227",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "方向键选择 · W S A D旋转 · J翻开 · K标记",
+      "en": "Arrows: Select · W S A D: Rotate · J: Reveal · K: Flag",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:309",
+        "scripts/sky_level_prototype.gd:476",
+        "scripts/sky_prototype_host.gd:68"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0228",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "旋转球面，寻找安全起点",
+      "en": "Rotate the sphere and find a safe starting face",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:312",
+        "scripts/sky_level_prototype.gd:445",
+        "scripts/sky_level_prototype.gd:501",
+        "scripts/sky_prototype_host.gd:71",
+        "scripts/sky_sphere_board.gd:573",
+        "scripts/sky_sphere_board.gd:645",
+        "scripts/sky_sphere_board.gd:1811"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0229",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "污染扩散，重新生成后再试",
+      "en": "Pollution spread · Regenerate and try again",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:579",
+        "scripts/sky_sphere_board.gd:1817"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0230",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "不限次数",
+      "en": "Unlimited",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1701",
+        "scripts/sky_sphere_board.gd:1745"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0231",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "剩余%d次",
+      "en": "%d Uses Left",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1703",
+        "scripts/sky_sphere_board.gd:1747"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0232",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "随机助益触发 · 风正在吹向目标格",
+      "en": "Wind Assist Triggered · The breeze is moving toward its target",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1693"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0233",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "随机助益完成 · 污染核心已自动标记 · %s",
+      "en": "Wind Assist Complete · Pollution Core flagged · %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1714"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0234",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "随机助益完成 · 安全格已翻开 · %s",
+      "en": "Wind Assist Complete · Safe face revealed · %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1720"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0235",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "云盾保护触发 · 云层正在包裹污染核心",
+      "en": "Cloud Shield Triggered · Clouds are wrapping around the Pollution Core",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1732"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0236",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "云盾保护成功 · 污染核心已自动标记 · %s",
+      "en": "Cloud Shield Successful · Pollution Core flagged · %s",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1750"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0237",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "继续净化云球，等待第一道雷眼形成",
+      "en": "Keep clearing the cloud sphere until the first Storm Eye forms",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:562",
+        "scripts/sky_sphere_board.gd:1768"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0238",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "雷眼正在远处重组 · 继续净化等待第%d/%d道",
+      "en": "The Storm Eye is reforming far away · Keep clearing for Eye %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:565",
+        "scripts/sky_sphere_board.gd:1770"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0239",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "第%d/%d道雷眼出现 · 揭开安全格并标记周围污染",
+      "en": "Storm Eye %d/%d appeared · Reveal safe neighbors and flag nearby pollution",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:556",
+        "scripts/sky_sphere_board.gd:1780"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0240",
+      "category": "天空动态状态",
+      "status": "运行",
+      "zh_CN": "雷眼击破 · %d/%d",
+      "en": "Storm Eye Broken · %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/sky_sphere_board.gd:1796"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0241",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "小芽带你到安全起点啦！",
+      "en": "Sprout found you a safe starting point!",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1301",
+        "scenes/sky_level_15_prototype.tscn:627",
+        "scripts/first_move_guide.gd:55",
+        "scripts/first_move_guide.gd:332"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0242",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "小芽找到安全起点啦！",
+      "en": "Sprout found a safe starting point!",
+      "placeholders": [],
+      "sources": [
+        "scripts/first_move_guide.gd:332"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0243",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "小芽想告诉你",
+      "en": "Sprout Has Something to Tell You",
+      "placeholders": [],
+      "sources": [
+        "scenes/mechanic_dialogue.tscn:83",
+        "scripts/first_move_guide.gd:467"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0244",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "点这里开始第一次净化",
+      "en": "Click here for your first reveal",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1313",
+        "scenes/sky_level_15_prototype.tscn:639",
+        "scripts/first_move_guide.gd:56",
+        "scripts/first_move_guide.gd:275"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0245",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "按 J 从这里开始",
+      "en": "Press J to start here",
+      "placeholders": [],
+      "sources": [
+        "scripts/first_move_guide.gd:275"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0246",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "这是安全建议，也可以选择别处",
+      "en": "This is a safe suggestion, but you may choose another cell",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1325",
+        "scenes/sky_level_15_prototype.tscn:651",
+        "scripts/first_move_guide.gd:57",
+        "scripts/first_move_guide.gd:338"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0247",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "开始探索",
+      "en": "Start Exploring",
+      "placeholders": [],
+      "sources": [
+        "scripts/first_move_guide.gd:344"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0248",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "继续听",
+      "en": "Continue",
+      "placeholders": [],
+      "sources": [
+        "scenes/mechanic_dialogue.tscn:122",
+        "scripts/first_move_guide.gd:346"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0249",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "跳过介绍",
+      "en": "Skip Intro",
+      "placeholders": [],
+      "sources": [
+        "scenes/mechanic_dialogue.tscn:142",
+        "scripts/first_move_guide.gd:348"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0250",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "下一步",
+      "en": "Next",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1360",
+        "scenes/sky_level_15_prototype.tscn:687",
+        "scripts/first_move_guide.gd:353"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0251",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "退出引导",
+      "en": "Exit Guide",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1391",
+        "scenes/sky_level_15_prototype.tscn:718",
+        "scripts/first_move_guide.gd:354"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0252",
+      "category": "引导通用",
+      "status": "运行",
+      "zh_CN": "留一点未知，亲自走近看看吧。",
+      "en": "A little mystery remains—go take a closer look.",
+      "placeholders": [],
+      "sources": [
+        "scenes/mechanic_dialogue.tscn:101",
+        "scripts/first_move_guide.gd:469"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0253",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：这些灰色格子是障碍",
+      "en": "Sprout: These Gray Cells Are Obstacles",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:95"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0254",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "障碍不能翻开、标记或扫描，里面也没有污染。",
+      "en": "Obstacles cannot be revealed, flagged, or scanned, and they never contain pollution.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:95"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0255",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "看数字时，直接忽略旁边的障碍格。",
+      "en": "Ignore obstacle cells when reading nearby numbers.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:95"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0256",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：其他规则没有变化",
+      "en": "Sprout: Everything Else Works the Same",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:96"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0257",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "障碍不用清除，净化其余安全格就可以了。",
+      "en": "You do not need to clear obstacles—just reveal every other safe cell.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:96"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0258",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：这是污染节点",
+      "en": "Sprout: This Is a Pollution Node",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:102"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0259",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "节点不能直接点击，而且会被邻近数字算作一个污染。",
+      "en": "You cannot click the node, and nearby numbers count it as one source of pollution.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:102"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0260",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：处理它周围的格子",
+      "en": "Sprout: Resolve the Cells Around It",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:103"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0261",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "翻开周围的安全格，并标出周围的污染核心。",
+      "en": "Reveal the safe cells around it and flag the surrounding Pollution Cores.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:103"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0262",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "全部处理正确后，污染节点会自动净化。",
+      "en": "Once every surrounding cell is resolved correctly, the node purifies itself.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:103"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0263",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：先切断三条根系锚点",
+      "en": "Sprout: Sever the Three Root Anchors First",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:109"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0264",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "中间的大树不能点击。先处理与它相连的三条根系。",
+      "en": "The large tree in the center cannot be clicked. Start with the three roots connected to it.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:109"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0265",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "箭头指着其中一条根系末端的锚点。",
+      "en": "The arrow points to an anchor at the end of one root.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:109"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0266",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：锚点周围照常扫雷",
+      "en": "Sprout: Use Normal Minesweeper Around Each Anchor",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:110"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0267",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "翻开锚点旁的安全格，把污染核心全部标对。",
+      "en": "Reveal safe cells beside the anchor and flag every Pollution Core correctly.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:110"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0268",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "三条根系都切断后，中间的大树会自动净化。",
+      "en": "Once all three roots are severed, the central tree purifies itself.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:110"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0269",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：生态扫描已经充满",
+      "en": "Sprout: Eco Scan Is Fully Charged",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:146"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0270",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "翻开格子和首次标记都能充能，能量还能带到下一关。",
+      "en": "Reveals and first-time flags charge it, and stored energy carries into the next level.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:146"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0271",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：按C选择一个隐藏格",
+      "en": "Sprout: Press C and Choose a Hidden Cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:147"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0272",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "扫描会直接告诉你，这一格是安全还是污染。",
+      "en": "The scan tells you directly whether that cell is safe or polluted.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:147"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0273",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "充满后，你可以使用一次生态扫描。",
+      "en": "Once fully charged, you can use one Eco Scan.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:146"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0274",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：海洋棋盘是六边形",
+      "en": "Sprout: The Ocean Board Uses Hexagons",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:116"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0275",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "每个格子最多只有六个相邻格，不再是原来的八个。",
+      "en": "Each cell has at most six neighbors instead of eight.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:116"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0276",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "只要按照六个方向读数字就可以了。",
+      "en": "Read each number using the six hexagonal directions.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:117"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0277",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：扫雷规则没有变化",
+      "en": "Sprout: The Minesweeper Rules Are Unchanged",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:117"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0278",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "浮标也能正常翻开、标记和双击展开。",
+      "en": "Buoys can still be revealed, flagged, and expanded with a double-click.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:130"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0279",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：珊瑚墙会隔开两格",
+      "en": "Sprout: Coral Walls Separate Two Cells",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:123"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0280",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "墙两边的格子不再相邻，数字也不会计算墙对面。",
+      "en": "Cells on opposite sides of a wall are not adjacent, and numbers ignore the other side.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:123"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0281",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "先看清墙在哪两格之间，再判断数字。",
+      "en": "First see which two cells the wall separates, then read the numbers.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:124"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0282",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：可以从墙边绕过去",
+      "en": "Sprout: You Can Go Around the Wall",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:124"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0283",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "没有被墙隔开的共享边，仍然保持正常相邻。",
+      "en": "Any shared edge not blocked by a wall remains normally adjacent.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:124"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0284",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "双击展开时，同样不会穿过珊瑚墙。",
+      "en": "Double-click expansion will not cross a coral wall either.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:123"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0285",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：浅蓝浮标会向右漂",
+      "en": "Sprout: The Pale-Blue Buoys Drift Right",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:130"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0286",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "每组有四个浮标，其中两个安全，另外两个是水雷。",
+      "en": "Each group has four buoys: two are safe and two are mines.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:130"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0287",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：要在漂出前解决它",
+      "en": "Sprout: Solve Each Group Before It Escapes",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:132"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0288",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "翻开两个安全浮标，并标出两颗水雷，这组就会停下。",
+      "en": "Reveal both safe buoys and flag both mines to stop that group.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:132"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0289",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "未解决的水雷漂出右侧边界，本局就会失败。",
+      "en": "You lose if an unresolved mine drifts beyond the right boundary.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:132"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0290",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：移动后数字会重算",
+      "en": "Sprout: Numbers Recalculate After Every Move",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:131"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0291",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "浮标每次移动，周围数字都会按新位置更新。",
+      "en": "Whenever the buoys move, nearby numbers update for their new positions.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:131"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0292",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "已经翻开的数字也可能跟着发生变化。",
+      "en": "Even revealed numbers may change with them.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:131"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0293",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：棋盘会分区退潮",
+      "en": "Sprout: The Tide Reveals the Board in Zones",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:138"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0294",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "现在只能操作亮起的区域，后面的区域暂时锁着。",
+      "en": "Only the lit zone is available now; later zones remain locked.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:138"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0295",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "先把当前区域的所有安全格翻开。",
+      "en": "Reveal every safe cell in the current zone first.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:138"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0296",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "小芽：完成后会打开下一区",
+      "en": "Sprout: Completing a Zone Opens the Next",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:139"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0297",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "新区打开时会自动展开一片安全区；0格会完整展开到数字边界。",
+      "en": "Opening a new zone automatically expands a safe patch; every zero region expands through its numbered boundary.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:139"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0298",
+      "category": "陆地与海洋引导",
+      "status": "运行",
+      "zh_CN": "若没有解锁，状态栏会提示遗漏或错误标记。",
+      "en": "If the next zone stays locked, the status bar shows missed cells or wrong flags.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:139"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0299",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：这次棋盘变成了球",
+      "en": "Sprout: This Board Is a Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:27"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0300",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "云球没有边界，转到背面后仍是同一张棋盘。",
+      "en": "The cloud sphere has no edge; the far side is still part of the same board.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:27"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0301",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "只有共享一条边的云格才算相邻。",
+      "en": "Only cloud faces sharing an edge are adjacent.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:27"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0302",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：先学会转动云球",
+      "en": "Sprout: Learn to Rotate the Cloud Sphere",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:28"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0303",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "鼠标拖拽或W S A D旋转，方向键切换选中的云格。",
+      "en": "Drag with the mouse or use W S A D to rotate; use the arrow keys to change the selected face.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:28"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0304",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "J翻开、K标记，扫雷规则和之前一样。",
+      "en": "J reveals and K flags; all other Minesweeper rules stay the same.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:28"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0305",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：这一关会出现微风",
+      "en": "Sprout: A Breeze May Appear Here",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:34"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0306",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "你翻开安全格时，微风有时会额外处理一个隐藏格。",
+      "en": "When you reveal a safe face, the breeze may resolve one extra hidden face.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:34"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0307",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "它会翻开安全格，或自动标出污染。",
+      "en": "It reveals a safe face or automatically flags pollution.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:34"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0308",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：云球会转向目标",
+      "en": "Sprout: The Sphere Turns Toward the Target",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:35"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0309",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "微风触发后，画面会转到发生变化的那一格。",
+      "en": "When the breeze triggers, the view rotates to the affected face.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:35"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0310",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "这是随机帮助，其他判断仍由你完成。",
+      "en": "This is random assistance; all other deductions are still yours.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:35"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0311",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：这一关有一次云盾",
+      "en": "Sprout: This Level Has a Cloud Shield",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:41"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0312",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "如果误触污染，云盾有可能帮你挡住这次失败。",
+      "en": "If you hit pollution, the Cloud Shield may prevent that failure.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:41"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0313",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "每局最多成功一次，而且不保证触发。",
+      "en": "It can succeed at most once per game and is not guaranteed to trigger.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:41"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0314",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：触发后会自动标记",
+      "en": "Sprout: A Blocked Core Is Flagged Automatically",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:42"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0315",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "被云盾挡住的污染格会直接留下标记。",
+      "en": "A polluted face blocked by the shield receives a flag automatically.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:42"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0316",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "云盾只是保护，最好仍然根据数字推理。",
+      "en": "The shield is only protection; you should still reason from the numbers.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:42"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0317",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：发现特殊雷眼污染核心",
+      "en": "Sprout: A Special Storm Eye Core Appeared",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:48"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0318",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "雷眼可能藏在云球背面，边缘箭头会指向它。",
+      "en": "A Storm Eye may hide on the far side; an edge arrow points toward it.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:48"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0319",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "雷眼本身是特殊污染核心，不能直接翻开或标记。",
+      "en": "The Storm Eye is a special pollution core and cannot be revealed or flagged directly.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:48"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0320",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "小芽：处理雷眼周围全部格子",
+      "en": "Sprout: Resolve Every Face Around the Storm Eye",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:49"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0321",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "揭开周围安全格并正确标记污染核心后，雷眼会自动净化。",
+      "en": "Reveal every safe neighbor and correctly flag nearby pollution; the Storm Eye then cleanses automatically.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:49"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0322",
+      "category": "天空引导",
+      "status": "运行",
+      "zh_CN": "击破本关全部雷眼，就能完成这一关。",
+      "en": "Break every Storm Eye in this level to complete it.",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_level_prototype.gd:49"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0323",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "小芽：宇宙棋盘要看连线",
+      "en": "Sprout: Follow the Links in the Universe",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:11"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0324",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "两颗星核之间有线才算相邻，距离远近并不重要。",
+      "en": "Two star cores are adjacent only when a line connects them; distance does not matter.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:11"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0325",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "没有连线的星核互不影响。",
+      "en": "Star cores without a connecting line do not affect each other.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:11"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0326",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "小芽：直线和弧线都有效",
+      "en": "Sprout: Straight and Curved Links Both Count",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0327",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "银灰色直线和青蓝色弧线都表示正常相邻。",
+      "en": "Silver straight lines and cyan arcs both indicate normal adjacency.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0328",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "数字是所有直接相连星核中的污染总数。",
+      "en": "A number counts pollution among every directly connected star core.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0329",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "小芽：星舰有两层护盾",
+      "en": "Sprout: The Starship Has Two Shield Layers",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:13"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0330",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "误触污染会消耗一层护盾，并自动标记那颗星核。",
+      "en": "Hitting pollution consumes one shield layer and flags that star core automatically.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:13"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0331",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "两层护盾都用完后，再误触才会结束远征。",
+      "en": "After both layers are gone, the next polluted core ends the expedition.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:13"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0332",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "小芽：紫色连线是虫洞",
+      "en": "Sprout: Purple Links Are Wormholes",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:19"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0333",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "虫洞两端的星核即使离得很远，也算直接相邻。",
+      "en": "Star cores at the two ends of a wormhole are directly adjacent, however far apart they appear.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:19"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0334",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "数字会把虫洞另一端的污染计算进去。",
+      "en": "Numbers include pollution at the far end of a wormhole.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:19"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0335",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "小芽：把它当成普通连线",
+      "en": "Sprout: Treat It Like Any Other Link",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:20"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0336",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "判断数字时，沿紫色线找到另一端一起计算。",
+      "en": "When reading a number, follow the purple line and include its other endpoint.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:20"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0337",
+      "category": "宇宙引导",
+      "status": "运行",
+      "zh_CN": "除了距离很远，规则和其他连线完全相同。",
+      "en": "Apart from the long distance, it follows exactly the same rules as any other link.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_endless.gd:20"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0338",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "航行护盾\n%d/%d",
+      "en": "Voyage Shield\n%d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:371"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0339",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "航行护盾\n2/2",
+      "en": "Voyage Shield\n2/2",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:145"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0340",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "污染标记 %d/%d",
+      "en": "Pollution Flags %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:377"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0341",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "污染标记 0/0",
+      "en": "Pollution Flags 0/0",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:153"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0342",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "已净化星云\n%d",
+      "en": "Nebulae Cleared\n%d",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:411"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0343",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "已净化星云\n0",
+      "en": "Nebulae Cleared\n0",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:113"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0344",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "净化星核\n%d",
+      "en": "Star Cores Cleared\n%d",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:412"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0345",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "净化星核\n0",
+      "en": "Star Cores Cleared\n0",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:121"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0346",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "航行距离\n%d 光年",
+      "en": "Distance\n%d Light-years",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:413"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0347",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "航行距离\n0 光年",
+      "en": "Distance\n0 Light-years",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:129"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0348",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "宇宙扰动\n%d/5",
+      "en": "Cosmic Turbulence\n%d/5",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:414"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0349",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "宇宙扰动\n1/5",
+      "en": "Cosmic Turbulence\n1/5",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:137"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0350",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "本次远征抵达 %d 光年\n净化星云 %d 片 · 净化星核 %d 颗",
+      "en": "This expedition reached %d light-years\nNebulae cleared %d · Star cores cleared %d",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless.gd:137",
+        "scripts/universe_endless.gd:403"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0351",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "本次远征抵达 0 光年",
+      "en": "This expedition reached 0 light-years",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:389"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0352",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "航行暂停",
+      "en": "Voyage Paused",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:313"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0353",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "暂停航行",
+      "en": "Pause Voyage",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:236"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0354",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "继续航行",
+      "en": "Resume Voyage",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:319"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0355",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "新宇宙",
+      "en": "New Universe",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:241"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0356",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "开启新宇宙",
+      "en": "Start a New Universe",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:324",
+        "scenes/universe_endless.tscn:395"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0357",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "远征暂时中断",
+      "en": "Expedition Interrupted",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:381"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0358",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "航行中断 · 星舰触碰污染核心",
+      "en": "Voyage Interrupted · The starship hit a Pollution Core",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:114",
+        "scripts/universe_graph_model.gd:193"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0359",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "星舰护盾拦截污染核心 · 已自动放置污染标记 · 护盾%d/%d",
+      "en": "Starship Shield Blocked a Pollution Core · Flag placed automatically · Shield %d/%d",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_graph_model.gd:106"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0360",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "本区域的污染标记数量已经用完",
+      "en": "All pollution flags for this region are already in use",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:128"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0361",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "污染标记位置不正确，星链没有展开",
+      "en": "A pollution flag is misplaced, so the star chain did not expand",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:883"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0362",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "当前星云已经净化 · 前方宇宙正在展开",
+      "en": "Nebula Cleared · The universe ahead is unfolding",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:191",
+        "scripts/universe_graph_model.gd:910"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0363",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "当前星云已经净化 · 护盾恢复1层 · 前方宇宙正在展开",
+      "en": "Nebula Cleared · One shield layer restored · The universe ahead is unfolding",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:908"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0364",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": " · 虫洞%d条",
+      "en": " · %d Wormholes",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_graph_model.gd:272"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0365",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "%s · %s · 邻接%.1f（%d～%d） · 宇宙扰动%d/5%s",
+      "en": "%s · %s · Degree %.1f (%d–%d) · Turbulence %d/5%s",
+      "placeholders": [
+        "%s",
+        "%s",
+        "%.1f",
+        "%d",
+        "%d",
+        "%d",
+        "%s"
+      ],
+      "sources": [
+        "scripts/universe_graph_model.gd:285"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0366",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "数字%d = 普通星链污染%d + 虫洞污染%d · 共%d个邻星",
+      "en": "Number %d = Chain Pollution %d + Wormhole Pollution %d · %d Neighbors",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless_board.gd:175"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0367",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "当前星核连接%d颗邻星 · 数字只统计这些线的另一端",
+      "en": "This star core has %d linked neighbors · Its number counts only the other ends of those links",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/universe_endless_board.gd:185"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0368",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "星云团",
+      "en": "Nebula Cluster",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:30",
+        "scripts/universe_graph_model.gd:51"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0369",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "螺旋星臂",
+      "en": "Spiral Arm",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:30"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0370",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "星环",
+      "en": "Star Ring",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:30"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0371",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "双星团",
+      "en": "Twin Clusters",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:30"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0372",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "分叉星河",
+      "en": "Branching Star River",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:30"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0373",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "多核星群",
+      "en": "Multi-Core Cluster",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:31"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0374",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "三岛星群",
+      "en": "Three-Island Cluster",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:31"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0375",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "星核辐射",
+      "en": "Stellar Radiation",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:31"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0376",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "稀疏星链",
+      "en": "Sparse Star Chain",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:33",
+        "scripts/universe_graph_model.gd:52"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0377",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "混合星网",
+      "en": "Mixed Star Web",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:33"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0378",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "密集星网",
+      "en": "Dense Star Web",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:33"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0379",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "星核辐射网",
+      "en": "Radial Star Web",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:33"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0380",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "多恒星枢纽",
+      "en": "Multi-Star Hubs",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_graph_model.gd:33"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0381",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "星图生成中",
+      "en": "Generating Star Map",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:272"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0382",
+      "category": "宇宙篇",
+      "status": "运行",
+      "zh_CN": "有发光连线才属于邻接 · 净化星云后宇宙会继续生长",
+      "en": "Only glowing links create adjacency · The universe keeps growing after each nebula is cleared",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:71"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0383",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "%d组漂流物启动 · 第%d组%d秒后移动 · 距离边界%d格",
+      "en": "%d drift groups started · Group %d moves in %d seconds · %d cells from boundary",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3306"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0384",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "%d组漂流物通过过滤边界 · 真水雷均已安全拦截",
+      "en": "%d drift groups crossed the filter · All live mines were safely intercepted",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3601"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0385",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "%d组真水雷已全部拦截 · 漂流停止",
+      "en": "All live mines in %d groups intercepted · Drifting stopped",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3545"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0386",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "\n方向键 / W S A D 移动 · J净化 · K标记 · C扫描",
+      "en": "\nMove Arrows/WASD · J Reveal · K Flag · C Scan",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1106"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0387",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "两圈污染场已全部处理 · 漂流污染源净化完成",
+      "en": "Both pollution rings cleared · Drifting source purified",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:4851"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0388",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "两格必须共享一条边才算相邻。",
+      "en": "Two cells are adjacent only when they share an edge.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:116"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0389",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "例如 1 表示周围有 1 个污染核心",
+      "en": "For example, 1 means one adjacent Pollution Core",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1269"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0390",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "再左键翻开一个白色格",
+      "en": "Left-click another white cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1263"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0391",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "净化时间\n00:00.0\n\n污染核心    0/%d\n\n净化状态\n准备中",
+      "en": "Clear Time\n00:00.0\n\nPollution Cores    0/%d\n\nStatus\nReady",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/land_sticker_sets.gd:103"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0392",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "净化目标\n清除所有污染核心\n恢复%s生态\n\n",
+      "en": "Objective\nClear every Pollution Core\nRestore the %s ecosystem\n\n",
+      "placeholders": [
+        "%s"
+      ],
+      "sources": [
+        "scripts/land_sticker_sets.gd:82"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0393",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "前面出现了新的生态变化。",
+      "en": "A new ecological change has appeared ahead.",
+      "placeholders": [],
+      "sources": [
+        "scenes/mechanic_dialogue.tscn:92"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0394",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "双击这个数字",
+      "en": "Double-click this number",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1288"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0395",
+      "category": "补充与兼容文案",
+      "status": "非独立显示",
+      "zh_CN": "取消",
+      "en": "Cancel",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0396",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "右键取消这个错误标记",
+      "en": "Right-click to remove this wrong flag",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1280"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0397",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "右键放下检测种子",
+      "en": "Right-click to place a detection seed",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1283"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0398",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "它不会自动翻开或标记，之后仍由你决定。",
+      "en": "It does not reveal or flag anything automatically; the next choice is still yours.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:147"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0399",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "小芽带你认识棋盘",
+      "en": "Sprout Introduces the Board",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1257"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0400",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "左键净化\n右键污染标记\n点击数字展开\n\n紫色弧线也是邻接\n会连接远距离星核\n\n首次净化保护\n附近两颗邻星\n误触核心消耗护盾\n\n航行越深\n星网结构越丰富",
+      "en": "Left: Reveal\nRight: Pollution Flag\nClick Numbers to Expand\n\nPurple Arcs Are Adjacent\nThey Link Distant Star Cores\n\nFirst Reveal Protection\nCovers Two Nearby Stars\nHitting a Core Uses Shield\n\nDeeper Voyages\nCreate Richer Star Webs",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_endless.tscn:252"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0401",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "左键翻开这个安全建议格",
+      "en": "Left-click this suggested safe cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1258"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0402",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "当前关卡：01 萌芽",
+      "en": "Current Level: 01 Sprout",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1004"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0403",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "快速展开",
+      "en": "Quick Expand",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1287"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0404",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "所以数字里既可能有普通污染，也可能包含节点。",
+      "en": "A number may therefore count both ordinary pollution and a node.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:102"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0405",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "扫描 C",
+      "en": "Scan C",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:356",
+        "scenes/main.tscn:932",
+        "scenes/sky_level_15_prototype.tscn:857"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0406",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "找到数字后，清扫者会继续说明",
+      "en": "The sweeper will continue after you find a number",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1264"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0407",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "把数字周围的污染核心全部标记",
+      "en": "Flag every Pollution Core around the number",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1284"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0408",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "拖拽旋转 · 左键净化 · 右键标记 · 方向键选择 · W S A D旋转 · J翻开 · K标记",
+      "en": "Drag: Rotate · Left: Reveal · Right: Flag · Arrows: Select · W S A D: Rotate · J: Reveal · K: Flag",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_sphere_board.gd:188"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0409",
+      "category": "旧版原型",
+      "status": "旧版",
+      "zh_CN": "拖拽旋转 · 左键净化 · 右键标记\n",
+      "en": "Drag: Rotate · Left: Reveal · Right: Flag\n",
+      "placeholders": [],
+      "sources": [
+        "scripts/sky_prototype_host.gd:67"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0410",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "按 Enter 或点下一步继续",
+      "en": "Press Enter or click Next to continue",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1269"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0411",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "按 K 取消这个错误标记",
+      "en": "Press K to remove this wrong flag",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1280"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0412",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "按 K 放下检测种子",
+      "en": "Press K to place a detection seed",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1283"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0413",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "数字仍表示相邻格里一共有多少个污染。",
+      "en": "A number still shows the total pollution in adjacent cells.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:117"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0414",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "无效启动参数；请使用 --level=1 至 --level=21 或 --universe。",
+      "en": "Invalid launch argument; use --level=1 through --level=21 or --universe.",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:197"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0415",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "林缘",
+      "en": "Forest Edge",
+      "placeholders": [],
+      "sources": [
+        "scripts/level_data.gd:41"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0416",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "标记已用完 · 若仍发现水雷，请检查是否有错误标记",
+      "en": "All flags are in use · If a mine remains, check for a wrong flag",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:2190",
+        "scripts/board.gd:3065"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0417",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "标记正确后，会展开周围安全格",
+      "en": "Correct flags will expand the surrounding safe cells",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1289"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0418",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "检测种子",
+      "en": "Detection Seed",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1273"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0419",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "污染源已随洋流移动 · 全盘数字已更新 · 剩余%d格",
+      "en": "Pollution source moved with the current · All numbers updated · %d cells remain",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3241"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0420",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "洋流倒计时 · 再净化%d格，未锚定污染将向下游漂移",
+      "en": "Current Countdown · Clear %d more cells before unanchored pollution drifts downstream",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3633"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0421",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "洋流已推动%d个污染核心 · 数字已重新计算 · 距下次%d格",
+      "en": "Current moved %d Pollution Cores · Numbers recalculated · %d cells until next move",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3734"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0422",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "洋流已激活 · 再净化%d格，未锚定污染将向下游漂移",
+      "en": "Current Active · Clear %d more cells before unanchored pollution drifts downstream",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3621"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0423",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "洋流涌动 · 未锚定污染正在向下游漂移",
+      "en": "Current Surging · Unanchored pollution is drifting downstream",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:3654"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0424",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "洋流涌动完成 · 污染已被标记锚定 · 距下次%d格",
+      "en": "Current Surge Complete · Pollution anchored by flags · %d cells until next move",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3739"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0425",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "漂流污染源%d秒后移动",
+      "en": "Drifting source moves in %d seconds",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3170"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0426",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "漂流污染源启动 · %d秒后向过滤边界移动 · 剩余%d格",
+      "en": "Drifting source started · Moves toward the filter in %d seconds · %d cells remain",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3141"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0427",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "漂流污染源已净化 · 停止向过滤边界漂移",
+      "en": "Drifting source purified · Movement toward the filter stopped",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:3278"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0428",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "漂流污染源未及时净化并流出边界 · 本次净化失败",
+      "en": "The drifting source crossed the boundary before purification · Mission failed",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:3293"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0429",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "漂流航线底格不会生成静态水雷，无需标记",
+      "en": "Cells beneath the drift route never contain static mines and need no flags",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:2176"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0430",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "潮区%d尚未完成 · 仍有%d个安全格未翻开",
+      "en": "Tidal Zone %d incomplete · %d safe cells remain hidden",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:5051"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0431",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "潮区%d尚未完成 · 仍有%d个安全格未翻开，其中%d个被错误标记",
+      "en": "Tidal Zone %d incomplete · %d safe cells remain hidden, including %d wrongly flagged",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:5046"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0432",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "白色=未净化 · 黄色=安全建议",
+      "en": "White = Hidden · Yellow = Safe Suggestion",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1259"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0433",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "种子放错会阻止数字快速展开",
+      "en": "A misplaced seed blocks quick number expansion",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1281"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0434",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "移动到这里按 J 翻开",
+      "en": "Move here and press J to reveal",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1258"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0435",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "移动后按 J 再翻一格",
+      "en": "Move, then press J to reveal another cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1263"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0436",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "第%d关 · %s\n%d × %d 棋盘\n污染核心 %d\n\n",
+      "en": "Level %d · %s\n%d × %d Board\nPollution Cores %d\n\n",
+      "placeholders": [
+        "%d",
+        "%s",
+        "%d",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/land_sticker_sets.gd:77"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0437",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "第%d组已安全拦截 · 其余漂流组继续",
+      "en": "Group %d safely intercepted · Remaining groups continue",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3606"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0438",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "第%d组已移动 · 全盘数字已更新 · 距离边界%d格",
+      "en": "Group %d moved · All numbers updated · %d cells from boundary",
+      "placeholders": [
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3454"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0439",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "第%d组漂流物 · %d秒后移动 · 距离边界%d格",
+      "en": "Drift Group %d · Moves in %d seconds · %d cells from boundary",
+      "placeholders": [
+        "%d",
+        "%d",
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3338"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0440",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "第%d组漂流物正在向右移动",
+      "en": "Drift Group %d is moving right",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3400"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0441",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "第%d组真水雷已拦截 · 其余漂流组继续移动",
+      "en": "Group %d live mines intercepted · Remaining groups continue moving",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3517"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0442",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "第%d组真水雷未标记便流出过滤边界 · 本次净化失败",
+      "en": "Group %d live mines crossed the filter unflagged · Mission failed",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:3566"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0443",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "第1关:1",
+      "en": "Level 1:1",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0444",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "第2关:2",
+      "en": "Level 2:2",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0445",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "第3关:3",
+      "en": "Level 3:3",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0446",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "第4关:4",
+      "en": "Level 4:4",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0447",
+      "category": "开发与预览",
+      "status": "开发",
+      "zh_CN": "第5关:5",
+      "en": "Level 5:5",
+      "placeholders": [],
+      "sources": [
+        "scripts/land_sticker_sets.gd:12"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0448",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "继续用数字判断周围哪些普通格藏着污染。",
+      "en": "Keep using numbers to determine which ordinary cells hide pollution.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:96"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0449",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "继续观察",
+      "en": "Keep Looking",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1262"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0450",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "绿色=安全，数字=周围污染数",
+      "en": "Green = Safe · Number = Nearby Pollution",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1268"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0451",
+      "category": "海洋动态状态",
+      "status": "运行",
+      "zh_CN": "过滤边界",
+      "en": "Filter Boundary",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:2630",
+        "scripts/board.gd:2668"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0452",
+      "category": "补充与兼容文案",
+      "status": "非独立显示",
+      "zh_CN": "返回",
+      "en": "Back",
+      "placeholders": [],
+      "sources": [],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0453",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "这是数字格",
+      "en": "This Is a Number Cell",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1267"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0454",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "选中数字后按 J",
+      "en": "Select the Number and Press J",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:1288"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0455",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "从一株萌芽出发，\n让沉寂的土地重新呼吸。",
+      "en": "From a single sprout,\nlet the sleeping earth breathe again.",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:713"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0456",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "从第一株萌芽开始，\n让沉寂的土地重新呼吸。",
+      "en": "Begin with the first sprout,\nthen let the sleeping earth breathe again.",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:891"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0457",
+      "category": "补充与兼容文案",
+      "status": "运行",
+      "zh_CN": "5 × 5 棋盘\n污染核心 5",
+      "en": "5 × 5 Board\n5 Pollution Cores",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:279",
+        "scenes/main.tscn:834"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0458",
+      "category": "第一关教学",
+      "status": "运行",
+      "zh_CN": "左键净化 · 右键标记\n双击数字快速展开",
+      "en": "Left: Reveal · Right: Flag\nDouble-click numbers to expand",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:197",
+        "scenes/main.tscn:694",
+        "scenes/sky_level_15_prototype.tscn:441"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0459",
+      "category": "品牌与主菜单",
+      "status": "运行",
+      "zh_CN": "GREEN SWEEPER",
+      "en": "GREEN SWEEPER",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:688"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0460",
+      "category": "设置",
+      "status": "运行",
+      "zh_CN": "English",
+      "en": "English",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:1390"
+      ],
+      "note": "",
+      "review": "待复核"
+    },
+    {
+      "id": "TXT_0461",
+      "category": "完整操作说明",
+      "status": "运行",
+      "zh_CN": "操作说明",
+      "en": "How to Play",
+      "placeholders": [],
+      "sources": [
+        "scenes/main.tscn:1542",
+        "scenes/shell.tscn:1083",
+        "scenes/shell.tscn:1272",
+        "scenes/shell.tscn:1329",
+        "scenes/sky_level_15_prototype.tscn:1321",
+        "scenes/universe_endless.tscn:334"
+      ],
+      "note": "地图、设置页与各章节暂停菜单共用入口和标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0462",
+      "category": "完整操作说明",
+      "status": "运行",
+      "zh_CN": "【目标与数字】\n翻开全部安全格，并正确标记污染核心。数字表示与该格相邻的污染核心数量；标记是玩家判断，错误标记不会自动变成正确答案。满足数字且周围标记完全正确时，双击数字可快速展开其余相邻格。\n\n【鼠标操作】\n陆地/海洋：左键翻开，右键标记，双击已翻开的数字执行连锁展开。天空：左键翻开，右键标记，拖拽球体旋转，双击数字展开。生态扫描充满后按 C，或点击机器人，再选择一个隐藏格；右键或 K 可取消选格。Esc 打开/关闭暂停菜单。\n\n【键盘操作】\n在设置中选择键盘模式后：方向键或 W S A D 移动格子光标，J 翻开/确认数字，K 标记。天空篇固定为方向键选择相邻球面格、W S A D 旋转球体、J 翻开、K 标记、R 将当前格转到正面。C 使用扫描。菜单中用方向键选择、Enter/空格确认。F11 或 Alt+Enter 切换显示模式。\n\n【生态扫描】\n翻开格子和对同一格的首次标记会积累能量，能量可以带到下一关。机器人头顶三个光点表示三段充能；充满后出现“按 C 或点击机器人”提示。扫描会直接判断所选隐藏格安全或污染，使用后重新充能。\n\n【第1～7关：陆地，方格最多8邻接】\n第1关：5×5、5个核心，八方向邻接，包含首次操作引导。\n第2关：6×6、8个核心，八方向邻接。\n第3关：8×8、9个核心；遗迹障碍不可翻开、标记或扫描，读数字时忽略障碍。\n第4关：9×9、12个核心；八方向邻接，随机障碍群改变可操作区域。\n第5关：10×10、13个核心、2个污染节点；节点自身计作污染，正确处理其全部邻格后自动净化。\n第6关：12×12、17个核心、3个污染节点；规则同上，节点区域更多。\n第7关：13×13、20个核心、3个节点与污染母株；处理三条根系锚点后净化Boss。\n\n【第8～14关：海洋，六边形最多6邻接】\n只有共享一条边的六边形才相邻。珊瑚墙会切断共享边，数字、零格展开和双击都不会越墙。\n第8关：6×6、7个核心，基础六方向邻接。\n第9关：8×7、10个核心，一段珊瑚墙改变邻接。\n第10关：9×8、14个核心，两段珊瑚墙。\n第11关：10×9、17个核心；两组漂流物定时右移，每组两个安全浮标和两颗水雷，移动后实时重算邻接与数字。\n第12关：11×10、21个核心；三组漂流物，移动间隔更短，邻接持续实时更新。\n第13关：12×11、25个核心；珊瑚墙与两个潮区，只能操作当前亮起区域，完成后解锁下一潮区并更新边界数字。\n第14关：13×12、30个核心；Boss关，两段珊瑚墙与三个潮区，逐区完成。\n\n【第15～21关：天空，球面共享边邻接】\n五边形有5个邻格，六边形有6个邻格；只有球面上共享边的面才相邻。球背面的格仍属于同一棋盘。\n第15关：32面、6个核心，基础足球烯。\n第16关：42面、8个核心，扩大球面。\n第17关：92面、15个核心；翻开安全格时有20%概率触发吹风助益，随机翻开安全格或自动标记核心。\n第18关：162面、26个核心；保留20%吹风助益。\n第19关：252面、40个核心；吹风助益，并有一次70%概率触发的云盾保护。\n第20关：362面、58个核心；吹风、一次云盾保护与三道雷眼污染核心。雷眼本身不能操作；揭开周围安全格并正确标记周围污染后会自动击破，击破三道雷眼获胜。\n第21关：492面、78个核心；吹风、云盾与五道雷眼污染核心。按探索进度依次包围并击破五道雷眼获胜。\n\n【宇宙远征】\n星核只有存在发光连线才相邻，画面距离不影响邻接；直线、弧线和紫色虫洞都计算。数字统计所有直接相连星核中的污染。星舰有两层护盾，误触污染先消耗护盾并自动标记；棋盘按图语法持续生长。每次真正生成一张新宇宙棋盘，终身累计探索数增加1；失败、退出或重新远征都不会清零。\n\n【徽章与勋章本】\n陆地关卡胜利后，该关勋章会从画面中央旋转放大，并伴随金色辉光。单击任意鼠标按键，或按 Space、Enter、任意手柄按钮，将勋章收入勋章本。从胜利界面进入勋章本后，左键进入下一关，右键返回当前胜利界面；右页右下按钮进入勋章殿堂。欢迎页、地图和设置页的勋章按钮都会进入勋章殿堂，可通过陆地、海洋、天空封皮打开对应勋章本；点击四个生态展示台之外的任意空白处或按 Esc 返回。已通关关卡的生态与勋章会自动点亮。宇宙篇不设勋章本：宇宙展示台用个位小行星、十位大行星和百位小星团记录累计探索；达到1000次后永久显示旋转银河与终极奖杯。中文与英文界面使用各自带文字的勋章图。\n\n【设置与辅助】\n设置页可分别调整总音量、背景音乐、音效、窗口模式、鼠标/键盘操作方式和中英文。首次点击保护会确保安全起点；连续失败时陆地开局保护会自适应增强。暂停菜单可继续、重开、返回地图、打开设置、返回主菜单或退出。地图、设置页和游戏暂停菜单均可重新进入本说明。",
+      "en": "[GOAL AND NUMBERS]\nReveal every safe cell and correctly flag every pollution core. A number counts the pollution cores adjacent to that cell. Flags are your deductions; an incorrect flag is not treated as a correct answer. When a revealed number is satisfied and every surrounding flag is correct, double-click it to reveal the remaining adjacent cells.\n\n[MOUSE CONTROLS]\nLand/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to chord. Sky: left-click to reveal, right-click to flag, drag to rotate the sphere, and double-click a number to chord. When Eco Scan is charged, press C or click the robot, then choose a hidden cell; right-click or K cancels targeting. Esc opens or closes the pause menu.\n\n[KEYBOARD CONTROLS]\nAfter selecting Keyboard mode in Settings: use the arrow keys or W S A D to move the cell cursor, J to reveal or confirm a number, and K to flag. In Sky, the arrow keys select an adjacent face, W S A D rotates the sphere, J reveals, K flags, and R centers the selected face. C activates Eco Scan. In menus, use the arrow keys and Enter/Space. F11 or Alt+Enter changes display mode.\n\n[ECO SCAN]\nReveals and the first flag placed on a cell build energy, which carries between levels. Three lights above the robot show the three charge stages. At full charge, a “Press C or click the robot” prompt appears. Scan identifies one hidden cell as safe or polluted, then must recharge.\n\n[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\nLevel 1: 5×5, 5 cores, eight-direction adjacency, with the first-action tutorial.\nLevel 2: 6×6, 8 cores, eight-direction adjacency.\nLevel 3: 8×8, 9 cores. Ruins cannot be revealed, flagged, or scanned; ignore them when reading numbers.\nLevel 4: 9×9, 12 cores. Random obstacle clusters reshape the playable area.\nLevel 5: 10×10, 13 cores, 2 pollution nodes. A node counts as pollution and cleanses after all surrounding cells are handled correctly.\nLevel 6: 12×12, 17 cores, 3 pollution nodes, using the same rule across more node regions.\nLevel 7: 13×13, 20 cores, 3 nodes and the mother tree. Resolve the three root anchors to cleanse the boss.\n\n[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\nOnly hexes sharing an edge are adjacent. Coral walls cut shared edges; numbers, zero expansion, and chording never cross a wall.\nLevel 8: 6×6, 7 cores, basic six-direction adjacency.\nLevel 9: 8×7, 10 cores, one coral wall changes adjacency.\nLevel 10: 9×8, 14 cores, two coral walls.\nLevel 11: 10×9, 17 cores. Two debris groups drift right on a timer; each contains two safe buoys and two mines. Adjacency and numbers recalculate after every move.\nLevel 12: 11×10, 21 cores. Three faster debris groups keep changing adjacency in real time.\nLevel 13: 12×11, 25 cores. A coral wall and two tidal zones limit play to the lit zone; completing it unlocks the next and updates boundary numbers.\nLevel 14: 13×12, 30 cores. Boss level with two coral walls and three tidal zones completed in order.\n\n[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\nPentagons have 5 neighbors and hexagons have 6. Only faces sharing an edge on the sphere are adjacent; rear faces remain part of the same board.\nLevel 15: 32 faces, 6 cores, basic fullerene.\nLevel 16: 42 faces, 8 cores, expanded sphere.\nLevel 17: 92 faces, 15 cores. Revealing a safe face has a 20% chance to trigger Breeze Aid, revealing a random safe face or auto-flagging a core.\nLevel 18: 162 faces, 26 cores, retaining the 20% Breeze Aid.\nLevel 19: 252 faces, 40 cores, Breeze Aid plus one Cloud Shield with a 70% trigger chance.\nLevel 20: 362 faces, 58 cores, Breeze Aid, one Cloud Shield, and three Storm Eye pollution cores. The Eye itself cannot be operated; revealing every safe neighbor and correctly flagging nearby pollution breaks it automatically. Defeat all three to win.\nLevel 21: 492 faces, 78 cores, Breeze Aid, Cloud Shield, and five Storm Eye pollution cores. Surround and break all five as exploration advances to win.\n\n[UNIVERSE EXPEDITION]\nStar nodes are adjacent only when joined by a glowing line; screen distance does not matter. Straight lines, curves, and purple wormholes all count. A number counts pollution on every directly connected node. The ship has two shields: touching pollution consumes a shield and auto-flags that node first. Graph grammars keep generating new boards. Every genuinely new Universe board adds 1 to the lifetime exploration count; failure, leaving, or starting a new expedition never resets it.\n\n[BADGES AND BADGE BOOK]\nAfter a Land victory, that level's badge spins and grows at the center of the screen amid a golden glow. Click any mouse button, or press Space, Enter, or any gamepad button to store it in the Badge Book. When opened from victory, left-click to enter the next level and right-click to return to the current victory screen; the bottom-right button opens the Badge Hall. Badge buttons on the welcome screen, map, and Settings open the Badge Hall, where the Land, Ocean, and Sky covers open their matching Badge Books. Click any blank area outside the four ecology showcases, or press Esc, to return. Completed-level ecology and badges light automatically. Universe has no Badge Book: its showcase records lifetime exploration with ones-place asteroids, tens-place large planets, and hundreds-place star clusters. At 1,000, a rotating galaxy and the ultimate trophy remain permanently on display. Chinese and English each use badge artwork with matching embedded text.\n\n[SETTINGS AND ASSISTS]\nSettings separately control master volume, BGM, SFX, display mode, mouse/keyboard operation mode, and language. First-click protection guarantees a safe opening; repeated Land failures strengthen adaptive opening assistance. The pause menu can resume, restart, return to the map, open Settings, return to the main menu, or quit. This guide is available from the map, Settings, and the in-game pause menu.",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:1342"
+      ],
+      "note": "覆盖全章节操作、邻接、辅助、玩法与设置",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0463",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "勋章本",
+      "en": "Badge Book",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_book.tscn:58",
+        "scenes/shell.tscn:1090",
+        "scripts/badge_book.gd:101"
+      ],
+      "note": "地图与设置页入口、勋章本标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0464",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "陆地篇徽章 · 第1～7关",
+      "en": "Land Badges · Levels 1–7",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_book.tscn:74",
+        "scripts/badge_book.gd:108"
+      ],
+      "note": "陆地徽章书页标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0465",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "返回",
+      "en": "Back",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_book.tscn:196",
+        "scenes/badge_hall.tscn:1051",
+        "scripts/badge_book.gd:109",
+        "scripts/badge_hall.gd:285"
+      ],
+      "note": "从地图或设置进入时返回原页面",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0466",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "单击任意鼠标按键，或按 Space / Enter / 手柄按钮收入勋章本",
+      "en": "Click any mouse button, or press Space / Enter / a gamepad button to store this badge",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_celebration.tscn:72",
+        "scripts/badge_celebration.gd:28",
+        "scripts/badge_celebration.gd:57"
+      ],
+      "note": "胜利勋章动画结束后的输入提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0467",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "左键：进入下一关 · 右键：返回当前胜利界面 · 右下按钮：返回勋章殿堂",
+      "en": "Left-click: next level · Right-click: return to victory · Bottom-right: return to Badge Hall",
+      "placeholders": [],
+      "sources": [
+        "scripts/badge_book.gd:110"
+      ],
+      "note": "从胜利界面进入勋章本时的操作提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0468",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "已通关关卡的勋章会在此点亮 · 右键或 Esc 返回勋章殿堂 · 右下按钮返回勋章殿堂",
+      "en": "Completed-level badges shine here · Right-click or Esc returns to Badge Hall · Bottom-right returns to Badge Hall",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_book.tscn:184",
+        "scripts/badge_book.gd:110"
+      ],
+      "note": "从勋章殿堂进入勋章本时的提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0469",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "返回勋章殿堂",
+      "en": "Return to Badge Hall",
+      "placeholders": [],
+      "sources": [
+        "scripts/badge_book.gd:111"
+      ],
+      "note": "勋章本右下按钮返回勋章殿堂的提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0470",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "查看勋章",
+      "en": "View Badges",
+      "placeholders": [],
+      "sources": [
+        "scenes/shell.tscn:762",
+        "scenes/shell.tscn:1279"
+      ],
+      "note": "欢迎页与设置页的勋章本入口",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0471",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "海洋篇 · 守护勋章",
+      "en": "Ocean Chapter · Guardian Badges",
+      "placeholders": [],
+      "sources": [
+        "scripts/badge_book.gd:104"
+      ],
+      "note": "勋章本海洋篇页标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0472",
+      "category": "徽章系统",
+      "status": "运行",
+      "zh_CN": "天空篇 · 守护勋章",
+      "en": "Sky Chapter · Guardian Badges",
+      "placeholders": [],
+      "sources": [
+        "scripts/badge_book.gd:106"
+      ],
+      "note": "勋章本天空篇页标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0473",
+      "category": "勋章殿堂",
+      "status": "运行",
+      "zh_CN": "勋章殿堂",
+      "en": "Badge Hall",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_hall.tscn:106",
+        "scripts/badge_hall.gd:282"
+      ],
+      "note": "勋章殿堂正式页面标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0474",
+      "category": "宇宙展示台",
+      "status": "运行",
+      "zh_CN": "宇宙生态展示台",
+      "en": "Universe Ecology Showcase",
+      "placeholders": [],
+      "sources": [
+        "scenes/badge_hall.tscn:1022",
+        "scripts/badge_hall.gd:283"
+      ],
+      "note": "宇宙展示台标题，不设置宇宙勋章本",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0475",
+      "category": "宇宙展示台",
+      "status": "运行",
+      "zh_CN": "累计探索宇宙棋盘：%d",
+      "en": "Universe Boards Explored: %d",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/badge_hall.gd:261",
+        "scripts/badge_hall.gd:284",
+        "scripts/badge_hall.gd:329"
+      ],
+      "note": "跨远征累计，每次真正生成新棋盘加一",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0476",
+      "category": "宇宙千次成就",
+      "status": "运行",
+      "zh_CN": "第一千次宇宙远征",
+      "en": "THE THOUSANDTH UNIVERSE EXPEDITION",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_milestone_celebration.tscn:39",
+        "scripts/universe_milestone_celebration.gd:62"
+      ],
+      "note": "千次演出开场标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0477",
+      "category": "宇宙千次成就",
+      "status": "运行",
+      "zh_CN": "在无数次重新启程之后，\n一位净化者抵达了\n第一千片宇宙星区。\n\n开发者曾确信，\n不会有人把旅程延续到这里。\n\n事实证明，\n开发者错了。\n\n这座银河将永远为你旋转，\n宇宙生态展示台\n将铭记这次不可思议的远征。",
+      "en": "After countless new beginnings,\none purifier has reached\nthe thousandth Universe region.\n\nThe developer was certain\nno one would carry the journey this far.\n\nThe truth is now clear:\nthe developer was wrong.\n\nThis galaxy will turn forever for you,\nand the Universe Ecology Showcase\nwill remember this impossible expedition.",
+      "placeholders": [],
+      "sources": [
+        "scripts/universe_milestone_celebration.gd:64"
+      ],
+      "note": "星际电影式透视滚动字幕正文",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0478",
+      "category": "宇宙千次成就",
+      "status": "运行",
+      "zh_CN": "银河终身成就 · 开发者错了",
+      "en": "Lifetime Galaxy Achievement · The Developer Was Wrong",
+      "placeholders": [],
+      "sources": [
+        "scenes/universe_milestone_celebration.tscn:85",
+        "scripts/universe_milestone_celebration.gd:63"
+      ],
+      "note": "终身成就与隐藏成就合并展示文案",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0479",
+      "category": "宇宙千次成就",
+      "status": "运行",
+      "zh_CN": "终极奖杯与银河已永久收入宇宙生态展示台",
+      "en": "The ultimate trophy and galaxy now remain forever in the Universe Ecology Showcase",
+      "placeholders": [],
+      "sources": [
+        "scripts/badge_hall.gd:222"
+      ],
+      "note": "千次奖励放置完成提示",
+      "review": "待用户确认"
+    }
+  ]
+}

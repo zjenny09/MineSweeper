@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "docs" / "ui_history" / "天空关卡棋盘概念图" / "棋盘与棋盘格"
+SOURCE = ROOT / "docs" / "art" / "ui_history" / "天空关卡棋盘概念图" / "棋盘与棋盘格"
 OUTPUT = ROOT / "assets" / "art" / "sky_levels" / "board"
 TEXTURE_SIZE = 512
 EDGE_INSET = 0.012

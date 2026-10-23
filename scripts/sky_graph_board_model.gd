@@ -17,11 +17,7 @@ enum State {
 	LOST,
 }
 
-const BOSS_EYE_PROGRESS_BANDS := [
-	Vector2(0.14, 0.22),
-	Vector2(0.40, 0.54),
-	Vector2(0.68, 0.80),
-]
+const BOSS_EYE_PROGRESS_JITTER := 0.04
 const BOSS_EYE_LOCATION_JITTER := 55.0
 
 var neighbors: Array[PackedInt32Array] = []
@@ -109,7 +105,8 @@ func new_game() -> void:
 
 
 func reveal_face(face_index: int) -> void:
-	if not _is_valid_face(face_index) or state in [State.WON, State.LOST]:
+	if not _is_valid_face(face_index) or state in [State.WON, State.LOST] \
+			or face_index == boss_eye_face:
 		return
 	if flagged[face_index] == 1:
 		return
@@ -132,6 +129,7 @@ func reveal_face(face_index: int) -> void:
 		board_changed.emit()
 		return
 	_expand_from(face_index)
+	_try_resolve_boss_eye()
 	_ensure_boss_eye()
 	_try_breeze_assist()
 	if pending_breeze_face < 0:
@@ -141,10 +139,17 @@ func reveal_face(face_index: int) -> void:
 
 func toggle_flag(face_index: int) -> void:
 	if not _is_valid_face(face_index) or revealed[face_index] == 1 \
+			or face_index == boss_eye_face \
 			or state in [State.WON, State.LOST]:
 		return
-	flagged[face_index] = 0 if flagged[face_index] == 1 else 1
+	if flagged[face_index] == 1:
+		flagged[face_index] = 0
+	elif get_used_flags() < core_count:
+		flagged[face_index] = 1
+	else:
+		return
 	flags_changed.emit(get_used_flags(), core_count)
+	_try_resolve_boss_eye()
 	board_changed.emit()
 
 
@@ -153,6 +158,24 @@ func get_used_flags() -> int:
 	for value in flagged:
 		total += int(value)
 	return total
+
+
+func _confirm_core_flag(face_index: int) -> bool:
+	if not _is_valid_face(face_index) or mines[face_index] == 0:
+		return false
+	if flagged[face_index] == 1:
+		return true
+	while get_used_flags() >= core_count:
+		var removed_wrong_flag := false
+		for candidate in range(flagged.size()):
+			if flagged[candidate] == 1 and mines[candidate] == 0:
+				flagged[candidate] = 0
+				removed_wrong_flag = true
+				break
+		if not removed_wrong_flag:
+			return false
+	flagged[face_index] = 1
+	return true
 
 
 func get_neighbor_faces(face_index: int) -> PackedInt32Array:
@@ -208,16 +231,12 @@ func _chord_face(face_index: int) -> void:
 	for neighbor in neighbors[face_index]:
 		if (flagged[neighbor] == 1) != (mines[neighbor] == 1):
 			return
-	var hits_boss_eye := boss_eye_total > 0 and face_index == boss_eye_face
 	for neighbor in neighbors[face_index]:
 		if flagged[neighbor] == 0 and revealed[neighbor] == 0:
 			_expand_from(neighbor)
-	if hits_boss_eye:
-		_hit_boss_eye(face_index)
-	else:
-		_ensure_boss_eye()
-	if state != State.WON:
-		_check_win()
+	_try_resolve_boss_eye()
+	_ensure_boss_eye()
+	_check_win()
 	board_changed.emit()
 
 
@@ -239,9 +258,10 @@ func resolve_storm_guard() -> void:
 		return
 	var face_index := pending_storm_guard_face
 	pending_storm_guard_face = -1
-	if revealed[face_index] == 0 and flagged[face_index] == 0:
-		flagged[face_index] = 1
+	if revealed[face_index] == 0 and flagged[face_index] == 0 \
+			and _confirm_core_flag(face_index):
 		flags_changed.emit(get_used_flags(), core_count)
+	_try_resolve_boss_eye()
 	board_changed.emit()
 
 
@@ -253,7 +273,8 @@ func _try_breeze_assist() -> void:
 		return
 	var candidates: Array[int] = []
 	for face_index in range(revealed.size()):
-		if revealed[face_index] == 0 and flagged[face_index] == 0:
+		if face_index != boss_eye_face and revealed[face_index] == 0 \
+				and flagged[face_index] == 0:
 			candidates.append(face_index)
 	if candidates.is_empty():
 		return
@@ -277,11 +298,12 @@ func resolve_breeze_assist() -> void:
 	pending_breeze_face = -1
 	pending_breeze_result = -1
 	if result == 1:
-		if revealed[target_face] == 0 and flagged[target_face] == 0:
-			flagged[target_face] = 1
+		if revealed[target_face] == 0 and flagged[target_face] == 0 \
+				and _confirm_core_flag(target_face):
 			flags_changed.emit(get_used_flags(), core_count)
 	elif revealed[target_face] == 0 and flagged[target_face] == 0:
 		_expand_from(target_face)
+	_try_resolve_boss_eye()
 	_ensure_boss_eye()
 	_check_win()
 	board_changed.emit()
@@ -294,9 +316,18 @@ func _roll_boss_eye_reveal_targets() -> void:
 	var safe_face_count := maxi(1, neighbors.size() - core_count)
 	var previous_target := 0
 	for eye_index in range(boss_eye_total):
-		var band_index := mini(eye_index, BOSS_EYE_PROGRESS_BANDS.size() - 1)
-		var band: Vector2 = BOSS_EYE_PROGRESS_BANDS[band_index]
-		var ratio := _rng.randf_range(band.x, band.y)
+		var progress_center := (
+			float(eye_index + 1) / float(boss_eye_total + 1)
+		)
+		var progress_min := maxf(
+			0.05,
+			progress_center - BOSS_EYE_PROGRESS_JITTER
+		)
+		var progress_max := minf(
+			0.95,
+			progress_center + BOSS_EYE_PROGRESS_JITTER
+		)
+		var ratio := _rng.randf_range(progress_min, progress_max)
 		var target := ceili(float(safe_face_count) * ratio)
 		target = clampi(maxi(previous_target + 1, target), 1, safe_face_count)
 		boss_eye_reveal_targets.append(target)
@@ -322,56 +353,92 @@ func _ensure_boss_eye() -> void:
 	var next_face := (
 		_pick_first_boss_eye()
 		if boss_eyes_cleared == 0
-		else _pick_distant_boss_eye(3)
+		else _pick_distant_boss_eye()
 	)
-	if next_face < 0 and boss_eyes_cleared > 0:
-		next_face = _pick_distant_boss_eye(1)
 	if next_face < 0:
 		return
 	boss_eye_face = next_face
-	if revealed[boss_eye_face] == 0:
-		revealed[boss_eye_face] = 1
 	boss_eye_changed.emit(
 		boss_eye_face,
 		boss_eyes_cleared + 1,
 		boss_eye_total
 	)
+	_try_resolve_boss_eye()
+
+
+func _try_resolve_boss_eye() -> void:
+	if boss_eye_face < 0 or state in [State.WON, State.LOST]:
+		return
+	for neighbor in neighbors[boss_eye_face]:
+		if mines[neighbor] == 1:
+			if flagged[neighbor] == 0:
+				return
+		elif revealed[neighbor] == 0:
+			return
+	_hit_boss_eye(boss_eye_face)
 
 
 func _pick_first_boss_eye() -> int:
-	var preferred: Array[int] = []
-	var fallback: Array[int] = []
-	for face_index in range(revealed.size()):
-		if revealed[face_index] == 0 or adjacent_counts[face_index] <= 0 \
+	var preferred_candidates: Array[int] = []
+	var unflagged_candidates: Array[int] = []
+	var flagged_candidates: Array[int] = []
+	for face_index in range(mines.size()):
+		if mines[face_index] == 0 or revealed[face_index] == 1 \
 				or boss_eye_used_faces.has(face_index):
 			continue
-		fallback.append(face_index)
-		for neighbor in neighbors[face_index]:
-			if revealed[neighbor] == 0 and flagged[neighbor] == 0:
-				preferred.append(face_index)
-				break
-	var candidates := preferred if not preferred.is_empty() else fallback
+		if flagged[face_index] == 0:
+			unflagged_candidates.append(face_index)
+			if _boss_eye_unresolved_neighbor_count(face_index) > 0:
+				preferred_candidates.append(face_index)
+		else:
+			flagged_candidates.append(face_index)
+	var candidates := preferred_candidates
+	if candidates.is_empty():
+		candidates = (
+			unflagged_candidates
+			if not unflagged_candidates.is_empty()
+			else flagged_candidates
+		)
 	if candidates.is_empty():
 		return -1
 	return candidates[_rng.randi_range(0, candidates.size() - 1)]
 
 
-func _pick_distant_boss_eye(minimum_hidden_neighbors: int) -> int:
+func _boss_eye_unresolved_neighbor_count(face_index: int) -> int:
+	var unresolved := 0
+	for neighbor in neighbors[face_index]:
+		if mines[neighbor] == 1:
+			if flagged[neighbor] == 0:
+				unresolved += 1
+		elif revealed[neighbor] == 0:
+			unresolved += 1
+	return unresolved
+
+
+func _pick_distant_boss_eye() -> int:
 	var distance_maps: Array[PackedInt32Array] = []
 	for used_face in boss_eye_used_faces.keys():
 		distance_maps.append(_graph_distances_from(int(used_face)))
+	var has_unflagged_candidate := false
+	var has_unresolved_candidate := false
+	for face_index in range(mines.size()):
+		if mines[face_index] == 1 and revealed[face_index] == 0 \
+				and flagged[face_index] == 0 \
+				and not boss_eye_used_faces.has(face_index):
+			has_unflagged_candidate = true
+			if _boss_eye_unresolved_neighbor_count(face_index) > 0:
+				has_unresolved_candidate = true
+				break
 	var best_score := -INF
 	var best_faces: Array[int] = []
-	for face_index in range(revealed.size()):
-		if mines[face_index] == 1 or flagged[face_index] == 1 \
-				or adjacent_counts[face_index] <= 0 \
+	for face_index in range(mines.size()):
+		if mines[face_index] == 0 or revealed[face_index] == 1 \
 				or boss_eye_used_faces.has(face_index):
 			continue
-		var hidden_neighbors := 0
-		for neighbor in neighbors[face_index]:
-			if revealed[neighbor] == 0 and flagged[neighbor] == 0:
-				hidden_neighbors += 1
-		if hidden_neighbors < minimum_hidden_neighbors:
+		if has_unflagged_candidate and flagged[face_index] == 1:
+			continue
+		var unresolved_neighbors := _boss_eye_unresolved_neighbor_count(face_index)
+		if has_unresolved_candidate and unresolved_neighbors == 0:
 			continue
 		var distance_from_previous := neighbors.size()
 		for distances in distance_maps:
@@ -381,8 +448,8 @@ func _pick_distant_boss_eye(minimum_hidden_neighbors: int) -> int:
 			)
 		var score := (
 			float(distance_from_previous) * 100.0
-			+ float(hidden_neighbors) * 8.0
-			+ (25.0 if revealed[face_index] == 0 else 0.0)
+			+ float(unresolved_neighbors) * 12.0
+			+ (30.0 if flagged[face_index] == 0 else 0.0)
 			+ _rng.randf_range(0.0, BOSS_EYE_LOCATION_JITTER)
 		)
 		if score > best_score + 0.01:
@@ -414,6 +481,10 @@ func _graph_distances_from(start_face: int) -> PackedInt32Array:
 
 
 func _hit_boss_eye(face_index: int) -> void:
+	if flagged[face_index] == 0:
+		if not _confirm_core_flag(face_index):
+			return
+		flags_changed.emit(get_used_flags(), core_count)
 	boss_eye_used_faces[face_index] = true
 	boss_eyes_cleared += 1
 	boss_eye_face = -1

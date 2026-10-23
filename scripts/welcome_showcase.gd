@@ -94,6 +94,10 @@ const ROAD_PATH_POINTS := [
 	Vector2(1880.0, 835.0),
 ]
 const SLIME_APPEAR_ROAD_T := 0.35
+const CHASE_EXIT_ROAD_T := 0.88
+const ROBOT_EXIT_FADE_START := 0.76
+const SLIME_EXIT_FADE_START := 0.56
+const EXIT_FADE_LENGTH := 0.14
 
 const HEAD_ANCHOR_FRONT := Vector2(-0.050, -0.962)
 const HEAD_ANCHOR_PLANT := Vector2(-0.145, -0.966)
@@ -239,11 +243,24 @@ func get_road_position(value: float) -> Vector2:
 func get_chase_sample(progress: float) -> Dictionary:
 	var eased := _smooth(progress)
 	var slime_path_progress := _smooth(clampf(progress / 0.72, 0.0, 1.0))
-	var robot_road_t := lerpf(0.04, 1.0, eased)
-	var slime_road_t := lerpf(SLIME_APPEAR_ROAD_T, 1.0, slime_path_progress)
+	var robot_road_t := lerpf(0.04, CHASE_EXIT_ROAD_T, eased)
+	var slime_road_t := lerpf(
+		SLIME_APPEAR_ROAD_T,
+		CHASE_EXIT_ROAD_T,
+		slime_path_progress
+	)
 	var robot_scale := lerpf(1.0, 0.18, eased)
 	var slime_scale := lerpf(1.0, 0.12, slime_path_progress)
-	var slime_alpha := 1.0 - _smooth(clampf((progress - 0.66) / 0.12, 0.0, 1.0))
+	var robot_alpha := 1.0 - _smooth(clampf(
+		(progress - ROBOT_EXIT_FADE_START) / EXIT_FADE_LENGTH,
+		0.0,
+		1.0
+	))
+	var slime_alpha := 1.0 - _smooth(clampf(
+		(progress - SLIME_EXIT_FADE_START) / EXIT_FADE_LENGTH,
+		0.0,
+		1.0
+	))
 	return {
 		"robot_road_t": robot_road_t,
 		"slime_road_t": slime_road_t,
@@ -251,6 +268,7 @@ func get_chase_sample(progress: float) -> Dictionary:
 		"slime_position": get_road_position(slime_road_t),
 		"slime_contents_position": get_road_position(maxf(0.0, slime_road_t - 0.012)),
 		"scale": robot_scale,
+		"robot_alpha": robot_alpha,
 		"slime_scale": slime_scale,
 		"slime_alpha": slime_alpha,
 	}
@@ -467,13 +485,23 @@ func _draw_story(artwork_origin: Vector2, cover_scale: float) -> void:
 			var tilt := _cardboard_tilt(progress, 11, 0.115)
 			var robot_position: Vector2 = sample.robot_position
 			var slime_position: Vector2 = sample.slime_position
-			_draw_robot_with_head(_robot_back, "back", robot_position, artwork_origin, cover_scale, tilt, float(sample.scale), float(sample.scale))
+			_draw_robot_with_head(
+				_robot_back,
+				"back",
+				robot_position,
+				artwork_origin,
+				cover_scale,
+				tilt,
+				float(sample.scale),
+				float(sample.scale),
+				float(sample.robot_alpha)
+			)
 			_draw_actor(_slime_back, slime_position, SLIME_HEIGHT, artwork_origin, cover_scale, -tilt * 0.85, float(sample.slime_scale), float(sample.slime_scale), float(sample.slime_alpha))
 		StoryState.RESET:
 			var alpha := 1.0 - clampf(progress / 0.80, 0.0, 1.0)
 			var sample := get_chase_sample(1.0)
 			_draw_planted_sprout(artwork_origin, cover_scale, alpha)
-			_draw_robot_with_head(_robot_back, "back", sample.robot_position, artwork_origin, cover_scale, 0.0, float(sample.scale), float(sample.scale), alpha)
+			_draw_robot_with_head(_robot_back, "back", sample.robot_position, artwork_origin, cover_scale, 0.0, float(sample.scale), float(sample.scale), alpha * float(sample.robot_alpha))
 			_draw_actor(_slime_back, sample.slime_position, SLIME_HEIGHT, artwork_origin, cover_scale, 0.0, float(sample.slime_scale), float(sample.slime_scale), alpha * float(sample.slime_alpha))
 
 
@@ -523,7 +551,16 @@ func _draw_chase_sample(
 	var actor_scale: float = sample.scale
 	var slime_scale: float = sample.slime_scale
 	var squash := 1.0 - absf(sin(motion_phase)) * 0.08
-	_draw_chase_robot(robot_position, artwork_origin, cover_scale, tilt, actor_scale / squash, actor_scale * squash, motion_phase)
+	_draw_chase_robot(
+		robot_position,
+		artwork_origin,
+		cover_scale,
+		tilt,
+		actor_scale / squash,
+		actor_scale * squash,
+		motion_phase,
+		float(sample.robot_alpha)
+	)
 	_draw_layered_slime(slime_position, contents_position, slime_scale, -tilt * 0.90, tilt * 0.48, artwork_origin, cover_scale, 1.0, float(sample.slime_alpha))
 
 
