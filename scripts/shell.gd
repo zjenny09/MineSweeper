@@ -493,7 +493,9 @@ func show_level_select(preserve_active_game: bool = false) -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = tr("TXT_0034")
+	level_back_button.text = tr(
+		"TXT_0034" if _level_select_return_to_game else "TXT_0495"
+	)
 	level_back_button.grab_focus()
 
 
@@ -737,7 +739,9 @@ func _on_universe_return_to_sky() -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = tr("TXT_0034")
+	level_back_button.text = tr(
+		"TXT_0034" if _level_select_return_to_game else "TXT_0495"
+	)
 	level_back_button.grab_focus()
 
 
@@ -1463,6 +1467,9 @@ func _on_language_selected(index: int) -> void:
 	_refresh_audio_toggle_buttons()
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
+	level_back_button.text = tr(
+		"TXT_0034" if _level_select_return_to_game else "TXT_0495"
+	)
 	_refresh_continue_button()
 	if is_instance_valid(active_game) \
 			and active_game.has_method("refresh_localized_interface"):

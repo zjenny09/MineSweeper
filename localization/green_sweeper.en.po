@@ -52,7 +52,7 @@ msgstr "Regenerate the last level you played"
 
 #. 品牌与主菜单 | 运行
 msgid "TXT_0012"
-msgstr "v0.7.0  ·  Land + Ocean + Sky + Universe"
+msgstr "v0.8.1  ·  Land + Ocean + Sky + Universe"
 
 #. 设置 | 运行
 msgid "TXT_0013"
@@ -112,7 +112,7 @@ msgstr "Mouse"
 
 #. 设置 | 运行
 msgid "TXT_0027"
-msgstr "Keyboard (Arrows / W S A D + J / K)"
+msgstr "Keyboard (Chapters 1–3: Arrows / W S A D + J / K / C; Sky also uses R; mouse remains available)"
 
 #. 设置 | 运行
 msgid "TXT_0028"
@@ -124,7 +124,7 @@ msgstr "Simplified Chinese"
 
 #. 设置 | 运行
 msgid "TXT_0030"
-msgstr "Settings save automatically · Landscape baseline: 1280 × 720"
+msgstr "Settings save automatically · Landscape baseline: 1280 × 720 · Controls mode applies only to Land, Ocean, and Sky"
 
 #. 设置 | 运行
 msgid "TXT_0031"
@@ -460,11 +460,11 @@ msgstr "Controls"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0114"
-msgstr "Clear every Pollution Core"
+msgstr "Reveal every safe cell"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0115"
-msgstr "Clear all Cores\nRestore %s"
+msgstr "Reveal every safe cell\nRestore %s"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0116"
@@ -508,7 +508,7 @@ msgstr "Keep clearing until a Storm Eye forms · Resolve every surrounding face 
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0126"
-msgstr "Keep clearing until a Storm Eye forms · Flag its pollution and double-click to break it %d/%d"
+msgstr "Keep clearing for Storm Eyes · Reveal safe neighbors and correctly flag nearby pollution %d/%d"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0127"
@@ -616,7 +616,7 @@ msgstr " · Wrong %d"
 
 #. 暂停、失败与结算 | 运行
 msgid "TXT_0153"
-msgstr "Flags Used"
+msgstr "Flag Counter: X/Y = flags used / total cores"
 
 #. 暂停、失败与结算 | 运行
 msgid "TXT_0154"
@@ -632,11 +632,11 @@ msgstr "Status"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0157"
-msgstr "LMB Reveal · RMB Flag · C Scan"
+msgstr "LMB Reveal · RMB Flag · Double-click to Chord · C Scan"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0158"
-msgstr "Move Arrows/WASD · J Reveal · K Flag · C Scan"
+msgstr "Move Arrows/WASD · J Reveal/Chord · K Flag · C Scan"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0159"
@@ -644,7 +644,7 @@ msgstr "Arrows / W S A D: Move"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0160"
-msgstr "\nJ: Reveal · K: Flag · C: Scan"
+msgstr "Move Arrows/WASD · J Reveal/Chord · K Flag"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0161"
@@ -760,7 +760,7 @@ msgstr "Click the robot or press C, then choose a hidden cell"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0189"
-msgstr "Choose a hidden cell · Esc, Right Click, or C to cancel"
+msgstr "Choose a hidden cell · Cancel with Esc, Right Click, or C; Keyboard mode also accepts K"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0190"
@@ -904,15 +904,15 @@ msgstr "Cleared Empty Area"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0225"
-msgstr "Nearby Pollution Cores: %d · Double-click to expand"
+msgstr "Nearby Pollution Cores: %d · Double-click to chord only when every flag is correct"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0226"
-msgstr "Drag: Rotate · Left: Reveal · Right: Flag · C: Scan\n"
+msgstr "Drag: Rotate · Left: Reveal · Right: Flag · Double-click Number: Expand · C: Scan\n"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0227"
-msgstr "Arrows: Select · W S A D: Rotate · J: Reveal · K: Flag"
+msgstr "Keyboard mode: Arrows Select · W S A D Rotate · J Reveal/Chord · K Flag · R Center"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0228"
@@ -1064,15 +1064,15 @@ msgstr "The large tree in the center cannot be clicked. Start with the three roo
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0265"
-msgstr "The arrow points to an anchor at the end of one root."
+msgstr "The arrow points to a nodule group on one of the roots."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0266"
-msgstr "Sprout: Use Normal Minesweeper Around Each Anchor"
+msgstr "Sprout: Use Normal Minesweeper Around Each Nodule Group"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0267"
-msgstr "Reveal safe cells beside the anchor and flag every Pollution Core correctly."
+msgstr "Reveal every safe cell around the group and correctly flag every nearby Pollution Core."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0268"
@@ -1092,7 +1092,7 @@ msgstr "Sprout: Press C and Choose a Hidden Cell"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0272"
-msgstr "The scan tells you directly whether that cell is safe or polluted."
+msgstr "Scan resolves the selected cell directly: a safe cell is revealed and a Pollution Core is flagged."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0273"
@@ -1272,7 +1272,7 @@ msgstr "The shield is only protection; you should still reason from the numbers.
 
 #. 天空引导 | 运行
 msgid "TXT_0317"
-msgstr "Sprout: A Special Storm Eye Core Appeared"
+msgstr "Sprout: Special Storm Eye Cores Will Appear Here"
 
 #. 天空引导 | 运行
 msgid "TXT_0318"
@@ -1548,7 +1548,7 @@ msgstr "All live mines in %d groups intercepted · Drifting stopped"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0386"
-msgstr "\nMove Arrows/WASD · J Reveal · K Flag · C Scan"
+msgstr "Move Arrows/WASD · J Reveal/Chord · K Flag · C Scan"
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0387"
@@ -1596,7 +1596,7 @@ msgstr "Right-click to place a detection seed"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0398"
-msgstr "It does not reveal or flag anything automatically; the next choice is still yours."
+msgstr "A safe cell is revealed and a Pollution Core is flagged automatically; recharge after use."
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0399"
@@ -1604,7 +1604,7 @@ msgstr "Sprout Introduces the Board"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0400"
-msgstr "Left: Reveal\nRight: Pollution Flag\nClick Numbers to Expand\n\nPurple Arcs Are Adjacent\nThey Link Distant Star Cores\n\nFirst Reveal Protection\nCovers Two Nearby Stars\nHitting a Core Uses Shield\n\nDeeper Voyages\nCreate Richer Star Webs"
+msgstr "Left: Reveal\nRight: Pollution Flag\nClick a Revealed Number to Expand\n\nOnly Glowing Links Are Adjacent\nCurves and Wormholes Count\n\nFirst Reveal Is Always Safe\nThe First Four Boards Also Protect Neighbors\nHitting a Core Uses a Shield\nand Auto-flags It\n\nBoard Play Is Mouse-only\nEco Scan Is Unavailable\n\nDeeper Voyages\nCreate Richer Star Webs"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0401"
@@ -1852,113 +1852,132 @@ msgstr "How to Play"
 
 #. 完整操作说明 | 运行
 msgid "TXT_0462"
-msgstr ""
-"[GOAL AND NUMBERS]\n"
-"Reveal every safe cell and correctly flag every pollution core. A number counts the pollution cores adjacent to that cell. Flags are your deductions; an incorrect flag is not treated as a correct answer. When a revealed number is satisfied and every surrounding flag is correct, double-click it to reveal the remaining adjacent cells.\n\n"
-"[MOUSE CONTROLS]\n"
-"Land/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to chord. Sky: left-click to reveal, right-click to flag, drag to rotate the sphere, and double-click a number to chord. When Eco Scan is charged, press C or click the robot, then choose a hidden cell; right-click or K cancels targeting. Esc opens or closes the pause menu.\n\n"
-"[KEYBOARD CONTROLS]\n"
-"After selecting Keyboard mode in Settings: use the arrow keys or W S A D to move the cell cursor, J to reveal or confirm a number, and K to flag. In Sky, the arrow keys select an adjacent face, W S A D rotates the sphere, J reveals, K flags, and R centers the selected face. C activates Eco Scan. In menus, use the arrow keys and Enter/Space. F11 or Alt+Enter changes display mode.\n\n"
-"[ECO SCAN]\n"
-"Reveals and the first flag placed on a cell build energy, which carries between levels. Three lights above the robot show the three charge stages. At full charge, a “Press C or click the robot” prompt appears. Scan identifies one hidden cell as safe or polluted, then must recharge.\n\n"
-"[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\n"
-"Level 1: 5×5, 5 cores, eight-direction adjacency, with the first-action tutorial.\n"
-"Level 2: 6×6, 8 cores, eight-direction adjacency.\n"
-"Level 3: 8×8, 9 cores. Ruins cannot be revealed, flagged, or scanned; ignore them when reading numbers.\n"
-"Level 4: 9×9, 12 cores. Random obstacle clusters reshape the playable area.\n"
-"Level 5: 10×10, 13 cores, 2 pollution nodes. A node counts as pollution and cleanses after all surrounding cells are handled correctly.\n"
-"Level 6: 12×12, 17 cores, 3 pollution nodes, using the same rule across more node regions.\n"
-"Level 7: 13×13, 20 cores, 3 nodes and the mother tree. Resolve the three root anchors to cleanse the boss.\n\n"
-"[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\n"
-"Only hexes sharing an edge are adjacent. Coral walls cut shared edges; numbers, zero expansion, and chording never cross a wall.\n"
-"Level 8: 6×6, 7 cores, basic six-direction adjacency.\n"
-"Level 9: 8×7, 10 cores, one coral wall changes adjacency.\n"
-"Level 10: 9×8, 14 cores, two coral walls.\n"
-"Level 11: 10×9, 17 cores. Two debris groups drift right on a timer; each contains two safe buoys and two mines. Adjacency and numbers recalculate after every move.\n"
-"Level 12: 11×10, 21 cores. Three faster debris groups keep changing adjacency in real time.\n"
-"Level 13: 12×11, 25 cores. A coral wall and two tidal zones limit play to the lit zone; completing it unlocks the next and updates boundary numbers.\n"
-"Level 14: 13×12, 30 cores. Boss level with two coral walls and three tidal zones completed in order.\n\n"
-"[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\n"
-"Pentagons have 5 neighbors and hexagons have 6. Only faces sharing an edge on the sphere are adjacent; rear faces remain part of the same board.\n"
-"Level 15: 32 faces, 6 cores, basic fullerene.\n"
-"Level 16: 42 faces, 8 cores, expanded sphere.\n"
-"Level 17: 92 faces, 15 cores. Revealing a safe face has a 20% chance to trigger Breeze Aid, revealing a random safe face or auto-flagging a core.\n"
-"Level 18: 162 faces, 26 cores, retaining the 20% Breeze Aid.\n"
-"Level 19: 252 faces, 40 cores, Breeze Aid plus one Cloud Shield with a 70% trigger chance.\n"
-"Level 20: 362 faces, 58 cores, Breeze Aid, one Cloud Shield, and three Storm Eye pollution cores. The Eye itself cannot be operated; revealing every safe neighbor and correctly flagging nearby pollution breaks it automatically. Defeat all three to win.\n"
-"Level 21: 492 faces, 78 cores, Breeze Aid, Cloud Shield, and five Storm Eye pollution cores. Surround and break all five as exploration advances to win.\n\n"
-"[UNIVERSE EXPEDITION]\n"
-"Star nodes are adjacent only when joined by a glowing line; screen distance does not matter. Straight lines, curves, and purple wormholes all count. A number counts pollution on every directly connected node. The ship has two shields: touching pollution consumes a shield and auto-flags that node first. Graph grammars keep generating new boards. Every genuinely new Universe board adds 1 to the lifetime exploration count; failure, leaving, or starting a new expedition never resets it.\n\n"
-"[BADGES AND BADGE BOOK]\n"
-"After a Land victory, that level's badge spins and grows at the center of the screen amid a golden glow. Click any mouse button, or press Space, Enter, or any gamepad button to store it in the Badge Book. When opened from victory, left-click to enter the next level and right-click to return to the current victory screen; the bottom-right button opens the Badge Hall. Badge buttons on the welcome screen, map, and Settings open the Badge Hall, where the Land, Ocean, and Sky covers open their matching Badge Books. Click any blank area outside the four ecology showcases, or press Esc, to return. Completed-level ecology and badges light automatically. Universe has no Badge Book: its showcase records lifetime exploration with ones-place asteroids, tens-place large planets, and hundreds-place star clusters. At 1,000, a rotating galaxy and the ultimate trophy remain permanently on display. Chinese and English each use badge artwork with matching embedded text.\n\n"
-"[SETTINGS AND ASSISTS]\n"
-"Settings separately control master volume, BGM, SFX, display mode, mouse/keyboard operation mode, and language. First-click protection guarantees a safe opening; repeated Land failures strengthen adaptive opening assistance. The pause menu can resume, restart, return to the map, open Settings, return to the main menu, or quit. This guide is available from the map, Settings, and the in-game pause menu."
+msgstr "[GOALS, NUMBERS, AND COUNTER]\nThe basic goal is to reveal every safe cell; drift groups, pollution nodes, Storm Eyes, and other special mechanics also require their related cells to be resolved. A number counts pollution directly adjacent under the current chapter's rules, and Land pollution nodes count too. The top X/Y means flags used / total cores. Wrong and automatic flags increase X; unflaggable Land nodes are excluded from Y. When every surrounding flag is correct and the count matches, double-click a revealed number in Land, Ocean, or Sky (or press J in Keyboard mode) to expand. In Universe, click a revealed number again.\n\n[MOUSE CONTROLS]\nLand/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to expand. Sky: left-click to reveal, right-click to flag, drag to rotate, and double-click a revealed number to expand. Universe: left-click to reveal, right-click to flag, and click a revealed number again to expand. In Land, Ocean, and Sky, press C or click the robot when Eco Scan is full, then choose a hidden cell. Cancel with Right Click, Esc, or C; Keyboard mode in Land/Ocean also accepts K. Universe has no Eco Scan. Outside Scan targeting, Esc toggles pause.\n\n[KEYBOARD AND MENUS]\nIn Keyboard mode, Land/Ocean use Arrows or W S A D to move, J to reveal or expand, and K to flag. Sky uses Arrows to select an adjacent face, W S A D to rotate, J to reveal or expand, K to flag, and R to center the selected face. C activates Eco Scan in the first three chapters. Mouse remains available. Universe board play is mouse-only and ignores the Controls setting. Menus use Arrows and Enter/Space. F11 or Alt+Enter changes display mode.\n\n[ECO SCAN]\nIn Land, Ocean, and Sky, each successful reveal/expand action and the first flag placed on each cell add 1 energy. One action still adds only 1 even if it opens several cells, and energy carries between levels. Each level requires one reveal before Scan can be used. The robot's three lights mark 4/8/12 energy. A scanned safe cell is revealed automatically; a Pollution Core is confirmed and flagged automatically. The charge then empties and must refill. Universe has no Eco Scan.\n\n[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\nLevel 1: 5×5/5 cores; Level 2: 6×6/8; Level 3: 8×8/9 with inoperable ruins ignored by adjacency; Level 4: 9×9/12 with random obstacle clusters.\nPollution nodules on Levels 5–7 cannot be operated and count in nearby numbers. Reveal safe neighbors and correctly flag polluted neighbors to cleanse them. The first action around any uncleansed nodule starts one shared timer for the level. Ordinary actions do not extend it; cleansing one group resets the full time. On timeout, every uncleansed group with progress repollutes its local area plus one outer ring: safe cells close, flags and Scan confirmations clear, and the same number of cores is redistributed inside. Outside reveal states, flags, and core positions stay unchanged; boundary numbers update. Pauses, guides, and interaction locks stop the timer.\nLevel 5: 10×10/13, 1 obstacle cluster, 2 nodules, shared 45 seconds. Level 6: 12×12/17, 2 obstacle clusters, 3 nodules, shared 40 seconds. Level 7: 13×13/20, three roots with 3 nodules each, and the mother tree, shared 60 seconds; cleanse all three roots to cleanse the boss.\n\n[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\nOnly hexes sharing an edge are adjacent. Coral walls cut number counting, zero expansion, and chording. Level 8: 6×6/7; Level 9: 8×7/10 with 1 wall; Level 10: 9×8/14 with 2 walls.\nLevel 11: 10×9/17 total cores; two drift groups take turns moving every 7 seconds, each with 2 safe buoys and 2 mines. Level 12: 11×10/21 total; three groups move every 6 seconds. Reveal buoys and flag mines. Solving one group stops only that group; an unflagged mine crossing the filter causes failure, and related numbers recalculate after every move.\nLevel 13: 12×11/25 with 1 wall and 2 tidal zones. Level 14: 13×12/30 with 2 walls and 3 zones. Only the lit zone can be played; completion unlocks the next and opens a safe patch. Earlier zones remain playable and boundary numbers recalculate.\n\n[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\nPentagons have 5 neighbors and hexagons have 6; only shared sphere edges count, rear faces remain on the same board, and every first reveal is safe. Levels 15–21 use 32/6, 42/8, 92/15, 162/26, 252/40, 362/58, and 492/78 faces/cores.\nOn Levels 17–21, each safe reveal has a one-in-five chance to trigger Breeze Aid, revealing a safe face or auto-flagging a core. Levels 19–21 also have one Cloud Shield: a core hit has a seven-in-ten chance to be blocked and auto-flagged, consuming the shield on success. Levels 20/21 reveal 3/5 Storm Eyes as exploration advances; these Eyes are included in the 58/78 total. Eyes cannot be operated and break automatically when their safe and polluted neighbors are resolved—no double-click required. Break them all to win.\n\n[UNIVERSE EXPEDITION]\nUniverse has no numbered levels, separate map, Eco Scan, or Badge Book, and board play is mouse-only. The left panel shows expedition data; the right panel pauses, starts a new Universe, or returns to Sky. Only glowing links are adjacent; silver lines, cyan curves, and purple wormholes all count.\nEvery first reveal is safe: Boards 1–2 also protect 2 neighbors, Boards 3–4 protect 1, and later boards protect only the chosen node. The ship starts with 2 shields. Hitting pollution first consumes 1 shield and auto-flags it; a hit after shields are gone ends the expedition. Board 7 restores 1 shield, then every 5 boards restores another, up to 2. Revealing every safe star automatically generates the next board.\nEvery genuinely generated board—initial entry, successful advance, or new expedition—adds 1 to the lifetime total. Failure, pause, exit, and UI refresh never reset or duplicate it. The first generation of Board 1,000 freezes the expedition for a one-time perspective crawl and trophy reveal, then opens Badge Hall for placement. Closing the Hall resumes that same board.\n\n[BADGES, BADGE BOOKS, AND BADGE HALL]\nAfter any Land, Ocean, or Sky victory, that level's badge spins and grows at center with a golden glow. Any mouse button, Space, Enter, or a gamepad button stores it in that chapter's Badge Book. From victory, Left Click, Space, Enter, or gamepad continues to the next level/chapter; Right Click or Esc returns to victory; the bottom-right button opens Badge Hall.\nBadge entries on the welcome screen, maps, and Settings all open Badge Hall. The Hall has no Back button: left- or right-click outside the four showcases, or press Esc, to return. Land, Ocean, and Sky covers open their Badge Books; Universe has no button or Badge Book. Before 1,000, asteroids show ones, planets tens, and clusters hundreds. At 1,000, a permanently rotating galaxy and trophy replace those counters while the numeric lifetime total keeps growing.\n\n[NAVIGATION, SETTINGS, AND ASSISTS]\n“Start Journey” opens the Land map and “Badge Hall” opens the Hall. Click a map node once to select and again to enter. From pause, “Back to Level” resumes the current game; normal maps use “Enter Selected Level.” Sky's next chapter enters Universe, and Universe can return to Sky.\nSettings control master volume, BGM, SFX, display mode, mouse/keyboard controls for the first three chapters, and language, and save automatically. Land/Ocean may hit pollution on the first reveal by default. After 2 consecutive first-reveal losses, the next attempt guarantees safety; after 3 consecutive losses within the first 5 moves, the next attempt opens a safe region. Sky and Universe always guarantee the first reveal.\nLand, Ocean, and Sky pause menus can resume, restart, open Level Select, Settings, or this guide, return to the main menu, or quit. Universe pause can resume, start a new Universe, open Settings or this guide, return to the welcome screen, or quit; its right panel separately returns to Sky."
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0463"
 msgstr "Badge Book"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0464"
 msgstr "Land Badges · Levels 1–7"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0465"
 msgstr "Back"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0466"
 msgstr "Click any mouse button, or press Space / Enter / a gamepad button to store this badge"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0467"
-msgstr "Left-click: next level · Right-click: return to victory · Bottom-right: return to Badge Hall"
+msgstr "Left-click / Space / Enter / gamepad button: continue to the next level or chapter · Right-click / Esc: return to the current victory screen · Bottom-right: open Badge Hall"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0468"
-msgstr "Completed-level badges shine here · Right-click or Esc returns to Badge Hall · Bottom-right returns to Badge Hall"
+msgstr "Completed-level badges shine here · Right-click / Esc or use the bottom-right button to return to Badge Hall"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0469"
-msgstr "Return to Badge Hall"
+msgstr "Open Badge Hall"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0470"
-msgstr "View Badges"
+msgstr "Badge Hall"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0471"
 msgstr "Ocean Chapter · Guardian Badges"
 
-#. Badge system | Runtime
+#. 徽章系统 | 运行
 msgid "TXT_0472"
 msgstr "Sky Chapter · Guardian Badges"
 
-#. Badge Hall | Runtime
+#. 勋章殿堂 | 运行
 msgid "TXT_0473"
 msgstr "Badge Hall"
 
-#. Universe Showcase | Runtime
+#. 宇宙展示台 | 运行
 msgid "TXT_0474"
 msgstr "Universe Ecology Showcase"
 
-#. Universe Showcase | Runtime
+#. 宇宙展示台 | 运行
 msgid "TXT_0475"
-msgstr "Universe Boards Explored: %d"
+msgstr "Lifetime Universe Boards Generated: %d"
 
-#. Thousandth Universe Achievement | Runtime
+#. 宇宙千次成就 | 运行
 msgid "TXT_0476"
-msgstr "THE THOUSANDTH UNIVERSE EXPEDITION"
+msgstr "THE THOUSANDTH UNIVERSE BOARD"
 
-#. Thousandth Universe Achievement | Runtime
+#. 宇宙千次成就 | 运行
 msgid "TXT_0477"
-msgstr "After countless new beginnings,\none purifier has reached\nthe thousandth Universe region.\n\nThe developer was certain\nno one would carry the journey this far.\n\nThe truth is now clear:\nthe developer was wrong.\n\nThis galaxy will turn forever for you,\nand the Universe Ecology Showcase\nwill remember this impossible expedition."
+msgstr "After countless new beginnings,\none purifier has reached\nthe thousandth newly generated Universe board.\n\nThe developer was certain\nno one would carry the journey this far.\n\nThe truth is now clear:\nthe developer was wrong.\n\nThis galaxy will turn forever for you,\nand the Universe Ecology Showcase\nwill remember this impossible voyage."
 
-#. Thousandth Universe Achievement | Runtime
+#. 宇宙千次成就 | 运行
 msgid "TXT_0478"
 msgstr "Lifetime Galaxy Achievement · The Developer Was Wrong"
 
-#. Thousandth Universe Achievement | Runtime
+#. 宇宙千次成就 | 运行
 msgid "TXT_0479"
 msgstr "The ultimate trophy and galaxy now remain forever in the Universe Ecology Showcase"
 
+#. 陆地污染再生 | 运行
+msgid "TXT_0480"
+msgstr "\nAny nodule action starts the shared %d-second timer\nCleanse one group to reset it · Timeout repollutes one outer ring"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0481"
+msgstr "Nodule regrowth: %d seconds"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0482"
+msgstr "Regrowth in %d seconds"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0483"
+msgstr "Nodule regrowth repolluted the area"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0484"
+msgstr "Sprout: Nodules Push Back"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0485"
+msgstr "The first action around any nodule group starts the level's single shared timer."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0486"
+msgstr "Cleansing one group resets the timer; ordinary actions do not extend it."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0487"
+msgstr "Sprout: Timeout Repollutes"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0488"
+msgstr "On timeout, every uncleansed nodule with progress closes again across one outer ring."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0489"
+msgstr "All flags and scan confirmations in each affected area are removed."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0490"
+msgstr "Sprout: Pollution Cores Shift"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0491"
+msgstr "During regrowth, pollution cores in the area shift."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0492"
+msgstr "Outside reveals, flags, and core positions stay unchanged; boundary numbers update."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0494"
+msgstr "All pollution nodules are fully cleansed"
+
+#. 地图与导航 | 运行
+msgid "TXT_0495"
+msgstr "Enter Selected Level"

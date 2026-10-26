@@ -1087,7 +1087,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
-text = "TXT_0463"
+text = "TXT_0470"
 
 [node name="LevelPreviousChapterButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
 unique_name_in_owner = true
@@ -1286,7 +1286,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "TXT_0031"
+text = "TXT_0452"
 
 [node name="Help" type="Control" parent="."]
 unique_name_in_owner = true
@@ -1349,4 +1349,4 @@ autowrap_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "TXT_0031"
+text = "TXT_0452"

@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://4wp48ycbqokv" path="res://assets/art/land_v2/stage/land_triptych_stage.png" id="8_vchkt"]
 [ext_resource type="Script" uid="uid://dm6k80rcbrblf" path="res://scripts/rect_button_focus_outline.gd" id="9_round_focus"]
 [ext_resource type="Script" uid="uid://bkbmkgex8rjqu" path="res://scripts/board_cell_surface_preview.gd" id="13_cell_preview"]
+[ext_resource type="Script" path="res://scripts/board_grid_overlay.gd" id="13_grid_overlay"]
 [ext_resource type="FontFile" uid="uid://byd7yngf1xx8x" path="res://assets/art/common/fonts/ui_handwritten_zh.ttf" id="14_bjg73"]
 [ext_resource type="StyleBox" path="res://themes/victory_light_dot_style.tres" id="16_victory_dot_style"]
 [ext_resource type="Texture2D" uid="uid://d05wyk4rrpd6c" path="res://assets/art/tutorial/first_move_guide_frame.png" id="17_guide_frame"]
@@ -534,17 +535,18 @@ expand_mode = 1
 [node name="OceanMineCounterLabel" type="Label" parent="OceanLayout/OceanTopHud" unique_id=214100047]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 470.0
+offset_left = 458.0
 offset_top = 18.0
-offset_right = 574.0
+offset_right = 570.0
 offset_bottom = 76.0
 theme_override_colors/font_color = Color(0.91, 0.98, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.03, 0.12, 0.18, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 26
 text = "0"
+tooltip_text = "TXT_0153"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -800,6 +802,16 @@ offset_right = 469.0
 offset_bottom = 364.0
 mouse_filter = 2
 script = ExtResource("13_cell_preview")
+
+[node name="HandmadeGridOverlay" type="Control" parent="LandLayout/BoardArea/BoardCenter/Board"]
+z_index = 1
+layout_mode = 0
+offset_left = 94.0
+offset_top = 27.0
+offset_right = 469.0
+offset_bottom = 364.0
+mouse_filter = 2
+script = ExtResource("13_grid_overlay")
 
 [node name="RightInfo" type="Control" parent="LandLayout" unique_id=1515148994]
 unique_name_in_owner = true
@@ -1147,17 +1159,18 @@ expand_mode = 1
 [node name="LandMineCounterLabel" type="Label" parent="LandLayout/TopHud" unique_id=1165181440]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 470.0
+offset_left = 458.0
 offset_top = 18.0
-offset_right = 574.0
+offset_right = 570.0
 offset_bottom = 76.0
 theme_override_colors/font_color = Color(0.9725, 0.9255, 0.7882, 1)
 theme_override_colors/font_shadow_color = Color(0.0863, 0.0667, 0.0431, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 26
 text = "0"
+tooltip_text = "TXT_0153"
 horizontal_alignment = 1
 vertical_alignment = 1
 

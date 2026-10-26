@@ -101,6 +101,9 @@ const LEVEL_MECHANIC_GUIDES := {
 		"pages": [
 			{"title": "TXT_0258", "text": "TXT_0259", "hint": "TXT_0404"},
 			{"title": "TXT_0260", "text": "TXT_0261", "hint": "TXT_0262"},
+			{"title": "TXT_0484", "text": "TXT_0485", "hint": "TXT_0486"},
+			{"title": "TXT_0487", "text": "TXT_0488", "hint": "TXT_0489"},
+			{"title": "TXT_0490", "text": "TXT_0491", "hint": "TXT_0492"},
 		],
 	},
 	7: {
@@ -108,6 +111,9 @@ const LEVEL_MECHANIC_GUIDES := {
 		"pages": [
 			{"title": "TXT_0263", "text": "TXT_0264", "hint": "TXT_0265"},
 			{"title": "TXT_0266", "text": "TXT_0267", "hint": "TXT_0268"},
+			{"title": "TXT_0484", "text": "TXT_0485", "hint": "TXT_0486"},
+			{"title": "TXT_0487", "text": "TXT_0488", "hint": "TXT_0489"},
+			{"title": "TXT_0490", "text": "TXT_0491", "hint": "TXT_0492"},
 		],
 	},
 	8: {
@@ -1102,6 +1108,11 @@ func _refresh_instructions() -> void:
 		instructions_label.text = (
 			node_rule
 			+ tr("TXT_0181")
+			+ (
+				tr("TXT_0480") % roundi(board.pollution_reset_seconds)
+				if board.pollution_reset_seconds > 0.0
+				else ""
+			)
 			+ (
 				tr("TXT_0386")
 				if _operation_mode == 1

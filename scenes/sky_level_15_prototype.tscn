@@ -252,17 +252,18 @@ expand_mode = 1
 [node name="SkyMineCounterLabel" type="Label" parent="SkyStage/SkyTopHud" unique_id=35247935]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 470.0
+offset_left = 458.0
 offset_top = 18.0
-offset_right = 574.0
+offset_right = 570.0
 offset_bottom = 76.0
 theme_override_colors/font_color = Color(0.91, 0.98, 1, 1)
 theme_override_colors/font_shadow_color = Color(0.03, 0.12, 0.18, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 26
 text = "0/6"
+tooltip_text = "TXT_0153"
 horizontal_alignment = 1
 vertical_alignment = 1
 

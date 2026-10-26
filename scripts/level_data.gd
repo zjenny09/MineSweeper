@@ -44,6 +44,7 @@ const LEVEL_5 := {
 	"first_move_guide": false,
 	"obstacle_cluster_count": 1,
 	"pollution_node_count": 2,
+	"pollution_reset_seconds": 45.0,
 }
 
 const LEVEL_6 := {
@@ -54,6 +55,7 @@ const LEVEL_6 := {
 	"first_move_guide": false,
 	"obstacle_cluster_count": 2,
 	"pollution_node_count": 3,
+	"pollution_reset_seconds": 40.0,
 }
 
 const LEVEL_7 := {
@@ -63,6 +65,7 @@ const LEVEL_7 := {
 	"core_count": 20,
 	"first_move_guide": false,
 	"pollution_node_count": 3,
+	"pollution_reset_seconds": 60.0,
 	"boss": true,
 }
 

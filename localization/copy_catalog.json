@@ -37,10 +37,10 @@
       "en": "Continue",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1474",
+        "scenes/main.tscn:1487",
         "scenes/shell.tscn:817",
-        "scenes/sky_level_15_prototype.tscn:1269",
-        "scripts/shell.gd:1371"
+        "scenes/sky_level_15_prototype.tscn:1309",
+        "scripts/shell.gd:1375"
       ],
       "note": "",
       "review": "待复核"
@@ -56,7 +56,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1365"
+        "scripts/shell.gd:1369"
       ],
       "note": "",
       "review": "待复核"
@@ -93,9 +93,9 @@
       "en": "Settings",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1525",
+        "scenes/main.tscn:1538",
         "scenes/shell.tscn:1153",
-        "scenes/sky_level_15_prototype.tscn:1308",
+        "scenes/sky_level_15_prototype.tscn:1348",
         "scenes/universe_endless.tscn:329"
       ],
       "note": "",
@@ -120,9 +120,9 @@
       "en": "Exit Game",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1576",
+        "scenes/main.tscn:1589",
         "scenes/shell.tscn:798",
-        "scenes/sky_level_15_prototype.tscn:1347",
+        "scenes/sky_level_15_prototype.tscn:1387",
         "scenes/universe_endless.tscn:344"
       ],
       "note": "",
@@ -136,7 +136,7 @@
       "en": "Play your first game to enable Continue",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1372"
+        "scripts/shell.gd:1376"
       ],
       "note": "",
       "review": "待复核"
@@ -149,7 +149,7 @@
       "en": "Regenerate the last level you played",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1369"
+        "scripts/shell.gd:1373"
       ],
       "note": "",
       "review": "待复核"
@@ -158,8 +158,8 @@
       "id": "TXT_0012",
       "category": "品牌与主菜单",
       "status": "运行",
-      "zh_CN": "v0.7.0  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇",
-      "en": "v0.7.0  ·  Land + Ocean + Sky + Universe",
+      "zh_CN": "v0.8.1  ·  陆地篇 + 海洋篇 + 天空篇 + 宇宙篇",
+      "en": "v0.8.1  ·  Land + Ocean + Sky + Universe",
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:823"
@@ -216,7 +216,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1433"
+        "scripts/shell.gd:1437"
       ],
       "note": "",
       "review": "待复核"
@@ -244,7 +244,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1436"
+        "scripts/shell.gd:1440"
       ],
       "note": "",
       "review": "待复核"
@@ -257,8 +257,8 @@
       "en": "On",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1434",
-        "scripts/shell.gd:1437"
+        "scripts/shell.gd:1438",
+        "scripts/shell.gd:1441"
       ],
       "note": "",
       "review": "待复核"
@@ -271,8 +271,8 @@
       "en": "Off",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1434",
-        "scripts/shell.gd:1437"
+        "scripts/shell.gd:1438",
+        "scripts/shell.gd:1441"
       ],
       "note": "",
       "review": "待复核"
@@ -298,7 +298,7 @@
       "en": "Windowed (1280 × 720)",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1377"
+        "scripts/shell.gd:1381"
       ],
       "note": "",
       "review": "待复核"
@@ -311,7 +311,7 @@
       "en": "Maximized Window",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1378"
+        "scripts/shell.gd:1382"
       ],
       "note": "",
       "review": "待复核"
@@ -324,7 +324,7 @@
       "en": "Borderless Fullscreen",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1379"
+        "scripts/shell.gd:1383"
       ],
       "note": "",
       "review": "待复核"
@@ -350,7 +350,7 @@
       "en": "Mouse",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1382"
+        "scripts/shell.gd:1386"
       ],
       "note": "",
       "review": "待复核"
@@ -359,11 +359,11 @@
       "id": "TXT_0027",
       "category": "设置",
       "status": "运行",
-      "zh_CN": "键盘操作（方向键 / W S A D + J / K）",
-      "en": "Keyboard (Arrows / W S A D + J / K)",
+      "zh_CN": "键盘操作（前三章：方向键 / W S A D + J / K / C；天空篇另有 R；鼠标仍可用）",
+      "en": "Keyboard (Chapters 1–3: Arrows / W S A D + J / K / C; Sky also uses R; mouse remains available)",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1384"
+        "scripts/shell.gd:1388"
       ],
       "note": "",
       "review": "待复核"
@@ -389,7 +389,7 @@
       "en": "Simplified Chinese",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1389"
+        "scripts/shell.gd:1393"
       ],
       "note": "",
       "review": "待复核"
@@ -398,8 +398,8 @@
       "id": "TXT_0030",
       "category": "设置",
       "status": "运行",
-      "zh_CN": "设置会自动保存；横屏基准为1280 × 720",
-      "en": "Settings save automatically · Landscape baseline: 1280 × 720",
+      "zh_CN": "设置自动保存 · 横屏基准1280 × 720 · 操作方式仅影响陆地、海洋与天空",
+      "en": "Settings save automatically · Landscape baseline: 1280 × 720 · Controls mode applies only to Land, Ocean, and Sky",
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:1261"
@@ -415,10 +415,8 @@
       "en": "Back to Main Menu",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1559",
-        "scenes/shell.tscn:1289",
-        "scenes/shell.tscn:1352",
-        "scenes/sky_level_15_prototype.tscn:1334"
+        "scenes/main.tscn:1572",
+        "scenes/sky_level_15_prototype.tscn:1374"
       ],
       "note": "",
       "review": "待复核"
@@ -458,8 +456,9 @@
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:1076",
-        "scripts/shell.gd:496",
-        "scripts/shell.gd:740"
+        "scripts/shell.gd:497",
+        "scripts/shell.gd:743",
+        "scripts/shell.gd:1471"
       ],
       "note": "",
       "review": "待复核"
@@ -472,8 +471,8 @@
       "en": "Level Select",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1508",
-        "scenes/sky_level_15_prototype.tscn:1295"
+        "scenes/main.tscn:1521",
+        "scenes/sky_level_15_prototype.tscn:1335"
       ],
       "note": "",
       "review": "待复核"
@@ -555,8 +554,8 @@
       "en": "Enter Universe Chapter",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:496",
-        "scripts/sky_level_prototype.gd:657"
+        "scripts/sky_level_prototype.gd:498",
+        "scripts/sky_level_prototype.gd:659"
       ],
       "note": "",
       "review": "待复核"
@@ -686,8 +685,8 @@
       "en": "Next\nChapter",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:985",
-        "scripts/main.gd:1829"
+        "scripts/main.gd:991",
+        "scripts/main.gd:1840"
       ],
       "note": "",
       "review": "待复核"
@@ -700,10 +699,10 @@
       "en": "Next Level",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:991",
-        "scripts/main.gd:1837",
-        "scripts/sky_level_prototype.gd:494",
-        "scripts/sky_level_prototype.gd:655"
+        "scripts/main.gd:997",
+        "scripts/main.gd:1848",
+        "scripts/sky_level_prototype.gd:496",
+        "scripts/sky_level_prototype.gd:657"
       ],
       "note": "",
       "review": "待复核"
@@ -716,8 +715,8 @@
       "en": "Back to\nMap",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:988",
-        "scripts/main.gd:1833"
+        "scripts/main.gd:994",
+        "scripts/main.gd:1844"
       ],
       "note": "",
       "review": "待复核"
@@ -810,7 +809,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1281"
+        "scripts/shell.gd:1285"
       ],
       "note": "",
       "review": "待复核"
@@ -826,7 +825,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1187"
+        "scripts/shell.gd:1191"
       ],
       "note": "",
       "review": "待复核"
@@ -842,7 +841,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/shell.gd:1084"
+        "scripts/shell.gd:1088"
       ],
       "note": "",
       "review": "待复核"
@@ -870,7 +869,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1298"
+        "scripts/shell.gd:1302"
       ],
       "note": "",
       "review": "待复核"
@@ -896,7 +895,7 @@
       "en": "Locked",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1291"
+        "scripts/shell.gd:1295"
       ],
       "note": "",
       "review": "待复核"
@@ -909,7 +908,7 @@
       "en": "Unlocked",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1297"
+        "scripts/shell.gd:1301"
       ],
       "note": "",
       "review": "待复核"
@@ -922,7 +921,7 @@
       "en": "In Progress",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1295"
+        "scripts/shell.gd:1299"
       ],
       "note": "",
       "review": "待复核"
@@ -935,7 +934,7 @@
       "en": "Completed",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1293"
+        "scripts/shell.gd:1297"
       ],
       "note": "",
       "review": "待复核"
@@ -950,7 +949,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/shell.gd:1301"
+        "scripts/shell.gd:1305"
       ],
       "note": "",
       "review": "待复核"
@@ -964,7 +963,7 @@
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:1041",
-        "scripts/shell.gd:1303"
+        "scripts/shell.gd:1307"
       ],
       "note": "",
       "review": "待复核"
@@ -1059,7 +1058,7 @@
       "en": "Deep Forest",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:51"
+        "scripts/level_data.gd:52"
       ],
       "note": "",
       "review": "待复核"
@@ -1072,7 +1071,7 @@
       "en": "Ancient Grove",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:61"
+        "scripts/level_data.gd:63"
       ],
       "note": "",
       "review": "待复核"
@@ -1085,7 +1084,7 @@
       "en": "Seagrass",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:80"
+        "scripts/level_data.gd:83"
       ],
       "note": "",
       "review": "待复核"
@@ -1098,7 +1097,7 @@
       "en": "Coral Reef",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:92"
+        "scripts/level_data.gd:95"
       ],
       "note": "",
       "review": "待复核"
@@ -1111,7 +1110,7 @@
       "en": "Sea Anemone",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:71"
+        "scripts/level_data.gd:74"
       ],
       "note": "",
       "review": "待复核"
@@ -1124,7 +1123,7 @@
       "en": "Jellyfish",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:105"
+        "scripts/level_data.gd:108"
       ],
       "note": "",
       "review": "待复核"
@@ -1137,7 +1136,7 @@
       "en": "Fish Shoal",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:125"
+        "scripts/level_data.gd:128"
       ],
       "note": "",
       "review": "待复核"
@@ -1150,7 +1149,7 @@
       "en": "Ocean Trench",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:146"
+        "scripts/level_data.gd:149"
       ],
       "note": "",
       "review": "待复核"
@@ -1163,7 +1162,7 @@
       "en": "Whale Fall",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:168"
+        "scripts/level_data.gd:171"
       ],
       "note": "",
       "review": "待复核"
@@ -1176,7 +1175,7 @@
       "en": "Cloud Crown",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:196"
+        "scripts/level_data.gd:199"
       ],
       "note": "",
       "review": "待复核"
@@ -1189,7 +1188,7 @@
       "en": "Wind Ring",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:205"
+        "scripts/level_data.gd:208"
       ],
       "note": "",
       "review": "待复核"
@@ -1202,7 +1201,7 @@
       "en": "Rainbow Bridge",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:214"
+        "scripts/level_data.gd:217"
       ],
       "note": "",
       "review": "待复核"
@@ -1215,7 +1214,7 @@
       "en": "Floating Isles",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:225"
+        "scripts/level_data.gd:228"
       ],
       "note": "",
       "review": "待复核"
@@ -1228,7 +1227,7 @@
       "en": "Cloud Ridge",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:236"
+        "scripts/level_data.gd:239"
       ],
       "note": "",
       "review": "待复核"
@@ -1241,7 +1240,7 @@
       "en": "Storm Eye",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:249"
+        "scripts/level_data.gd:252"
       ],
       "note": "",
       "review": "待复核"
@@ -1254,7 +1253,7 @@
       "en": "Sky Palace",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:263"
+        "scripts/level_data.gd:266"
       ],
       "note": "",
       "review": "待复核"
@@ -1283,10 +1282,10 @@
         "%s"
       ],
       "sources": [
-        "scripts/main.gd:809",
-        "scripts/main.gd:936",
-        "scripts/sky_level_prototype.gd:425",
-        "scripts/sky_level_prototype.gd:465"
+        "scripts/main.gd:815",
+        "scripts/main.gd:942",
+        "scripts/sky_level_prototype.gd:427",
+        "scripts/sky_level_prototype.gd:467"
       ],
       "note": "",
       "review": "待复核"
@@ -1299,9 +1298,9 @@
       "en": "Level 1 · Sprout",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:181",
-        "scenes/main.tscn:678",
-        "scenes/sky_level_15_prototype.tscn:425"
+        "scenes/main.tscn:182",
+        "scenes/main.tscn:680",
+        "scenes/sky_level_15_prototype.tscn:465"
       ],
       "note": "",
       "review": "待复核"
@@ -1314,7 +1313,7 @@
       "en": "Level 15 · Cloud Crown",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:304"
+        "scripts/sky_level_prototype.gd:306"
       ],
       "note": "",
       "review": "待复核"
@@ -1345,8 +1344,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:813",
-        "scripts/main.gd:940"
+        "scripts/main.gd:819",
+        "scripts/main.gd:946"
       ],
       "note": "",
       "review": "待复核"
@@ -1363,8 +1362,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/sky_level_prototype.gd:426",
-        "scripts/sky_level_prototype.gd:469"
+        "scripts/sky_level_prototype.gd:428",
+        "scripts/sky_level_prototype.gd:471"
       ],
       "note": "",
       "review": "待复核"
@@ -1377,8 +1376,8 @@
       "en": "Board",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:816",
-        "scripts/main.gd:943"
+        "scripts/main.gd:822",
+        "scripts/main.gd:949"
       ],
       "note": "",
       "review": "待复核"
@@ -1391,8 +1390,8 @@
       "en": "Hex Board",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:816",
-        "scripts/main.gd:943"
+        "scripts/main.gd:822",
+        "scripts/main.gd:949"
       ],
       "note": "",
       "review": "待复核"
@@ -1405,7 +1404,7 @@
       "en": "12 Pentagons + 20 Hexagons\nPollution Cores 6",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:305",
+        "scripts/sky_level_prototype.gd:307",
         "scripts/sky_prototype_host.gd:61"
       ],
       "note": "",
@@ -1419,7 +1418,7 @@
       "en": "32-cell Fullerene",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:199"
+        "scripts/level_data.gd:202"
       ],
       "note": "",
       "review": "待复核"
@@ -1432,7 +1431,7 @@
       "en": "42-cell Frequency-2 Cloud Sphere",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:208"
+        "scripts/level_data.gd:211"
       ],
       "note": "",
       "review": "待复核"
@@ -1445,7 +1444,7 @@
       "en": "92-cell Frequency-3 Cloud Sphere",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:217"
+        "scripts/level_data.gd:220"
       ],
       "note": "",
       "review": "待复核"
@@ -1458,7 +1457,7 @@
       "en": "162-cell Frequency-4 Cloud Sphere",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:228"
+        "scripts/level_data.gd:231"
       ],
       "note": "",
       "review": "待复核"
@@ -1471,7 +1470,7 @@
       "en": "252-cell Frequency-5 Cloud Sphere",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:239"
+        "scripts/level_data.gd:242"
       ],
       "note": "",
       "review": "待复核"
@@ -1484,7 +1483,7 @@
       "en": "362-cell Frequency-6 Cloud Sphere",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:252"
+        "scripts/level_data.gd:255"
       ],
       "note": "",
       "review": "待复核"
@@ -1497,7 +1496,7 @@
       "en": "492-cell Frequency-7 Cloud Sphere",
       "placeholders": [],
       "sources": [
-        "scripts/level_data.gd:266"
+        "scripts/level_data.gd:269"
       ],
       "note": "",
       "review": "待复核"
@@ -1512,8 +1511,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/sky_level_prototype.gd:397",
-        "scripts/sky_level_prototype.gd:464"
+        "scripts/sky_level_prototype.gd:399",
+        "scripts/sky_level_prototype.gd:466"
       ],
       "note": "",
       "review": "待复核"
@@ -1526,9 +1525,9 @@
       "en": "Objective",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:291",
-        "scenes/main.tscn:846",
-        "scenes/sky_level_15_prototype.tscn:768"
+        "scenes/main.tscn:292",
+        "scenes/main.tscn:858",
+        "scenes/sky_level_15_prototype.tscn:808"
       ],
       "note": "",
       "review": "待复核"
@@ -1541,9 +1540,9 @@
       "en": "Controls",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:189",
-        "scenes/main.tscn:686",
-        "scenes/sky_level_15_prototype.tscn:433"
+        "scenes/main.tscn:190",
+        "scenes/main.tscn:688",
+        "scenes/sky_level_15_prototype.tscn:473"
       ],
       "note": "",
       "review": "待复核"
@@ -1552,13 +1551,13 @@
       "id": "TXT_0114",
       "category": "目标与游戏状态",
       "status": "运行",
-      "zh_CN": "清除所有污染核心",
-      "en": "Clear every Pollution Core",
+      "zh_CN": "翻开全部安全格",
+      "en": "Reveal every safe cell",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:299",
-        "scenes/main.tscn:854",
-        "scenes/sky_level_15_prototype.tscn:776"
+        "scenes/main.tscn:300",
+        "scenes/main.tscn:866",
+        "scenes/sky_level_15_prototype.tscn:816"
       ],
       "note": "",
       "review": "待复核"
@@ -1567,13 +1566,13 @@
       "id": "TXT_0115",
       "category": "目标与游戏状态",
       "status": "运行",
-      "zh_CN": "清除所有污染核心\n恢复%s生态",
-      "en": "Clear all Cores\nRestore %s",
+      "zh_CN": "翻开全部安全格\n恢复%s生态",
+      "en": "Reveal every safe cell\nRestore %s",
       "placeholders": [
         "%s"
       ],
       "sources": [
-        "scripts/main.gd:1914"
+        "scripts/main.gd:1925"
       ],
       "note": "",
       "review": "待复核"
@@ -1590,7 +1589,7 @@
         "%s"
       ],
       "sources": [
-        "scripts/main.gd:1908"
+        "scripts/main.gd:1919"
       ],
       "note": "",
       "review": "待复核"
@@ -1606,7 +1605,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1903"
+        "scripts/main.gd:1914"
       ],
       "note": "",
       "review": "待复核"
@@ -1622,7 +1621,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1898"
+        "scripts/main.gd:1909"
       ],
       "note": "",
       "review": "待复核"
@@ -1635,7 +1634,7 @@
       "en": "Clear both rings\nResolve cells around the center",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1891"
+        "scripts/main.gd:1902"
       ],
       "note": "",
       "review": "待复核"
@@ -1648,7 +1647,7 @@
       "en": "Drifting Mines Intercepted\nContinue clearing the remaining safe cells",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1923"
+        "scripts/main.gd:1934"
       ],
       "note": "",
       "review": "待复核"
@@ -1661,8 +1660,8 @@
       "en": "Drifting Source Purified\nContinue clearing the remaining pollution",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1889",
-        "scripts/main.gd:1928"
+        "scripts/main.gd:1900",
+        "scripts/main.gd:1939"
       ],
       "note": "",
       "review": "待复核"
@@ -1678,7 +1677,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1934"
+        "scripts/main.gd:1945"
       ],
       "note": "",
       "review": "待复核"
@@ -1691,9 +1690,9 @@
       "en": "Rotate the sphere and clear every safe face",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:306",
-        "scripts/sky_level_prototype.gd:431",
-        "scripts/sky_level_prototype.gd:488"
+        "scripts/sky_level_prototype.gd:308",
+        "scripts/sky_level_prototype.gd:433",
+        "scripts/sky_level_prototype.gd:490"
       ],
       "note": "",
       "review": "待复核"
@@ -1721,8 +1720,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/sky_level_prototype.gd:434",
-        "scripts/sky_level_prototype.gd:711"
+        "scripts/sky_level_prototype.gd:436",
+        "scripts/sky_level_prototype.gd:713"
       ],
       "note": "",
       "review": "待复核"
@@ -1731,15 +1730,15 @@
       "id": "TXT_0126",
       "category": "目标与游戏状态",
       "status": "运行",
-      "zh_CN": "持续净化等待雷眼 · 正确标记周围污染并双击击破 %d/%d",
-      "en": "Keep clearing until a Storm Eye forms · Flag its pollution and double-click to break it %d/%d",
+      "zh_CN": "持续净化等待雷眼 · 揭开安全邻面并正确标记周围污染 %d/%d",
+      "en": "Keep clearing for Storm Eyes · Reveal safe neighbors and correctly flag nearby pollution %d/%d",
       "placeholders": [
         "%d",
         "%d"
       ],
       "sources": [
-        "scripts/sky_level_prototype.gd:480",
-        "scripts/sky_level_prototype.gd:637"
+        "scripts/sky_level_prototype.gd:482",
+        "scripts/sky_level_prototype.gd:639"
       ],
       "note": "",
       "review": "待复核"
@@ -1752,8 +1751,8 @@
       "en": "Random wind may reveal or flag · Cloud Shield may block a mine",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:438",
-        "scripts/sky_level_prototype.gd:484"
+        "scripts/sky_level_prototype.gd:440",
+        "scripts/sky_level_prototype.gd:486"
       ],
       "note": "",
       "review": "待复核"
@@ -1766,8 +1765,8 @@
       "en": "Clearing may trigger a random reveal or automatic flag",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:440",
-        "scripts/sky_level_prototype.gd:486"
+        "scripts/sky_level_prototype.gd:442",
+        "scripts/sky_level_prototype.gd:488"
       ],
       "note": "",
       "review": "待复核"
@@ -1780,11 +1779,11 @@
       "en": "Ready",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:269",
-        "scenes/main.tscn:874",
-        "scenes/sky_level_15_prototype.tscn:799",
-        "scripts/main.gd:974",
-        "scripts/main.gd:1805"
+        "scenes/main.tscn:270",
+        "scenes/main.tscn:886",
+        "scenes/sky_level_15_prototype.tscn:839",
+        "scripts/main.gd:980",
+        "scripts/main.gd:1816"
       ],
       "note": "",
       "review": "待复核"
@@ -1797,8 +1796,8 @@
       "en": "Clearing",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:978",
-        "scripts/main.gd:1818"
+        "scripts/main.gd:984",
+        "scripts/main.gd:1829"
       ],
       "note": "",
       "review": "待复核"
@@ -1811,8 +1810,8 @@
       "en": "Clearing in Progress",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:504",
-        "scripts/sky_level_prototype.gd:824",
+        "scripts/sky_level_prototype.gd:506",
+        "scripts/sky_level_prototype.gd:826",
         "scripts/sky_sphere_board.gd:575",
         "scripts/sky_sphere_board.gd:1813"
       ],
@@ -1827,7 +1826,7 @@
       "en": "Free Clearing",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1622"
+        "scripts/main.gd:1633"
       ],
       "note": "",
       "review": "待复核"
@@ -1840,8 +1839,8 @@
       "en": "Guide Active",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:974",
-        "scripts/main.gd:1805"
+        "scripts/main.gd:980",
+        "scripts/main.gd:1816"
       ],
       "note": "",
       "review": "待复核"
@@ -1854,7 +1853,7 @@
       "en": "Guide Complete",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1740"
+        "scripts/main.gd:1751"
       ],
       "note": "",
       "review": "待复核"
@@ -1867,7 +1866,7 @@
       "en": "Guide in Progress",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1126"
+        "scripts/main.gd:1137"
       ],
       "note": "",
       "review": "待复核"
@@ -1880,8 +1879,8 @@
       "en": "Purification Complete",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:990",
-        "scripts/main.gd:1836"
+        "scripts/main.gd:996",
+        "scripts/main.gd:1847"
       ],
       "note": "",
       "review": "待复核"
@@ -1896,8 +1895,8 @@
         "%s"
       ],
       "sources": [
-        "scripts/main.gd:993",
-        "scripts/main.gd:1840"
+        "scripts/main.gd:999",
+        "scripts/main.gd:1851"
       ],
       "note": "",
       "review": "待复核"
@@ -1910,8 +1909,8 @@
       "en": "Ancient Grove Purified!",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:984",
-        "scripts/main.gd:1828"
+        "scripts/main.gd:990",
+        "scripts/main.gd:1839"
       ],
       "note": "",
       "review": "待复核"
@@ -1924,8 +1923,8 @@
       "en": "Ocean Purified!",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:987",
-        "scripts/main.gd:1832"
+        "scripts/main.gd:993",
+        "scripts/main.gd:1843"
       ],
       "note": "",
       "review": "待复核"
@@ -1952,8 +1951,8 @@
       "en": "Play Again",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:994",
-        "scripts/main.gd:1841"
+        "scripts/main.gd:1000",
+        "scripts/main.gd:1852"
       ],
       "note": "",
       "review": "待复核"
@@ -1966,11 +1965,11 @@
       "en": "Regenerate",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:446",
-        "scripts/sky_level_prototype.gd:499",
-        "scripts/sky_level_prototype.gd:502",
-        "scripts/sky_level_prototype.gd:661",
-        "scripts/sky_level_prototype.gd:704"
+        "scripts/sky_level_prototype.gd:448",
+        "scripts/sky_level_prototype.gd:501",
+        "scripts/sky_level_prototype.gd:504",
+        "scripts/sky_level_prototype.gd:663",
+        "scripts/sky_level_prototype.gd:706"
       ],
       "note": "",
       "review": "待复核"
@@ -1983,13 +1982,13 @@
       "en": "Restart",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:426",
-        "scenes/main.tscn:1017",
-        "scenes/main.tscn:1491",
-        "scenes/sky_level_15_prototype.tscn:939",
-        "scenes/sky_level_15_prototype.tscn:1282",
-        "scripts/main.gd:650",
-        "scripts/main.gd:672"
+        "scenes/main.tscn:427",
+        "scenes/main.tscn:1029",
+        "scenes/main.tscn:1504",
+        "scenes/sky_level_15_prototype.tscn:979",
+        "scenes/sky_level_15_prototype.tscn:1322",
+        "scripts/main.gd:656",
+        "scripts/main.gd:678"
       ],
       "note": "",
       "review": "待复核"
@@ -2002,12 +2001,12 @@
       "en": "Regenerate",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1005",
-        "scenes/sky_level_15_prototype.tscn:987",
-        "scripts/main.gd:652",
-        "scripts/main.gd:674",
-        "scripts/main.gd:975",
-        "scripts/main.gd:1807"
+        "scenes/main.tscn:1017",
+        "scenes/sky_level_15_prototype.tscn:1027",
+        "scripts/main.gd:658",
+        "scripts/main.gd:680",
+        "scripts/main.gd:981",
+        "scripts/main.gd:1818"
       ],
       "note": "",
       "review": "待复核"
@@ -2020,10 +2019,10 @@
       "en": "Restart",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:979",
-        "scripts/main.gd:1002",
-        "scripts/main.gd:1820",
-        "scripts/main.gd:1860"
+        "scripts/main.gd:985",
+        "scripts/main.gd:1008",
+        "scripts/main.gd:1831",
+        "scripts/main.gd:1871"
       ],
       "note": "",
       "review": "待复核"
@@ -2036,11 +2035,11 @@
       "en": "Pause / Esc",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:378",
-        "scenes/main.tscn:954",
-        "scenes/sky_level_15_prototype.tscn:878",
-        "scripts/main.gd:651",
-        "scripts/main.gd:673"
+        "scenes/main.tscn:379",
+        "scenes/main.tscn:966",
+        "scenes/sky_level_15_prototype.tscn:918",
+        "scripts/main.gd:657",
+        "scripts/main.gd:679"
       ],
       "note": "",
       "review": "待复核"
@@ -2053,11 +2052,11 @@
       "en": "Pause Esc",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:414",
-        "scripts/main.gd:976",
-        "scripts/main.gd:980",
-        "scripts/main.gd:1808",
-        "scripts/main.gd:1821"
+        "scenes/main.tscn:415",
+        "scripts/main.gd:982",
+        "scripts/main.gd:986",
+        "scripts/main.gd:1819",
+        "scripts/main.gd:1832"
       ],
       "note": "",
       "review": "待复核"
@@ -2070,16 +2069,16 @@
       "en": "Menu Esc",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:462",
-        "scenes/main.tscn:1068",
-        "scenes/sky_level_15_prototype.tscn:928",
-        "scripts/main.gd:653",
-        "scripts/main.gd:675",
-        "scripts/main.gd:982",
-        "scripts/main.gd:1003",
+        "scenes/main.tscn:463",
+        "scenes/main.tscn:1080",
+        "scenes/sky_level_15_prototype.tscn:968",
+        "scripts/main.gd:659",
+        "scripts/main.gd:681",
+        "scripts/main.gd:988",
         "scripts/main.gd:1009",
-        "scripts/main.gd:1825",
-        "scripts/main.gd:1851"
+        "scripts/main.gd:1015",
+        "scripts/main.gd:1836",
+        "scripts/main.gd:1862"
       ],
       "note": "",
       "review": "待复核"
@@ -2092,8 +2091,8 @@
       "en": "Purification Paused",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1456",
-        "scenes/sky_level_15_prototype.tscn:1255"
+        "scenes/main.tscn:1469",
+        "scenes/sky_level_15_prototype.tscn:1295"
       ],
       "note": "",
       "review": "待复核"
@@ -2106,8 +2105,8 @@
       "en": "Pollution Triggered",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1000",
-        "scripts/main.gd:1857"
+        "scripts/main.gd:1006",
+        "scripts/main.gd:1868"
       ],
       "note": "",
       "review": "待复核"
@@ -2122,8 +2121,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:998",
-        "scripts/main.gd:1855"
+        "scripts/main.gd:1004",
+        "scripts/main.gd:1866"
       ],
       "note": "",
       "review": "待复核"
@@ -2138,7 +2137,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1951"
+        "scripts/main.gd:1962"
       ],
       "note": "",
       "review": "待复核"
@@ -2147,10 +2146,14 @@
       "id": "TXT_0153",
       "category": "暂停、失败与结算",
       "status": "运行",
-      "zh_CN": "已用标记",
-      "en": "Flags Used",
+      "zh_CN": "标记计数：X/Y = 已用标记/核心总数",
+      "en": "Flag Counter: X/Y = flags used / total cores",
       "placeholders": [],
-      "sources": [],
+      "sources": [
+        "scenes/main.tscn:549",
+        "scenes/main.tscn:1173",
+        "scenes/sky_level_15_prototype.tscn:266"
+      ],
       "note": "",
       "review": "待复核"
     },
@@ -2184,9 +2187,9 @@
       "en": "Status",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:261",
-        "scenes/main.tscn:866",
-        "scenes/sky_level_15_prototype.tscn:791"
+        "scenes/main.tscn:262",
+        "scenes/main.tscn:878",
+        "scenes/sky_level_15_prototype.tscn:831"
       ],
       "note": "",
       "review": "待复核"
@@ -2195,11 +2198,11 @@
       "id": "TXT_0157",
       "category": "操作与章节规则",
       "status": "运行",
-      "zh_CN": "左键净化 · 右键标记 · 双击展开 · C扫描",
-      "en": "LMB Reveal · RMB Flag · C Scan",
+      "zh_CN": "左键净化 · 右键标记 · 双击数字连锁 · C扫描",
+      "en": "LMB Reveal · RMB Flag · Double-click to Chord · C Scan",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1092"
+        "scripts/main.gd:1098"
       ],
       "note": "",
       "review": "待复核"
@@ -2208,11 +2211,11 @@
       "id": "TXT_0158",
       "category": "操作与章节规则",
       "status": "运行",
-      "zh_CN": "方向键 / W S A D 移动 · J净化 · K标记 · C扫描",
-      "en": "Move Arrows/WASD · J Reveal · K Flag · C Scan",
+      "zh_CN": "方向键 / W S A D移动 · J翻开/连锁 · K标记 · C扫描",
+      "en": "Move Arrows/WASD · J Reveal/Chord · K Flag · C Scan",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1090"
+        "scripts/main.gd:1096"
       ],
       "note": "",
       "review": "待复核"
@@ -2225,7 +2228,7 @@
       "en": "Arrows / W S A D: Move",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1120"
+        "scripts/main.gd:1131"
       ],
       "note": "",
       "review": "待复核"
@@ -2234,11 +2237,11 @@
       "id": "TXT_0160",
       "category": "操作与章节规则",
       "status": "运行",
-      "zh_CN": "\nJ 净化 · K 标记 · C 扫描",
-      "en": "\nJ: Reveal · K: Flag · C: Scan",
+      "zh_CN": "方向键 / W S A D移动 · J翻开/连锁 · K标记",
+      "en": "Move Arrows/WASD · J Reveal/Chord · K Flag",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1121"
+        "scripts/main.gd:1132"
       ],
       "note": "",
       "review": "待复核"
@@ -2251,7 +2254,7 @@
       "en": "\nMouse controls remain available",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1122"
+        "scripts/main.gd:1133"
       ],
       "note": "",
       "review": "待复核"
@@ -2264,8 +2267,8 @@
       "en": "\nLeft: Reveal · Right: Flag · C: Scan",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1108",
-        "scripts/main.gd:1127"
+        "scripts/main.gd:1119",
+        "scripts/main.gd:1138"
       ],
       "note": "",
       "review": "待复核"
@@ -2278,7 +2281,7 @@
       "en": "\nDouble-click a number to expand",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1128"
+        "scripts/main.gd:1139"
       ],
       "note": "",
       "review": "待复核"
@@ -2291,7 +2294,7 @@
       "en": "First Reveal May Be a Core",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1126"
+        "scripts/main.gd:1137"
       ],
       "note": "",
       "review": "待复核"
@@ -2317,7 +2320,7 @@
       "en": "Reefs block links; numbers ignore the far side",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1039"
+        "scripts/main.gd:1045"
       ],
       "note": "",
       "review": "待复核"
@@ -2330,7 +2333,7 @@
       "en": "Two Groups",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1050"
+        "scripts/main.gd:1056"
       ],
       "note": "",
       "review": "待复核"
@@ -2343,7 +2346,7 @@
       "en": "Three Groups",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1053"
+        "scripts/main.gd:1059"
       ],
       "note": "",
       "review": "待复核"
@@ -2358,7 +2361,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1055"
+        "scripts/main.gd:1061"
       ],
       "note": "",
       "review": "待复核"
@@ -2375,7 +2378,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1059"
+        "scripts/main.gd:1065"
       ],
       "note": "",
       "review": "待复核"
@@ -2388,7 +2391,7 @@
       "en": "Reveal safe buoys · Flag mines · Solved groups stop",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1063"
+        "scripts/main.gd:1069"
       ],
       "note": "",
       "review": "待复核"
@@ -2404,7 +2407,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1066"
+        "scripts/main.gd:1072"
       ],
       "note": "",
       "review": "待复核"
@@ -2417,7 +2420,7 @@
       "en": "Any unflagged mine escaping = failure",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1070"
+        "scripts/main.gd:1076"
       ],
       "note": "",
       "review": "待复核"
@@ -2430,7 +2433,7 @@
       "en": "Source moves every 20 sec · Numbers update",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1074"
+        "scripts/main.gd:1080"
       ],
       "note": "",
       "review": "待复核"
@@ -2443,7 +2446,7 @@
       "en": "Center is locked · Clear both blue rings normally",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1077"
+        "scripts/main.gd:1083"
       ],
       "note": "",
       "review": "待复核"
@@ -2456,7 +2459,7 @@
       "en": "Clear both rings before the source escapes",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1080"
+        "scripts/main.gd:1086"
       ],
       "note": "",
       "review": "待复核"
@@ -2469,7 +2472,7 @@
       "en": "Numbers count open zones · Clear one zone to open the next",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1084"
+        "scripts/main.gd:1090"
       ],
       "note": "",
       "review": "待复核"
@@ -2482,7 +2485,7 @@
       "en": "Locked zones show missed cells and wrong flags",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1087"
+        "scripts/main.gd:1093"
       ],
       "note": "",
       "review": "待复核"
@@ -2495,7 +2498,7 @@
       "en": "Sever the three Root Anchors",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1098"
+        "scripts/main.gd:1104"
       ],
       "note": "",
       "review": "待复核"
@@ -2508,7 +2511,7 @@
       "en": "Nodes are locked and count in nearby numbers",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1100"
+        "scripts/main.gd:1106"
       ],
       "note": "",
       "review": "待复核"
@@ -2521,7 +2524,7 @@
       "en": "\nReveal safe neighbors · Flag nearby Cores",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1104"
+        "scripts/main.gd:1110"
       ],
       "note": "",
       "review": "待复核"
@@ -2537,8 +2540,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1800",
-        "scripts/main.gd:1939"
+        "scripts/main.gd:1811",
+        "scripts/main.gd:1950"
       ],
       "note": "",
       "review": "待复核"
@@ -2554,8 +2557,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1813",
-        "scripts/main.gd:1941"
+        "scripts/main.gd:1824",
+        "scripts/main.gd:1952"
       ],
       "note": "",
       "review": "待复核"
@@ -2568,8 +2571,8 @@
       "en": "Scan Not Ready",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1375",
-        "scripts/main.gd:1526"
+        "scripts/main.gd:1386",
+        "scripts/main.gd:1537"
       ],
       "note": "",
       "review": "待复核"
@@ -2582,7 +2585,7 @@
       "en": "Reveal one cell before using Eco Scan",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1529"
+        "scripts/main.gd:1540"
       ],
       "note": "",
       "review": "待复核"
@@ -2598,8 +2601,8 @@
         "%d"
       ],
       "sources": [
-        "scripts/main.gd:1531",
-        "scripts/sky_level_prototype.gd:855"
+        "scripts/main.gd:1542",
+        "scripts/sky_level_prototype.gd:857"
       ],
       "note": "",
       "review": "待复核"
@@ -2612,7 +2615,7 @@
       "en": "Click the robot or press C, then choose a cell to scan",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1533"
+        "scripts/main.gd:1544"
       ],
       "note": "",
       "review": "待复核"
@@ -2625,7 +2628,7 @@
       "en": "Click the robot or press C, then choose a hidden cell",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:857"
+        "scripts/sky_level_prototype.gd:859"
       ],
       "note": "",
       "review": "待复核"
@@ -2634,11 +2637,11 @@
       "id": "TXT_0189",
       "category": "扫描与格子提示",
       "status": "运行",
-      "zh_CN": "请选择隐藏格；Esc、右键或 C 取消",
-      "en": "Choose a hidden cell · Esc, Right Click, or C to cancel",
+      "zh_CN": "请选择隐藏格；Esc、右键或 C 取消，键盘模式也可按 K",
+      "en": "Choose a hidden cell · Cancel with Esc, Right Click, or C; Keyboard mode also accepts K",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1535"
+        "scripts/main.gd:1546"
       ],
       "note": "",
       "review": "待复核"
@@ -2651,7 +2654,7 @@
       "en": "Choose a hidden cell · Esc, Right Click, or C to cancel",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:859"
+        "scripts/sky_level_prototype.gd:861"
       ],
       "note": "",
       "review": "待复核"
@@ -2664,8 +2667,8 @@
       "en": "Scanning",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1537",
-        "scripts/sky_level_prototype.gd:861"
+        "scripts/main.gd:1548",
+        "scripts/sky_level_prototype.gd:863"
       ],
       "note": "",
       "review": "待复核"
@@ -2678,8 +2681,8 @@
       "en": "This game is over",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1539",
-        "scripts/sky_level_prototype.gd:863"
+        "scripts/main.gd:1550",
+        "scripts/sky_level_prototype.gd:865"
       ],
       "note": "",
       "review": "待复核"
@@ -2692,7 +2695,7 @@
       "en": "Unavailable",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1548"
+        "scripts/main.gd:1559"
       ],
       "note": "",
       "review": "待复核"
@@ -2705,10 +2708,10 @@
       "en": "Available after first reveal",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:343",
-        "scenes/main.tscn:919",
-        "scenes/sky_level_15_prototype.tscn:844",
-        "scripts/main.gd:1551"
+        "scenes/main.tscn:344",
+        "scenes/main.tscn:931",
+        "scenes/sky_level_15_prototype.tscn:884",
+        "scripts/main.gd:1562"
       ],
       "note": "",
       "review": "待复核"
@@ -2721,7 +2724,7 @@
       "en": "Scan Ready",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1555"
+        "scripts/main.gd:1566"
       ],
       "note": "",
       "review": "待复核"
@@ -2734,7 +2737,7 @@
       "en": "Choose a Cell",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1557"
+        "scripts/main.gd:1568"
       ],
       "note": "",
       "review": "待复核"
@@ -2747,7 +2750,7 @@
       "en": "Scanning",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1559"
+        "scripts/main.gd:1570"
       ],
       "note": "",
       "review": "待复核"
@@ -2760,7 +2763,7 @@
       "en": "Game Over",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1561"
+        "scripts/main.gd:1572"
       ],
       "note": "",
       "review": "待复核"
@@ -2800,7 +2803,7 @@
       "sources": [
         "scenes/land_tabletop_actors.tscn:193",
         "scripts/land_tabletop_actors.gd:687",
-        "scripts/land_tabletop_actors.gd:1516"
+        "scripts/land_tabletop_actors.gd:1519"
       ],
       "note": "",
       "review": "待复核"
@@ -2829,7 +2832,7 @@
       "sources": [
         "scenes/land_tabletop_actors.tscn:174",
         "scripts/land_tabletop_actors.gd:289",
-        "scripts/sky_level_prototype.gd:852"
+        "scripts/sky_level_prototype.gd:854"
       ],
       "note": "",
       "review": "待复核"
@@ -2842,7 +2845,7 @@
       "en": "Choose a hidden cell for Eco Scan",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:787"
+        "scripts/sky_level_prototype.gd:789"
       ],
       "note": "",
       "review": "待复核"
@@ -2855,7 +2858,7 @@
       "en": "Scan Result: Pollution Core",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:813"
+        "scripts/sky_level_prototype.gd:815"
       ],
       "note": "",
       "review": "待复核"
@@ -2868,7 +2871,7 @@
       "en": "Scan Result: Safe Face",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:813"
+        "scripts/sky_level_prototype.gd:815"
       ],
       "note": "",
       "review": "待复核"
@@ -3113,8 +3116,8 @@
       "id": "TXT_0225",
       "category": "扫描与格子提示",
       "status": "运行",
-      "zh_CN": "邻近污染核心：%d；双击可快速展开",
-      "en": "Nearby Pollution Cores: %d · Double-click to expand",
+      "zh_CN": "邻近污染核心：%d；标记数量匹配且位置全正确时，双击连锁展开",
+      "en": "Nearby Pollution Cores: %d · Double-click to chord only when every flag is correct",
       "placeholders": [
         "%d"
       ],
@@ -3128,12 +3131,12 @@
       "id": "TXT_0226",
       "category": "天空动态状态",
       "status": "运行",
-      "zh_CN": "拖拽旋转 · 左键净化 · 右键标记 · C扫描\n",
-      "en": "Drag: Rotate · Left: Reveal · Right: Flag · C: Scan\n",
+      "zh_CN": "拖拽旋转 · 左键净化 · 右键标记 · 双击数字展开 · C扫描\n",
+      "en": "Drag: Rotate · Left: Reveal · Right: Flag · Double-click Number: Expand · C: Scan\n",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:308",
-        "scripts/sky_level_prototype.gd:475"
+        "scripts/sky_level_prototype.gd:310",
+        "scripts/sky_level_prototype.gd:477"
       ],
       "note": "",
       "review": "待复核"
@@ -3142,12 +3145,12 @@
       "id": "TXT_0227",
       "category": "天空动态状态",
       "status": "运行",
-      "zh_CN": "方向键选择 · W S A D旋转 · J翻开 · K标记",
-      "en": "Arrows: Select · W S A D: Rotate · J: Reveal · K: Flag",
+      "zh_CN": "键盘模式：方向键选择 · W S A D旋转 · J翻开/连锁 · K标记 · R转到正面",
+      "en": "Keyboard mode: Arrows Select · W S A D Rotate · J Reveal/Chord · K Flag · R Center",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:309",
-        "scripts/sky_level_prototype.gd:476",
+        "scripts/sky_level_prototype.gd:311",
+        "scripts/sky_level_prototype.gd:478",
         "scripts/sky_prototype_host.gd:68"
       ],
       "note": "",
@@ -3161,9 +3164,9 @@
       "en": "Rotate the sphere and find a safe starting face",
       "placeholders": [],
       "sources": [
-        "scripts/sky_level_prototype.gd:312",
-        "scripts/sky_level_prototype.gd:445",
-        "scripts/sky_level_prototype.gd:501",
+        "scripts/sky_level_prototype.gd:314",
+        "scripts/sky_level_prototype.gd:447",
+        "scripts/sky_level_prototype.gd:503",
         "scripts/sky_prototype_host.gd:71",
         "scripts/sky_sphere_board.gd:573",
         "scripts/sky_sphere_board.gd:645",
@@ -3359,8 +3362,8 @@
       "en": "Sprout found you a safe starting point!",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1301",
-        "scenes/sky_level_15_prototype.tscn:627",
+        "scenes/main.tscn:1314",
+        "scenes/sky_level_15_prototype.tscn:667",
         "scripts/first_move_guide.gd:55",
         "scripts/first_move_guide.gd:332"
       ],
@@ -3402,8 +3405,8 @@
       "en": "Click here for your first reveal",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1313",
-        "scenes/sky_level_15_prototype.tscn:639",
+        "scenes/main.tscn:1326",
+        "scenes/sky_level_15_prototype.tscn:679",
         "scripts/first_move_guide.gd:56",
         "scripts/first_move_guide.gd:275"
       ],
@@ -3431,8 +3434,8 @@
       "en": "This is a safe suggestion, but you may choose another cell",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1325",
-        "scenes/sky_level_15_prototype.tscn:651",
+        "scenes/main.tscn:1338",
+        "scenes/sky_level_15_prototype.tscn:691",
         "scripts/first_move_guide.gd:57",
         "scripts/first_move_guide.gd:338"
       ],
@@ -3488,8 +3491,8 @@
       "en": "Next",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1360",
-        "scenes/sky_level_15_prototype.tscn:687",
+        "scenes/main.tscn:1373",
+        "scenes/sky_level_15_prototype.tscn:727",
         "scripts/first_move_guide.gd:353"
       ],
       "note": "",
@@ -3503,8 +3506,8 @@
       "en": "Exit Guide",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1391",
-        "scenes/sky_level_15_prototype.tscn:718",
+        "scenes/main.tscn:1404",
+        "scenes/sky_level_15_prototype.tscn:758",
         "scripts/first_move_guide.gd:354"
       ],
       "note": "",
@@ -3662,7 +3665,7 @@
       "en": "Sprout: Sever the Three Root Anchors First",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:109"
+        "scripts/main.gd:112"
       ],
       "note": "",
       "review": "待复核"
@@ -3675,7 +3678,7 @@
       "en": "The large tree in the center cannot be clicked. Start with the three roots connected to it.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:109"
+        "scripts/main.gd:112"
       ],
       "note": "",
       "review": "待复核"
@@ -3684,11 +3687,11 @@
       "id": "TXT_0265",
       "category": "陆地与海洋引导",
       "status": "运行",
-      "zh_CN": "箭头指着其中一条根系末端的锚点。",
-      "en": "The arrow points to an anchor at the end of one root.",
+      "zh_CN": "箭头指向其中一条根系上的根瘤组。",
+      "en": "The arrow points to a nodule group on one of the roots.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:109"
+        "scripts/main.gd:112"
       ],
       "note": "",
       "review": "待复核"
@@ -3697,11 +3700,11 @@
       "id": "TXT_0266",
       "category": "陆地与海洋引导",
       "status": "运行",
-      "zh_CN": "小芽：锚点周围照常扫雷",
-      "en": "Sprout: Use Normal Minesweeper Around Each Anchor",
+      "zh_CN": "小芽：每组根瘤周围照常扫雷",
+      "en": "Sprout: Use Normal Minesweeper Around Each Nodule Group",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:110"
+        "scripts/main.gd:113"
       ],
       "note": "",
       "review": "待复核"
@@ -3710,11 +3713,11 @@
       "id": "TXT_0267",
       "category": "陆地与海洋引导",
       "status": "运行",
-      "zh_CN": "翻开锚点旁的安全格，把污染核心全部标对。",
-      "en": "Reveal safe cells beside the anchor and flag every Pollution Core correctly.",
+      "zh_CN": "翻开这一组全部邻近安全格，并正确标记邻近污染核心。",
+      "en": "Reveal every safe cell around the group and correctly flag every nearby Pollution Core.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:110"
+        "scripts/main.gd:113"
       ],
       "note": "",
       "review": "待复核"
@@ -3727,7 +3730,7 @@
       "en": "Once all three roots are severed, the central tree purifies itself.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:110"
+        "scripts/main.gd:113"
       ],
       "note": "",
       "review": "待复核"
@@ -3740,7 +3743,7 @@
       "en": "Sprout: Eco Scan Is Fully Charged",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:146"
+        "scripts/main.gd:152"
       ],
       "note": "",
       "review": "待复核"
@@ -3753,7 +3756,7 @@
       "en": "Reveals and first-time flags charge it, and stored energy carries into the next level.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:146"
+        "scripts/main.gd:152"
       ],
       "note": "",
       "review": "待复核"
@@ -3766,7 +3769,7 @@
       "en": "Sprout: Press C and Choose a Hidden Cell",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:147"
+        "scripts/main.gd:153"
       ],
       "note": "",
       "review": "待复核"
@@ -3775,11 +3778,11 @@
       "id": "TXT_0272",
       "category": "陆地与海洋引导",
       "status": "运行",
-      "zh_CN": "扫描会直接告诉你，这一格是安全还是污染。",
-      "en": "The scan tells you directly whether that cell is safe or polluted.",
+      "zh_CN": "扫描会直接处理所选格：安全格自动翻开，污染核心自动标记。",
+      "en": "Scan resolves the selected cell directly: a safe cell is revealed and a Pollution Core is flagged.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:147"
+        "scripts/main.gd:153"
       ],
       "note": "",
       "review": "待复核"
@@ -3792,7 +3795,7 @@
       "en": "Once fully charged, you can use one Eco Scan.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:146"
+        "scripts/main.gd:152"
       ],
       "note": "",
       "review": "待复核"
@@ -3805,7 +3808,7 @@
       "en": "Sprout: The Ocean Board Uses Hexagons",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:116"
+        "scripts/main.gd:122"
       ],
       "note": "",
       "review": "待复核"
@@ -3818,7 +3821,7 @@
       "en": "Each cell has at most six neighbors instead of eight.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:116"
+        "scripts/main.gd:122"
       ],
       "note": "",
       "review": "待复核"
@@ -3831,7 +3834,7 @@
       "en": "Read each number using the six hexagonal directions.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:117"
+        "scripts/main.gd:123"
       ],
       "note": "",
       "review": "待复核"
@@ -3844,7 +3847,7 @@
       "en": "Sprout: The Minesweeper Rules Are Unchanged",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:117"
+        "scripts/main.gd:123"
       ],
       "note": "",
       "review": "待复核"
@@ -3857,7 +3860,7 @@
       "en": "Buoys can still be revealed, flagged, and expanded with a double-click.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:130"
+        "scripts/main.gd:136"
       ],
       "note": "",
       "review": "待复核"
@@ -3870,7 +3873,7 @@
       "en": "Sprout: Coral Walls Separate Two Cells",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:123"
+        "scripts/main.gd:129"
       ],
       "note": "",
       "review": "待复核"
@@ -3883,7 +3886,7 @@
       "en": "Cells on opposite sides of a wall are not adjacent, and numbers ignore the other side.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:123"
+        "scripts/main.gd:129"
       ],
       "note": "",
       "review": "待复核"
@@ -3896,7 +3899,7 @@
       "en": "First see which two cells the wall separates, then read the numbers.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:124"
+        "scripts/main.gd:130"
       ],
       "note": "",
       "review": "待复核"
@@ -3909,7 +3912,7 @@
       "en": "Sprout: You Can Go Around the Wall",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:124"
+        "scripts/main.gd:130"
       ],
       "note": "",
       "review": "待复核"
@@ -3922,7 +3925,7 @@
       "en": "Any shared edge not blocked by a wall remains normally adjacent.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:124"
+        "scripts/main.gd:130"
       ],
       "note": "",
       "review": "待复核"
@@ -3935,7 +3938,7 @@
       "en": "Double-click expansion will not cross a coral wall either.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:123"
+        "scripts/main.gd:129"
       ],
       "note": "",
       "review": "待复核"
@@ -3948,7 +3951,7 @@
       "en": "Sprout: The Pale-Blue Buoys Drift Right",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:130"
+        "scripts/main.gd:136"
       ],
       "note": "",
       "review": "待复核"
@@ -3961,7 +3964,7 @@
       "en": "Each group has four buoys: two are safe and two are mines.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:130"
+        "scripts/main.gd:136"
       ],
       "note": "",
       "review": "待复核"
@@ -3974,7 +3977,7 @@
       "en": "Sprout: Solve Each Group Before It Escapes",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:132"
+        "scripts/main.gd:138"
       ],
       "note": "",
       "review": "待复核"
@@ -3987,7 +3990,7 @@
       "en": "Reveal both safe buoys and flag both mines to stop that group.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:132"
+        "scripts/main.gd:138"
       ],
       "note": "",
       "review": "待复核"
@@ -4000,7 +4003,7 @@
       "en": "You lose if an unresolved mine drifts beyond the right boundary.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:132"
+        "scripts/main.gd:138"
       ],
       "note": "",
       "review": "待复核"
@@ -4013,7 +4016,7 @@
       "en": "Sprout: Numbers Recalculate After Every Move",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:131"
+        "scripts/main.gd:137"
       ],
       "note": "",
       "review": "待复核"
@@ -4026,7 +4029,7 @@
       "en": "Whenever the buoys move, nearby numbers update for their new positions.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:131"
+        "scripts/main.gd:137"
       ],
       "note": "",
       "review": "待复核"
@@ -4039,7 +4042,7 @@
       "en": "Even revealed numbers may change with them.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:131"
+        "scripts/main.gd:137"
       ],
       "note": "",
       "review": "待复核"
@@ -4052,7 +4055,7 @@
       "en": "Sprout: The Tide Reveals the Board in Zones",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:138"
+        "scripts/main.gd:144"
       ],
       "note": "",
       "review": "待复核"
@@ -4065,7 +4068,7 @@
       "en": "Only the lit zone is available now; later zones remain locked.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:138"
+        "scripts/main.gd:144"
       ],
       "note": "",
       "review": "待复核"
@@ -4078,7 +4081,7 @@
       "en": "Reveal every safe cell in the current zone first.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:138"
+        "scripts/main.gd:144"
       ],
       "note": "",
       "review": "待复核"
@@ -4091,7 +4094,7 @@
       "en": "Sprout: Completing a Zone Opens the Next",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:139"
+        "scripts/main.gd:145"
       ],
       "note": "",
       "review": "待复核"
@@ -4104,7 +4107,7 @@
       "en": "Opening a new zone automatically expands a safe patch; every zero region expands through its numbered boundary.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:139"
+        "scripts/main.gd:145"
       ],
       "note": "",
       "review": "待复核"
@@ -4117,7 +4120,7 @@
       "en": "If the next zone stays locked, the status bar shows missed cells or wrong flags.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:139"
+        "scripts/main.gd:145"
       ],
       "note": "",
       "review": "待复核"
@@ -4360,8 +4363,8 @@
       "id": "TXT_0317",
       "category": "天空引导",
       "status": "运行",
-      "zh_CN": "小芽：发现特殊雷眼污染核心",
-      "en": "Sprout: A Special Storm Eye Core Appeared",
+      "zh_CN": "小芽：本关会出现特殊雷眼核心",
+      "en": "Sprout: Special Storm Eye Cores Will Appear Here",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:48"
@@ -5271,7 +5274,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3306"
+        "scripts/board.gd:3329"
       ],
       "note": "",
       "review": "待复核"
@@ -5286,7 +5289,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3601"
+        "scripts/board.gd:3624"
       ],
       "note": "",
       "review": "待复核"
@@ -5301,7 +5304,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3545"
+        "scripts/board.gd:3568"
       ],
       "note": "",
       "review": "待复核"
@@ -5310,11 +5313,11 @@
       "id": "TXT_0386",
       "category": "补充与兼容文案",
       "status": "运行",
-      "zh_CN": "\n方向键 / W S A D 移动 · J净化 · K标记 · C扫描",
-      "en": "\nMove Arrows/WASD · J Reveal · K Flag · C Scan",
+      "zh_CN": "方向键 / W S A D移动 · J翻开/连锁 · K标记 · C扫描",
+      "en": "Move Arrows/WASD · J Reveal/Chord · K Flag · C Scan",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1106"
+        "scripts/main.gd:1117"
       ],
       "note": "",
       "review": "待复核"
@@ -5327,7 +5330,7 @@
       "en": "Both pollution rings cleared · Drifting source purified",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:4851"
+        "scripts/board.gd:4879"
       ],
       "note": "",
       "review": "待复核"
@@ -5340,7 +5343,7 @@
       "en": "Two cells are adjacent only when they share an edge.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:116"
+        "scripts/main.gd:122"
       ],
       "note": "",
       "review": "待复核"
@@ -5353,7 +5356,7 @@
       "en": "For example, 1 means one adjacent Pollution Core",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1269"
+        "scripts/main.gd:1280"
       ],
       "note": "",
       "review": "待复核"
@@ -5366,7 +5369,7 @@
       "en": "Left-click another white cell",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1263"
+        "scripts/main.gd:1274"
       ],
       "note": "",
       "review": "待复核"
@@ -5422,7 +5425,7 @@
       "en": "Double-click this number",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1288"
+        "scripts/main.gd:1299"
       ],
       "note": "",
       "review": "待复核"
@@ -5446,7 +5449,7 @@
       "en": "Right-click to remove this wrong flag",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1280"
+        "scripts/main.gd:1291"
       ],
       "note": "",
       "review": "待复核"
@@ -5459,7 +5462,7 @@
       "en": "Right-click to place a detection seed",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1283"
+        "scripts/main.gd:1294"
       ],
       "note": "",
       "review": "待复核"
@@ -5468,11 +5471,11 @@
       "id": "TXT_0398",
       "category": "补充与兼容文案",
       "status": "运行",
-      "zh_CN": "它不会自动翻开或标记，之后仍由你决定。",
-      "en": "It does not reveal or flag anything automatically; the next choice is still yours.",
+      "zh_CN": "安全格会自动翻开，污染核心会自动标记；使用后需要重新充能。",
+      "en": "A safe cell is revealed and a Pollution Core is flagged automatically; recharge after use.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:147"
+        "scripts/main.gd:153"
       ],
       "note": "",
       "review": "待复核"
@@ -5485,7 +5488,7 @@
       "en": "Sprout Introduces the Board",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1257"
+        "scripts/main.gd:1268"
       ],
       "note": "",
       "review": "待复核"
@@ -5494,8 +5497,8 @@
       "id": "TXT_0400",
       "category": "补充与兼容文案",
       "status": "运行",
-      "zh_CN": "左键净化\n右键污染标记\n点击数字展开\n\n紫色弧线也是邻接\n会连接远距离星核\n\n首次净化保护\n附近两颗邻星\n误触核心消耗护盾\n\n航行越深\n星网结构越丰富",
-      "en": "Left: Reveal\nRight: Pollution Flag\nClick Numbers to Expand\n\nPurple Arcs Are Adjacent\nThey Link Distant Star Cores\n\nFirst Reveal Protection\nCovers Two Nearby Stars\nHitting a Core Uses Shield\n\nDeeper Voyages\nCreate Richer Star Webs",
+      "zh_CN": "左键净化\n右键污染标记\n再次点击数字展开\n\n有发光连线才相邻\n弧线与虫洞也计算\n\n首次净化必定安全\n前四张额外保护邻星\n误触核心消耗护盾\n并自动标记\n\n当前棋盘仅支持鼠标\n不使用生态扫描\n\n航行越深\n星网结构越丰富",
+      "en": "Left: Reveal\nRight: Pollution Flag\nClick a Revealed Number to Expand\n\nOnly Glowing Links Are Adjacent\nCurves and Wormholes Count\n\nFirst Reveal Is Always Safe\nThe First Four Boards Also Protect Neighbors\nHitting a Core Uses a Shield\nand Auto-flags It\n\nBoard Play Is Mouse-only\nEco Scan Is Unavailable\n\nDeeper Voyages\nCreate Richer Star Webs",
       "placeholders": [],
       "sources": [
         "scenes/universe_endless.tscn:252"
@@ -5511,7 +5514,7 @@
       "en": "Left-click this suggested safe cell",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1258"
+        "scripts/main.gd:1269"
       ],
       "note": "",
       "review": "待复核"
@@ -5537,7 +5540,7 @@
       "en": "Quick Expand",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1287"
+        "scripts/main.gd:1298"
       ],
       "note": "",
       "review": "待复核"
@@ -5563,9 +5566,9 @@
       "en": "Scan C",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:356",
-        "scenes/main.tscn:932",
-        "scenes/sky_level_15_prototype.tscn:857"
+        "scenes/main.tscn:357",
+        "scenes/main.tscn:944",
+        "scenes/sky_level_15_prototype.tscn:897"
       ],
       "note": "",
       "review": "待复核"
@@ -5578,7 +5581,7 @@
       "en": "The sweeper will continue after you find a number",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1264"
+        "scripts/main.gd:1275"
       ],
       "note": "",
       "review": "待复核"
@@ -5591,7 +5594,7 @@
       "en": "Flag every Pollution Core around the number",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1284"
+        "scripts/main.gd:1295"
       ],
       "note": "",
       "review": "待复核"
@@ -5630,7 +5633,7 @@
       "en": "Press Enter or click Next to continue",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1269"
+        "scripts/main.gd:1280"
       ],
       "note": "",
       "review": "待复核"
@@ -5643,7 +5646,7 @@
       "en": "Press K to remove this wrong flag",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1280"
+        "scripts/main.gd:1291"
       ],
       "note": "",
       "review": "待复核"
@@ -5656,7 +5659,7 @@
       "en": "Press K to place a detection seed",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1283"
+        "scripts/main.gd:1294"
       ],
       "note": "",
       "review": "待复核"
@@ -5669,7 +5672,7 @@
       "en": "A number still shows the total pollution in adjacent cells.",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:117"
+        "scripts/main.gd:123"
       ],
       "note": "",
       "review": "待复核"
@@ -5708,8 +5711,8 @@
       "en": "All flags are in use · If a mine remains, check for a wrong flag",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:2190",
-        "scripts/board.gd:3065"
+        "scripts/board.gd:2212",
+        "scripts/board.gd:3088"
       ],
       "note": "",
       "review": "待复核"
@@ -5722,7 +5725,7 @@
       "en": "Correct flags will expand the surrounding safe cells",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1289"
+        "scripts/main.gd:1300"
       ],
       "note": "",
       "review": "待复核"
@@ -5735,7 +5738,7 @@
       "en": "Detection Seed",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1273"
+        "scripts/main.gd:1284"
       ],
       "note": "",
       "review": "待复核"
@@ -5750,7 +5753,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3241"
+        "scripts/board.gd:3264"
       ],
       "note": "",
       "review": "待复核"
@@ -5765,7 +5768,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3633"
+        "scripts/board.gd:3656"
       ],
       "note": "",
       "review": "待复核"
@@ -5781,7 +5784,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3734"
+        "scripts/board.gd:3757"
       ],
       "note": "",
       "review": "待复核"
@@ -5796,7 +5799,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3621"
+        "scripts/board.gd:3644"
       ],
       "note": "",
       "review": "待复核"
@@ -5809,7 +5812,7 @@
       "en": "Current Surging · Unanchored pollution is drifting downstream",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:3654"
+        "scripts/board.gd:3677"
       ],
       "note": "",
       "review": "待复核"
@@ -5824,7 +5827,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3739"
+        "scripts/board.gd:3762"
       ],
       "note": "",
       "review": "待复核"
@@ -5839,7 +5842,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3170"
+        "scripts/board.gd:3193"
       ],
       "note": "",
       "review": "待复核"
@@ -5855,7 +5858,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3141"
+        "scripts/board.gd:3164"
       ],
       "note": "",
       "review": "待复核"
@@ -5868,7 +5871,7 @@
       "en": "Drifting source purified · Movement toward the filter stopped",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:3278"
+        "scripts/board.gd:3301"
       ],
       "note": "",
       "review": "待复核"
@@ -5881,7 +5884,7 @@
       "en": "The drifting source crossed the boundary before purification · Mission failed",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:3293"
+        "scripts/board.gd:3316"
       ],
       "note": "",
       "review": "待复核"
@@ -5894,7 +5897,7 @@
       "en": "Cells beneath the drift route never contain static mines and need no flags",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:2176"
+        "scripts/board.gd:2198"
       ],
       "note": "",
       "review": "待复核"
@@ -5910,7 +5913,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:5051"
+        "scripts/board.gd:5312"
       ],
       "note": "",
       "review": "待复核"
@@ -5927,7 +5930,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:5046"
+        "scripts/board.gd:5307"
       ],
       "note": "",
       "review": "待复核"
@@ -5940,7 +5943,7 @@
       "en": "White = Hidden · Yellow = Safe Suggestion",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1259"
+        "scripts/main.gd:1270"
       ],
       "note": "",
       "review": "待复核"
@@ -5953,7 +5956,7 @@
       "en": "A misplaced seed blocks quick number expansion",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1281"
+        "scripts/main.gd:1292"
       ],
       "note": "",
       "review": "待复核"
@@ -5966,7 +5969,7 @@
       "en": "Move here and press J to reveal",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1258"
+        "scripts/main.gd:1269"
       ],
       "note": "",
       "review": "待复核"
@@ -5979,7 +5982,7 @@
       "en": "Move, then press J to reveal another cell",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1263"
+        "scripts/main.gd:1274"
       ],
       "note": "",
       "review": "待复核"
@@ -6013,7 +6016,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3606"
+        "scripts/board.gd:3629"
       ],
       "note": "",
       "review": "待复核"
@@ -6029,7 +6032,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3454"
+        "scripts/board.gd:3477"
       ],
       "note": "",
       "review": "待复核"
@@ -6046,7 +6049,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3338"
+        "scripts/board.gd:3361"
       ],
       "note": "",
       "review": "待复核"
@@ -6061,7 +6064,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3400"
+        "scripts/board.gd:3423"
       ],
       "note": "",
       "review": "待复核"
@@ -6076,7 +6079,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3517"
+        "scripts/board.gd:3540"
       ],
       "note": "",
       "review": "待复核"
@@ -6091,7 +6094,7 @@
         "%d"
       ],
       "sources": [
-        "scripts/board.gd:3566"
+        "scripts/board.gd:3589"
       ],
       "note": "",
       "review": "待复核"
@@ -6182,7 +6185,7 @@
       "en": "Keep Looking",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1262"
+        "scripts/main.gd:1273"
       ],
       "note": "",
       "review": "待复核"
@@ -6195,7 +6198,7 @@
       "en": "Green = Safe · Number = Nearby Pollution",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1268"
+        "scripts/main.gd:1279"
       ],
       "note": "",
       "review": "待复核"
@@ -6208,8 +6211,8 @@
       "en": "Filter Boundary",
       "placeholders": [],
       "sources": [
-        "scripts/board.gd:2630",
-        "scripts/board.gd:2668"
+        "scripts/board.gd:2653",
+        "scripts/board.gd:2691"
       ],
       "note": "",
       "review": "待复核"
@@ -6221,7 +6224,10 @@
       "zh_CN": "返回",
       "en": "Back",
       "placeholders": [],
-      "sources": [],
+      "sources": [
+        "scenes/shell.tscn:1289",
+        "scenes/shell.tscn:1352"
+      ],
       "note": "",
       "review": "待复核"
     },
@@ -6233,7 +6239,7 @@
       "en": "This Is a Number Cell",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1267"
+        "scripts/main.gd:1278"
       ],
       "note": "",
       "review": "待复核"
@@ -6246,7 +6252,7 @@
       "en": "Select the Number and Press J",
       "placeholders": [],
       "sources": [
-        "scripts/main.gd:1288"
+        "scripts/main.gd:1299"
       ],
       "note": "",
       "review": "待复核"
@@ -6285,8 +6291,8 @@
       "en": "5 × 5 Board\n5 Pollution Cores",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:279",
-        "scenes/main.tscn:834"
+        "scenes/main.tscn:280",
+        "scenes/main.tscn:846"
       ],
       "note": "",
       "review": "待复核"
@@ -6299,9 +6305,9 @@
       "en": "Left: Reveal · Right: Flag\nDouble-click numbers to expand",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:197",
-        "scenes/main.tscn:694",
-        "scenes/sky_level_15_prototype.tscn:441"
+        "scenes/main.tscn:198",
+        "scenes/main.tscn:696",
+        "scenes/sky_level_15_prototype.tscn:481"
       ],
       "note": "",
       "review": "待复核"
@@ -6327,7 +6333,7 @@
       "en": "English",
       "placeholders": [],
       "sources": [
-        "scripts/shell.gd:1390"
+        "scripts/shell.gd:1394"
       ],
       "note": "",
       "review": "待复核"
@@ -6340,11 +6346,11 @@
       "en": "How to Play",
       "placeholders": [],
       "sources": [
-        "scenes/main.tscn:1542",
+        "scenes/main.tscn:1555",
         "scenes/shell.tscn:1083",
         "scenes/shell.tscn:1272",
         "scenes/shell.tscn:1329",
-        "scenes/sky_level_15_prototype.tscn:1321",
+        "scenes/sky_level_15_prototype.tscn:1361",
         "scenes/universe_endless.tscn:334"
       ],
       "note": "地图、设置页与各章节暂停菜单共用入口和标题",
@@ -6354,8 +6360,8 @@
       "id": "TXT_0462",
       "category": "完整操作说明",
       "status": "运行",
-      "zh_CN": "【目标与数字】\n翻开全部安全格，并正确标记污染核心。数字表示与该格相邻的污染核心数量；标记是玩家判断，错误标记不会自动变成正确答案。满足数字且周围标记完全正确时，双击数字可快速展开其余相邻格。\n\n【鼠标操作】\n陆地/海洋：左键翻开，右键标记，双击已翻开的数字执行连锁展开。天空：左键翻开，右键标记，拖拽球体旋转，双击数字展开。生态扫描充满后按 C，或点击机器人，再选择一个隐藏格；右键或 K 可取消选格。Esc 打开/关闭暂停菜单。\n\n【键盘操作】\n在设置中选择键盘模式后：方向键或 W S A D 移动格子光标，J 翻开/确认数字，K 标记。天空篇固定为方向键选择相邻球面格、W S A D 旋转球体、J 翻开、K 标记、R 将当前格转到正面。C 使用扫描。菜单中用方向键选择、Enter/空格确认。F11 或 Alt+Enter 切换显示模式。\n\n【生态扫描】\n翻开格子和对同一格的首次标记会积累能量，能量可以带到下一关。机器人头顶三个光点表示三段充能；充满后出现“按 C 或点击机器人”提示。扫描会直接判断所选隐藏格安全或污染，使用后重新充能。\n\n【第1～7关：陆地，方格最多8邻接】\n第1关：5×5、5个核心，八方向邻接，包含首次操作引导。\n第2关：6×6、8个核心，八方向邻接。\n第3关：8×8、9个核心；遗迹障碍不可翻开、标记或扫描，读数字时忽略障碍。\n第4关：9×9、12个核心；八方向邻接，随机障碍群改变可操作区域。\n第5关：10×10、13个核心、2个污染节点；节点自身计作污染，正确处理其全部邻格后自动净化。\n第6关：12×12、17个核心、3个污染节点；规则同上，节点区域更多。\n第7关：13×13、20个核心、3个节点与污染母株；处理三条根系锚点后净化Boss。\n\n【第8～14关：海洋，六边形最多6邻接】\n只有共享一条边的六边形才相邻。珊瑚墙会切断共享边，数字、零格展开和双击都不会越墙。\n第8关：6×6、7个核心，基础六方向邻接。\n第9关：8×7、10个核心，一段珊瑚墙改变邻接。\n第10关：9×8、14个核心，两段珊瑚墙。\n第11关：10×9、17个核心；两组漂流物定时右移，每组两个安全浮标和两颗水雷，移动后实时重算邻接与数字。\n第12关：11×10、21个核心；三组漂流物，移动间隔更短，邻接持续实时更新。\n第13关：12×11、25个核心；珊瑚墙与两个潮区，只能操作当前亮起区域，完成后解锁下一潮区并更新边界数字。\n第14关：13×12、30个核心；Boss关，两段珊瑚墙与三个潮区，逐区完成。\n\n【第15～21关：天空，球面共享边邻接】\n五边形有5个邻格，六边形有6个邻格；只有球面上共享边的面才相邻。球背面的格仍属于同一棋盘。\n第15关：32面、6个核心，基础足球烯。\n第16关：42面、8个核心，扩大球面。\n第17关：92面、15个核心；翻开安全格时有20%概率触发吹风助益，随机翻开安全格或自动标记核心。\n第18关：162面、26个核心；保留20%吹风助益。\n第19关：252面、40个核心；吹风助益，并有一次70%概率触发的云盾保护。\n第20关：362面、58个核心；吹风、一次云盾保护与三道雷眼污染核心。雷眼本身不能操作；揭开周围安全格并正确标记周围污染后会自动击破，击破三道雷眼获胜。\n第21关：492面、78个核心；吹风、云盾与五道雷眼污染核心。按探索进度依次包围并击破五道雷眼获胜。\n\n【宇宙远征】\n星核只有存在发光连线才相邻，画面距离不影响邻接；直线、弧线和紫色虫洞都计算。数字统计所有直接相连星核中的污染。星舰有两层护盾，误触污染先消耗护盾并自动标记；棋盘按图语法持续生长。每次真正生成一张新宇宙棋盘，终身累计探索数增加1；失败、退出或重新远征都不会清零。\n\n【徽章与勋章本】\n陆地关卡胜利后，该关勋章会从画面中央旋转放大，并伴随金色辉光。单击任意鼠标按键，或按 Space、Enter、任意手柄按钮，将勋章收入勋章本。从胜利界面进入勋章本后，左键进入下一关，右键返回当前胜利界面；右页右下按钮进入勋章殿堂。欢迎页、地图和设置页的勋章按钮都会进入勋章殿堂，可通过陆地、海洋、天空封皮打开对应勋章本；点击四个生态展示台之外的任意空白处或按 Esc 返回。已通关关卡的生态与勋章会自动点亮。宇宙篇不设勋章本：宇宙展示台用个位小行星、十位大行星和百位小星团记录累计探索；达到1000次后永久显示旋转银河与终极奖杯。中文与英文界面使用各自带文字的勋章图。\n\n【设置与辅助】\n设置页可分别调整总音量、背景音乐、音效、窗口模式、鼠标/键盘操作方式和中英文。首次点击保护会确保安全起点；连续失败时陆地开局保护会自适应增强。暂停菜单可继续、重开、返回地图、打开设置、返回主菜单或退出。地图、设置页和游戏暂停菜单均可重新进入本说明。",
-      "en": "[GOAL AND NUMBERS]\nReveal every safe cell and correctly flag every pollution core. A number counts the pollution cores adjacent to that cell. Flags are your deductions; an incorrect flag is not treated as a correct answer. When a revealed number is satisfied and every surrounding flag is correct, double-click it to reveal the remaining adjacent cells.\n\n[MOUSE CONTROLS]\nLand/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to chord. Sky: left-click to reveal, right-click to flag, drag to rotate the sphere, and double-click a number to chord. When Eco Scan is charged, press C or click the robot, then choose a hidden cell; right-click or K cancels targeting. Esc opens or closes the pause menu.\n\n[KEYBOARD CONTROLS]\nAfter selecting Keyboard mode in Settings: use the arrow keys or W S A D to move the cell cursor, J to reveal or confirm a number, and K to flag. In Sky, the arrow keys select an adjacent face, W S A D rotates the sphere, J reveals, K flags, and R centers the selected face. C activates Eco Scan. In menus, use the arrow keys and Enter/Space. F11 or Alt+Enter changes display mode.\n\n[ECO SCAN]\nReveals and the first flag placed on a cell build energy, which carries between levels. Three lights above the robot show the three charge stages. At full charge, a “Press C or click the robot” prompt appears. Scan identifies one hidden cell as safe or polluted, then must recharge.\n\n[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\nLevel 1: 5×5, 5 cores, eight-direction adjacency, with the first-action tutorial.\nLevel 2: 6×6, 8 cores, eight-direction adjacency.\nLevel 3: 8×8, 9 cores. Ruins cannot be revealed, flagged, or scanned; ignore them when reading numbers.\nLevel 4: 9×9, 12 cores. Random obstacle clusters reshape the playable area.\nLevel 5: 10×10, 13 cores, 2 pollution nodes. A node counts as pollution and cleanses after all surrounding cells are handled correctly.\nLevel 6: 12×12, 17 cores, 3 pollution nodes, using the same rule across more node regions.\nLevel 7: 13×13, 20 cores, 3 nodes and the mother tree. Resolve the three root anchors to cleanse the boss.\n\n[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\nOnly hexes sharing an edge are adjacent. Coral walls cut shared edges; numbers, zero expansion, and chording never cross a wall.\nLevel 8: 6×6, 7 cores, basic six-direction adjacency.\nLevel 9: 8×7, 10 cores, one coral wall changes adjacency.\nLevel 10: 9×8, 14 cores, two coral walls.\nLevel 11: 10×9, 17 cores. Two debris groups drift right on a timer; each contains two safe buoys and two mines. Adjacency and numbers recalculate after every move.\nLevel 12: 11×10, 21 cores. Three faster debris groups keep changing adjacency in real time.\nLevel 13: 12×11, 25 cores. A coral wall and two tidal zones limit play to the lit zone; completing it unlocks the next and updates boundary numbers.\nLevel 14: 13×12, 30 cores. Boss level with two coral walls and three tidal zones completed in order.\n\n[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\nPentagons have 5 neighbors and hexagons have 6. Only faces sharing an edge on the sphere are adjacent; rear faces remain part of the same board.\nLevel 15: 32 faces, 6 cores, basic fullerene.\nLevel 16: 42 faces, 8 cores, expanded sphere.\nLevel 17: 92 faces, 15 cores. Revealing a safe face has a 20% chance to trigger Breeze Aid, revealing a random safe face or auto-flagging a core.\nLevel 18: 162 faces, 26 cores, retaining the 20% Breeze Aid.\nLevel 19: 252 faces, 40 cores, Breeze Aid plus one Cloud Shield with a 70% trigger chance.\nLevel 20: 362 faces, 58 cores, Breeze Aid, one Cloud Shield, and three Storm Eye pollution cores. The Eye itself cannot be operated; revealing every safe neighbor and correctly flagging nearby pollution breaks it automatically. Defeat all three to win.\nLevel 21: 492 faces, 78 cores, Breeze Aid, Cloud Shield, and five Storm Eye pollution cores. Surround and break all five as exploration advances to win.\n\n[UNIVERSE EXPEDITION]\nStar nodes are adjacent only when joined by a glowing line; screen distance does not matter. Straight lines, curves, and purple wormholes all count. A number counts pollution on every directly connected node. The ship has two shields: touching pollution consumes a shield and auto-flags that node first. Graph grammars keep generating new boards. Every genuinely new Universe board adds 1 to the lifetime exploration count; failure, leaving, or starting a new expedition never resets it.\n\n[BADGES AND BADGE BOOK]\nAfter a Land victory, that level's badge spins and grows at the center of the screen amid a golden glow. Click any mouse button, or press Space, Enter, or any gamepad button to store it in the Badge Book. When opened from victory, left-click to enter the next level and right-click to return to the current victory screen; the bottom-right button opens the Badge Hall. Badge buttons on the welcome screen, map, and Settings open the Badge Hall, where the Land, Ocean, and Sky covers open their matching Badge Books. Click any blank area outside the four ecology showcases, or press Esc, to return. Completed-level ecology and badges light automatically. Universe has no Badge Book: its showcase records lifetime exploration with ones-place asteroids, tens-place large planets, and hundreds-place star clusters. At 1,000, a rotating galaxy and the ultimate trophy remain permanently on display. Chinese and English each use badge artwork with matching embedded text.\n\n[SETTINGS AND ASSISTS]\nSettings separately control master volume, BGM, SFX, display mode, mouse/keyboard operation mode, and language. First-click protection guarantees a safe opening; repeated Land failures strengthen adaptive opening assistance. The pause menu can resume, restart, return to the map, open Settings, return to the main menu, or quit. This guide is available from the map, Settings, and the in-game pause menu.",
+      "zh_CN": "【目标、数字与计数】\n基础完成条件是翻开全部安全格；漂流物、污染节点和雷眼等特殊机制还要求正确处理关联格。数字表示按当前章节邻接规则与该格直接相邻的污染数量，陆地污染节点也会计入数字。顶部X/Y表示已用标记/本关核心总数；错误标记和自动标记都会计入X，陆地不可标记节点不计入Y。满足数字且周围标记全部正确时，陆地、海洋和天空可双击已翻开的数字（键盘模式按J）展开其余邻格；宇宙再次左键单击已翻开的数字即可展开。\n\n【鼠标操作】\n陆地/海洋：左键翻开，右键标记，双击已翻开的数字展开。天空：左键翻开，右键标记，拖拽旋转球体，双击已翻开的数字展开。宇宙：左键翻开，右键标记，再次左键单击已翻开的数字展开。陆地、海洋和天空的生态扫描充满后，按C或点击机器人，再选择一个隐藏格；右键、Esc或C可取消选格，陆地/海洋键盘模式也可按K。宇宙当前没有生态扫描。非扫描状态下Esc打开或关闭暂停菜单。\n\n【键盘与菜单】\n在设置中选择键盘模式后，陆地/海洋使用方向键或W S A D移动光标，J翻开或展开数字，K标记；天空使用方向键选择相邻球面格、W S A D旋转球体、J翻开或展开数字、K标记、R将当前格转到正面。C在前三章使用生态扫描。键盘模式下鼠标仍可用。宇宙棋盘当前仅支持鼠标，操作方式设置不会改变宇宙操作。菜单可用方向键选择、Enter/空格确认。F11或Alt+Enter切换显示模式。\n\n【生态扫描】\n陆地、海洋和天空中，每次有效翻开或展开操作，以及每个格子的首次标记，都会积累1点能量；一次操作即使展开多格也只增加1点，能量可带到下一关。每关先完成首次翻格后才能使用扫描。机器人头顶三个光点表示12点充能的4/8/12三个阶段。选择隐藏格后，安全格会自动翻开，污染核心会确认并自动标记；扫描随即清空能量并重新充能。宇宙不使用生态扫描。\n\n【第1～7关：陆地，方格最多8邻接】\n第1关：5×5、5个核心；第2关：6×6、8个核心；第3关：8×8、9个核心，遗迹障碍不可操作且不参与邻接；第4关：9×9、12个核心，随机障碍群改变可操作区域。\n第5～7关的污染根瘤不可操作并计入邻近数字；翻开邻近安全格并正确标记邻近核心后自动净化。首次处理任一未净化根瘤时，启动本关唯一共享倒计时；普通操作不续时，净化一组会刷新完整时长。超时后，所有未净化且已有进度的根瘤连同外扩一环局部反扑：安全格重新闭合，范围内标记与扫描确认撤销，同样数量的核心在范围内重排；范围外开合、标记和核心位置不变，边缘数字会随重算更新。暂停、引导和交互锁定期间停表。\n第5关：10×10、13个核心、1组随机障碍、2个根瘤，共享45秒；第6关：12×12、17个核心、2组随机障碍、3个根瘤，共享40秒；第7关：13×13、20个核心、三条根系（每条3个根瘤）与污染母株，共享60秒，依次净化三条根系后净化Boss。\n\n【第8～14关：海洋，六边形最多6邻接】\n只有共享边的六边形才相邻，珊瑚墙会切断数字、零格展开和数字连锁。第8关：6×6、7个核心；第9关：8×7、10个核心、1段墙；第10关：9×8、14个核心、2段墙。\n第11关：10×9、17个总核心；两组漂流物每7秒轮流右移，每组含2个安全浮标和2颗水雷。第12关：11×10、21个总核心；三组漂流物每6秒轮流右移。安全浮标需翻开，水雷需标记；解决一组只停止该组，未标记水雷流出过滤边界即失败，移动后所有相关数字实时重算。\n第13关：12×11、25个核心、1段墙和2个潮区；第14关：13×12、30个核心、2段墙和3个潮区。只能操作当前亮起潮区，完成后解锁下一潮区并自动展开安全片区；已退潮区域仍可操作，边界数字会重新计算。\n\n【第15～21关：天空，球面共享边邻接】\n五边形有5个邻格，六边形有6个邻格；只有球面共享边才相邻，背面仍属于同一棋盘，每局首次翻开必定安全。第15关32面/6核心；第16关42面/8；第17关92面/15；第18关162面/26；第19关252面/40；第20关362面/58；第21关492面/78。\n第17～21关每次安全翻格有20%概率触发吹风，随机翻开安全格或自动标记核心。第19～21关另有一面云盾，误触核心时70%概率成功保护并自动标记，成功后本局消耗。第20/21关依探索进度出现3/5道雷眼，雷眼已包含在58/78总核心内；雷眼本体不可操作，处理周围安全格和普通核心后会自动击破，无需双击，击破全部雷眼即获胜。\n\n【宇宙远征】\n宇宙没有编号关卡、独立地图、生态扫描或勋章本，棋盘目前仅支持鼠标。左侧显示本次远征数据，右侧可暂停、开启新宇宙或返回天空篇。只有发光连线才相邻；银灰直线、青蓝弧线和紫色虫洞都计入数字。\n每张棋盘首次净化必定安全：前两张另保护2颗邻星，第3～4张另保护1颗，之后只保护首点。星舰初始有2层护盾；误触污染先消耗1层并自动标记，护盾耗尽后再误触才失败。完成第7张棋盘恢复1层，此后每5张再恢复1层，上限2层。翻开当前棋盘全部安全星核后自动生成下一张。\n每次真正生成新棋盘——首次进入、成功推进或重新远征——终身累计立即加1；失败、暂停、退出和界面刷新不会清零或重复计数。首次生成第1000张时冻结当前远征，播放一次性透视滚动字幕并揭示奖杯，随后自动进入勋章殿堂完成放置；关闭殿堂后恢复同一张第1000棋盘。\n\n【勋章、勋章本与殿堂】\n陆地、海洋或天空任一关胜利后，该关勋章会在中央旋转放大并伴随金色辉光。任意鼠标键、Space、Enter或手柄按钮可收入对应章节勋章本。从胜利进入勋章本后，左键、Space、Enter或手柄按钮继续下一关/章节；右键或Esc返回当前胜利界面；右下按钮打开勋章殿堂。\n欢迎页、地图和设置页的勋章入口都进入勋章殿堂。殿堂没有返回按钮：左键或右键点击四个展示台之外的空白处，或按Esc返回进入前页面。陆地、海洋、天空封皮可打开对应勋章本；宇宙展示台没有按钮和勋章本。1000前按十进制展示累计值：小行星是个位、大行星是十位、小星团是百位；达到1000后永久显示旋转银河与终极奖杯，累计数字继续增长。\n\n【导航、设置与辅助】\n欢迎页“开始旅程”进入陆地地图，“勋章殿堂”进入殿堂。地图单击节点选择、再次单击进入；从暂停进入地图时“返回关卡”恢复原局，普通地图使用“进入所选关卡”。天空地图的下一章节进入宇宙，宇宙可返回天空篇。\n设置可调整总音量、BGM、音效、显示模式、前三章鼠标/键盘操作方式和中英文，并自动保存。陆地/海洋默认首翻可能触雷；同关连续2次首翻失败后，下一局保证首翻安全；连续3次在前5步内失败后，下一局直接打开安全区域。天空和宇宙每局首翻始终安全。\n陆地、海洋、天空暂停菜单可继续、重开、进入关卡选择、设置、操作说明、返回主菜单或退出；宇宙暂停菜单可继续、开启新宇宙、设置、操作说明、返回欢迎界面或退出，常驻右栏另可返回天空篇。",
+      "en": "[GOALS, NUMBERS, AND COUNTER]\nThe basic goal is to reveal every safe cell; drift groups, pollution nodes, Storm Eyes, and other special mechanics also require their related cells to be resolved. A number counts pollution directly adjacent under the current chapter's rules, and Land pollution nodes count too. The top X/Y means flags used / total cores. Wrong and automatic flags increase X; unflaggable Land nodes are excluded from Y. When every surrounding flag is correct and the count matches, double-click a revealed number in Land, Ocean, or Sky (or press J in Keyboard mode) to expand. In Universe, click a revealed number again.\n\n[MOUSE CONTROLS]\nLand/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to expand. Sky: left-click to reveal, right-click to flag, drag to rotate, and double-click a revealed number to expand. Universe: left-click to reveal, right-click to flag, and click a revealed number again to expand. In Land, Ocean, and Sky, press C or click the robot when Eco Scan is full, then choose a hidden cell. Cancel with Right Click, Esc, or C; Keyboard mode in Land/Ocean also accepts K. Universe has no Eco Scan. Outside Scan targeting, Esc toggles pause.\n\n[KEYBOARD AND MENUS]\nIn Keyboard mode, Land/Ocean use Arrows or W S A D to move, J to reveal or expand, and K to flag. Sky uses Arrows to select an adjacent face, W S A D to rotate, J to reveal or expand, K to flag, and R to center the selected face. C activates Eco Scan in the first three chapters. Mouse remains available. Universe board play is mouse-only and ignores the Controls setting. Menus use Arrows and Enter/Space. F11 or Alt+Enter changes display mode.\n\n[ECO SCAN]\nIn Land, Ocean, and Sky, each successful reveal/expand action and the first flag placed on each cell add 1 energy. One action still adds only 1 even if it opens several cells, and energy carries between levels. Each level requires one reveal before Scan can be used. The robot's three lights mark 4/8/12 energy. A scanned safe cell is revealed automatically; a Pollution Core is confirmed and flagged automatically. The charge then empties and must refill. Universe has no Eco Scan.\n\n[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\nLevel 1: 5×5/5 cores; Level 2: 6×6/8; Level 3: 8×8/9 with inoperable ruins ignored by adjacency; Level 4: 9×9/12 with random obstacle clusters.\nPollution nodules on Levels 5–7 cannot be operated and count in nearby numbers. Reveal safe neighbors and correctly flag polluted neighbors to cleanse them. The first action around any uncleansed nodule starts one shared timer for the level. Ordinary actions do not extend it; cleansing one group resets the full time. On timeout, every uncleansed group with progress repollutes its local area plus one outer ring: safe cells close, flags and Scan confirmations clear, and the same number of cores is redistributed inside. Outside reveal states, flags, and core positions stay unchanged; boundary numbers update. Pauses, guides, and interaction locks stop the timer.\nLevel 5: 10×10/13, 1 obstacle cluster, 2 nodules, shared 45 seconds. Level 6: 12×12/17, 2 obstacle clusters, 3 nodules, shared 40 seconds. Level 7: 13×13/20, three roots with 3 nodules each, and the mother tree, shared 60 seconds; cleanse all three roots to cleanse the boss.\n\n[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\nOnly hexes sharing an edge are adjacent. Coral walls cut number counting, zero expansion, and chording. Level 8: 6×6/7; Level 9: 8×7/10 with 1 wall; Level 10: 9×8/14 with 2 walls.\nLevel 11: 10×9/17 total cores; two drift groups take turns moving every 7 seconds, each with 2 safe buoys and 2 mines. Level 12: 11×10/21 total; three groups move every 6 seconds. Reveal buoys and flag mines. Solving one group stops only that group; an unflagged mine crossing the filter causes failure, and related numbers recalculate after every move.\nLevel 13: 12×11/25 with 1 wall and 2 tidal zones. Level 14: 13×12/30 with 2 walls and 3 zones. Only the lit zone can be played; completion unlocks the next and opens a safe patch. Earlier zones remain playable and boundary numbers recalculate.\n\n[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\nPentagons have 5 neighbors and hexagons have 6; only shared sphere edges count, rear faces remain on the same board, and every first reveal is safe. Levels 15–21 use 32/6, 42/8, 92/15, 162/26, 252/40, 362/58, and 492/78 faces/cores.\nOn Levels 17–21, each safe reveal has a one-in-five chance to trigger Breeze Aid, revealing a safe face or auto-flagging a core. Levels 19–21 also have one Cloud Shield: a core hit has a seven-in-ten chance to be blocked and auto-flagged, consuming the shield on success. Levels 20/21 reveal 3/5 Storm Eyes as exploration advances; these Eyes are included in the 58/78 total. Eyes cannot be operated and break automatically when their safe and polluted neighbors are resolved—no double-click required. Break them all to win.\n\n[UNIVERSE EXPEDITION]\nUniverse has no numbered levels, separate map, Eco Scan, or Badge Book, and board play is mouse-only. The left panel shows expedition data; the right panel pauses, starts a new Universe, or returns to Sky. Only glowing links are adjacent; silver lines, cyan curves, and purple wormholes all count.\nEvery first reveal is safe: Boards 1–2 also protect 2 neighbors, Boards 3–4 protect 1, and later boards protect only the chosen node. The ship starts with 2 shields. Hitting pollution first consumes 1 shield and auto-flags it; a hit after shields are gone ends the expedition. Board 7 restores 1 shield, then every 5 boards restores another, up to 2. Revealing every safe star automatically generates the next board.\nEvery genuinely generated board—initial entry, successful advance, or new expedition—adds 1 to the lifetime total. Failure, pause, exit, and UI refresh never reset or duplicate it. The first generation of Board 1,000 freezes the expedition for a one-time perspective crawl and trophy reveal, then opens Badge Hall for placement. Closing the Hall resumes that same board.\n\n[BADGES, BADGE BOOKS, AND BADGE HALL]\nAfter any Land, Ocean, or Sky victory, that level's badge spins and grows at center with a golden glow. Any mouse button, Space, Enter, or a gamepad button stores it in that chapter's Badge Book. From victory, Left Click, Space, Enter, or gamepad continues to the next level/chapter; Right Click or Esc returns to victory; the bottom-right button opens Badge Hall.\nBadge entries on the welcome screen, maps, and Settings all open Badge Hall. The Hall has no Back button: left- or right-click outside the four showcases, or press Esc, to return. Land, Ocean, and Sky covers open their Badge Books; Universe has no button or Badge Book. Before 1,000, asteroids show ones, planets tens, and clusters hundreds. At 1,000, a permanently rotating galaxy and trophy replace those counters while the numeric lifetime total keeps growing.\n\n[NAVIGATION, SETTINGS, AND ASSISTS]\n“Start Journey” opens the Land map and “Badge Hall” opens the Hall. Click a map node once to select and again to enter. From pause, “Back to Level” resumes the current game; normal maps use “Enter Selected Level.” Sky's next chapter enters Universe, and Universe can return to Sky.\nSettings control master volume, BGM, SFX, display mode, mouse/keyboard controls for the first three chapters, and language, and save automatically. Land/Ocean may hit pollution on the first reveal by default. After 2 consecutive first-reveal losses, the next attempt guarantees safety; after 3 consecutive losses within the first 5 moves, the next attempt opens a safe region. Sky and Universe always guarantee the first reveal.\nLand, Ocean, and Sky pause menus can resume, restart, open Level Select, Settings, or this guide, return to the main menu, or quit. Universe pause can resume, start a new Universe, open Settings or this guide, return to the welcome screen, or quit; its right panel separately returns to Sky.",
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:1342"
@@ -6372,7 +6378,6 @@
       "placeholders": [],
       "sources": [
         "scenes/badge_book.tscn:58",
-        "scenes/shell.tscn:1090",
         "scripts/badge_book.gd:101"
       ],
       "note": "地图与设置页入口、勋章本标题",
@@ -6401,9 +6406,7 @@
       "placeholders": [],
       "sources": [
         "scenes/badge_book.tscn:196",
-        "scenes/badge_hall.tscn:1051",
-        "scripts/badge_book.gd:109",
-        "scripts/badge_hall.gd:285"
+        "scripts/badge_book.gd:109"
       ],
       "note": "从地图或设置进入时返回原页面",
       "review": "待用户确认"
@@ -6427,8 +6430,8 @@
       "id": "TXT_0467",
       "category": "徽章系统",
       "status": "运行",
-      "zh_CN": "左键：进入下一关 · 右键：返回当前胜利界面 · 右下按钮：返回勋章殿堂",
-      "en": "Left-click: next level · Right-click: return to victory · Bottom-right: return to Badge Hall",
+      "zh_CN": "左键 / Space / Enter / 手柄按钮：继续下一关或章节 · 右键 / Esc：返回当前胜利界面 · 右下按钮：打开勋章殿堂",
+      "en": "Left-click / Space / Enter / gamepad button: continue to the next level or chapter · Right-click / Esc: return to the current victory screen · Bottom-right: open Badge Hall",
       "placeholders": [],
       "sources": [
         "scripts/badge_book.gd:110"
@@ -6440,8 +6443,8 @@
       "id": "TXT_0468",
       "category": "徽章系统",
       "status": "运行",
-      "zh_CN": "已通关关卡的勋章会在此点亮 · 右键或 Esc 返回勋章殿堂 · 右下按钮返回勋章殿堂",
-      "en": "Completed-level badges shine here · Right-click or Esc returns to Badge Hall · Bottom-right returns to Badge Hall",
+      "zh_CN": "已通关关卡的勋章会在此点亮 · 右键 / Esc 或右下按钮返回勋章殿堂",
+      "en": "Completed-level badges shine here · Right-click / Esc or use the bottom-right button to return to Badge Hall",
       "placeholders": [],
       "sources": [
         "scenes/badge_book.tscn:184",
@@ -6454,8 +6457,8 @@
       "id": "TXT_0469",
       "category": "徽章系统",
       "status": "运行",
-      "zh_CN": "返回勋章殿堂",
-      "en": "Return to Badge Hall",
+      "zh_CN": "打开勋章殿堂",
+      "en": "Open Badge Hall",
       "placeholders": [],
       "sources": [
         "scripts/badge_book.gd:111"
@@ -6467,11 +6470,12 @@
       "id": "TXT_0470",
       "category": "徽章系统",
       "status": "运行",
-      "zh_CN": "查看勋章",
-      "en": "View Badges",
+      "zh_CN": "勋章殿堂",
+      "en": "Badge Hall",
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:762",
+        "scenes/shell.tscn:1090",
         "scenes/shell.tscn:1279"
       ],
       "note": "欢迎页与设置页的勋章本入口",
@@ -6512,7 +6516,7 @@
       "placeholders": [],
       "sources": [
         "scenes/badge_hall.tscn:106",
-        "scripts/badge_hall.gd:282"
+        "scripts/badge_hall.gd:307"
       ],
       "note": "勋章殿堂正式页面标题",
       "review": "待用户确认"
@@ -6525,8 +6529,7 @@
       "en": "Universe Ecology Showcase",
       "placeholders": [],
       "sources": [
-        "scenes/badge_hall.tscn:1022",
-        "scripts/badge_hall.gd:283"
+        "scripts/badge_hall.gd:309"
       ],
       "note": "宇宙展示台标题，不设置宇宙勋章本",
       "review": "待用户确认"
@@ -6535,15 +6538,15 @@
       "id": "TXT_0475",
       "category": "宇宙展示台",
       "status": "运行",
-      "zh_CN": "累计探索宇宙棋盘：%d",
-      "en": "Universe Boards Explored: %d",
+      "zh_CN": "终身累计新宇宙棋盘：%d",
+      "en": "Lifetime Universe Boards Generated: %d",
       "placeholders": [
         "%d"
       ],
       "sources": [
-        "scripts/badge_hall.gd:261",
-        "scripts/badge_hall.gd:284",
-        "scripts/badge_hall.gd:329"
+        "scripts/badge_hall.gd:286",
+        "scripts/badge_hall.gd:310",
+        "scripts/badge_hall.gd:392"
       ],
       "note": "跨远征累计，每次真正生成新棋盘加一",
       "review": "待用户确认"
@@ -6552,8 +6555,8 @@
       "id": "TXT_0476",
       "category": "宇宙千次成就",
       "status": "运行",
-      "zh_CN": "第一千次宇宙远征",
-      "en": "THE THOUSANDTH UNIVERSE EXPEDITION",
+      "zh_CN": "第一千张宇宙棋盘",
+      "en": "THE THOUSANDTH UNIVERSE BOARD",
       "placeholders": [],
       "sources": [
         "scenes/universe_milestone_celebration.tscn:39",
@@ -6566,8 +6569,8 @@
       "id": "TXT_0477",
       "category": "宇宙千次成就",
       "status": "运行",
-      "zh_CN": "在无数次重新启程之后，\n一位净化者抵达了\n第一千片宇宙星区。\n\n开发者曾确信，\n不会有人把旅程延续到这里。\n\n事实证明，\n开发者错了。\n\n这座银河将永远为你旋转，\n宇宙生态展示台\n将铭记这次不可思议的远征。",
-      "en": "After countless new beginnings,\none purifier has reached\nthe thousandth Universe region.\n\nThe developer was certain\nno one would carry the journey this far.\n\nThe truth is now clear:\nthe developer was wrong.\n\nThis galaxy will turn forever for you,\nand the Universe Ecology Showcase\nwill remember this impossible expedition.",
+      "zh_CN": "在无数次重新启程之后，\n一位净化者抵达了\n第一千张全新宇宙棋盘。\n\n开发者曾确信，\n不会有人把旅程延续到这里。\n\n事实证明，\n开发者错了。\n\n这座银河将永远为你旋转，\n宇宙生态展示台\n将铭记这次不可思议的航行。",
+      "en": "After countless new beginnings,\none purifier has reached\nthe thousandth newly generated Universe board.\n\nThe developer was certain\nno one would carry the journey this far.\n\nThe truth is now clear:\nthe developer was wrong.\n\nThis galaxy will turn forever for you,\nand the Universe Ecology Showcase\nwill remember this impossible voyage.",
       "placeholders": [],
       "sources": [
         "scripts/universe_milestone_celebration.gd:64"
@@ -6597,9 +6600,223 @@
       "en": "The ultimate trophy and galaxy now remain forever in the Universe Ecology Showcase",
       "placeholders": [],
       "sources": [
-        "scripts/badge_hall.gd:222"
+        "scripts/badge_hall.gd:250"
       ],
       "note": "千次奖励放置完成提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0480",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "\n任一根瘤操作启动共享%d秒倒计时\n净化一组刷新 · 超时外扩一环反扑",
+      "en": "\nAny nodule action starts the shared %d-second timer\nCleanse one group to reset it · Timeout repollutes one outer ring",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/main.gd:1112"
+      ],
+      "note": "污染根瘤限时规则",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0481",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "根瘤反扑倒计时：%d秒",
+      "en": "Nodule regrowth: %d seconds",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:4904",
+        "scripts/board.gd:4974",
+        "scripts/board.gd:5001"
+      ],
+      "note": "局部倒计时开始提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0482",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "根瘤即将反扑：%d秒",
+      "en": "Regrowth in %d seconds",
+      "placeholders": [
+        "%d"
+      ],
+      "sources": [
+        "scripts/board.gd:4999"
+      ],
+      "note": "最后五秒提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0483",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "根瘤反扑：周边已重新污染",
+      "en": "Nodule regrowth repolluted the area",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:5013"
+      ],
+      "note": "局部再污染完成提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0484",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "小芽：根瘤会反扑",
+      "en": "Sprout: Nodules Push Back",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:104",
+        "scripts/main.gd:114"
+      ],
+      "note": "机制引导标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0485",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "首次处理任一根瘤组时，启动本关唯一的共享倒计时。",
+      "en": "The first action around any nodule group starts the level's single shared timer.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:104",
+        "scripts/main.gd:114"
+      ],
+      "note": "机制引导正文",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0486",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "净化一组会刷新倒计时，普通操作不会续时。",
+      "en": "Cleansing one group resets the timer; ordinary actions do not extend it.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:104",
+        "scripts/main.gd:114"
+      ],
+      "note": "机制引导提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0487",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "小芽：超时会重新污染",
+      "en": "Sprout: Timeout Repollutes",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:105",
+        "scripts/main.gd:115"
+      ],
+      "note": "机制引导第二段标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0488",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "超时后，未净化且已有进度的根瘤会连同外扩一环重新闭合。",
+      "en": "On timeout, every uncleansed nodule with progress closes again across one outer ring.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:105",
+        "scripts/main.gd:115"
+      ],
+      "note": "机制引导第二段正文",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0489",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "受影响范围内的标记与扫描确认会全部撤销。",
+      "en": "All flags and scan confirmations in each affected area are removed.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:105",
+        "scripts/main.gd:115"
+      ],
+      "note": "机制引导第二段提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0490",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "小芽：污染核心会移动",
+      "en": "Sprout: Pollution Cores Shift",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:106",
+        "scripts/main.gd:116"
+      ],
+      "note": "机制引导第三段标题",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0491",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "根瘤反扑时，范围内的污染核心会重新分布。",
+      "en": "During regrowth, pollution cores in the area shift.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:106",
+        "scripts/main.gd:116"
+      ],
+      "note": "机制引导第三段正文",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0492",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "范围外开合、标记和核心位置不变；边缘数字会随重算更新。",
+      "en": "Outside reveals, flags, and core positions stay unchanged; boundary numbers update.",
+      "placeholders": [],
+      "sources": [
+        "scripts/main.gd:106",
+        "scripts/main.gd:116"
+      ],
+      "note": "机制引导第三段提示",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0494",
+      "category": "陆地污染再生",
+      "status": "运行",
+      "zh_CN": "所有污染根瘤已全部净化",
+      "en": "All pollution nodules are fully cleansed",
+      "placeholders": [],
+      "sources": [
+        "scripts/board.gd:5163"
+      ],
+      "note": "全部根瘤净化后替换倒计时",
+      "review": "待用户确认"
+    },
+    {
+      "id": "TXT_0495",
+      "category": "地图与导航",
+      "status": "运行",
+      "zh_CN": "进入所选关卡",
+      "en": "Enter Selected Level",
+      "placeholders": [],
+      "sources": [
+        "scripts/shell.gd:497",
+        "scripts/shell.gd:743",
+        "scripts/shell.gd:1471"
+      ],
+      "note": "普通地图快捷按钮；暂停返回地图时仍使用TXT_0034",
       "review": "待用户确认"
     }
   ]

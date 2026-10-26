@@ -99,7 +99,7 @@ const UNIVERSE_LAYOUT_SPACING := 5.0
 @onready var universe_galaxy_spiral: TextureRect = %UniverseGalaxySpiral
 @onready var universe_galaxy_core: TextureRect = %UniverseGalaxyCore
 @onready var universe_trophy: TextureRect = %UniverseTrophy
-@onready var universe_title: Label = %UniverseTitle
+@onready var universe_title := get_node_or_null("%UniverseTitle") as Label
 @onready var universe_total_value: Label = %UniverseTotalValue
 @onready var hall_title: Label = %HallTitle
 @onready var showcase_stages: Array[TextureRect] = [
@@ -305,7 +305,8 @@ func refresh_language() -> void:
 	if not is_node_ready():
 		return
 	hall_title.text = tr("TXT_0473")
-	universe_title.text = tr("TXT_0474")
+	if universe_title != null:
+		universe_title.text = tr("TXT_0474")
 	universe_total_value.text = tr("TXT_0475") % _universe_progress
 
 

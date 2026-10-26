@@ -125,6 +125,10 @@ var obstacle_count := 0
 var pollution_node_count := 0
 var pollution_node_cell_count := 0
 var cleansed_pollution_node_count := 0
+var pollution_reset_seconds := 0.0
+var _pollution_reset_timer_active := false
+var _pollution_reset_time_remaining := 0.0
+var _pollution_reset_last_second := -1
 var _obstacle_cluster_count := 0
 var _random_pollution_node_count := 0
 var _extra_obstacle_count := 0
@@ -260,6 +264,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if _pollution_animation_active:
 		advance_pollution_animation(delta)
+	_advance_pollution_reset_timer(delta)
 	_advance_mobile_current_timer(delta)
 	_advance_drifting_mine_timer(delta)
 	_refresh_board_processing()
@@ -314,6 +319,11 @@ func _reset_pollution_animation() -> void:
 
 
 func _refresh_board_processing() -> void:
+	var pollution_timer_active := (
+		_pollution_reset_timer_active
+		and game_state == GameState.PLAYING
+		and interaction_enabled
+	)
 	var mobile_timer_active := (
 		mobile_current_enabled
 		and _mobile_current_started
@@ -330,7 +340,12 @@ func _refresh_board_processing() -> void:
 		and game_state == GameState.PLAYING
 		and interaction_enabled
 	)
-	set_process(_pollution_animation_active or mobile_timer_active or drifting_timer_active)
+	set_process(
+		_pollution_animation_active
+		or pollution_timer_active
+		or mobile_timer_active
+		or drifting_timer_active
+	)
 
 
 func _input(event: InputEvent) -> void:
@@ -404,6 +419,10 @@ func load_level(level: Dictionary) -> void:
 	core_count = level.core_count
 	topology = StringName(level.get("topology", &"square"))
 	boss_level = bool(level.get("boss", false))
+	pollution_reset_seconds = maxf(
+		0.0,
+		float(level.get("pollution_reset_seconds", 0.0))
+	)
 	_extra_obstacle_count = int(level.get("extra_obstacle_count", 0))
 	_configure_ocean_mechanics(level)
 	_configure_pollution_nodes(level)
@@ -1972,6 +1991,7 @@ func new_game(refresh_dynamic_layout: bool = true) -> void:
 	_reset_array(confirmed, false)
 	_reset_array(pollution_node_group_cleansed, false)
 	_reset_array(pollution_nodes_cleansed, false)
+	_reset_pollution_reset_timer()
 	_reset_drifting_mine_round()
 	_reset_array(adjacent_counts, 0)
 	_place_random_cores()
@@ -2025,6 +2045,7 @@ func reveal_cell(cell_index: int) -> void:
 		guide_cell_index = -1
 		game_state = GameState.PLAYING
 		state_changed.emit(game_state)
+		_refresh_board_processing()
 
 	if mines[cell_index]:
 		revealed[cell_index] = true
@@ -2082,6 +2103,7 @@ func try_scan_cell(cell_index: int) -> bool:
 				return false
 		flagged[cell_index] = true
 		confirmed[cell_index] = true
+		_arm_pollution_reset_timer_for_cell(cell_index)
 		_recalculate_used_flags()
 		_refresh_pollution_nodes()
 		_advance_tidal_zone_if_complete()
@@ -2190,6 +2212,7 @@ func toggle_flag(cell_index: int) -> void:
 		current_path_feedback.emit(tr("TXT_0416"))
 		return
 
+	_arm_pollution_reset_timer_for_cell(cell_index)
 	move_count += 1
 	_recalculate_used_flags()
 	_refresh_cell(cell_index)
@@ -3840,6 +3863,9 @@ func _layout_handmade_cells() -> void:
 		cell.rotation = deg_to_rad(rotation_degrees)
 		cell.add_theme_font_size_override("font_size", clampi(roundi(side * 0.42), 10, 30))
 		cell.add_theme_constant_override("outline_size", clampi(roundi(side * 0.04), 1, 3))
+	var grid_overlay := get_node_or_null("HandmadeGridOverlay") as Control
+	if grid_overlay != null and grid_overlay.has_method("configure_grid"):
+		grid_overlay.call("configure_grid", column_count, row_count)
 	_layout_boss_tree_overlay()
 	queue_redraw()
 
@@ -4299,6 +4325,8 @@ func _draw() -> void:
 	var play_rect := _handmade_play_rect()
 	var paper_rect := play_rect
 	draw_rect(paper_rect, LAND_BOARD_PAPER_COLOR, true)
+	if has_node("HandmadeGridOverlay"):
+		return
 	draw_dashed_line(
 		paper_rect.position,
 		Vector2(paper_rect.end.x, paper_rect.position.y),
@@ -4852,6 +4880,249 @@ func _update_drifting_mine_disarm_ready() -> void:
 		_resolve_drifting_mine()
 
 
+func _reset_pollution_reset_timer() -> void:
+	_pollution_reset_timer_active = false
+	_pollution_reset_time_remaining = 0.0
+	_pollution_reset_last_second = -1
+	_refresh_board_processing()
+
+
+func _cancel_pollution_reset_timer() -> bool:
+	var was_active := _pollution_reset_timer_active
+	_pollution_reset_timer_active = false
+	_pollution_reset_time_remaining = 0.0
+	_pollution_reset_last_second = -1
+	return was_active
+
+
+func _refresh_pollution_reset_timer() -> void:
+	if not _pollution_reset_timer_active:
+		return
+	_pollution_reset_time_remaining = pollution_reset_seconds
+	_pollution_reset_last_second = ceili(pollution_reset_seconds)
+	current_path_feedback.emit(
+		tr("TXT_0481") % ceili(pollution_reset_seconds)
+	)
+	_refresh_board_processing()
+
+
+func _get_pollution_group_neighbor_indices(group_index: int) -> Array[int]:
+	var neighbor_indices: Array[int] = []
+	if group_index < 0 or group_index >= pollution_node_count:
+		return neighbor_indices
+	var checked_neighbors := {}
+	for node_index in cell_count:
+		if (
+			pollution_node_groups[node_index] != group_index
+			or not pollution_nodes[node_index]
+		):
+			continue
+		for neighbor in _get_neighbors(node_index):
+			if (
+				obstacles[neighbor]
+				or pollution_nodes[neighbor]
+				or checked_neighbors.has(neighbor)
+			):
+				continue
+			checked_neighbors[neighbor] = true
+			neighbor_indices.append(neighbor)
+	neighbor_indices.sort()
+	return neighbor_indices
+
+
+func _get_pollution_group_regrowth_indices(group_index: int) -> Array[int]:
+	var immediate_area := _get_pollution_group_neighbor_indices(group_index)
+	var regrowth_area: Array[int] = immediate_area.duplicate()
+	var included := {}
+	for cell_index in immediate_area:
+		included[cell_index] = true
+	for cell_index in immediate_area:
+		for outer_neighbor in _get_neighbors(cell_index):
+			if (
+				obstacles[outer_neighbor]
+				or pollution_nodes[outer_neighbor]
+				or included.has(outer_neighbor)
+			):
+				continue
+			included[outer_neighbor] = true
+			regrowth_area.append(outer_neighbor)
+	regrowth_area.sort()
+	return regrowth_area
+
+
+func _arm_pollution_reset_timer_for_cell(cell_index: int) -> void:
+	if (
+		pollution_reset_seconds <= 0.0
+		or _pollution_reset_timer_active
+		or not _is_valid_index(cell_index)
+		or game_state == GameState.WON
+		or game_state == GameState.LOST
+	):
+		return
+	for group_index in pollution_node_count:
+		if pollution_node_group_cleansed[group_index]:
+			continue
+		if drifting_mine_enabled and not drifting_mine_resolved \
+				and group_index == drifting_mine_group_index:
+			continue
+		if cell_index not in _get_pollution_group_neighbor_indices(group_index):
+			continue
+		_pollution_reset_timer_active = true
+		_pollution_reset_time_remaining = pollution_reset_seconds
+		_pollution_reset_last_second = ceili(pollution_reset_seconds)
+		current_path_feedback.emit(
+			tr("TXT_0481") % ceili(pollution_reset_seconds)
+		)
+		_refresh_board_processing()
+		return
+
+
+func _advance_pollution_reset_timer(delta: float) -> void:
+	if (
+		not _pollution_reset_timer_active
+		or game_state != GameState.PLAYING
+		or not interaction_enabled
+	):
+		return
+	_pollution_reset_time_remaining = maxf(
+		0.0,
+		_pollution_reset_time_remaining - maxf(0.0, delta)
+	)
+	var seconds_remaining := ceili(_pollution_reset_time_remaining)
+	if (
+		seconds_remaining > 0
+		and seconds_remaining != _pollution_reset_last_second
+	):
+		_pollution_reset_last_second = seconds_remaining
+		current_path_feedback.emit(
+			(
+				tr("TXT_0482")
+				if seconds_remaining <= 5
+				else tr("TXT_0481")
+			) % seconds_remaining
+		)
+	if _pollution_reset_time_remaining > 0.0:
+		return
+	_cancel_pollution_reset_timer()
+	var area_changed := false
+	for group_index in pollution_node_count:
+		if pollution_node_group_cleansed[group_index]:
+			continue
+		area_changed = _reset_pollution_group_area(group_index) or area_changed
+	if area_changed:
+		current_path_feedback.emit(tr("TXT_0483"))
+	_refresh_board_processing()
+
+
+func _pollution_group_area_has_progress(area_indices: Array[int]) -> bool:
+	for cell_index in area_indices:
+		if revealed[cell_index] or flagged[cell_index] or confirmed[cell_index]:
+			return true
+	return false
+
+
+func _reset_pollution_group_area(group_index: int) -> bool:
+	if (
+		group_index < 0
+		or group_index >= pollution_node_count
+		or pollution_node_group_cleansed[group_index]
+	):
+		return false
+	var area_indices := _get_pollution_group_regrowth_indices(group_index)
+	if area_indices.is_empty() or not _pollution_group_area_has_progress(area_indices):
+		return false
+
+	var old_global_core_count := mines.count(true)
+	var old_area_core_count := 0
+	var old_area_layout: Array[bool] = []
+	old_area_layout.resize(area_indices.size())
+	var removed_flag := false
+	for local_index in area_indices.size():
+		var cell_index := area_indices[local_index]
+		old_area_layout[local_index] = mines[cell_index]
+		if mines[cell_index]:
+			old_area_core_count += 1
+		if revealed[cell_index]:
+			revealed[cell_index] = false
+			revealed_safe_count = maxi(0, revealed_safe_count - 1)
+		if flagged[cell_index]:
+			removed_flag = true
+		flagged[cell_index] = false
+		confirmed[cell_index] = false
+		mines[cell_index] = false
+
+	_reroll_pollution_group_mines(
+		area_indices,
+		old_area_layout,
+		old_area_core_count
+	)
+	assert(
+		mines.count(true) == old_global_core_count,
+		"Pollution regrowth must preserve the board's total core count."
+	)
+	var new_area_core_count := 0
+	for cell_index in area_indices:
+		if mines[cell_index]:
+			new_area_core_count += 1
+	assert(
+		new_area_core_count == old_area_core_count,
+		"Pollution regrowth must preserve the affected area's core count."
+	)
+
+	_recalculate_used_flags()
+	_calculate_adjacent_counts()
+	_calculate_mobile_current_adjacent_counts()
+	_refresh_all_cells()
+	if scan_target_mode:
+		for cell_index in cell_nodes.size():
+			cell_nodes[cell_index].set_scan_target_mode(
+				scan_target_mode,
+				is_scan_candidate(cell_index)
+			)
+	if removed_flag:
+		flags_changed.emit(used_flags, get_runtime_mine_count())
+	return true
+
+
+func _reroll_pollution_group_mines(
+	area_indices: Array[int],
+	old_layout: Array[bool],
+	area_core_count: int
+) -> bool:
+	if area_core_count <= 0 or area_core_count >= area_indices.size():
+		_restore_pollution_group_mines(area_indices, old_layout)
+		return false
+	var candidates: Array[int] = area_indices.duplicate()
+	for _attempt in 80:
+		for cell_index in area_indices:
+			mines[cell_index] = false
+		for candidate_index in range(candidates.size() - 1, 0, -1):
+			var swap_index := _random.randi_range(0, candidate_index)
+			var temporary: int = candidates[candidate_index]
+			candidates[candidate_index] = candidates[swap_index]
+			candidates[swap_index] = temporary
+		for mine_index in area_core_count:
+			mines[candidates[mine_index]] = true
+		var matches_old_layout := true
+		for local_index in area_indices.size():
+			if mines[area_indices[local_index]] != old_layout[local_index]:
+				matches_old_layout = false
+				break
+		if matches_old_layout or _has_four_core_square():
+			continue
+		return true
+	_restore_pollution_group_mines(area_indices, old_layout)
+	return false
+
+
+func _restore_pollution_group_mines(
+	area_indices: Array[int],
+	old_layout: Array[bool]
+) -> void:
+	for local_index in area_indices.size():
+		mines[area_indices[local_index]] = old_layout[local_index]
+
+
 func _refresh_pollution_nodes() -> void:
 	if pollution_node_count == 0:
 		return
@@ -4863,30 +5134,14 @@ func _refresh_pollution_nodes() -> void:
 			continue
 		if pollution_node_group_cleansed[group_index]:
 			continue
-		var checked_neighbors := {}
 		var resolved := true
-		for node_index in cell_count:
-			if (
-				pollution_node_groups[node_index] != group_index
-				or not pollution_nodes[node_index]
-			):
-				continue
-			for neighbor in _get_neighbors(node_index):
-				if (
-					obstacles[neighbor]
-					or pollution_nodes[neighbor]
-					or checked_neighbors.has(neighbor)
-				):
-					continue
-				checked_neighbors[neighbor] = true
-				if mines[neighbor]:
-					if not flagged[neighbor]:
-						resolved = false
-						break
-				elif not revealed[neighbor]:
+		for neighbor in _get_pollution_group_neighbor_indices(group_index):
+			if mines[neighbor]:
+				if not flagged[neighbor]:
 					resolved = false
 					break
-			if not resolved:
+			elif not revealed[neighbor]:
+				resolved = false
 				break
 		if not resolved:
 			continue
@@ -4903,6 +5158,12 @@ func _refresh_pollution_nodes() -> void:
 			cleansed_pollution_node_count,
 			pollution_node_count
 		)
+		if cleansed_pollution_node_count >= pollution_node_count:
+			_cancel_pollution_reset_timer()
+			current_path_feedback.emit(tr("TXT_0494"))
+			_refresh_board_processing()
+		else:
+			_refresh_pollution_reset_timer()
 
 
 func _all_required_safe_cells_revealed() -> bool:
@@ -5186,6 +5447,7 @@ func _reveal_area(start_index: int) -> void:
 
 		revealed[current] = true
 		revealed_safe_count += 1
+		_arm_pollution_reset_timer_for_cell(current)
 
 		if adjacent_counts[current] > 0:
 			continue
