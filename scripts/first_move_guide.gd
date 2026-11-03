@@ -11,6 +11,7 @@ const YELLOW := Color("fadf3c")
 const INK := Color("1b2d22")
 const PANEL_PADDING := 16.0
 const TARGET_GAP := 12.0
+const ENGLISH_FONT := preload("res://assets/fonts/PatrickHand-Regular.ttf")
 
 @export var editor_preview := true
 
@@ -54,6 +55,9 @@ var _pointer_outline := PackedVector2Array([
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	focus_mode = Control.FOCUS_NONE
+	# The guide manages its own bilingual fonts and sizes; keep the
+	# shell-wide localization pass from rescaling this subtree.
+	set_meta(&"localization_style_skip", true)
 	_apply_text_styles()
 	_apply_button_styles()
 	_apply_locale_layout()
@@ -72,20 +76,45 @@ func _ready() -> void:
 
 
 func _apply_text_styles() -> void:
+	var english := TranslationServer.get_locale().begins_with("en")
+	_apply_locale_fonts(english)
 	title_label.add_theme_color_override("font_color", GREEN)
-	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.add_theme_font_size_override(
+		"font_size", 18 if english else 17
+	)
 	action_label.add_theme_color_override("font_color", INK)
-	action_label.add_theme_font_size_override("font_size", 14)
+	action_label.add_theme_font_size_override(
+		"font_size", 15 if english else 14
+	)
 	hint_label.add_theme_color_override("font_color", Color(INK, 0.68))
-	hint_label.add_theme_font_size_override("font_size", 11)
+	hint_label.add_theme_font_size_override(
+		"font_size", 12 if english else 11
+	)
+
+
+func _apply_locale_fonts(english: bool) -> void:
+	for label in [title_label, action_label, hint_label]:
+		if english:
+			label.add_theme_font_override("font", ENGLISH_FONT)
+			label.add_theme_constant_override("line_spacing", 4)
+		else:
+			label.remove_theme_font_override("font")
+			label.remove_theme_constant_override("line_spacing")
 
 
 func _apply_button_styles() -> void:
 	var empty_style := StyleBoxEmpty.new()
+	var english := TranslationServer.get_locale().begins_with("en")
 	for button in [next_button, exit_button]:
 		button.mouse_filter = Control.MOUSE_FILTER_STOP
 		button.focus_mode = Control.FOCUS_NONE
-		button.add_theme_font_size_override("font_size", 14)
+		button.add_theme_font_size_override(
+			"font_size", 15 if english else 14
+		)
+		if english:
+			button.add_theme_font_override("font", ENGLISH_FONT)
+		else:
+			button.remove_theme_font_override("font")
 		button.add_theme_stylebox_override("normal", empty_style)
 		button.add_theme_stylebox_override("hover", empty_style)
 		button.add_theme_stylebox_override("pressed", empty_style)
@@ -107,24 +136,28 @@ func _apply_locale_layout() -> void:
 		character_rig.size = Vector2(100.0, 72.0)
 		mascot.size = Vector2(64.0, 64.0)
 		claw.size = Vector2(32.0, 32.0)
-		title_label.position = Vector2(116.0, 22.0)
+		title_label.position = Vector2(116.0, 20.0)
 		title_label.size = Vector2(418.0, 30.0)
 		action_label.position = Vector2(116.0, 56.0)
-		action_label.size = Vector2(418.0, 66.0)
+		action_label.size = Vector2(418.0, 62.0)
+		action_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		hint_label.position = Vector2(116.0, 126.0)
-		_hint_layout_y = 126.0
+		hint_label.position = Vector2(116.0, 124.0)
+		_hint_layout_y = 124.0
 		_action_layout_y = 56.0
-		hint_label.size = Vector2(418.0, 34.0)
+		hint_label.size = Vector2(418.0, 36.0)
+		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		next_button_artwork.position = Vector2(258.0, 168.0)
+		next_button_artwork.position = Vector2(150.0, 168.0)
 		next_button_artwork.size = Vector2(132.0, 34.0)
 		next_button.position = next_button_artwork.position
 		next_button.size = next_button_artwork.size
-		exit_button_artwork.position = Vector2(400.0, 168.0)
+		exit_button_artwork.position = Vector2(302.0, 168.0)
 		exit_button_artwork.size = Vector2(132.0, 34.0)
 		exit_button.position = exit_button_artwork.position
 		exit_button.size = exit_button_artwork.size
+		_apply_text_styles()
+		_apply_button_styles()
 		return
 	bubble_root.size = Vector2(484.0, 175.853)
 	character_rig.position = Vector2(24.0, 43.0)
@@ -149,6 +182,10 @@ func _apply_locale_layout() -> void:
 	exit_button_artwork.size = Vector2(108.0, 27.0)
 	exit_button.position = Vector2(332.0, 115.5)
 	exit_button.size = Vector2(108.0, 40.0)
+	action_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_text_styles()
+	_apply_button_styles()
 
 
 func _process(delta: float) -> void:

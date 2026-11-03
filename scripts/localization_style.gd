@@ -28,6 +28,8 @@ static func apply(root: Node, locale: String) -> void:
 
 
 static func _apply_to_node(node: Node, english: bool) -> void:
+	if node.has_meta(&"localization_style_skip"):
+		return
 	if node is Label or node is Button or node is LineEdit:
 		_apply_to_control(node as Control, english)
 	for child in node.get_children():
