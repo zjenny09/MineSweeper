@@ -136,24 +136,24 @@ func _apply_locale_layout() -> void:
 		character_rig.size = Vector2(100.0, 72.0)
 		mascot.size = Vector2(64.0, 64.0)
 		claw.size = Vector2(32.0, 32.0)
-		title_label.position = Vector2(116.0, 20.0)
+		title_label.position = Vector2(116.0, 24.0)
 		title_label.size = Vector2(418.0, 30.0)
 		title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		action_label.position = Vector2(116.0, 56.0)
+		action_label.position = Vector2(116.0, 60.0)
 		action_label.size = Vector2(418.0, 62.0)
 		action_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		hint_label.position = Vector2(116.0, 124.0)
-		_hint_layout_y = 124.0
-		_action_layout_y = 56.0
+		hint_label.position = Vector2(116.0, 128.0)
+		_hint_layout_y = 128.0
+		_action_layout_y = 60.0
 		hint_label.size = Vector2(418.0, 36.0)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		next_button_artwork.position = Vector2(150.0, 168.0)
+		next_button_artwork.position = Vector2(164.0, 146.0)
 		next_button_artwork.size = Vector2(132.0, 34.0)
 		next_button.position = next_button_artwork.position
 		next_button.size = next_button_artwork.size
-		exit_button_artwork.position = Vector2(302.0, 168.0)
+		exit_button_artwork.position = Vector2(316.0, 146.0)
 		exit_button_artwork.size = Vector2(132.0, 34.0)
 		exit_button.position = exit_button_artwork.position
 		exit_button.size = exit_button_artwork.size
@@ -421,7 +421,7 @@ func _flow_english_lines() -> void:
 	for line_index in range(action_label.get_line_count()):
 		body_height += action_label.get_line_height(line_index)
 	hint_label.position.y = minf(
-		body_top + body_height + 8.0, 132.0
+		body_top + body_height + 8.0, 110.0
 	)
 
 
