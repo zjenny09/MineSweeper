@@ -138,6 +138,7 @@ func _apply_locale_layout() -> void:
 		claw.size = Vector2(32.0, 32.0)
 		title_label.position = Vector2(116.0, 20.0)
 		title_label.size = Vector2(418.0, 30.0)
+		title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		action_label.position = Vector2(116.0, 56.0)
 		action_label.size = Vector2(418.0, 62.0)
 		action_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -409,6 +410,21 @@ func get_target_center() -> Vector2:
 	return _target_rect_in_guide().get_center()
 
 
+func _flow_english_lines() -> void:
+	# English bubbles stack title/body/hint with real text metrics so a
+	# short body hugs the hint instead of floating in a fixed 62px band.
+	var body_top := action_label.position.y
+	if _action_blank:
+		hint_label.position.y = body_top - 2.0
+		return
+	var body_height := 0.0
+	for line_index in range(action_label.get_line_count()):
+		body_height += action_label.get_line_height(line_index)
+	hint_label.position.y = minf(
+		body_top + body_height + 8.0, 132.0
+	)
+
+
 func _update_bubble_position() -> void:
 	var bubble_rect := get_stable_bubble_rect()
 	if bubble_rect.size == Vector2.ZERO:
@@ -432,6 +448,8 @@ func _refresh_copy() -> void:
 			if not _hint_text.is_empty()
 			else tr("TXT_0246")
 		)
+	if TranslationServer.get_locale().begins_with("en"):
+		_flow_english_lines()
 	if _dialogue_mode:
 		next_button.visible = true
 		next_button.disabled = false

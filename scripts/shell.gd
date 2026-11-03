@@ -133,7 +133,6 @@ var _badge_hall_return_page := &"main_menu"
 var _badge_book_return_page := &"level_select"
 var _badge_book_victory_level := 0
 var _badge_book_chapter := &"land"
-var _level_select_return_to_game := false
 var _level_select_chapter := &"land"
 var _selected_level_number := 1
 var _selected_land_level_number := 1
@@ -462,7 +461,6 @@ func show_main_menu() -> void:
 	if is_instance_valid(settings_page) and settings_page.visible and save_store != null:
 		save_store.save_data()
 	_settings_return_to_game = false
-	_level_select_return_to_game = false
 	_destroy_active_game()
 	_show_only(main_menu)
 	AudioManager.play_menu_bgm()
@@ -472,8 +470,7 @@ func show_main_menu() -> void:
 
 func show_level_select(preserve_active_game: bool = false) -> void:
 	_settings_return_to_game = false
-	_level_select_return_to_game = preserve_active_game and is_instance_valid(active_game)
-	if _level_select_return_to_game:
+	if preserve_active_game and is_instance_valid(active_game):
 		var active_level_number := int(active_game.get("current_level_index")) + 1
 		if active_level_number >= 15:
 			_level_select_chapter = &"sky"
@@ -494,9 +491,7 @@ func show_level_select(preserve_active_game: bool = false) -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = tr(
-		"TXT_0034" if _level_select_return_to_game else "TXT_0495"
-	)
+	level_back_button.text = tr("TXT_0495")
 	level_back_button.grab_focus()
 
 
@@ -694,7 +689,6 @@ func start_cli_level(level_number: int) -> void:
 
 
 func _start_universe_mode(persist_guides: bool = true) -> void:
-	_level_select_return_to_game = false
 	_destroy_active_game()
 	AudioManager.play_universe_bgm()
 	_record_progress = false
@@ -759,7 +753,6 @@ func _on_universe_milestone_finished() -> void:
 
 
 func _on_universe_return_to_sky() -> void:
-	_level_select_return_to_game = false
 	_destroy_active_game()
 	_level_select_chapter = &"sky"
 	_selected_sky_level_number = 21
@@ -768,9 +761,7 @@ func _on_universe_return_to_sky() -> void:
 	_rebuild_level_cards()
 	_show_only(level_select)
 	AudioManager.play_menu_bgm()
-	level_back_button.text = tr(
-		"TXT_0034" if _level_select_return_to_game else "TXT_0495"
-	)
+	level_back_button.text = tr("TXT_0495")
 	level_back_button.grab_focus()
 
 
@@ -837,7 +828,6 @@ func _start_level_number(
 	if record_progress and not save_store.is_level_unlocked(level_number):
 		return
 
-	_level_select_return_to_game = false
 	_destroy_active_game()
 	_record_progress = record_progress
 	_persist_scan_state = persist_scan_state
@@ -922,7 +912,6 @@ func _transition_to_ocean_chapter() -> void:
 	_selected_land_level_number = 7
 	_selected_level_number = 7
 	_level_select_chapter = &"land"
-	_level_select_return_to_game = false
 	_destroy_active_game()
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
@@ -968,7 +957,6 @@ func _transition_to_sky_chapter() -> void:
 	_selected_ocean_level_number = 14
 	_selected_level_number = 14
 	_level_select_chapter = &"ocean"
-	_level_select_return_to_game = false
 	_destroy_active_game()
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
@@ -1388,11 +1376,6 @@ func _on_next_chapter_pressed() -> void:
 
 
 func _on_level_back_pressed() -> void:
-	if _level_select_return_to_game and is_instance_valid(active_game):
-		_level_select_return_to_game = false
-		_show_only(game_host)
-		AudioManager.play_level_bgm(int(active_game.get("current_level_index")) + 1)
-		return
 	if _is_select_level_unlocked(_selected_level_number):
 		_start_level_number(
 			_selected_level_number,
@@ -1508,9 +1491,7 @@ func _on_language_selected(index: int) -> void:
 	_refresh_audio_toggle_buttons()
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
-	level_back_button.text = tr(
-		"TXT_0034" if _level_select_return_to_game else "TXT_0495"
-	)
+	level_back_button.text = tr("TXT_0495")
 	_refresh_continue_button()
 	if is_instance_valid(active_game) \
 			and active_game.has_method("refresh_localized_interface"):

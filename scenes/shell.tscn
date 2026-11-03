@@ -1074,7 +1074,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(76, 38)
 layout_mode = 2
 focus_mode = 1
-text = "TXT_0034"
+text = "TXT_0495"
 
 [node name="LevelHelpButton" type="Button" parent="LevelSelect/LevelShortcutColumn"]
 unique_name_in_owner = true
