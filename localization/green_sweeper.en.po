@@ -296,7 +296,7 @@ msgstr "Click a map node to select it\nClick again to enter the level"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0073"
-msgstr "Sprout"
+msgstr "Ren"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0074"
@@ -380,7 +380,7 @@ msgstr "Sky Palace"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0094"
-msgstr "Sprout  →  Shrubland  →  Wetland  →  Grassland  →  Forest"
+msgstr "Ren  →  Shrubland  →  Wetland  →  Grassland  →  Forest"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0095"
@@ -388,7 +388,7 @@ msgstr "Level %d · %s"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0096"
-msgstr "Level 1 · Sprout"
+msgstr "Level 1 · Ren"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0097"
@@ -804,7 +804,7 @@ msgstr "Scan after first reveal · C"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0201"
-msgstr "Click the Sprout to Start Eco Scan"
+msgstr "Click the Ren to Start Eco Scan"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0202"
@@ -888,7 +888,7 @@ msgstr "Suspected source marked with coral"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0222"
-msgstr "Sprout marked a suspected source"
+msgstr "Ren marked a suspected source"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0223"
@@ -964,15 +964,15 @@ msgstr "Storm Eye cleansed · %d/%d"
 
 #. 引导通用 | 运行
 msgid "TXT_0241"
-msgstr "Sprout found you a safe starting point!"
+msgstr "Ren found you a safe starting point!"
 
 #. 引导通用 | 运行
 msgid "TXT_0242"
-msgstr "Sprout found a safe starting point!"
+msgstr "Ren found a safe starting point!"
 
 #. 引导通用 | 运行
 msgid "TXT_0243"
-msgstr "Sprout Has Something to Tell You"
+msgstr "Ren Has Something to Tell You"
 
 #. 引导通用 | 运行
 msgid "TXT_0244"
@@ -1012,7 +1012,7 @@ msgstr "A little mystery remains—go take a closer look."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0253"
-msgstr "Sprout: These Cells Are Obstacles"
+msgstr "Ren: These Cells Are Obstacles"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0254"
@@ -1024,7 +1024,7 @@ msgstr "They don't contain Pollution Cores either"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0256"
-msgstr "Sprout: Everything Else Still Works the Same"
+msgstr "Ren: Everything Else Still Works the Same"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0257"
@@ -1032,7 +1032,7 @@ msgstr "Leave obstacles alone and purify the other cells"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0258"
-msgstr "Sprout: Oh! A Pollution Nodule!"
+msgstr "Ren: Oh! A Pollution Nodule!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0259"
@@ -1040,7 +1040,7 @@ msgstr "You can't click a nodule directly, but it's a Pollution Core too"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0260"
-msgstr "Sprout: Let's Start Around It!"
+msgstr "Ren: Let's Start Around It!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0261"
@@ -1052,7 +1052,7 @@ msgstr "Get every neighbor right and we'll cleanse the nodule!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0263"
-msgstr "Sprout: Pollution's got the old tree too!"
+msgstr "Ren: Pollution's got the old tree too!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0264"
@@ -1064,7 +1064,7 @@ msgstr "Look! The arrow points to a nodule group. Let's start there."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0266"
-msgstr "Sprout: Let's cleanse the whole root together!"
+msgstr "Ren: Let's cleanse the whole root together!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0267"
@@ -1076,7 +1076,7 @@ msgstr "Once all three roots are clean, the tree can recover too!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0269"
-msgstr "Sprout: Eco probe is fully charged!"
+msgstr "Ren: Eco probe is fully charged!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0270"
@@ -1084,7 +1084,7 @@ msgstr "Revealing cells and marking both charge it"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0271"
-msgstr "Sprout: Click me to pick a cell to probe"
+msgstr "Ren: Click me to pick a cell to probe"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0272"
@@ -1096,7 +1096,7 @@ msgstr "Unused energy carries over to the next level"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0274"
-msgstr "Sprout: We've reached the seafloor!"
+msgstr "Ren: We've reached the seafloor!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0275"
@@ -1108,7 +1108,7 @@ msgstr "Reveal what you know is safe, and flag the Pollution Cores you find."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0277"
-msgstr "Sprout: The numbers still help us!"
+msgstr "Ren: The numbers still help us!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0278"
@@ -1116,7 +1116,7 @@ msgstr "Revealing, flagging and expanding are still the familiar controls."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0279"
-msgstr "Sprout: Look! A coral reef!"
+msgstr "Ren: Look! A coral reef!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0280"
@@ -1128,7 +1128,7 @@ msgstr "An unblocked shared edge still makes two cells neighbors."
 
 #. 陆地与海洋引导 | 旧版
 msgid "TXT_0282"
-msgstr "Sprout: Let's go around the reef ends!"
+msgstr "Ren: Let's go around the reef ends!"
 
 #. 陆地与海洋引导 | 旧版
 msgid "TXT_0283"
@@ -1140,7 +1140,7 @@ msgstr "Let's go around the ends of the coral reef!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0285"
-msgstr "Sprout: These buoys keep drifting right!"
+msgstr "Ren: These buoys keep drifting right!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0286"
@@ -1148,7 +1148,7 @@ msgstr "Each group has four buoys, but only two hide Pollution Cores."
 
 #. 陆地与海洋引导 | 旧版
 msgid "TXT_0287"
-msgstr "Sprout: Let's stop this group together!"
+msgstr "Ren: Let's stop this group together!"
 
 #. 陆地与海洋引导 | 旧版
 msgid "TXT_0288"
@@ -1160,7 +1160,7 @@ msgstr "An unflagged Core crossing the right filter boundary ends the run."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0290"
-msgstr "Sprout: Let's stop the buoys together!"
+msgstr "Ren: Let's stop the buoys together!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0291"
@@ -1172,7 +1172,7 @@ msgstr "If unsolved buoys drift past the right containment boundary, you lose."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0293"
-msgstr "Sprout: Let's clear one patch at a time!"
+msgstr "Ren: Let's clear one patch at a time!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0294"
@@ -1184,7 +1184,7 @@ msgstr "Zones still under water can't be revealed, flagged or scanned."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0296"
-msgstr "Sprout: Check the numbers after the tide!"
+msgstr "Ren: Check the numbers after the tide!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0297"
@@ -1196,7 +1196,7 @@ msgstr "When the tide recedes, border numbers update, but the Pollution Cores st
 
 #. 天空引导 | 运行
 msgid "TXT_0299"
-msgstr "Sprout: We've Reached the Sky!"
+msgstr "Ren: We've Reached the Sky!"
 
 #. 天空引导 | 运行
 msgid "TXT_0300"
@@ -1208,7 +1208,7 @@ msgstr "Only cells sharing an edge count as neighbors."
 
 #. 天空引导 | 运行
 msgid "TXT_0302"
-msgstr "Sprout: Let's Take a Look Around!"
+msgstr "Ren: Let's Take a Look Around!"
 
 #. 天空引导 | 运行
 msgid "TXT_0303"
@@ -1220,7 +1220,7 @@ msgstr "Revealing, flagging, and expanding work just as before."
 
 #. 天空引导 | 运行
 msgid "TXT_0305"
-msgstr "Sprout: Look, a Breeze!"
+msgstr "Ren: Look, a Breeze!"
 
 #. 天空引导 | 运行
 msgid "TXT_0306"
@@ -1232,7 +1232,7 @@ msgstr "When a Breeze blows by, the Cloud Sphere turns toward the cell it found.
 
 #. 天空引导 | 运行
 msgid "TXT_0308"
-msgstr "Sprout: See What the Breeze Found!"
+msgstr "Ren: See What the Breeze Found!"
 
 #. 天空引导 | 运行
 msgid "TXT_0309"
@@ -1244,7 +1244,7 @@ msgstr "The Breeze won't help every time. Let's keep following the numbers."
 
 #. 天空引导 | 运行
 msgid "TXT_0311"
-msgstr "Sprout: The sphere keeps growing!"
+msgstr "Ren: The sphere keeps growing!"
 
 #. 天空引导 | 运行
 msgid "TXT_0312"
@@ -1256,7 +1256,7 @@ msgstr "If you hit a Pollution Core, the Cloud Shield may appear."
 
 #. 天空引导 | 运行
 msgid "TXT_0314"
-msgstr "Sprout: The Cloud Shield Flags It Too!"
+msgstr "Ren: The Cloud Shield Flags It Too!"
 
 #. 天空引导 | 运行
 msgid "TXT_0315"
@@ -1268,7 +1268,7 @@ msgstr "It appears at most once per game, so stay careful."
 
 #. 天空引导 | 运行
 msgid "TXT_0317"
-msgstr "Sprout: What's spinning? A Storm Eye!"
+msgstr "Ren: What's spinning? A Storm Eye!"
 
 #. 天空引导 | 运行
 msgid "TXT_0318"
@@ -1280,7 +1280,7 @@ msgstr "If one appears on the far side of the Cloud Sphere, follow the arrow to 
 
 #. 天空引导 | 运行
 msgid "TXT_0320"
-msgstr "Sprout: Let's Cleanse the Storm Eye!"
+msgstr "Ren: Let's Cleanse the Storm Eye!"
 
 #. 天空引导 | 运行
 msgid "TXT_0321"
@@ -1292,7 +1292,7 @@ msgstr "Cleanse every Storm Eye in this level to finish early!"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0323"
-msgstr "Sprout: Follow the Links in the Universe"
+msgstr "Ren: Follow the Links in the Universe"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0324"
@@ -1304,7 +1304,7 @@ msgstr "Star cores without a connecting line do not affect each other."
 
 #. 宇宙引导 | 运行
 msgid "TXT_0326"
-msgstr "Sprout: Straight and Curved Links Both Count"
+msgstr "Ren: Straight and Curved Links Both Count"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0327"
@@ -1316,7 +1316,7 @@ msgstr "A number counts pollution among every directly connected star core."
 
 #. 宇宙引导 | 运行
 msgid "TXT_0329"
-msgstr "Sprout: The Starship Has Two Shield Layers"
+msgstr "Ren: The Starship Has Two Shield Layers"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0330"
@@ -1328,7 +1328,7 @@ msgstr "After both layers are gone, the next polluted core ends the expedition."
 
 #. 宇宙引导 | 运行
 msgid "TXT_0332"
-msgstr "Sprout: Purple Links Are Wormholes"
+msgstr "Ren: Purple Links Are Wormholes"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0333"
@@ -1340,7 +1340,7 @@ msgstr "Numbers include pollution at the far end of a wormhole."
 
 #. 宇宙引导 | 运行
 msgid "TXT_0335"
-msgstr "Sprout: Treat It Like Any Other Link"
+msgstr "Ren: Treat It Like Any Other Link"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0336"
@@ -1604,7 +1604,7 @@ msgstr "Left: Reveal\nRight: Pollution Flag\nClick a Revealed Number to Expand\n
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0402"
-msgstr "Current Level: 01 Sprout"
+msgstr "Current Level: 01 Ren"
 
 #. 第一关教学 | 运行
 msgid "TXT_0403"
@@ -1928,7 +1928,7 @@ msgstr "Pollution spread: nearby cells are polluted again"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0484"
-msgstr "Sprout: Watch Out—Pollution Can Spread!"
+msgstr "Ren: Watch Out—Pollution Can Spread!"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0485"
@@ -1940,7 +1940,7 @@ msgstr "Cleansing any root resets the countdown."
 
 #. 陆地污染再生 | 旧版
 msgid "TXT_0487"
-msgstr "Sprout: Timeout Repollutes"
+msgstr "Ren: Timeout Repollutes"
 
 #. 陆地污染再生 | 旧版
 msgid "TXT_0488"
@@ -1952,7 +1952,7 @@ msgstr "All flags and scan confirmations in each affected area are removed."
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0490"
-msgstr "Sprout: The Old Clues Can't Be Trusted!"
+msgstr "Ren: The Old Clues Can't Be Trusted!"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0491"
@@ -1972,7 +1972,7 @@ msgstr "Enter Selected Level"
 
 #. 扫描与提示 | 运行
 msgid "TXT_0498"
-msgstr "Click Sprout to Scan"
+msgstr "Click Ren to Scan"
 
 #. 扫描与提示 | 运行
 msgid "TXT_0497"
@@ -1984,11 +1984,11 @@ msgstr "Hi!"
 
 #. 新手引导 | 运行
 msgid "TXT_0500"
-msgstr "Sprout will be by your side on the cleanup journey ahead!"
+msgstr "Ren will be by your side on the cleanup journey ahead!"
 
 #. 新手引导 | 运行
 msgid "TXT_0501"
-msgstr "I'm Sprout, your eco robot!"
+msgstr "I'm Ren, your eco robot!"
 
 #. 第一关教学 | 运行
 msgid "TXT_0502"
@@ -2004,7 +2004,7 @@ msgstr "Cleanse a nodule and the countdown starts over."
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0505"
-msgstr "Sprout: Those Old Clues May Fool Us Now!"
+msgstr "Ren: Those Old Clues May Fool Us Now!"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0506"
@@ -2456,7 +2456,7 @@ msgstr "The number counts pollution in the eight surrounding cells, including un
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0618"
-msgstr "Sprout Flag"
+msgstr "Ren Flag"
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0619"
@@ -2504,7 +2504,7 @@ msgstr "First Safe Suggestion"
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0630"
-msgstr "Sprout can point out a safe starting cell during opening guidance. It is a suggestion; another cell may be chosen."
+msgstr "Ren can point out a safe starting cell during opening guidance. It is a suggestion; another cell may be chosen."
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0631"
@@ -3128,7 +3128,7 @@ msgstr "Shows no number when there is no adjacent pollution and may expand a saf
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0786"
-msgstr "Wilted Sprout Flag"
+msgstr "Wilted Ren Flag"
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0787"
@@ -3292,7 +3292,7 @@ msgstr "Cleanup Readouts"
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0827"
-msgstr "Sprout’s Eco Probe"
+msgstr "Ren’s Eco Probe"
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0828"
@@ -3324,7 +3324,7 @@ msgstr "Used / Total"
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0835"
-msgstr "Revealing cells and flagging a cell for the first time charge Sprout. When all three lamps light up, probe once to reveal a safe target or flag pollution. Each level requires a first reveal; obstacles, special cores and covered tidal cells are excluded. Unused energy carries forward."
+msgstr "Revealing cells and flagging a cell for the first time charge Ren. When all three lamps light up, probe once to reveal a safe target or flag pollution. Each level requires a first reveal; obstacles, special cores and covered tidal cells are excluded. Unused energy carries forward."
 
 #. UI元素操作说明 | 旧版
 msgid "TXT_0836"
@@ -3504,7 +3504,7 @@ msgstr "Opening Help"
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0880"
-msgstr "Land and Ocean first reveals are not guaranteed safe. Repeated opening mine losses or early failures in one level can grant Sprout’s optional safe suggestion. Sky protects each attempt’s first reveal; Universe protects the first reveal in each nebula."
+msgstr "Land and Ocean first reveals are not guaranteed safe. Repeated opening mine losses or early failures in one level can grant Ren’s optional safe suggestion. Sky protects each attempt’s first reveal; Universe protects the first reveal in each nebula."
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0881"
@@ -3520,11 +3520,11 @@ msgstr "Chording"
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0884"
-msgstr "Charging Sprout"
+msgstr "Charging Ren"
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0885"
-msgstr "Revealing cells and flagging a cell for the first time charge Sprout. Three lit lamps provide one probe use; unused energy carries over to the next level."
+msgstr "Revealing cells and flagging a cell for the first time charge Ren. Three lit lamps provide one probe use; unused energy carries over to the next level."
 
 #. UI元素操作说明 | 运行
 msgid "TXT_0886"

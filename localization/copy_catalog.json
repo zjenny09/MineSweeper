@@ -990,13 +990,13 @@
       "category": "关卡名称与棋盘",
       "status": "运行",
       "zh_CN": "萌芽",
-      "en": "Sprout",
+      "en": "Ren",
       "placeholders": [],
       "sources": [
         "scripts/land_sticker_sets.gd:5",
         "scripts/level_data.gd:6"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -1267,12 +1267,12 @@
       "category": "关卡名称与棋盘",
       "status": "运行",
       "zh_CN": "萌芽  →  灌木  →  湿地  →  草原  →  森林",
-      "en": "Sprout  →  Shrubland  →  Wetland  →  Grassland  →  Forest",
+      "en": "Ren  →  Shrubland  →  Wetland  →  Grassland  →  Forest",
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:877"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -1299,14 +1299,14 @@
       "category": "关卡名称与棋盘",
       "status": "运行",
       "zh_CN": "第1关 · 萌芽",
-      "en": "Level 1 · Sprout",
+      "en": "Level 1 · Ren",
       "placeholders": [],
       "sources": [
         "scenes/main.tscn:182",
         "scenes/main.tscn:681",
         "scenes/sky_level_15_prototype.tscn:465"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -2747,12 +2747,12 @@
       "category": "扫描与格子提示",
       "status": "运行",
       "zh_CN": "点击小芽开始探测",
-      "en": "Click the Sprout to Start Eco Scan",
+      "en": "Click the Ren to Start Eco Scan",
       "placeholders": [],
       "sources": [
         "scenes/land_tabletop_actors.tscn:193"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3025,12 +3025,12 @@
       "category": "扫描与格子提示",
       "status": "运行",
       "zh_CN": "小芽已标记疑似污染源",
-      "en": "Sprout marked a suspected source",
+      "en": "Ren marked a suspected source",
       "placeholders": [],
       "sources": [
         "scripts/cell.gd:555"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3304,7 +3304,7 @@
       "category": "引导通用",
       "status": "运行",
       "zh_CN": "小芽带你到安全起点啦！",
-      "en": "Sprout found you a safe starting point!",
+      "en": "Ren found you a safe starting point!",
       "placeholders": [],
       "sources": [
         "scenes/main.tscn:1314",
@@ -3312,7 +3312,7 @@
         "scripts/first_move_guide.gd:64",
         "scripts/first_move_guide.gd:385"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3320,12 +3320,12 @@
       "category": "引导通用",
       "status": "运行",
       "zh_CN": "小芽找到安全起点啦！",
-      "en": "Sprout found a safe starting point!",
+      "en": "Ren found a safe starting point!",
       "placeholders": [],
       "sources": [
         "scripts/first_move_guide.gd:385"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3333,13 +3333,13 @@
       "category": "引导通用",
       "status": "运行",
       "zh_CN": "小芽想告诉你",
-      "en": "Sprout Has Something to Tell You",
+      "en": "Ren Has Something to Tell You",
       "placeholders": [],
       "sources": [
         "scenes/mechanic_dialogue.tscn:83",
         "scripts/first_move_guide.gd:508"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3479,12 +3479,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：这些格子是障碍",
-      "en": "Sprout: These Cells Are Obstacles",
+      "en": "Ren: These Cells Are Obstacles",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:97"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3518,12 +3518,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：其他规则没有变化哦",
-      "en": "Sprout: Everything Else Still Works the Same",
+      "en": "Ren: Everything Else Still Works the Same",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:98"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3544,12 +3544,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：咦，这里长出了污染根瘤！",
-      "en": "Sprout: Oh! A Pollution Nodule!",
+      "en": "Ren: Oh! A Pollution Nodule!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:104"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3570,12 +3570,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：我们从它周围下手吧！",
-      "en": "Sprout: Let's Start Around It!",
+      "en": "Ren: Let's Start Around It!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:105"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3609,12 +3609,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：古树也被污染缠住了！",
-      "en": "Sprout: Pollution's got the old tree too!",
+      "en": "Ren: Pollution's got the old tree too!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:113"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3648,12 +3648,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：一起把整条树根清理干净吧！",
-      "en": "Sprout: Let's cleanse the whole root together!",
+      "en": "Ren: Let's cleanse the whole root together!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:114"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3687,12 +3687,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：探测充能满啦！",
-      "en": "Sprout: Eco probe is fully charged!",
+      "en": "Ren: Eco probe is fully charged!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:150"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3713,12 +3713,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：点击我选一个格子探测",
-      "en": "Sprout: Click me to pick a cell to probe",
+      "en": "Ren: Click me to pick a cell to probe",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:151"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3752,12 +3752,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：我们来到海底啦！",
-      "en": "Sprout: We've reached the seafloor!",
+      "en": "Ren: We've reached the seafloor!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:122"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3791,12 +3791,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：数字还是我们的好帮手！",
-      "en": "Sprout: The numbers still help us!",
+      "en": "Ren: The numbers still help us!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:123"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3817,12 +3817,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：看！这里有道珊瑚礁带！",
-      "en": "Sprout: Look! A coral reef!",
+      "en": "Ren: Look! A coral reef!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:129"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3854,10 +3854,10 @@
       "category": "陆地与海洋引导",
       "status": "旧版",
       "zh_CN": "小芽：我们从礁带两头绕过去吧！",
-      "en": "Sprout: Let's go around the reef ends!",
+      "en": "Ren: Let's go around the reef ends!",
       "placeholders": [],
       "sources": [],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3889,12 +3889,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：这些浮标会一直向右漂！",
-      "en": "Sprout: These buoys keep drifting right!",
+      "en": "Ren: These buoys keep drifting right!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:135"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3915,10 +3915,10 @@
       "category": "陆地与海洋引导",
       "status": "旧版",
       "zh_CN": "小芽：一起把这组浮标拦下来吧！",
-      "en": "Sprout: Let's stop this group together!",
+      "en": "Ren: Let's stop this group together!",
       "placeholders": [],
       "sources": [],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3948,12 +3948,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：一起把浮标拦下来吧！",
-      "en": "Sprout: Let's stop the buoys together!",
+      "en": "Ren: Let's stop the buoys together!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:136"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -3987,12 +3987,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：潮水还没退，我们一片片来吧！",
-      "en": "Sprout: Let's clear one patch at a time!",
+      "en": "Ren: Let's clear one patch at a time!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:142"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4026,12 +4026,12 @@
       "category": "陆地与海洋引导",
       "status": "运行",
       "zh_CN": "小芽：等下一片退潮，再看看数字吧！",
-      "en": "Sprout: Check the numbers after the tide!",
+      "en": "Ren: Check the numbers after the tide!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:143"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4065,12 +4065,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：我们来到了天空！",
-      "en": "Sprout: We've Reached the Sky!",
+      "en": "Ren: We've Reached the Sky!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:27"
       ],
-      "note": "第15关第1页中文按用户定稿，保留云球称呼；英文同步。",
+      "note": "第15关第1页中文按用户定稿，保留云球称呼；英文同步。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4104,12 +4104,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：转过去看看吧！",
-      "en": "Sprout: Let's Take a Look Around!",
+      "en": "Ren: Let's Take a Look Around!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:28"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4143,12 +4143,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：看，一阵微风！",
-      "en": "Sprout: Look, a Breeze!",
+      "en": "Ren: Look, a Breeze!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:34"
       ],
-      "note": "第17关两页微风引导按用户定稿：第1页介绍帮助与转向，第2页说明翻开或标记的结果。",
+      "note": "第17关两页微风引导按用户定稿：第1页介绍帮助与转向，第2页说明翻开或标记的结果。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4182,12 +4182,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：看看微风发现了什么！",
-      "en": "Sprout: See What the Breeze Found!",
+      "en": "Ren: See What the Breeze Found!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:35"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4221,12 +4221,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：球越来越大了！",
-      "en": "Sprout: The sphere keeps growing!",
+      "en": "Ren: The sphere keeps growing!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:41"
       ],
-      "note": "第19关两页云盾引导按用户定稿：第1页介绍球变大与概率保护，第2页说明自动标记及每局最多一次。",
+      "note": "第19关两页云盾引导按用户定稿：第1页介绍球变大与概率保护，第2页说明自动标记及每局最多一次。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4260,12 +4260,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：云盾还会帮忙标记！",
-      "en": "Sprout: The Cloud Shield Flags It Too!",
+      "en": "Ren: The Cloud Shield Flags It Too!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:42"
       ],
-      "note": "第19关两页云盾引导按用户定稿：第1页介绍球变大与概率保护，第2页说明自动标记及每局最多一次。",
+      "note": "第19关两页云盾引导按用户定稿：第1页介绍球变大与概率保护，第2页说明自动标记及每局最多一次。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4299,12 +4299,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：是什么在旋转？是雷眼！",
-      "en": "Sprout: What's spinning? A Storm Eye!",
+      "en": "Ren: What's spinning? A Storm Eye!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:48"
       ],
-      "note": "第20关两页雷眼引导按用户定稿：第1页认识雷眼与背面箭头，第2页说明净化条件与提前通关。",
+      "note": "第20关两页雷眼引导按用户定稿：第1页认识雷眼与背面箭头，第2页说明净化条件与提前通关。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4338,12 +4338,12 @@
       "category": "天空引导",
       "status": "运行",
       "zh_CN": "小芽：一起净化雷眼吧！",
-      "en": "Sprout: Let's Cleanse the Storm Eye!",
+      "en": "Ren: Let's Cleanse the Storm Eye!",
       "placeholders": [],
       "sources": [
         "scripts/sky_level_prototype.gd:49"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4377,12 +4377,12 @@
       "category": "宇宙引导",
       "status": "运行",
       "zh_CN": "小芽：宇宙棋盘要看连线",
-      "en": "Sprout: Follow the Links in the Universe",
+      "en": "Ren: Follow the Links in the Universe",
       "placeholders": [],
       "sources": [
         "scripts/universe_endless.gd:11"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4416,12 +4416,12 @@
       "category": "宇宙引导",
       "status": "运行",
       "zh_CN": "小芽：直线和弧线都有效",
-      "en": "Sprout: Straight and Curved Links Both Count",
+      "en": "Ren: Straight and Curved Links Both Count",
       "placeholders": [],
       "sources": [
         "scripts/universe_endless.gd:12"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4455,12 +4455,12 @@
       "category": "宇宙引导",
       "status": "运行",
       "zh_CN": "小芽：星舰有两层护盾",
-      "en": "Sprout: The Starship Has Two Shield Layers",
+      "en": "Ren: The Starship Has Two Shield Layers",
       "placeholders": [],
       "sources": [
         "scripts/universe_endless.gd:13"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4494,12 +4494,12 @@
       "category": "宇宙引导",
       "status": "运行",
       "zh_CN": "小芽：紫色连线是虫洞",
-      "en": "Sprout: Purple Links Are Wormholes",
+      "en": "Ren: Purple Links Are Wormholes",
       "placeholders": [],
       "sources": [
         "scripts/universe_endless.gd:19"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -4533,12 +4533,12 @@
       "category": "宇宙引导",
       "status": "运行",
       "zh_CN": "小芽：把它当成普通连线",
-      "en": "Sprout: Treat It Like Any Other Link",
+      "en": "Ren: Treat It Like Any Other Link",
       "placeholders": [],
       "sources": [
         "scripts/universe_endless.gd:20"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -5443,12 +5443,12 @@
       "category": "补充与兼容文案",
       "status": "运行",
       "zh_CN": "当前关卡：01 萌芽",
-      "en": "Current Level: 01 Sprout",
+      "en": "Current Level: 01 Ren",
       "placeholders": [],
       "sources": [
         "scenes/shell.tscn:1005"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -6572,13 +6572,13 @@
       "category": "陆地污染再生",
       "status": "运行",
       "zh_CN": "小芽：小心，污染还会蔓延！",
-      "en": "Sprout: Watch Out—Pollution Can Spread!",
+      "en": "Ren: Watch Out—Pollution Can Spread!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:106",
         "scripts/main.gd:115"
       ],
-      "note": "机制引导标题",
+      "note": "机制引导标题；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待用户确认"
     },
     {
@@ -6612,10 +6612,10 @@
       "category": "陆地污染再生",
       "status": "旧版",
       "zh_CN": "小芽：超时会重新污染",
-      "en": "Sprout: Timeout Repollutes",
+      "en": "Ren: Timeout Repollutes",
       "placeholders": [],
       "sources": [],
-      "note": "原独立超时页标题，已合并到TXT_0484；保留永久编号。",
+      "note": "原独立超时页标题，已合并到TXT_0484；保留永久编号。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待用户确认"
     },
     {
@@ -6645,12 +6645,12 @@
       "category": "陆地污染再生",
       "status": "运行",
       "zh_CN": "小芽：旧线索不再可信哦！",
-      "en": "Sprout: The Old Clues Can't Be Trusted!",
+      "en": "Ren: The Old Clues Can't Be Trusted!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:116"
       ],
-      "note": "机制引导第三段标题",
+      "note": "机制引导第三段标题；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待用户确认"
     },
     {
@@ -6713,13 +6713,13 @@
       "category": "扫描与提示",
       "status": "运行",
       "zh_CN": "点击小芽开始探测",
-      "en": "Click Sprout to Scan",
+      "en": "Click Ren to Scan",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:1042",
         "scripts/sky_level_prototype.gd:842"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -6754,12 +6754,12 @@
       "category": "新手引导",
       "status": "运行",
       "zh_CN": "接下来的净化旅程就由小芽陪伴你左右啦！",
-      "en": "Sprout will be by your side on the cleanup journey ahead!",
+      "en": "Ren will be by your side on the cleanup journey ahead!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:1206"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -6767,12 +6767,12 @@
       "category": "新手引导",
       "status": "运行",
       "zh_CN": "我是生态机器人小芽！",
-      "en": "I'm Sprout, your eco robot!",
+      "en": "I'm Ren, your eco robot!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:1205"
       ],
-      "note": "",
+      "note": "机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -6819,12 +6819,12 @@
       "category": "陆地污染再生",
       "status": "运行",
       "zh_CN": "小芽：旧线索可不能再信啦！",
-      "en": "Sprout: Those Old Clues May Fool Us Now!",
+      "en": "Ren: Those Old Clues May Fool Us Now!",
       "placeholders": [],
       "sources": [
         "scripts/main.gd:107"
       ],
-      "note": "第五关旧线索页标题；保留原有措辞。",
+      "note": "第五关旧线索页标题；保留原有措辞。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待用户确认"
     },
     {
@@ -8108,12 +8108,12 @@
       "category": "UI元素操作说明",
       "status": "运行",
       "zh_CN": "小芽标记",
-      "en": "Sprout Flag",
+      "en": "Ren Flag",
       "placeholders": [],
       "sources": [
         "scripts/ui_help_catalog.gd:41"
       ],
-      "note": "完整功能说明复用永久编号。",
+      "note": "完整功能说明复用永久编号。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -8244,10 +8244,10 @@
       "category": "UI元素操作说明",
       "status": "旧版",
       "zh_CN": "小芽在支持的起手引导中指出安全起点；这是建议，也可以选择别处。",
-      "en": "Sprout can point out a safe starting cell during opening guidance. It is a suggestion; another cell may be chosen.",
+      "en": "Ren can point out a safe starting cell during opening guidance. It is a suggestion; another cell may be chosen.",
       "placeholders": [],
       "sources": [],
-      "note": "旧版逐控件说明，已由完整功能页合并或移除；保留历史永久编号，不复用。",
+      "note": "旧版逐控件说明，已由完整功能页合并或移除；保留历史永久编号，不复用。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -10027,10 +10027,10 @@
       "category": "UI元素操作说明",
       "status": "旧版",
       "zh_CN": "枯萎小芽标记",
-      "en": "Wilted Sprout Flag",
+      "en": "Wilted Ren Flag",
       "placeholders": [],
       "sources": [],
-      "note": "旧版逐控件说明，已由完整功能页合并或移除；保留历史永久编号，不复用。",
+      "note": "旧版逐控件说明，已由完整功能页合并或移除；保留历史永久编号，不复用。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -10484,10 +10484,10 @@
       "category": "UI元素操作说明",
       "status": "旧版",
       "zh_CN": "小芽探测",
-      "en": "Sprout’s Eco Probe",
+      "en": "Ren’s Eco Probe",
       "placeholders": [],
       "sources": [],
-      "note": "按完整功能合页；永久编号，不重排或复用。",
+      "note": "按完整功能合页；永久编号，不重排或复用。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -10585,10 +10585,10 @@
       "category": "UI元素操作说明",
       "status": "旧版",
       "zh_CN": "翻开格子、第一次标记某格都能充能。三灯全亮就能探测一次：安全格翻开，污染自动标记。每关先翻开一格才能用；障碍、特殊核心、未退潮格不能选。未用能量可带到下一关。",
-      "en": "Revealing cells and flagging a cell for the first time charge Sprout. When all three lamps light up, probe once to reveal a safe target or flag pollution. Each level requires a first reveal; obstacles, special cores and covered tidal cells are excluded. Unused energy carries forward.",
+      "en": "Revealing cells and flagging a cell for the first time charge Ren. When all three lamps light up, probe once to reveal a safe target or flag pollution. Each level requires a first reveal; obstacles, special cores and covered tidal cells are excluded. Unused energy carries forward.",
       "placeholders": [],
       "sources": [],
-      "note": "按完整功能合页；永久编号，不重排或复用。",
+      "note": "按完整功能合页；永久编号，不重排或复用。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -11158,12 +11158,12 @@
       "category": "UI元素操作说明",
       "status": "运行",
       "zh_CN": "陆地、海洋首翻不保证安全，同关连续首翻踩雷或很早失败可获起手帮助。小芽给出可选的安全建议。天空每局、宇宙每片星云都有首翻保护。",
-      "en": "Land and Ocean first reveals are not guaranteed safe. Repeated opening mine losses or early failures in one level can grant Sprout’s optional safe suggestion. Sky protects each attempt’s first reveal; Universe protects the first reveal in each nebula.",
+      "en": "Land and Ocean first reveals are not guaranteed safe. Repeated opening mine losses or early failures in one level can grant Ren’s optional safe suggestion. Sky protects each attempt’s first reveal; Universe protects the first reveal in each nebula.",
       "placeholders": [],
       "sources": [
         "scripts/ui_help_catalog.gd:346"
       ],
-      "note": "按完整功能合页；永久编号，不重排或复用。",
+      "note": "按完整功能合页；永久编号，不重排或复用。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -11217,14 +11217,14 @@
       "category": "UI元素操作说明",
       "status": "运行",
       "zh_CN": "小芽充能",
-      "en": "Charging Sprout",
+      "en": "Charging Ren",
       "placeholders": [],
       "sources": [
         "scripts/ui_help_catalog.gd:69",
         "scripts/ui_help_catalog.gd:139",
         "scripts/ui_help_catalog.gd:227"
       ],
-      "note": "按理解点拆分的操作说明",
+      "note": "按理解点拆分的操作说明；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
@@ -11232,14 +11232,14 @@
       "category": "UI元素操作说明",
       "status": "运行",
       "zh_CN": "翻开格子、第一次标记某格都能充能。三灯全亮，就攒够了一次探测的能量；未用能量可以带到下一关。",
-      "en": "Revealing cells and flagging a cell for the first time charge Sprout. Three lit lamps provide one probe use; unused energy carries over to the next level.",
+      "en": "Revealing cells and flagging a cell for the first time charge Ren. Three lit lamps provide one probe use; unused energy carries over to the next level.",
       "placeholders": [],
       "sources": [
         "scripts/ui_help_catalog.gd:69",
         "scripts/ui_help_catalog.gd:139",
         "scripts/ui_help_catalog.gd:227"
       ],
-      "note": "操作说明窗口正文保持通顺完整；按用户澄清撤销压短。",
+      "note": "操作说明窗口正文保持通顺完整；按用户澄清撤销压短。；机器人英文名定为 Ren，替换 Sprout。",
       "review": "待复核"
     },
     {
