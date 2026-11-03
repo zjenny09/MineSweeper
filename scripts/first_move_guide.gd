@@ -149,11 +149,11 @@ func _apply_locale_layout() -> void:
 		hint_label.size = Vector2(418.0, 36.0)
 		hint_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		next_button_artwork.position = Vector2(186.0, 146.0)
+		next_button_artwork.position = Vector2(220.0, 146.0)
 		next_button_artwork.size = Vector2(132.0, 34.0)
 		next_button.position = next_button_artwork.position
 		next_button.size = next_button_artwork.size
-		exit_button_artwork.position = Vector2(338.0, 146.0)
+		exit_button_artwork.position = Vector2(372.0, 146.0)
 		exit_button_artwork.size = Vector2(132.0, 34.0)
 		exit_button.position = exit_button_artwork.position
 		exit_button.size = exit_button_artwork.size
