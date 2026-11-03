@@ -538,6 +538,8 @@ const OCEAN_V2_OCTOPUS_MOCK_PATHS := [
 const OCEAN_V2_OCTOPUS_DEFEATED := "res://assets/art/ocean_v2/characters/octopus_defeated.png"
 
 const LAND_PAUSE_NORMAL := "res://assets/art/land_levels/buttons/pause_normal.png"
+const GREET_FRONT_TORSO := "res://assets/art/land_v2/characters/greeting_front_torso.png"
+const GREET_FRONT_ARM := "res://assets/art/land_v2/characters/greeting_front_arm.png"
 const LAND_PAUSE_HOVER := "res://assets/art/land_levels/buttons/pause_hover.png"
 const LAND_PAUSE_FOCUS := "res://assets/art/land_levels/buttons/pause_focus.png"
 const LAND_PAUSE_PRESSED := "res://assets/art/land_levels/buttons/pause_pressed.png"

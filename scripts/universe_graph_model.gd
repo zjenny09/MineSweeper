@@ -18,13 +18,20 @@ enum State {
 
 const MIN_NODE_DISTANCE := 42.0
 const SHIELD_CAPACITY := 2
-const EARLY_REGION_NODE_COUNTS := [26, 28, 31, 34, 37, 41, 46]
-const EARLY_REGION_DENSITIES := [0.09, 0.115, 0.14, 0.165, 0.19, 0.215, 0.24]
+const EARLY_REGION_NODE_COUNTS := [40, 46, 53, 60, 68, 76, 84]
+const EARLY_REGION_DENSITIES := [0.10, 0.12, 0.14, 0.16, 0.18, 0.20, 0.22]
 const EARLY_REGION_TOPOLOGIES := [0, 1, 1, 2, 3, 4, 4]
 const EARLY_REGION_WORMHOLES := [0, 0, 1, 1, 1, 1, 2]
 const EARLY_REGION_PROTECTED_NEIGHBORS := [2, 2, 1, 1, 0, 0, 0]
 const EARLY_REGION_DISTURBANCE := [1, 1, 2, 3, 4, 5, 5]
-const EARLY_REGION_AVERAGE_DEGREES := [3.2, 3.6, 4.0, 4.5, 5.0, 5.5, 6.0]
+const EARLY_REGION_AVERAGE_DEGREES := [4.6, 4.9, 5.2, 5.5, 5.8, 6.0, 6.0]
+const LATE_REGION_FIRST_INDEX := 7
+const LATE_REGION_BASE_NODES := 92
+const LATE_REGION_NODE_STEP := 6
+const LATE_REGION_MAX_NODES := 144
+const LATE_REGION_DENSITY := 0.24
+const LATE_REGION_AVERAGE_DEGREE := 6.0
+const NODE_DEGREE_CAP := 8
 const EARLY_REGION_SHAPES := [4, 2, 3, 5, 6, 7, 7]
 const SHAPE_NAMES := [
 	"TXT_0368", "TXT_0369", "TXT_0370", "TXT_0371", "TXT_0372",
@@ -215,12 +222,16 @@ func _choose_region_shape() -> int:
 
 
 func _generate_region() -> void:
-	var node_count := 46
-	if region_index < EARLY_REGION_NODE_COUNTS.size():
-		node_count = int(EARLY_REGION_NODE_COUNTS[region_index])
+	var node_count := _region_node_count()
 	shape_index = _choose_region_shape()
 	shape_cluster_count = 1
-	if shape_index == 3:
+	if region_index >= LATE_REGION_FIRST_INDEX:
+		shape_cluster_count = clampi(
+			3 + (region_index - LATE_REGION_FIRST_INDEX) / 3,
+			3,
+			9
+		)
+	elif shape_index == 3:
 		shape_cluster_count = 2
 	elif shape_index == 5:
 		shape_cluster_count = 3
@@ -247,9 +258,7 @@ func _generate_region() -> void:
 	for node_index in range(node_count):
 		if neighbors[node_index].size() >= 7:
 			hubs[node_index] = 1
-	var density := 0.24
-	if region_index < EARLY_REGION_DENSITIES.size():
-		density = float(EARLY_REGION_DENSITIES[region_index])
+	var density := _region_density()
 	mine_count = clampi(roundi(float(node_count) * density), 2, node_count - 4)
 	var candidates: Array[int] = []
 	for node_index in range(node_count):
@@ -262,6 +271,30 @@ func _generate_region() -> void:
 	flags_changed.emit(0, mine_count)
 	_emit_region_status()
 	changed.emit()
+
+
+func _region_node_count() -> int:
+	if region_index < EARLY_REGION_NODE_COUNTS.size():
+		return int(EARLY_REGION_NODE_COUNTS[region_index])
+	return mini(
+		LATE_REGION_BASE_NODES
+		+ (region_index - LATE_REGION_FIRST_INDEX) * LATE_REGION_NODE_STEP,
+		LATE_REGION_MAX_NODES
+	)
+
+
+func _region_density() -> float:
+	if region_index < EARLY_REGION_DENSITIES.size():
+		return float(EARLY_REGION_DENSITIES[region_index])
+	return LATE_REGION_DENSITY
+
+
+func _min_node_distance(node_count: int) -> float:
+	if node_count > 100:
+		return 30.0
+	if node_count > 60:
+		return 36.0
+	return MIN_NODE_DISTANCE
 
 
 func _emit_region_status() -> void:
@@ -296,6 +329,9 @@ func _emit_region_status() -> void:
 
 
 func _generate_positions(node_count: int, shape_index: int) -> PackedVector2Array:
+	if region_index >= LATE_REGION_FIRST_INDEX:
+		return _generate_cluster_positions(node_count)
+	var minimum_distance := _min_node_distance(node_count)
 	var result := PackedVector2Array()
 	var attempts := 0
 	while result.size() < node_count and attempts < node_count * 240:
@@ -303,7 +339,7 @@ func _generate_positions(node_count: int, shape_index: int) -> PackedVector2Arra
 		var point := _candidate_point(result.size(), node_count, shape_index)
 		var separated := true
 		for existing in result:
-			if point.distance_to(existing) < MIN_NODE_DISTANCE:
+			if point.distance_to(existing) < minimum_distance:
 				separated = false
 				break
 		if separated:
@@ -313,6 +349,88 @@ func _generate_positions(node_count: int, shape_index: int) -> PackedVector2Arra
 		var angle := TAU * float(fallback_index) / float(node_count)
 		result.append(Vector2(cos(angle) * 315.0, sin(angle) * 215.0))
 	return result
+
+
+func _generate_cluster_positions(node_count: int) -> PackedVector2Array:
+	var minimum_distance := _min_node_distance(node_count)
+	var cluster_centers := _generate_cluster_centers(shape_cluster_count)
+	var cluster_radius := clampf(
+		58.0 + float(shape_cluster_count) * 3.0,
+		60.0,
+		86.0
+	)
+	var result := PackedVector2Array()
+	var attempts := 0
+	while result.size() < node_count and attempts < node_count * 240:
+		attempts += 1
+		var cluster_index := result.size() % shape_cluster_count
+		var angle := _rng.randf_range(0.0, TAU)
+		var radius := sqrt(_rng.randf()) * cluster_radius
+		var point := cluster_centers[cluster_index] + Vector2(
+			cos(angle) * radius,
+			sin(angle) * radius * 0.78
+		)
+		var separated := true
+		for existing in result:
+			if point.distance_to(existing) < minimum_distance:
+				separated = false
+				break
+		if separated:
+			result.append(point)
+	while result.size() < node_count:
+		var fallback_index := result.size()
+		var cluster_index := fallback_index % shape_cluster_count
+		var angle := TAU * float(fallback_index) / float(node_count)
+		result.append(
+			cluster_centers[cluster_index]
+			+ Vector2(cos(angle) * cluster_radius, sin(angle) * cluster_radius * 0.78)
+		)
+	return result
+
+
+func _generate_cluster_centers(cluster_count: int) -> Array[Vector2]:
+	var centers: Array[Vector2] = []
+	match shape_index:
+		1:
+			for cluster_index in range(cluster_count):
+				var progress := float(cluster_index) / float(cluster_count)
+				var angle := progress * TAU * 1.6 - PI * 0.5
+				var radius := 90.0 + progress * 165.0
+				centers.append(Vector2(
+					cos(angle) * radius,
+					sin(angle) * radius * 0.74
+				))
+		2:
+			for cluster_index in range(cluster_count):
+				var angle := TAU * float(cluster_index) / float(cluster_count)
+				centers.append(Vector2(
+					cos(angle) * 225.0,
+					sin(angle) * 165.0
+				))
+		_:
+			var attempts := 0
+			while centers.size() < cluster_count and attempts < 400:
+				attempts += 1
+				var angle := _rng.randf_range(0.0, TAU)
+				var radius := sqrt(_rng.randf())
+				var candidate := Vector2(
+					cos(angle) * radius * 250.0,
+					sin(angle) * radius * 160.0
+				)
+				var separated := true
+				for existing in centers:
+					if candidate.distance_to(existing) < 165.0:
+						separated = false
+						break
+				if separated:
+					centers.append(candidate)
+			while centers.size() < cluster_count:
+				var angle := TAU * float(centers.size()) / float(cluster_count)
+				centers.append(Vector2(
+					cos(angle) * 210.0,
+					sin(angle) * 150.0
+				))
+	return centers
 
 
 func _candidate_point(index: int, node_count: int, shape_index: int) -> Vector2:
@@ -422,11 +540,12 @@ func _build_planar_neighbors(points: PackedVector2Array) -> Array[PackedInt32Arr
 		profile_index = _rng.randi_range(2, 4)
 	topology_name = TOPOLOGY_NAMES[profile_index]
 	var degree_targets := _build_node_degree_targets(points, profile_index)
-	_build_motif_skeleton(adjacency, points)
+	if region_index >= LATE_REGION_FIRST_INDEX:
+		_build_cluster_skeleton(adjacency, points)
+	else:
+		_build_motif_skeleton(adjacency, points)
 	_build_connected_backbone(adjacency, points)
-	_fill_degree_targets(adjacency, points, degree_targets, false, false)
-	_fill_degree_targets(adjacency, points, degree_targets, true, false)
-	_fill_degree_targets(adjacency, points, degree_targets, true, true)
+	_fill_density_edges(adjacency, points, degree_targets)
 	var symmetric_adjacency := _rebuild_symmetric_adjacency(adjacency)
 	var result: Array[PackedInt32Array] = []
 	for node_links in symmetric_adjacency:
@@ -514,6 +633,33 @@ func _build_motif_skeleton(
 				)
 
 
+func _build_cluster_skeleton(
+	adjacency: Array[Dictionary],
+	points: PackedVector2Array
+) -> void:
+	for cluster_index in range(shape_cluster_count):
+		var cluster_nodes: Array[int] = []
+		for node_index in range(points.size()):
+			if node_index % shape_cluster_count == cluster_index:
+				cluster_nodes.append(node_index)
+		_connect_cycle(adjacency, points, cluster_nodes)
+		var hub_index := cluster_index
+		var spoke_candidates: Array[int] = cluster_nodes.duplicate()
+		spoke_candidates.erase(hub_index)
+		spoke_candidates.sort_custom(func(left: int, right: int) -> bool:
+			return points[hub_index].distance_squared_to(points[left]) \
+					< points[hub_index].distance_squared_to(points[right])
+		)
+		for spoke_index in range(mini(4, spoke_candidates.size())):
+			_add_edge(adjacency, hub_index, spoke_candidates[spoke_index])
+	for hub_index in range(shape_cluster_count):
+		_add_edge(
+			adjacency,
+			hub_index,
+			(hub_index + 1) % shape_cluster_count
+		)
+
+
 func _connect_cycle(
 	adjacency: Array[Dictionary],
 	points: PackedVector2Array,
@@ -586,59 +732,99 @@ func _build_connected_backbone(
 		connected_count = _refresh_connected_set(adjacency, connected)
 
 
-func _fill_degree_targets(
+func _fill_density_edges(
 	adjacency: Array[Dictionary],
 	points: PackedVector2Array,
-	degree_targets: PackedInt32Array,
-	allow_crossing: bool,
-	allow_saturated_target: bool
+	degree_targets: PackedInt32Array
 ) -> void:
-	var maximum_iterations := points.size() * points.size() * 4
-	for _iteration in maximum_iterations:
-		var best_from := -1
-		var best_to := -1
-		var best_is_bridge := false
-		var best_score := INF
-		for from_index in range(points.size()):
-			var from_deficit := degree_targets[from_index] - adjacency[from_index].size()
-			if from_deficit <= 0:
-				continue
-			for to_index in range(points.size()):
-				if to_index == from_index or adjacency[from_index].has(to_index) \
-						or adjacency[to_index].size() >= 8:
-					continue
-				var to_deficit := degree_targets[to_index] - adjacency[to_index].size()
-				if to_deficit <= 0 and not allow_saturated_target:
-					continue
-				var is_planar := _can_add_planar_edge(
-					adjacency,
-					points,
-					from_index,
-					to_index
-				)
-				if not is_planar and not allow_crossing:
-					continue
-				var score := points[from_index].distance_to(points[to_index])
-				if not is_planar:
-					score += 120.0
-				if to_deficit <= 0:
-					score += 360.0
-				score -= float(from_deficit + maxi(to_deficit, 0)) * 24.0
-				if score < best_score:
-					best_score = score
-					best_from = from_index
-					best_to = to_index
-					best_is_bridge = not is_planar
-		if best_from < 0 or best_to < 0:
-			break
-		_add_edge(adjacency, best_from, best_to)
-		if best_is_bridge:
-			var bridge := Vector2i(
-				mini(best_from, best_to),
-				maxi(best_from, best_to)
-			)
+	var candidates := _collect_short_candidate_edges(points, 150.0)
+	# Pass 1: planar edges where both endpoints still lack degree.
+	for edge in candidates:
+		var from_index := edge.x
+		var to_index := edge.y
+		if not _edge_acceptable(adjacency, from_index, to_index):
+			continue
+		if not _has_degree_deficit(adjacency, degree_targets, from_index) \
+				or not _has_degree_deficit(adjacency, degree_targets, to_index):
+			continue
+		if _can_add_planar_edge(adjacency, points, from_index, to_index):
+			_add_edge(adjacency, from_index, to_index)
+	# Pass 2: planar edges that help whichever endpoint still lacks degree.
+	for edge in candidates:
+		var from_index := edge.x
+		var to_index := edge.y
+		if not _edge_acceptable(adjacency, from_index, to_index):
+			continue
+		if not _has_degree_deficit(adjacency, degree_targets, from_index) \
+				and not _has_degree_deficit(adjacency, degree_targets, to_index):
+			continue
+		if _can_add_planar_edge(adjacency, points, from_index, to_index):
+			_add_edge(adjacency, from_index, to_index)
+	# Pass 3: hub deficits resolved with crossing edges (rendered as bridges).
+	var deficit_nodes: Array[int] = []
+	for node_index in range(points.size()):
+		if _has_degree_deficit(adjacency, degree_targets, node_index):
+			deficit_nodes.append(node_index)
+	var bridge_candidates: Array[Vector2i] = []
+	for from_index in deficit_nodes:
+		for to_index in range(points.size()):
+			if _edge_acceptable(adjacency, from_index, to_index):
+				bridge_candidates.append(Vector2i(from_index, to_index))
+	bridge_candidates.sort_custom(func(left: Vector2i, right: Vector2i) -> bool:
+		var left_length := points[left.x].distance_squared_to(points[left.y])
+		var right_length := points[right.x].distance_squared_to(points[right.y])
+		return left_length < right_length
+	)
+	for edge in bridge_candidates:
+		if not _edge_acceptable(adjacency, edge.x, edge.y):
+			continue
+		if not _has_degree_deficit(adjacency, degree_targets, edge.x) \
+				and not _has_degree_deficit(adjacency, degree_targets, edge.y):
+			continue
+		var planar := _can_add_planar_edge(adjacency, points, edge.x, edge.y)
+		_add_edge(adjacency, edge.x, edge.y)
+		if not planar:
+			var bridge := Vector2i(mini(edge.x, edge.y), maxi(edge.x, edge.y))
 			if not bridge_edges.has(bridge):
 				bridge_edges.append(bridge)
+
+
+func _collect_short_candidate_edges(
+	points: PackedVector2Array,
+	maximum_length: float
+) -> Array[Vector2i]:
+	var squared_limit := maximum_length * maximum_length
+	var candidates: Array[Vector2i] = []
+	for from_index in range(points.size()):
+		for to_index in range(from_index + 1, points.size()):
+			if points[from_index].distance_squared_to(points[to_index]) \
+					<= squared_limit:
+				candidates.append(Vector2i(from_index, to_index))
+	candidates.sort_custom(func(left: Vector2i, right: Vector2i) -> bool:
+		var left_length := points[left.x].distance_squared_to(points[left.y])
+		var right_length := points[right.x].distance_squared_to(points[right.y])
+		return left_length < right_length
+	)
+	return candidates
+
+
+func _edge_acceptable(
+	adjacency: Array[Dictionary],
+	from_index: int,
+	to_index: int
+) -> bool:
+	return from_index != to_index \
+		and not adjacency[from_index].has(to_index) \
+		and adjacency[from_index].size() < NODE_DEGREE_CAP \
+		and adjacency[to_index].size() < NODE_DEGREE_CAP
+
+
+func _has_degree_deficit(
+	adjacency: Array[Dictionary],
+	degree_targets: PackedInt32Array,
+	node_index: int
+) -> bool:
+	return degree_targets[node_index] - adjacency[node_index].size() > 0
 
 
 func _build_node_degree_targets(
@@ -688,6 +874,25 @@ func _build_node_degree_targets(
 		var hub_target := 7 if region_index < 6 else 8
 		for hub_index in range(mini(hub_count, hub_candidates.size())):
 			targets[hub_candidates[hub_index]] = hub_target
+	if region_index >= LATE_REGION_FIRST_INDEX and points.size() >= 6:
+		for cluster_index in range(shape_cluster_count):
+			var cluster_nodes: Array[int] = []
+			for node_index in range(points.size()):
+				if node_index % shape_cluster_count == cluster_index:
+					cluster_nodes.append(node_index)
+			if cluster_nodes.size() < 6:
+				continue
+			var cluster_center := Vector2.ZERO
+			for node_index in cluster_nodes:
+				cluster_center += points[node_index]
+			cluster_center /= float(cluster_nodes.size())
+			cluster_nodes.sort_custom(func(left: int, right: int) -> bool:
+				return points[left].distance_squared_to(cluster_center) \
+						< points[right].distance_squared_to(cluster_center)
+			)
+			targets[cluster_nodes[0]] = NODE_DEGREE_CAP
+			if cluster_nodes.size() >= 10:
+				targets[cluster_nodes[1]] = 7
 	return targets
 
 
@@ -777,6 +982,12 @@ func _add_wormhole_edges() -> void:
 	var desired_count := 2
 	if region_index < EARLY_REGION_WORMHOLES.size():
 		desired_count = int(EARLY_REGION_WORMHOLES[region_index])
+	elif region_index >= LATE_REGION_FIRST_INDEX:
+		desired_count = clampi(
+			2 + (region_index - LATE_REGION_FIRST_INDEX) / 5,
+			2,
+			4
+		)
 	if desired_count <= 0:
 		return
 	var minimum_wormhole_distance := 340.0 if region_index < 7 else 360.0

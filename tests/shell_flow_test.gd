@@ -202,7 +202,7 @@ func _test_cli_read_only(shell) -> void:
 func _test_ocean_scan_persistence(shell) -> void:
 	shell.show_level_select()
 	shell.call("_on_next_chapter_pressed")
-	var level_grid := shell.get_node("%LevelGrid")
+	var level_grid: Node = shell.get_node("%LevelGrid")
 	for level_number in range(6, 11):
 		var fresh_button := level_grid.get_node(
 			"LevelMarker%02d/LevelButton%02d" % [level_number, level_number]

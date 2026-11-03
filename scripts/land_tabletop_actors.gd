@@ -217,6 +217,7 @@ var _scan_threshold := 1
 var _scan_locked := true
 var _scan_used := false
 var _scan_available := false
+var _greeting_waving := false
 var _scan_show_charge_status := false
 var _scan_tooltip := ""
 var _filled_dot_count := 0
@@ -632,6 +633,16 @@ func _move_scan_dots_to_robot() -> void:
 		victory_dots.reparent(actor_slots[0], false)
 
 
+func set_greeting_waving(waving: bool) -> void:
+	_greeting_waving = waving
+
+
+func restore_land_robot_rig() -> void:
+	_setup_land_robot_rig()
+	robot_failure_left_arm.position = LAND_LEFT_SHOULDER
+	robot_failure_right_arm.position = LAND_RIGHT_SHOULDER
+
+
 func set_failure(failed: bool) -> void:
 	if _healthy_ecology_path.is_empty():
 		return
@@ -684,7 +695,7 @@ func set_scan_activation_enabled(enabled: bool, tooltip: String) -> void:
 	if targeting:
 		scan_hint_button.text = tr("TXT_0202")
 	elif ready_prompt:
-		scan_hint_button.text = tr("TXT_0201")
+		scan_hint_button.text = _scan_tooltip
 	else:
 		scan_hint_button.text = ""
 	_refresh_processing()
@@ -757,8 +768,6 @@ func play_reaction(won: bool, failed: bool) -> void:
 			SKY_FAILURE_BODY_PATH if failed else SKY_VICTORY_BODY_PATH,
 			_sky_robot_target_size
 		)
-		robot_failure_left_arm.visible = false
-		robot_failure_right_arm.visible = false
 		_setup_actor(
 			monster_sprite,
 			(
@@ -792,6 +801,8 @@ func play_reaction(won: bool, failed: bool) -> void:
 		_reaction_processing = true
 		robot_failure_motion.visible = false
 		robot_fallen_pose.visible = true
+		robot_failure_left_arm.visible = true
+		robot_failure_right_arm.visible = true
 		victory_dots.visible = true
 		for dot in dot_nodes:
 			dot.modulate = Color.WHITE
@@ -800,6 +811,8 @@ func play_reaction(won: bool, failed: bool) -> void:
 		_reaction_processing = true
 		robot_failure_motion.visible = false
 		robot_fallen_pose.visible = true
+		robot_failure_left_arm.visible = true
+		robot_failure_right_arm.visible = true
 		victory_dots.visible = false
 	_refresh_processing()
 
@@ -929,18 +942,13 @@ func _update_victory_reaction() -> void:
 	var cycle_time := fmod(_reaction_time, VICTORY_CYCLE)
 	var cycle_phase := cycle_time / VICTORY_CYCLE * TAU
 	_update_robot_celebration(cycle_time, cycle_phase)
-	if not _uses_ocean_ecology and not _uses_sky_actors:
-		monster_motion.position = Vector2.ZERO
-		monster_motion.rotation = 0.0
-		monster_motion.scale = Vector2.ONE
-		monster_shadow.scale = Vector2.ONE
-		monster_shadow.modulate = Color.WHITE
-		return
 	var plant_lift := _bounce_lift(cycle_time, 0.18, 0.48)
-	var monster_lift := _bounce_lift(cycle_time, 0.36, 0.48)
 	_apply_victory_bounce(plant_motion, plant_shadow, plant_lift, 8.0)
-	_apply_victory_bounce(monster_motion, monster_shadow, monster_lift, 7.0)
-	monster_motion.rotation = -sin(cycle_phase) * 0.025
+	monster_motion.position = Vector2.ZERO
+	monster_motion.rotation = 0.0
+	monster_motion.scale = Vector2.ONE
+	monster_shadow.scale = Vector2.ONE
+	monster_shadow.modulate = Color.WHITE
 	for dot_index in dot_nodes.size():
 		var phase := cycle_phase + float(dot_index) * 2.1
 		dot_nodes[dot_index].position = (
@@ -1063,42 +1071,7 @@ func _update_monster_failure() -> void:
 
 func _update_failure_reaction() -> void:
 	_update_monster_failure()
-	if _uses_sky_actors:
-		_update_sky_robot_failure()
-		return
 	_update_land_robot_failure()
-
-
-func _update_sky_robot_failure() -> void:
-	var drop_progress := clampf(_reaction_time / 0.42, 0.0, 1.0)
-	var drop_eased := 1.0 - pow(1.0 - drop_progress, 3.0)
-	robot_motion.position = Vector2(
-		sin(drop_progress * PI) * -3.0,
-		lerpf(-26.0, 2.0, drop_eased)
-	)
-	robot_motion.scale = Vector2.ONE.lerp(Vector2(1.02, 0.98), drop_eased)
-	robot_fallen_pose.rotation = deg_to_rad(lerpf(-4.0, 0.0, drop_eased))
-	robot_shadow.visible = false
-	if drop_progress < 1.0:
-		return
-	var shock_time := _reaction_time - 0.42
-	var shock_frame := int(floor(shock_time * 12.0))
-	var jolt_index := shock_frame % FAILURE_JOLT_X.size()
-	robot_motion.position = Vector2(
-		float(FAILURE_JOLT_X[jolt_index]) * 0.75,
-		2.0 + float((shock_frame * 2) % 3 - 1)
-	)
-	robot_fallen_pose.rotation = deg_to_rad(
-		float(FAILURE_JOLT_ROTATION[jolt_index]) * 0.42
-	)
-	var electric_tint := (
-		Color(0.76, 0.95, 1.0, 1.0)
-		if shock_frame % 4 == 1
-		else Color.WHITE
-	)
-	robot_failure_body.modulate = electric_tint
-	robot_failure_sparks.position = Vector2(0.0, 12.0)
-	_update_failure_sparks(shock_frame)
 
 
 func _update_land_robot_failure() -> void:
@@ -1323,19 +1296,43 @@ func _update_scan_visuals(delta: float) -> void:
 
 
 func _update_robot_charge_wave() -> void:
-	if _uses_sky_actors or _reaction_mode != ReactionMode.READY:
+	if _reaction_mode != ReactionMode.READY:
 		return
-	var show_articulated_pose := _scan_available and not _scan_used
+	var show_articulated_pose := (
+		_greeting_waving
+		or (_scan_available and not _scan_used)
+	)
 	if show_articulated_pose and robot_failure_motion.visible:
 		if _uses_ocean_ecology:
 			_setup_ocean_robot_rig()
-		else:
+		elif _greeting_waving:
+			_setup_actor(robot_failure_body, ART.GREET_FRONT_TORSO, FAILURE_BODY_MAX_SIZE)
+			_setup_robot_arm(robot_failure_left_arm_sprite, ART.GREET_FRONT_ARM, LAND_ARM_TARGET_HEIGHT, true)
+			_setup_robot_arm(robot_failure_right_arm_sprite, ART.GREET_FRONT_ARM, LAND_ARM_TARGET_HEIGHT, false)
+			robot_failure_left_arm.position = LAND_LEFT_SHOULDER
+			robot_failure_right_arm.position = LAND_RIGHT_SHOULDER
+			robot_failure_left_arm.z_index = 0
+			robot_failure_right_arm.z_index = 1
+			robot_failure_left_arm.visible = true
+			robot_failure_right_arm.visible = true
+		elif not _uses_sky_actors:
 			_set_land_robot_view(LAND_ROBOT_RIGHT_FRONT_INDEX)
 	robot_failure_motion.visible = not show_articulated_pose
 	robot_fallen_pose.visible = show_articulated_pose
+	if _uses_sky_actors:
+		robot_failure_left_arm.visible = show_articulated_pose
+		robot_failure_right_arm.visible = show_articulated_pose
 	if not show_articulated_pose:
 		robot_failure_left_arm.rotation = 0.0
 		robot_failure_right_arm.rotation = 0.0
+		return
+	if _greeting_waving:
+		robot_failure_left_arm.rotation = 2.08 + sin(_scan_time * 5.0) * 0.3
+		robot_failure_right_arm.rotation = -0.38
+		robot_fallen_pose.position = Vector2.ZERO
+		robot_failure_body.modulate = Color.WHITE
+		robot_failure_left_arm_sprite.modulate = Color.WHITE
+		robot_failure_right_arm_sprite.modulate = Color.WHITE
 		return
 	var greeting_wave := sin(_scan_time * 2.4)
 	robot_failure_left_arm.rotation = 2.08 + greeting_wave * 0.18
@@ -1359,6 +1356,11 @@ func _update_sky_robot_plane_flight() -> void:
 		robot_failure_motion.position = shared_position
 		robot_failure_motion.scale = Vector2.ONE
 		robot_failure_motion.rotation = shared_rotation
+		robot_motion.position = (
+			shared_position
+			if robot_fallen_pose.visible
+			else Vector2.ZERO
+		)
 	else:
 		robot_motion.position += shared_position
 		if _reaction_mode == ReactionMode.FAILURE:
@@ -1394,6 +1396,11 @@ func _update_ocean_robot_idle(delta: float) -> void:
 				)
 			)
 	else:
+		if _greeting_waving:
+			robot_failure_motion.position = Vector2.ZERO
+			robot_failure_motion.scale = Vector2.ONE
+			robot_failure_motion.rotation = 0.0
+			return
 		_land_robot_idle_time += delta
 		if _land_robot_idle_time >= _land_robot_next_swap_time:
 			var variant_count := LAND_ROBOT_IDLE_PATHS.size()
@@ -1516,7 +1523,7 @@ func _reset_scan_animation() -> void:
 	scan_beam.visible = false
 	scan_beam.modulate = Color.WHITE
 	scan_hint_button.visible = _scan_available
-	scan_hint_button.text = tr("TXT_0201")
+	scan_hint_button.text = _scan_tooltip
 	robot_scan_motion.position = Vector2.ZERO
 	robot_scan_motion.scale = Vector2.ONE
 	robot_scan_motion.rotation = 0.0

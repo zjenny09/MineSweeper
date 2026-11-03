@@ -2038,7 +2038,8 @@ func reveal_cell(cell_index: int) -> void:
 
 	move_count += 1
 	reveal_action_count += 1
-	if game_state == GameState.READY:
+	var starts_game := game_state == GameState.READY
+	if starts_game:
 		if opening_assist_mode != OpeningAssist.NONE:
 			_apply_opening_assist(cell_index)
 		opening_assist_mode = OpeningAssist.NONE
@@ -2055,6 +2056,9 @@ func reveal_cell(cell_index: int) -> void:
 		state_changed.emit(game_state)
 		reveal_completed.emit(cell_index, 0)
 		return
+
+	if starts_game:
+		_start_pollution_reset_timer()
 
 	var previous_revealed_count := revealed_safe_count
 	var previous_tidal_zone := active_tidal_zone_index
@@ -2103,7 +2107,6 @@ func try_scan_cell(cell_index: int) -> bool:
 				return false
 		flagged[cell_index] = true
 		confirmed[cell_index] = true
-		_arm_pollution_reset_timer_for_cell(cell_index)
 		_recalculate_used_flags()
 		_refresh_pollution_nodes()
 		_advance_tidal_zone_if_complete()
@@ -2212,7 +2215,6 @@ func toggle_flag(cell_index: int) -> void:
 		current_path_feedback.emit(tr("TXT_0416"))
 		return
 
-	_arm_pollution_reset_timer_for_cell(cell_index)
 	move_count += 1
 	_recalculate_used_flags()
 	_refresh_cell(cell_index)
@@ -2245,7 +2247,8 @@ func chord_cell(cell_index: int) -> void:
 		return
 	_sync_keyboard_cursor(cell_index)
 	board_interacted.emit()
-	if not revealed[cell_index] or adjacent_counts[cell_index] <= 0:
+	# Moving buoys can leave an opened zero beside newly uncovered cells.
+	if not revealed[cell_index]:
 		return
 
 	if not _has_exact_resolved_hazards(
@@ -2294,7 +2297,8 @@ func _has_exact_resolved_hazards(cell_index: int, expected_count: int) -> bool:
 	var resolved_count := 0
 	for neighbor in _get_number_neighbors(cell_index):
 		var mobile_neighbor := _mobile_current_local_at_board(neighbor)
-		if _is_mobile_current_cell(neighbor) and mobile_neighbor >= 0:
+		# Stopped buoys still contribute their mines and flags to the clue.
+		if mobile_neighbor >= 0:
 			if not mobile_current_flagged[mobile_neighbor]:
 				continue
 			if not mobile_current_mines[mobile_neighbor]:
@@ -2457,20 +2461,64 @@ func get_neighbor_indices(cell_index: int) -> Array[int]:
 	return _get_neighbors(cell_index)
 
 
+func get_land_mechanic_guide_target_cell(guide_id: StringName) -> Control:
+	match guide_id:
+		&"land_obstacles", &"pollution_nodes":
+			pass
+		&"ancient_tree_roots":
+			if not boss_level:
+				return null
+		_:
+			return null
+	if column_count <= 0 or row_count <= 0:
+		return null
+
+	var board_center := Vector2(column_count - 1, row_count - 1) * 0.5
+	var target_cell: Control = null
+	var nearest_distance := INF
+	for cell_index in mini(cell_count, cell_nodes.size()):
+		if guide_id == &"land_obstacles":
+			if cell_index >= obstacles.size() or not obstacles[cell_index]:
+				continue
+		else:
+			if cell_index >= pollution_nodes.size() or not pollution_nodes[cell_index]:
+				continue
+			if cell_index >= pollution_nodes_cleansed.size() \
+					or pollution_nodes_cleansed[cell_index]:
+				continue
+			if cell_index < pollution_node_groups.size():
+				var group_index := pollution_node_groups[cell_index]
+				if group_index >= 0 and group_index < pollution_node_group_cleansed.size() \
+						and pollution_node_group_cleansed[group_index]:
+					continue
+				if guide_id == &"ancient_tree_roots" \
+						and (group_index < 0 or group_index >= pollution_node_count):
+					continue
+			elif guide_id == &"ancient_tree_roots":
+				continue
+		var cell := cell_nodes[cell_index]
+		if not is_instance_valid(cell) or cell.is_queued_for_deletion():
+			continue
+		if not is_ancestor_of(cell) or not cell.is_visible_in_tree():
+			continue
+		# Prefer an interior example; equal distances keep stable row-major order.
+		var cell_position := Vector2(cell_index % column_count, int(cell_index / column_count))
+		var distance := cell_position.distance_squared_to(board_center)
+		if distance < nearest_distance:
+			nearest_distance = distance
+			target_cell = cell
+	return target_cell
+
+
 func get_mechanic_guide_target_global_position(
 	guide_id: StringName
 ) -> Vector2:
 	var target_index := -1
 	match guide_id:
-		&"land_obstacles":
-			for cell_index in cell_count:
-				if obstacles[cell_index]:
-					target_index = cell_index
-		&"pollution_nodes", &"ancient_tree_roots":
-			for cell_index in cell_count:
-				if pollution_nodes[cell_index]:
-					target_index = cell_index
-					break
+		&"land_obstacles", &"pollution_nodes", &"ancient_tree_roots":
+			var target_cell := get_land_mechanic_guide_target_cell(guide_id)
+			if is_instance_valid(target_cell):
+				return target_cell.get_global_transform() * (target_cell.size * 0.5)
 		&"hex_ocean_board":
 			var target_row := mini(1, row_count - 1)
 			target_index = target_row * column_count + int(column_count / 2)
@@ -3326,12 +3374,10 @@ func _start_mobile_current_timer() -> void:
 	_mobile_current_time_remaining = mobile_current_step_seconds
 	_mobile_current_last_second = ceili(_mobile_current_time_remaining)
 	current_path_feedback.emit(
-		tr("TXT_0383")
+		tr("TXT_0439")
 		% [
-			mobile_current_group_count,
 			_mobile_current_next_group + 1,
 			_mobile_current_last_second,
-			_mobile_current_distance_to_boundary(_mobile_current_next_group),
 		]
 	)
 	_refresh_board_processing()
@@ -3362,7 +3408,6 @@ func _advance_mobile_current_timer(delta: float) -> void:
 			% [
 				_mobile_current_next_group + 1,
 				seconds_remaining,
-				_mobile_current_distance_to_boundary(_mobile_current_next_group),
 			]
 		)
 	if _mobile_current_time_remaining <= 0.0:
@@ -3377,26 +3422,6 @@ func _next_unresolved_mobile_current_group(start_group: int) -> int:
 		if not mobile_current_group_resolved[group_id]:
 			return group_id
 	return -1
-
-
-func _mobile_current_distance_to_boundary(group_id: int = -1) -> int:
-	if not mobile_current_enabled:
-		return 0
-	var target_group := group_id
-	if target_group < 0:
-		target_group = _next_unresolved_mobile_current_group(_mobile_current_next_group)
-	if target_group < 0 or target_group >= mobile_current_group_positions.size():
-		return 0
-	var maximum_offset_x := 0
-	for local_index in mobile_current_shape.size():
-		if _mobile_current_group_for_local(local_index) == target_group:
-			maximum_offset_x = maxi(maximum_offset_x, mobile_current_shape[local_index].x)
-	return maxi(
-		1,
-		mobile_current_end_column
-		- (mobile_current_group_positions[target_group].x + maximum_offset_x)
-		+ 1
-	)
 
 
 func _begin_mobile_current_shift() -> void:
@@ -3474,8 +3499,7 @@ func _complete_mobile_current_shift() -> void:
 		_resolve_mobile_current_early()
 	else:
 		current_path_feedback.emit(
-			tr("TXT_0438")
-			% [shifted_group + 1, _mobile_current_distance_to_boundary(shifted_group)]
+			tr("TXT_0438") % (shifted_group + 1)
 		)
 	_refresh_board_processing()
 
@@ -3565,72 +3589,48 @@ func _resolve_mobile_current_early() -> void:
 	_refresh_all_cells()
 	mobile_current_state_changed.emit(true)
 	current_path_feedback.emit(
-		tr("TXT_0385") % mobile_current_group_count
+		tr("TXT_0385")
 	)
 	_refresh_board_processing()
 
 
 func _resolve_mobile_current_boundary(group_id: int) -> void:
-	var escaped_core := -1
-	for local_index in mobile_current_shape.size():
-		if _mobile_current_group_for_local(local_index) == group_id \
-				and mobile_current_mines[local_index] \
-				and not mobile_current_flagged[local_index]:
-			escaped_core = local_index
-			break
-	_mobile_current_warning_progress = 0.0
-	if escaped_core >= 0:
-		_mobile_current_started = false
-		game_state = GameState.LOST
-		_start_pollution_animation(_mobile_current_board_index(escaped_core))
-		_refresh_all_cells()
-		state_changed.emit(game_state)
-		current_path_feedback.emit(
-			tr("TXT_0442") % (group_id + 1)
-		)
+	if group_id < 0 or group_id >= mobile_current_group_count \
+			or mobile_current_group_resolved[group_id]:
 		return
-	var removed_wrong_flags := false
+	var escaped_local := -1
 	for local_index in mobile_current_shape.size():
-		if _mobile_current_group_for_local(local_index) != group_id \
-				or mobile_current_mines[local_index] or mobile_current_revealed[local_index]:
+		if _mobile_current_group_for_local(local_index) != group_id:
 			continue
-		if mobile_current_flagged[local_index]:
-			mobile_current_flagged[local_index] = false
-			mobile_current_confirmed[local_index] = false
-			used_flags -= 1
-			removed_wrong_flags = true
-		mobile_current_revealed[local_index] = true
-		revealed_safe_count += 1
-	if removed_wrong_flags:
-		_recalculate_used_flags()
-		flags_changed.emit(used_flags, get_runtime_mine_count())
-	_settle_mobile_current_group(group_id)
-	mobile_current_group_resolved[group_id] = true
-	_rebuild_mobile_current_masks()
-	_calculate_adjacent_counts()
-	_mobile_current_next_group = _next_unresolved_mobile_current_group(group_id + 1)
-	_mobile_current_time_remaining = mobile_current_step_seconds
-	_mobile_current_last_second = ceili(_mobile_current_time_remaining)
-	if _is_mobile_current_solved():
-		mobile_current_resolved = true
-		_mobile_current_started = false
-	var completed_game := _is_game_complete()
-	if completed_game:
-		game_state = GameState.WON
+		if escaped_local < 0 \
+				or mobile_current_shape[local_index].x > mobile_current_shape[escaped_local].x:
+			escaped_local = local_index
+	if escaped_local < 0:
+		return
+	var escaped_coordinate := (
+		mobile_current_group_positions[group_id] + mobile_current_shape[escaped_local]
+	)
+	var pollution_origin := (
+		clampi(escaped_coordinate.y, 0, row_count - 1) * column_count
+		+ clampi(escaped_coordinate.x, 0, column_count - 1)
+	)
+	if _mobile_current_shift_tween != null and _mobile_current_shift_tween.is_valid():
+		_mobile_current_shift_tween.kill()
+	_mobile_current_shift_tween = null
+	_mobile_current_started = false
+	_mobile_current_shifting = false
+	_mobile_current_shift_group = -1
+	_mobile_current_time_remaining = 0.0
+	_mobile_current_warning_progress = 0.0
+	game_state = GameState.LOST
+	if _is_valid_index(pollution_origin):
+		_start_pollution_animation(pollution_origin)
 	_refresh_all_cells()
-	if mobile_current_resolved:
-		mobile_current_state_changed.emit(true)
-		current_path_feedback.emit(
-			tr("TXT_0384")
-			% mobile_current_group_count
-		)
-	else:
-		current_path_feedback.emit(
-			tr("TXT_0437") % (group_id + 1)
-		)
-	if completed_game:
-		state_changed.emit(game_state)
 	_refresh_board_processing()
+	current_path_feedback.emit(
+		tr("TXT_0442") % (group_id + 1)
+	)
+	state_changed.emit(game_state)
 
 
 func _register_current_reveals(newly_revealed: int) -> void:
@@ -4895,14 +4895,15 @@ func _cancel_pollution_reset_timer() -> bool:
 	return was_active
 
 
-func _refresh_pollution_reset_timer() -> void:
+func _refresh_pollution_reset_timer(announce: bool = true) -> void:
 	if not _pollution_reset_timer_active:
 		return
 	_pollution_reset_time_remaining = pollution_reset_seconds
 	_pollution_reset_last_second = ceili(pollution_reset_seconds)
-	current_path_feedback.emit(
-		tr("TXT_0481") % ceili(pollution_reset_seconds)
-	)
+	if announce:
+		current_path_feedback.emit(
+			tr("TXT_0481") % ceili(pollution_reset_seconds)
+		)
 	_refresh_board_processing()
 
 
@@ -4950,31 +4951,16 @@ func _get_pollution_group_regrowth_indices(group_index: int) -> Array[int]:
 	return regrowth_area
 
 
-func _arm_pollution_reset_timer_for_cell(cell_index: int) -> void:
+func _start_pollution_reset_timer() -> void:
 	if (
 		pollution_reset_seconds <= 0.0
 		or _pollution_reset_timer_active
-		or not _is_valid_index(cell_index)
-		or game_state == GameState.WON
-		or game_state == GameState.LOST
+		or game_state != GameState.PLAYING
+		or cleansed_pollution_node_count >= pollution_node_count
 	):
 		return
-	for group_index in pollution_node_count:
-		if pollution_node_group_cleansed[group_index]:
-			continue
-		if drifting_mine_enabled and not drifting_mine_resolved \
-				and group_index == drifting_mine_group_index:
-			continue
-		if cell_index not in _get_pollution_group_neighbor_indices(group_index):
-			continue
-		_pollution_reset_timer_active = true
-		_pollution_reset_time_remaining = pollution_reset_seconds
-		_pollution_reset_last_second = ceili(pollution_reset_seconds)
-		current_path_feedback.emit(
-			tr("TXT_0481") % ceili(pollution_reset_seconds)
-		)
-		_refresh_board_processing()
-		return
+	_pollution_reset_timer_active = true
+	_refresh_pollution_reset_timer()
 
 
 func _advance_pollution_reset_timer(delta: float) -> void:
@@ -5003,12 +4989,13 @@ func _advance_pollution_reset_timer(delta: float) -> void:
 		)
 	if _pollution_reset_time_remaining > 0.0:
 		return
-	_cancel_pollution_reset_timer()
 	var area_changed := false
 	for group_index in pollution_node_count:
 		if pollution_node_group_cleansed[group_index]:
 			continue
 		area_changed = _reset_pollution_group_area(group_index) or area_changed
+	# Restart silently so the spread feedback survives until the next tick.
+	_refresh_pollution_reset_timer(false)
 	if area_changed:
 		current_path_feedback.emit(tr("TXT_0483"))
 	_refresh_board_processing()
@@ -5447,7 +5434,6 @@ func _reveal_area(start_index: int) -> void:
 
 		revealed[current] = true
 		revealed_safe_count += 1
-		_arm_pollution_reset_timer_for_cell(current)
 
 		if adjacent_counts[current] > 0:
 			continue

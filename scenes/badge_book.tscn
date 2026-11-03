@@ -1,8 +1,17 @@
-[gd_scene load_steps=2 format=4]
+[gd_scene format=3 uid="uid://j5hfee87wcek"]
 
-[ext_resource type="Script" path="res://scripts/badge_book.gd" id="1_book"]
+[ext_resource type="Script" uid="uid://ct02hq3yfu3lh" path="res://scripts/badge_book.gd" id="1_book"]
+[ext_resource type="Texture2D" uid="uid://clh8m61cg84eg" path="res://assets/art/land_v2/badges/badge_book.png" id="2_book_art"]
+[ext_resource type="Texture2D" uid="uid://ddhha7edua7ye" path="res://assets/art/land_v2/badges/zh/level_01_sprout.png" id="3_badge1"]
+[ext_resource type="Texture2D" uid="uid://dq6cpt7drea7s" path="res://assets/art/land_v2/badges/zh/level_02_shrub.png" id="4_badge2"]
+[ext_resource type="Texture2D" uid="uid://c7xvq7ggyt4q5" path="res://assets/art/land_v2/badges/zh/level_03_wetland.png" id="5_badge3"]
+[ext_resource type="Texture2D" uid="uid://b08wpgsf5bjrg" path="res://assets/art/land_v2/badges/zh/level_04_grassland.png" id="6_badge4"]
+[ext_resource type="Texture2D" uid="uid://dk61bxajau46l" path="res://assets/art/land_v2/badges/zh/level_05_forest_edge.png" id="7_badge5"]
+[ext_resource type="Texture2D" uid="uid://qj2sjphqal2i" path="res://assets/art/land_v2/badges/zh/level_06_dense_forest.png" id="8_badge6"]
+[ext_resource type="Texture2D" uid="uid://djb8tijdoyub3" path="res://assets/art/land_v2/badges/zh/level_07_ancient_forest.png" id="9_badge7"]
+[ext_resource type="Texture2D" uid="uid://dxsk8ph1hua4k" path="res://assets/art/land_v2/badges/page_turn.png" id="10_page_turn"]
 
-[node name="BadgeBook" type="Control"]
+[node name="BadgeBook" type="Control" unique_id=1581605562]
 unique_name_in_owner = true
 z_index = 4000
 layout_mode = 3
@@ -13,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_book")
 
-[node name="Shade" type="ColorRect" parent="."]
+[node name="Shade" type="ColorRect" parent="." unique_id=611360298]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +32,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.48, 0.29, 0.08, 0.42)
 
-[node name="BookVisual" type="Control" parent="."]
+[node name="BookVisual" type="Control" parent="." unique_id=826924443]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -33,126 +42,102 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BookArt" type="TextureRect" parent="BookVisual"]
+[node name="BookArt" type="TextureRect" parent="BookVisual" unique_id=840130069]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 160.0
 offset_right = 1120.0
 offset_bottom = 720.0
 mouse_filter = 2
+texture = ExtResource("2_book_art")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TitleLabel" type="Label" parent="."]
+[node name="Badge1" type="TextureRect" parent="BookVisual" unique_id=318908808]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 410.0
-offset_top = 3.0
-offset_right = 870.0
-offset_bottom = 36.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.42, 0.08, 0.07, 1)
-theme_override_colors/font_outline_color = Color(1, 0.88, 0.55, 0.88)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 24
-text = "TXT_0463"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="PageLabel" type="Label" parent="."]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 460.0
-offset_top = 35.0
-offset_right = 820.0
-offset_bottom = 61.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.38, 0.18, 0.08, 1)
-theme_override_colors/font_outline_color = Color(1, 0.92, 0.72, 0.82)
-theme_override_constants/outline_size = 1
-theme_override_font_sizes/font_size = 14
-text = "TXT_0464"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Badge1" type="TextureRect" parent="BookVisual"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 222.0
-offset_top = 89.0
+offset_left = 231.0
+offset_top = 94.0
 offset_right = 422.0
-offset_bottom = 335.0
+offset_bottom = 334.0
 mouse_filter = 2
+texture = ExtResource("3_badge1")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="Badge2" type="TextureRect" parent="BookVisual"]
+[node name="Badge2" type="TextureRect" parent="BookVisual" unique_id=10951225]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 413.0
-offset_top = 89.0
-offset_right = 613.0
-offset_bottom = 335.0
+offset_left = 421.0
+offset_top = 93.0
+offset_right = 615.0
+offset_bottom = 334.0
 mouse_filter = 2
+texture = ExtResource("4_badge2")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="Badge3" type="TextureRect" parent="BookVisual"]
+[node name="Badge3" type="TextureRect" parent="BookVisual" unique_id=1089942087]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 655.0
-offset_top = 89.0
-offset_right = 855.0
+offset_left = 665.0
+offset_top = 92.0
+offset_right = 852.0
 offset_bottom = 335.0
 mouse_filter = 2
+texture = ExtResource("5_badge3")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="Badge4" type="TextureRect" parent="BookVisual"]
+[node name="Badge4" type="TextureRect" parent="BookVisual" unique_id=690700247]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 847.0
-offset_top = 89.0
-offset_right = 1047.0
+offset_left = 853.0
+offset_top = 92.0
+offset_right = 1046.0
 offset_bottom = 335.0
 mouse_filter = 2
+texture = ExtResource("6_badge4")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="Badge5" type="TextureRect" parent="BookVisual"]
+[node name="Badge5" type="TextureRect" parent="BookVisual" unique_id=1638751720]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 220.0
-offset_top = 328.0
+offset_left = 227.0
+offset_top = 330.0
 offset_right = 420.0
 offset_bottom = 574.0
 mouse_filter = 2
+texture = ExtResource("7_badge5")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="Badge6" type="TextureRect" parent="BookVisual"]
+[node name="Badge6" type="TextureRect" parent="BookVisual" unique_id=780575436]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 413.0
-offset_top = 328.0
+offset_left = 420.0
+offset_top = 330.0
 offset_right = 613.0
 offset_bottom = 574.0
 mouse_filter = 2
+texture = ExtResource("8_badge6")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="Badge7" type="TextureRect" parent="BookVisual"]
+[node name="Badge7" type="TextureRect" parent="BookVisual" unique_id=1086248971]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 655.0
-offset_top = 328.0
-offset_right = 855.0
+offset_left = 662.0
+offset_top = 338.0
+offset_right = 856.0
 offset_bottom = 574.0
 mouse_filter = 2
+texture = ExtResource("9_badge7")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
-[node name="PageTurnButton" type="TextureButton" parent="BookVisual"]
+[node name="PageTurnButton" type="TextureButton" parent="BookVisual" unique_id=905242959]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 914.0
@@ -161,13 +146,45 @@ offset_right = 998.0
 offset_bottom = 522.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
+texture_normal = ExtResource("10_page_turn")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="InstructionLabel" type="Label" parent="."]
+[node name="TitleLabel" type="Label" parent="." unique_id=633629179]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 410.0
+offset_top = 3.0
+offset_right = 870.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(0.42, 0.08, 0.07, 1)
+theme_override_colors/font_outline_color = Color(1, 0.88, 0.55, 0.88)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "TXT_0463"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PageLabel" type="Label" parent="." unique_id=2003650047]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 460.0
+offset_top = 35.0
+offset_right = 820.0
+offset_bottom = 61.0
+theme_override_colors/font_color = Color(0.38, 0.18, 0.08, 1)
+theme_override_colors/font_outline_color = Color(1, 0.92, 0.72, 0.82)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 14
+text = "TXT_0464"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InstructionLabel" type="Label" parent="." unique_id=1548549271]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 190.0
@@ -176,8 +193,7 @@ offset_right = -190.0
 offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.34, 0.10, 0.07, 1)
+theme_override_colors/font_color = Color(0.34, 0.1, 0.07, 1)
 theme_override_colors/font_outline_color = Color(1, 0.92, 0.76, 0.86)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 15
@@ -185,7 +201,7 @@ text = "TXT_0468"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BadgeBookBackButton" type="Button" parent="."]
+[node name="BadgeBookBackButton" type="Button" parent="." unique_id=347100254]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0

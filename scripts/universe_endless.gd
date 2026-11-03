@@ -29,6 +29,7 @@ signal exit_game_requested
 signal scan_energy_changed(energy: int)
 signal mechanic_guide_completed(guide_id: StringName)
 signal universe_board_created
+signal universe_board_cleared
 signal universe_milestone_finished
 
 @export var auto_start := true
@@ -102,6 +103,7 @@ func _ready() -> void:
 	board.expedition_failed.connect(_on_expedition_failed)
 	board.warp_changed.connect(_on_warp_changed)
 	board.region_started.connect(_on_region_started)
+	board.region_cleared.connect(_on_region_cleared)
 	pause_button.pressed.connect(_set_paused.bind(true))
 	restart_button.pressed.connect(_start_new_universe)
 	map_button.pressed.connect(func() -> void: level_select_requested.emit())
@@ -165,6 +167,10 @@ func _on_region_started(region_index: int, wormhole_count: int) -> void:
 		_request_mechanic_guide(UNIVERSE_GUIDE)
 	elif wormhole_count > 0:
 		_request_mechanic_guide(WORMHOLE_GUIDE)
+
+
+func _on_region_cleared(_region_index: int, _purified_stars: int) -> void:
+	universe_board_cleared.emit()
 
 
 func show_thousand_board_celebration() -> void:
@@ -336,7 +342,7 @@ func _refresh_active_mechanic_guide_target() -> void:
 		"get_mechanic_guide_target_global_position",
 		_active_mechanic_guide_id
 	)
-	_mechanic_dialogue.set_dialogue_target_global_position(target_position)
+	_mechanic_dialogue.set_dialogue_target(target_position)
 
 
 func _restart_from_pause() -> void:

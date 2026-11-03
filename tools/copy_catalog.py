@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EN_PO = ROOT / "localization" / "green_sweeper.en.po"
 ZH_PO = ROOT / "localization" / "green_sweeper.zh_CN.po"
 MANIFEST = ROOT / "localization" / "copy_catalog.json"
-WORKBOOK = ROOT / "docs" / "copy" / "GAME_COPY_CATALOG.xlsx"
+WORKBOOK = ROOT / "docs" / "text" / "GAME_COPY_CATALOG.xlsx"
 ID_PATTERN = re.compile(r"^TXT_\d{4}$")
 QUOTED_STRING_PATTERN = re.compile(r'"(?:\\.|[^"\\])*"')
 PLACEHOLDER_PATTERN = re.compile(r"%(?:\d+\$)?[-+0 #]*(?:\d+|\*)?(?:\.\d+)?[diouxXeEfFgGcs]")
@@ -41,7 +41,7 @@ SOURCE_EXCLUDES = {
 
 OLD_COPY = {
     "第15关 · 云冠（球面原型）",
-    "旋转足球烯球面，净化全部安全面",
+    "旋转云球球面，净化全部安全面",
     "拖拽旋转 · 左键净化 · 右键标记\n",
 }
 DEV_COPY = {
@@ -103,7 +103,7 @@ def write_po(path: Path, locale: str, entries: list[dict[str, Any]]) -> None:
     header = [
         'msgid ""',
         'msgstr ""',
-        f'"Project-Id-Version: Green Sweeper 0.7.0\\n"',
+        f'"Project-Id-Version: Green Sweeper 0.8.2\\n"',
         f'"Language: {locale}\\n"',
         '"MIME-Version: 1.0\\n"',
         '"Content-Type: text/plain; charset=UTF-8\\n"',
@@ -391,7 +391,7 @@ def export_workbook(entries: list[dict[str, Any]]) -> None:
     guide = workbook.create_sheet("使用说明")
     guide.column_dimensions["A"].width = 110
     instructions = [
-        "《绿色清扫者》文案维护说明",
+        "《一扫回春》文案维护说明",
         "1. “代号”是程序和翻译文件使用的永久键，不得修改、删除或重复。",
         "2. 人工精修时只修改“中文”和“English”两列，可填写修改备注并更新审核状态。",
         "3. 必须原样保留“占位符”列列出的 %d、%s、%02d、%.1f 等标记，数量和顺序都不能改变。",

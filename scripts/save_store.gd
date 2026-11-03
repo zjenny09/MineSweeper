@@ -164,15 +164,24 @@ func get_universe_boards_created() -> int:
 	return int(_data["universe"]["boards_created"])
 
 
+func get_universe_boards_cleared() -> int:
+	return int(_data["universe"]["boards_cleared"])
+
+
 func has_triggered_universe_thousand_milestone() -> bool:
 	return bool(_data["universe"]["thousand_milestone_triggered"])
 
 
-func record_universe_board_created() -> bool:
+func record_universe_board_created() -> void:
 	var universe: Dictionary = _data["universe"]
 	universe["boards_created"] = int(universe["boards_created"]) + 1
+
+
+func record_universe_board_cleared() -> bool:
+	var universe: Dictionary = _data["universe"]
+	universe["boards_cleared"] = int(universe["boards_cleared"]) + 1
 	if (
-		int(universe["boards_created"]) >= 1000
+		int(universe["boards_cleared"]) >= 1000
 		and not bool(universe["thousand_milestone_triggered"])
 	):
 		universe["thousand_milestone_triggered"] = true
@@ -298,6 +307,7 @@ func _make_default_data() -> Dictionary:
 		},
 		"universe": {
 			"boards_created": 0,
+			"boards_cleared": 0,
 			"thousand_milestone_triggered": false,
 		},
 		"levels": levels,
@@ -354,6 +364,13 @@ func _normalize_data(source: Dictionary) -> Dictionary:
 			var boards_created := _normalized_int(source_universe.get("boards_created"), 0)
 			if boards_created >= 0:
 				normalized["universe"]["boards_created"] = boards_created
+			var boards_cleared := _normalized_int(source_universe.get("boards_cleared"), -1)
+			if boards_cleared < 0:
+				# Older saves predate completion tracking and treated opened
+				# boards as progress, so carry the recorded count over to keep
+				# previously displayed progress stable.
+				boards_cleared = maxi(boards_created, 0)
+			normalized["universe"]["boards_cleared"] = boards_cleared
 			var milestone_triggered = source_universe.get("thousand_milestone_triggered")
 			if milestone_triggered is bool:
 				normalized["universe"]["thousand_milestone_triggered"] = milestone_triggered
@@ -477,6 +494,9 @@ func _is_valid_serialized_data(value: Variant) -> bool:
 			return false
 		var boards_created := _normalized_int(universe.get("boards_created"), -1)
 		if boards_created < 0:
+			return false
+		if universe.has("boards_cleared") \
+				and _normalized_int(universe.get("boards_cleared"), -1) < 0:
 			return false
 		if not universe.get("thousand_milestone_triggered") is bool:
 			return false

@@ -80,8 +80,8 @@ func _refresh_preview() -> void:
 			)
 			var objective := _preview_copy(
 				"TXT_0392",
-				"净化目标\n清除所有污染核心\n恢复%s生态\n\n",
-				"Objective\nClear every Pollution Core\nRestore the %s ecosystem\n\n"
+				"净化目标\n翻开全部安全格\n恢复生态\n\n",
+				"Objective\nReveal every safe cell\nRestore the ecology\n\n"
 			)
 			var controls := _preview_copy(
 				"TXT_0165",
@@ -94,7 +94,6 @@ func _refresh_preview() -> void:
 				int(level_data["grid"]),
 				int(level_data["grid"]),
 				int(level_data["cores"]),
-				tr(str(level_data["name"])),
 			]
 	if is_instance_valid(right_preview_text):
 		right_preview_text.visible = standalone_editor_preview

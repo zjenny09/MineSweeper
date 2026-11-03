@@ -8,7 +8,7 @@ signal return_to_victory_requested
 
 const ART := preload("res://scripts/art_catalog.gd")
 const BOOK_SCALE := Vector2(0.82, 0.82)
-const BADGE_COVER_SCALE := Vector2(1.06, 1.06)
+const BADGE_COVER_SCALE := Vector2.ONE
 
 @onready var book_visual: Control = %BookVisual
 @onready var book_art: TextureRect = %BookArt
@@ -83,7 +83,7 @@ func open_book(
 			"scale",
 			BADGE_COVER_SCALE,
 			0.62
-		).set_delay(0.16)
+		).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT).set_delay(0.16)
 	page_turn_button.release_focus()
 
 

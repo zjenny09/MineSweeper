@@ -21,6 +21,7 @@ func _run_tests() -> void:
 	_test_schema_six_universe_migration()
 	_test_universe_board_tracking()
 	_test_schema_seven_universe_validation()
+	_test_schema_seven_cleared_migration()
 	_test_scan_limits_and_grant()
 	_test_legacy_display_migration()
 	_test_removed_level_migration()
@@ -51,6 +52,7 @@ func _test_defaults() -> void:
 	_check(store.get_scan_energy() == 0, "new saves should start with empty scan energy")
 	_check(not store.has_claimed_level_one_scan_grant(), "new saves should not pre-claim the level-one grant")
 	_check(store.get_universe_boards_created() == 0, "new saves should start with no universe boards")
+	_check(store.get_universe_boards_cleared() == 0, "new saves should start with no cleared universe boards")
 	_check(
 		not store.has_triggered_universe_thousand_milestone(),
 		"new saves should not pre-claim the thousand-board milestone"
@@ -73,7 +75,8 @@ func _test_save_and_load() -> void:
 	store.mark_first_move_guide_seen()
 	_check(store.claim_level_one_scan_grant(), "the first level-one grant claim should succeed")
 	store.set_scan_energy(7)
-	_check(not store.record_universe_board_created(), "the first universe board should not claim the milestone")
+	store.record_universe_board_created()
+	store.record_universe_board_cleared()
 	store.set_master_volume(0.35)
 	store.set_fullscreen(true)
 	store.set_operation_mode(1)
@@ -86,6 +89,7 @@ func _test_save_and_load() -> void:
 	_check(loaded.get_scan_energy() == 7, "shared scan energy should persist")
 	_check(loaded.has_claimed_level_one_scan_grant(), "the one-time scan grant should persist")
 	_check(loaded.get_universe_boards_created() == 1, "universe board count should persist")
+	_check(loaded.get_universe_boards_cleared() == 1, "universe cleared count should persist")
 	_check(
 		not loaded.has_triggered_universe_thousand_milestone(),
 		"unclaimed universe milestone state should persist"
@@ -115,6 +119,7 @@ func _test_schema_one_scan_migration() -> void:
 	_check(loaded.get_scan_energy() == 0, "schema-one saves should migrate with empty energy")
 	_check(not loaded.has_claimed_level_one_scan_grant(), "schema-one saves should leave the one-time grant available")
 	_check(loaded.get_universe_boards_created() == 0, "schema-one saves should start universe progress at zero")
+	_check(loaded.get_universe_boards_cleared() == 0, "schema-one saves should start universe cleared progress at zero")
 	_cleanup()
 
 
@@ -173,6 +178,7 @@ func _test_schema_six_universe_migration() -> void:
 			"schema-six migration should preserve level %d best time" % number
 		)
 	_check(loaded.get_universe_boards_created() == 0, "schema-six migration should add a zero universe count")
+	_check(loaded.get_universe_boards_cleared() == 0, "schema-six migration should add a zero universe cleared count")
 	_check(
 		not loaded.has_triggered_universe_thousand_milestone(),
 		"schema-six migration should add an unclaimed universe milestone"
@@ -183,31 +189,42 @@ func _test_schema_six_universe_migration() -> void:
 func _test_universe_board_tracking() -> void:
 	_cleanup()
 	var store = SaveStore.new(TEST_PATH)
-	var claimed_early := false
 	for _index in range(999):
-		if store.record_universe_board_created():
-			claimed_early = true
-	_check(not claimed_early, "the universe milestone should not trigger before one thousand boards")
-	_check(store.get_universe_boards_created() == 999, "every universe board should increment the count")
+		store.record_universe_board_created()
+	_check(store.get_universe_boards_created() == 999, "every opened universe board should increment the started count")
+	_check(store.get_universe_boards_cleared() == 0, "opening universe boards must not count as clearing them")
 	_check(
 		not store.has_triggered_universe_thousand_milestone(),
-		"the universe milestone should remain unclaimed at 999 boards"
+		"the universe milestone should remain unclaimed before clears"
 	)
-	_check(store.record_universe_board_created(), "the thousandth universe board should claim the milestone")
-	_check(store.get_universe_boards_created() == 1000, "the milestone claim should retain the thousandth increment")
+	var claimed_early := false
+	for _index in range(999):
+		if store.record_universe_board_cleared():
+			claimed_early = true
+	_check(not claimed_early, "the universe milestone should not trigger before one thousand cleared boards")
+	_check(store.get_universe_boards_cleared() == 999, "every cleared universe board should increment the cleared count")
+	_check(
+		not store.has_triggered_universe_thousand_milestone(),
+		"the universe milestone should remain unclaimed at 999 cleared boards"
+	)
+	_check(store.record_universe_board_cleared(), "the thousandth cleared universe board should claim the milestone")
+	_check(store.get_universe_boards_cleared() == 1000, "the milestone claim should retain the thousandth increment")
 	_check(
 		store.has_triggered_universe_thousand_milestone(),
-		"the thousandth universe board should update milestone state immediately"
+		"the thousandth cleared universe board should update milestone state immediately"
 	)
 	_check(
-		not store.record_universe_board_created(),
+		not store.record_universe_board_cleared(),
 		"universe milestone claims after the first should return false"
 	)
-	_check(store.get_universe_boards_created() == 1001, "universe board count should continue past the milestone")
+	_check(store.get_universe_boards_cleared() == 1001, "universe cleared count should continue past the milestone")
+	store.record_universe_board_created()
+	_check(store.get_universe_boards_created() == 1000, "universe started count should continue independently")
 	_check(store.save_data(), "universe progress should save")
 	var loaded = SaveStore.new(TEST_PATH)
 	loaded.load_data()
-	_check(loaded.get_universe_boards_created() == 1001, "universe board count should survive reload")
+	_check(loaded.get_universe_boards_created() == 1000, "universe started count should survive reload")
+	_check(loaded.get_universe_boards_cleared() == 1001, "universe cleared count should survive reload")
 	_check(
 		loaded.has_triggered_universe_thousand_milestone(),
 		"claimed universe milestone state should survive reload"
@@ -232,6 +249,9 @@ func _test_schema_seven_universe_validation() -> void:
 		{"boards_created": -1, "thousand_milestone_triggered": false},
 		{"boards_created": 1.5, "thousand_milestone_triggered": false},
 		{"boards_created": 0, "thousand_milestone_triggered": 0},
+		{"boards_created": 0, "boards_cleared": -1, "thousand_milestone_triggered": false},
+		{"boards_created": 0, "boards_cleared": 2.5, "thousand_milestone_triggered": false},
+		{"boards_created": 0, "boards_cleared": "9", "thousand_milestone_triggered": false},
 	]
 	for fixture_index in invalid_universes.size():
 		var malformed_data := valid_data.duplicate(true)
@@ -247,6 +267,7 @@ func _test_schema_seven_universe_validation() -> void:
 		)
 	valid_data["universe"] = {
 		"boards_created": 42,
+		"boards_cleared": 40,
 		"thousand_milestone_triggered": false,
 	}
 	var valid_file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
@@ -256,10 +277,42 @@ func _test_schema_seven_universe_validation() -> void:
 	valid_loaded.load_data()
 	_check(valid_loaded.is_level_completed(1), "valid schema-seven universe data should load")
 	_check(valid_loaded.get_universe_boards_created() == 42, "valid schema-seven universe count should load")
+	_check(valid_loaded.get_universe_boards_cleared() == 40, "valid schema-seven universe cleared count should load")
 	_check(
 		not valid_loaded.has_triggered_universe_thousand_milestone(),
 		"valid schema-seven milestone state should load"
 	)
+	_cleanup()
+
+
+func _test_schema_seven_cleared_migration() -> void:
+	_cleanup()
+	var source_store = SaveStore.new(TEST_PATH)
+	var legacy_data: Dictionary = source_store.get_data()
+	legacy_data["universe"] = {
+		"boards_created": 42,
+		"thousand_milestone_triggered": false,
+	}
+	var file := FileAccess.open(TEST_PATH, FileAccess.WRITE)
+	file.store_string(JSON.stringify(legacy_data))
+	file.close()
+	var loaded = SaveStore.new(TEST_PATH)
+	loaded.load_data()
+	_check(loaded.get_universe_boards_created() == 42, "cleared-count migration should keep the started count")
+	_check(
+		loaded.get_universe_boards_cleared() == 42,
+		"saves predating cleared tracking should carry their progress over as cleared"
+	)
+	_check(
+		not loaded.has_triggered_universe_thousand_milestone(),
+		"cleared-count migration should not claim the milestone"
+	)
+	loaded.record_universe_board_cleared()
+	_check(loaded.get_universe_boards_cleared() == 43, "cleared tracking should resume after migration")
+	_check(loaded.save_data(), "migrated cleared progress should save")
+	var reloaded = SaveStore.new(TEST_PATH)
+	reloaded.load_data()
+	_check(reloaded.get_universe_boards_cleared() == 43, "migrated cleared progress should persist")
 	_cleanup()
 
 

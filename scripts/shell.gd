@@ -63,7 +63,7 @@ const MECHANIC_GUIDE_FIRST_LEVELS := {
 	&"pollution_nodes": 5,
 	&"ancient_tree_roots": 7,
 	&"hex_ocean_board": 8,
-	&"coral_reefs": 9,
+	&"coral_reefs": 10,
 	&"drifting_mines": 11,
 	&"tidal_zones": 13,
 	&"sky_sphere": 15,
@@ -116,8 +116,6 @@ const MECHANIC_GUIDE_FIRST_LEVELS := {
 @onready var settings_badge_book_button: Button = %SettingsBadgeBookButton
 @onready var settings_back_button: Button = %SettingsBackButton
 @onready var help_page: Control = %Help
-@onready var help_text: RichTextLabel = %HelpText
-@onready var help_back_button: Button = %HelpBackButton
 
 var save_store
 var active_game: Control
@@ -298,6 +296,9 @@ func _apply_level_select_art() -> void:
 func _apply_level_select_chapter_art() -> void:
 	var ocean := _level_select_chapter == &"ocean"
 	var sky := _level_select_chapter == &"sky"
+	var land := not ocean and not sky
+	level_previous_chapter_button.visible = not land
+	level_previous_chapter_button.disabled = land
 	level_select_background.texture = (
 		_level_select_ocean_background
 		if ocean
@@ -508,8 +509,26 @@ func show_settings(return_to_game: bool = false) -> void:
 func _show_help(return_page: StringName) -> void:
 	_help_return_page = return_page
 	_show_only(help_page)
-	help_text.scroll_to_line(0)
-	help_text.grab_focus()
+	help_page.call(
+		"open_for",
+		_help_section_for_context(return_page),
+		save_store.get_operation_mode() == 1
+	)
+
+
+func _help_section_for_context(return_page: StringName) -> StringName:
+	var from_game := return_page == &"game" \
+			or (return_page == &"settings" and _settings_return_to_game)
+	if from_game and is_instance_valid(active_game):
+		if active_game.scene_file_path == UNIVERSE_GAME_SCENE.resource_path:
+			return &"universe"
+		var level_index := int(active_game.get("current_level_index"))
+		if level_index >= 14:
+			return &"sky"
+		if level_index >= 7:
+			return &"ocean"
+		return &"land"
+	return &"menus" if return_page == &"settings" else _level_select_chapter
 
 
 func _close_help() -> void:
@@ -544,7 +563,7 @@ func _show_badge_hall(
 	_badge_hall_return_page = return_page
 	badge_hall.set_completed_levels(_completed_level_numbers())
 	badge_hall.set_universe_progress(
-		save_store.get_universe_boards_created(),
+		save_store.get_universe_boards_cleared(),
 		save_store.has_triggered_universe_thousand_milestone()
 	)
 	_show_only(badge_hall)
@@ -691,6 +710,7 @@ func _start_universe_mode(persist_guides: bool = true) -> void:
 	active_game.help_requested.connect(_on_game_help_requested)
 	active_game.mechanic_guide_completed.connect(_on_game_mechanic_guide_completed)
 	active_game.universe_board_created.connect(_on_universe_board_created)
+	active_game.universe_board_cleared.connect(_on_universe_board_cleared)
 	active_game.universe_milestone_finished.connect(
 		_on_universe_milestone_finished
 	)
@@ -708,9 +728,18 @@ func _start_universe_mode(persist_guides: bool = true) -> void:
 func _on_universe_board_created() -> void:
 	if not _persist_universe_progress:
 		return
-	var should_trigger: bool = bool(
-		save_store.record_universe_board_created()
-	)
+	save_store.record_universe_board_created()
+	_persist_universe_lifetime_progress(false)
+
+
+func _on_universe_board_cleared() -> void:
+	if not _persist_universe_progress:
+		return
+	var should_trigger: bool = save_store.record_universe_board_cleared()
+	_persist_universe_lifetime_progress(should_trigger)
+
+
+func _persist_universe_lifetime_progress(should_trigger: bool) -> void:
 	if not save_store.save_data():
 		save_store.load_data()
 		push_error("Universe lifetime progress could not be saved.")
@@ -788,7 +817,7 @@ func _connect_controls() -> void:
 		_show_badge_hall.bind(&"settings")
 	)
 	settings_back_button.pressed.connect(_close_settings)
-	help_back_button.pressed.connect(_close_help)
+	help_page.connect("back_requested", _close_help)
 	volume_slider.value_changed.connect(_on_volume_changed)
 	volume_slider.drag_ended.connect(_on_volume_drag_ended)
 	bgm_toggle_button.toggled.connect(_on_bgm_toggled)
@@ -831,10 +860,6 @@ func _start_level_number(
 	active_game.mechanic_guide_completed.connect(_on_game_mechanic_guide_completed)
 	active_game.exit_game_requested.connect(func() -> void: get_tree().quit())
 	active_game.call(
-		"set_seen_mechanic_guides",
-		_seen_mechanic_guides_for_level(level_number, not record_progress)
-	)
-	active_game.call(
 		"set_first_move_guide_enabled",
 		not save_store.has_seen_first_move_guide()
 	)
@@ -867,6 +892,10 @@ func _on_continue_pressed() -> void:
 
 func _on_game_level_started(level_number: int) -> void:
 	AudioManager.play_level_bgm(level_number)
+	active_game.call(
+		"set_seen_mechanic_guides",
+		_seen_mechanic_guides_for_level(level_number, not _record_progress)
+	)
 	if not _record_progress:
 		return
 	save_store.mark_level_started(level_number)
@@ -998,7 +1027,8 @@ func _seen_mechanic_guides_for_level(
 	for guide_key in MECHANIC_GUIDE_FIRST_LEVELS:
 		var first_level := int(MECHANIC_GUIDE_FIRST_LEVELS[guide_key])
 		var guide_id := str(guide_key)
-		if first_level == level_number:
+		if first_level == level_number \
+				and not _session_seen_mechanic_guides.has(guide_key):
 			guide_ids.erase(guide_id)
 		elif assume_previous_guides and first_level < level_number \
 				and guide_id not in guide_ids:
@@ -1319,12 +1349,13 @@ func _on_previous_chapter_pressed() -> void:
 			_level_select_chapter = &"land"
 			_selected_level_number = _selected_land_level_number
 		_:
-			_selected_land_level_number = _selected_level_number
-			_level_select_chapter = &"sky"
-			_selected_level_number = _selected_sky_level_number
+			return
 	_apply_level_select_chapter_art()
 	_rebuild_level_cards()
-	level_previous_chapter_button.grab_focus()
+	if _level_select_chapter == &"land":
+		level_next_chapter_button.grab_focus()
+	else:
+		level_previous_chapter_button.grab_focus()
 
 
 func _on_next_chapter_pressed() -> void:
@@ -1478,6 +1509,7 @@ func _on_language_selected(index: int) -> void:
 		badge_book.refresh_language()
 	if is_instance_valid(badge_hall):
 		badge_hall.refresh_language()
+	help_page.call("refresh_language")
 	LOCALIZATION_STYLE.apply(self, language)
 
 

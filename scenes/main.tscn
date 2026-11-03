@@ -239,11 +239,12 @@ pivot_offset = Vector2(105, 147)
 
 [node name="Margin" type="MarginContainer" parent="OceanLayout/OceanRightInfo" unique_id=214100016]
 layout_mode = 0
-offset_right = 210.0
+offset_left = 16.0
+offset_right = 226.0
 offset_bottom = 294.0
-theme_override_constants/margin_left = 22
+theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 22
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 20
 
 [node name="VBox" type="VBoxContainer" parent="OceanLayout/OceanRightInfo/Margin" unique_id=214100017]
@@ -363,10 +364,10 @@ size_flags_vertical = 3
 [node name="OceanQuickActions" type="Control" parent="OceanLayout" unique_id=214100033]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = 954.0
-offset_top = 377.0
-offset_right = 1128.0
-offset_bottom = 467.0
+offset_left = 950.0
+offset_top = 361.0
+offset_right = 1124.0
+offset_bottom = 451.0
 
 [node name="OceanPauseButton" type="TextureButton" parent="OceanLayout/OceanQuickActions" unique_id=214100034]
 unique_name_in_owner = true
@@ -815,7 +816,7 @@ script = ExtResource("13_grid_overlay")
 
 [node name="RightInfo" type="Control" parent="LandLayout" unique_id=1515148994]
 unique_name_in_owner = true
-anchors_preset = 0
+layout_mode = 0
 offset_left = 932.0
 offset_top = 134.0
 offset_right = 1142.0
@@ -824,18 +825,38 @@ pivot_offset = Vector2(105, 147)
 
 [node name="Margin" type="MarginContainer" parent="LandLayout/RightInfo" unique_id=782201458]
 layout_mode = 0
-offset_left = 24.0
-offset_top = -7.0
-offset_right = 234.0
-offset_bottom = 287.0
-theme_override_constants/margin_left = 22
+offset_left = 16.0
+offset_right = 226.0
+offset_bottom = 294.0
+theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 22
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 20
 
 [node name="VBox" type="VBoxContainer" parent="LandLayout/RightInfo/Margin" unique_id=1632027872]
 layout_mode = 2
 theme_override_constants/separation = 9
+
+[node name="FlagsRow" type="HBoxContainer" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1878153026]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="StatusTitle" type="Label" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1658996482]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 17
+text = "TXT_0156"
+
+[node name="StatusLabel" type="Label" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1043425687]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
+theme_override_fonts/font = ExtResource("14_bjg73")
+theme_override_font_sizes/font_size = 16
+text = "TXT_0129"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="LevelSummaryLabel" type="Label" parent="LandLayout/RightInfo/Margin/VBox" unique_id=386521782]
 unique_name_in_owner = true
@@ -864,27 +885,6 @@ theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
 theme_override_fonts/font = ExtResource("14_bjg73")
 theme_override_font_sizes/font_size = 15
 text = "TXT_0114"
-autowrap_mode = 2
-
-[node name="FlagsRow" type="HBoxContainer" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1878153026]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="StatusTitle" type="Label" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1658996482]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.0353, 0.1725, 0.0941, 0.92)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 17
-text = "TXT_0156"
-
-[node name="StatusLabel" type="Label" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1043425687]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2157, 0.0902, 0.0549, 0.94)
-theme_override_fonts/font = ExtResource("14_bjg73")
-theme_override_font_sizes/font_size = 16
-text = "TXT_0129"
-horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="ScanFallbackRow" type="HBoxContainer" parent="LandLayout/RightInfo/Margin/VBox" unique_id=1150046715]

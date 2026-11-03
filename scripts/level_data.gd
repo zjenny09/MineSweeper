@@ -85,9 +85,6 @@ const OCEAN_LEVEL_2 := {
 	"core_count": 10,
 	"first_move_guide": false,
 	"topology": &"hex_pointy_odd_r",
-	"reef_segments": [
-		{"divider": 3, "start_row": 2, "end_row": 4},
-	],
 }
 
 const OCEAN_LEVEL_3 := {

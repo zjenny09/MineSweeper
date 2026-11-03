@@ -1,4 +1,4 @@
-# 《绿色清扫者》文案维护说明
+# 《一扫回春》文案维护说明
 
 > 当前文案不再依赖中文原句或源码行号进行匹配。  
 > 人工精修主文件：[`GAME_COPY_CATALOG.xlsx`](GAME_COPY_CATALOG.xlsx)

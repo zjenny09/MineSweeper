@@ -34,12 +34,21 @@ var _title_text := ""
 var _action_text := ""
 var _hint_text := ""
 var _show_next_button := false
+var _action_blank := false
+var _hint_blank := false
+var _hint_layout_y := 89.0
+var _action_layout_y := 62.0
 var _dialogue_mode := false
 var _dialogue_id := &""
 var _dialogue_pages: Array[Dictionary] = []
 var _dialogue_page_index := 0
+var _dialogue_button_key := ""
 var _dialogue_target_global_position := Vector2(INF, INF)
 var _has_dialogue_target := false
+var _pointer_vertices := PackedVector2Array([Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
+var _pointer_outline := PackedVector2Array([
+	Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO
+])
 
 
 func _ready() -> void:
@@ -104,6 +113,8 @@ func _apply_locale_layout() -> void:
 		action_label.size = Vector2(418.0, 66.0)
 		action_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		hint_label.position = Vector2(116.0, 126.0)
+		_hint_layout_y = 126.0
+		_action_layout_y = 56.0
 		hint_label.size = Vector2(418.0, 34.0)
 		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		next_button_artwork.position = Vector2(258.0, 168.0)
@@ -126,7 +137,9 @@ func _apply_locale_layout() -> void:
 	action_label.size = Vector2(340.0, 22.0)
 	action_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	hint_label.position = Vector2(116.0, 89.0)
-	hint_label.size = Vector2(340.0, 19.0)
+	_hint_layout_y = 89.0
+	_action_layout_y = 62.0
+	hint_label.size = Vector2(340.0, 34.0)
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	next_button_artwork.position = Vector2(220.0, 119.5)
 	next_button_artwork.size = Vector2(108.0, 32.0)
@@ -175,12 +188,13 @@ func show_for_cell(
 	_dialogue_id = &""
 	_dialogue_pages.clear()
 	_dialogue_page_index = 0
-	_dialogue_target_global_position = Vector2(INF, INF)
-	_has_dialogue_target = false
+	_clear_dialogue_target()
 	_keyboard_mode = keyboard_mode
 	_title_text = title_text
 	_action_text = action_text
 	_hint_text = hint_text
+	_action_blank = action_text.strip_edges().is_empty()
+	_hint_blank = hint_text.strip_edges().is_empty()
 	_show_next_button = show_next_button
 	_animation_time = 0.0
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -194,7 +208,7 @@ func show_dialogue(
 	dialogue_id: StringName,
 	pages: Array,
 	keyboard_mode: bool = false,
-	target_global_position: Vector2 = Vector2(INF, INF)
+	target: Variant = null
 ) -> void:
 	if dialogue_id.is_empty() or pages.is_empty():
 		return
@@ -209,11 +223,7 @@ func show_dialogue(
 	_dialogue_mode = true
 	_dialogue_id = dialogue_id
 	_dialogue_page_index = 0
-	_dialogue_target_global_position = target_global_position
-	_has_dialogue_target = (
-		is_finite(target_global_position.x)
-		and is_finite(target_global_position.y)
-	)
+	_assign_dialogue_target(target)
 	_keyboard_mode = keyboard_mode
 	_animation_time = 0.0
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -227,16 +237,40 @@ func is_dialogue_mode() -> bool:
 	return _dialogue_mode
 
 
-func set_dialogue_target_global_position(target_position: Vector2) -> void:
+func set_dialogue_target(target: Variant) -> void:
 	if not _dialogue_mode:
 		return
-	_dialogue_target_global_position = target_position
-	_has_dialogue_target = (
-		is_finite(target_position.x)
-		and is_finite(target_position.y)
-	)
+	_assign_dialogue_target(target)
 	_update_bubble_position()
 	queue_redraw()
+
+
+func _clear_dialogue_target() -> void:
+	_dialogue_target_global_position = Vector2(INF, INF)
+	_has_dialogue_target = false
+
+
+func _assign_dialogue_target(target: Variant) -> void:
+	_target_cell = null
+	_clear_dialogue_target()
+	if target is Control and is_instance_valid(target):
+		_target_cell = target
+	elif target is Vector2 and is_finite(target.x) and is_finite(target.y):
+		_dialogue_target_global_position = target
+		_has_dialogue_target = true
+
+
+func _has_target() -> bool:
+	return is_instance_valid(_target_cell) or (_dialogue_mode and _has_dialogue_target)
+
+
+func _target_rect_in_guide() -> Rect2:
+	if is_instance_valid(_target_cell):
+		return _control_rect_in_guide(_target_cell)
+	return Rect2(
+		get_global_transform().affine_inverse() * _dialogue_target_global_position,
+		Vector2.ZERO
+	)
 
 
 func complete_dialogue() -> void:
@@ -253,8 +287,7 @@ func hide_guide() -> void:
 	_dialogue_id = &""
 	_dialogue_pages.clear()
 	_dialogue_page_index = 0
-	_dialogue_target_global_position = Vector2(INF, INF)
-	_has_dialogue_target = false
+	_clear_dialogue_target()
 	queue_redraw()
 
 
@@ -262,7 +295,10 @@ func set_keyboard_mode(enabled: bool) -> void:
 	if _keyboard_mode == enabled:
 		return
 	_keyboard_mode = enabled
-	_refresh_copy()
+	if _dialogue_mode:
+		_update_dialogue_page()
+	else:
+		_refresh_copy()
 
 
 func is_keyboard_mode() -> bool:
@@ -272,6 +308,8 @@ func is_keyboard_mode() -> bool:
 func get_action_text() -> String:
 	if not _action_text.is_empty():
 		return tr(_action_text)
+	if _action_blank:
+		return ""
 	return tr("TXT_0245") if _keyboard_mode else tr("TXT_0244")
 
 
@@ -286,37 +324,52 @@ func get_stable_bubble_rect() -> Rect2:
 	if not is_instance_valid(bubble_root) or size.x <= 1.0 or size.y <= 1.0:
 		return Rect2()
 	var bubble_size := bubble_root.size
-	if _dialogue_mode:
-		var bubble_x := maxf(PANEL_PADDING, (size.x - bubble_size.x) * 0.5)
-		var bubble_y := PANEL_PADDING
-		return Rect2(Vector2(bubble_x, bubble_y), bubble_size)
 	if Engine.is_editor_hint():
 		return Rect2((size - bubble_size) * 0.5, bubble_size)
-	if not is_instance_valid(_target_cell):
-		return Rect2()
-	var target_rect := _control_rect_in_guide(_target_cell)
-	var bubble_x := clampf(
-		target_rect.get_center().x - bubble_size.x * 0.5,
-		PANEL_PADDING,
-		maxf(PANEL_PADDING, size.x - bubble_size.x - PANEL_PADDING)
-	)
-	var above_y := target_rect.position.y - bubble_size.y - TARGET_GAP
-	var below_y := target_rect.end.y + TARGET_GAP
-	var bubble_y := above_y
-	if above_y < PANEL_PADDING and below_y + bubble_size.y <= size.y - PANEL_PADDING:
-		bubble_y = below_y
-	bubble_y = clampf(
-		bubble_y,
-		PANEL_PADDING,
-		maxf(PANEL_PADDING, size.y - bubble_size.y - PANEL_PADDING)
-	)
-	return Rect2(Vector2(bubble_x, bubble_y), bubble_size)
+	if not _has_target():
+		if not _dialogue_mode:
+			return Rect2()
+		return Rect2(
+			Vector2(maxf(PANEL_PADDING, (size.x - bubble_size.x) * 0.5), PANEL_PADDING),
+			bubble_size
+		)
+	return _bubble_rect_near_target(_target_rect_in_guide(), bubble_size)
+
+
+func _bubble_rect_near_target(target_rect: Rect2, bubble_size: Vector2) -> Rect2:
+	var center := target_rect.get_center()
+	var minimum := Vector2(PANEL_PADDING, PANEL_PADDING)
+	var maximum := (size - bubble_size - minimum).max(minimum)
+	var best_rect := Rect2()
+	var best_overlap := INF
+	var best_shift := INF
+	# Prefer above, then below, with side placements when vertical space is tight.
+	for side in range(4):
+		var candidate := center - bubble_size * 0.5
+		match side:
+			0:
+				candidate.y = target_rect.position.y - bubble_size.y - TARGET_GAP
+			1:
+				candidate.y = target_rect.end.y + TARGET_GAP
+			2:
+				candidate.x = target_rect.end.x + TARGET_GAP
+			3:
+				candidate.x = target_rect.position.x - bubble_size.x - TARGET_GAP
+		var clamped := candidate.clamp(minimum, maximum)
+		var candidate_rect := Rect2(clamped, bubble_size)
+		var overlap := candidate_rect.intersection(target_rect.grow(TARGET_GAP)).get_area()
+		var shift := candidate.distance_squared_to(clamped)
+		if overlap < best_overlap or (is_equal_approx(overlap, best_overlap) and shift < best_shift):
+			best_rect = candidate_rect
+			best_overlap = overlap
+			best_shift = shift
+	return best_rect
 
 
 func get_target_center() -> Vector2:
-	if not is_instance_valid(_target_cell):
+	if not _has_target():
 		return Vector2(-1.0, -1.0)
-	return _control_rect_in_guide(_target_cell).get_center()
+	return _target_rect_in_guide().get_center()
 
 
 func _update_bubble_position() -> void:
@@ -332,19 +385,27 @@ func _refresh_copy() -> void:
 		title = "TXT_0241" if _keyboard_mode else "TXT_0242"
 	title_label.text = tr(title)
 	action_label.text = get_action_text()
-	hint_label.text = (
-		tr(_hint_text)
-		if not _hint_text.is_empty()
-		else tr("TXT_0246")
-	)
+	action_label.visible = not _action_blank
+	hint_label.position.y = (_action_layout_y if _action_blank else _hint_layout_y) - 2.0
+	if _hint_blank:
+		hint_label.text = ""
+	else:
+		hint_label.text = (
+			tr(_hint_text)
+			if not _hint_text.is_empty()
+			else tr("TXT_0246")
+		)
 	if _dialogue_mode:
 		next_button.visible = true
 		next_button.disabled = false
-		next_button.text = (
-			tr("TXT_0247")
-			if _dialogue_page_index >= _dialogue_pages.size() - 1
-			else tr("TXT_0248")
-		)
+		if not _dialogue_button_key.is_empty():
+			next_button.text = tr(_dialogue_button_key)
+		else:
+			next_button.text = (
+				tr("TXT_0247")
+				if _dialogue_page_index >= _dialogue_pages.size() - 1
+				else tr("TXT_0248")
+			)
 		exit_button.text = tr("TXT_0249")
 		next_button_artwork.visible = true
 		exit_button_artwork.visible = true
@@ -363,77 +424,57 @@ func _draw() -> void:
 	if Engine.is_editor_hint() or not visible:
 		return
 	var bubble_rect := Rect2(bubble_root.position, bubble_root.size)
-	if _dialogue_mode:
-		if _has_dialogue_target:
-			_draw_dialogue_pointer(
-				bubble_rect,
-				_dialogue_target_in_guide()
-			)
-		return
-	if not is_instance_valid(_target_cell):
-		return
-	var target_rect := _control_rect_in_guide(_target_cell)
-	if target_rect.size == Vector2.ZERO:
-		return
-	_draw_pointer(bubble_rect, target_rect)
+	if _has_target():
+		_draw_pointer(bubble_rect, _target_rect_in_guide())
 
 
-func _dialogue_target_in_guide() -> Vector2:
-	return (
-		get_global_transform_with_canvas().affine_inverse()
-		* _dialogue_target_global_position
-	)
-
-
-func _draw_dialogue_pointer(
-	bubble_rect: Rect2,
-	target_center: Vector2
-) -> void:
-	var bubble_above := bubble_rect.get_center().y <= target_center.y
-	var direction := Vector2.DOWN if bubble_above else Vector2.UP
-	var edge_anchor := Vector2(
-		clampf(
-			target_center.x,
-			bubble_rect.position.x + 28.0,
-			bubble_rect.end.x - 28.0
-		),
-		bubble_rect.end.y if bubble_above else bubble_rect.position.y
-	)
-	var bounce := (sin(_animation_time * 4.2) * 0.5 + 0.5) * 5.0
-	var arrow_base := edge_anchor + direction * (7.0 + bounce)
-	var arrow_tip := edge_anchor + direction * (31.0 + bounce)
-	var perpendicular := Vector2(-direction.y, direction.x)
-	var arrow := PackedVector2Array([
-		arrow_tip,
-		arrow_base + perpendicular * 13.0,
-		arrow_base - perpendicular * 13.0,
-	])
-	draw_colored_polygon(arrow, YELLOW)
-	var outline := PackedVector2Array(arrow)
-	outline.append(arrow[0])
-	draw_polyline(outline, GREEN, 3.0, true)
+func _rect_edge_toward(rect: Rect2, point: Vector2) -> Vector2:
+	var center := rect.get_center()
+	var offset := point - center
+	if rect.size == Vector2.ZERO or offset.is_zero_approx():
+		return center
+	var half_size := rect.size * 0.5
+	var ratio_x := absf(offset.x) / half_size.x if half_size.x > 0.0 else INF
+	var ratio_y := absf(offset.y) / half_size.y if half_size.y > 0.0 else INF
+	return center + offset / maxf(ratio_x, ratio_y)
 
 
 func _draw_pointer(bubble_rect: Rect2, target_rect: Rect2) -> void:
-	var bubble_above := bubble_rect.get_center().y < target_rect.get_center().y
-	var anchor := Vector2(
-		clampf(target_rect.get_center().x, bubble_rect.position.x + 28.0, bubble_rect.end.x - 28.0),
-		bubble_rect.end.y if bubble_above else bubble_rect.position.y
-	)
-	var direction := Vector2.DOWN if bubble_above else Vector2.UP
-	var bounce := (sin(_animation_time * 4.2) * 0.5 + 0.5) * 3.5
-	var base_center := anchor + direction * bounce
-	var arrow_tip := base_center + direction * 11.0
+	var target_center := target_rect.get_center()
+	var anchor: Vector2
+	if bubble_rect.end.y <= target_rect.position.y \
+			or bubble_rect.position.y >= target_rect.end.y:
+		anchor = Vector2(
+			clampf(target_center.x, bubble_rect.position.x + 28.0, bubble_rect.end.x - 28.0),
+			bubble_rect.end.y if bubble_rect.end.y <= target_rect.position.y else bubble_rect.position.y
+		)
+	else:
+		anchor = Vector2(
+			bubble_rect.end.x if bubble_rect.end.x <= target_rect.position.x else bubble_rect.position.x,
+			clampf(target_center.y, bubble_rect.position.y + 28.0, bubble_rect.end.y - 28.0)
+		)
+	var target_edge := _rect_edge_toward(target_rect, anchor)
+	var to_target := target_edge - anchor
+	var distance := to_target.length()
+	# Keep the tip close to the actual target, not to a possibly clamped bubble.
+	var gap := 3.0 + (sin(_animation_time * 4.2) * 0.5 + 0.5) * 1.5
+	var length := minf(24.0 if _dialogue_mode else 11.0, distance - gap)
+	if length <= 0.0 or bubble_rect.has_point(target_rect.get_center()):
+		return
+	var direction := to_target / distance
+	var tip := target_edge - direction * gap
+	var base := tip - direction * length
 	var perpendicular := Vector2(-direction.y, direction.x)
-	var arrow := PackedVector2Array([
-		arrow_tip,
-		base_center + perpendicular * 6.0,
-		base_center - perpendicular * 6.0,
-	])
-	draw_colored_polygon(arrow, YELLOW)
-	var outline := PackedVector2Array(arrow)
-	outline.append(arrow[0])
-	draw_polyline(outline, GREEN, 2.0, true)
+	var half_width := minf(13.0 if _dialogue_mode else 6.0, length * 0.7)
+	_pointer_vertices[0] = tip
+	_pointer_vertices[1] = base + perpendicular * half_width
+	_pointer_vertices[2] = base - perpendicular * half_width
+	draw_colored_polygon(_pointer_vertices, YELLOW)
+	_pointer_outline[0] = _pointer_vertices[0]
+	_pointer_outline[1] = _pointer_vertices[1]
+	_pointer_outline[2] = _pointer_vertices[2]
+	_pointer_outline[3] = _pointer_vertices[0]
+	draw_polyline(_pointer_outline, GREEN, 3.0 if _dialogue_mode else 2.0, true)
 
 
 func _on_resized() -> void:
@@ -465,8 +506,12 @@ func _update_dialogue_page() -> void:
 		return
 	var page := _dialogue_pages[_dialogue_page_index]
 	_title_text = str(page.get("title", "TXT_0243"))
-	_action_text = str(page.get("text", ""))
-	_hint_text = str(page.get("hint", "TXT_0252"))
+	var action_key := "keyboard_text" if _keyboard_mode and page.has("keyboard_text") else "text"
+	_action_text = str(page.get(action_key, "TXT_0244"))
+	_hint_text = str(page.get("hint", "TXT_0246"))
+	_action_blank = page.has(action_key) and _action_text.is_empty()
+	_hint_blank = page.has("hint") and _hint_text.is_empty()
+	_dialogue_button_key = str(page.get("button", ""))
 	_refresh_copy()
 
 
@@ -477,5 +522,5 @@ func _complete_dialogue() -> void:
 
 
 func _control_rect_in_guide(control: Control) -> Rect2:
-	var global_rect := control.get_global_rect()
-	return Rect2(global_rect.position - get_global_rect().position, global_rect.size)
+	var into_guide := get_global_transform().affine_inverse() * control.get_global_transform()
+	return into_guide * Rect2(Vector2.ZERO, control.size)

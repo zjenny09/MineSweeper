@@ -9,6 +9,7 @@ signal voyage_stats_changed(regions: int, purified_stars: int, distance: int)
 signal expedition_failed(regions: int, purified_stars: int, distance: int)
 signal warp_changed(active: bool)
 signal region_started(region_index: int, wormhole_count: int)
+signal region_cleared(region_index: int, purified_stars: int)
 
 const MODEL_SCRIPT := preload("res://scripts/universe_graph_model.gd")
 const UI_FONT := preload("res://assets/art/common/fonts/ui_handwritten_zh.ttf")
@@ -550,6 +551,7 @@ func _on_model_changed() -> void:
 
 
 func _on_region_completed(region_index: int, purified_stars: int) -> void:
+	region_cleared.emit(region_index, purified_stars)
 	_transition_pending = true
 	_region_transition_time = 0.0
 	hovered_node = -1

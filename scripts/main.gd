@@ -76,8 +76,10 @@ const GREEN_BUTTON_PRESSED_PATH := ART.TUTORIAL_GUIDE_BUTTON_PRIMARY
 
 enum TutorialStep {
 	INACTIVE,
+	GREETING,
 	FIRST_REVEAL,
 	NUMBER_INFO,
+	SCAN_INTRO,
 	MARK_CORE,
 	CHORD,
 	COMPLETE,
@@ -101,9 +103,8 @@ const LEVEL_MECHANIC_GUIDES := {
 		"pages": [
 			{"title": "TXT_0258", "text": "TXT_0259", "hint": "TXT_0404"},
 			{"title": "TXT_0260", "text": "TXT_0261", "hint": "TXT_0262"},
-			{"title": "TXT_0484", "text": "TXT_0485", "hint": "TXT_0486"},
-			{"title": "TXT_0487", "text": "TXT_0488", "hint": "TXT_0489"},
-			{"title": "TXT_0490", "text": "TXT_0491", "hint": "TXT_0492"},
+			{"title": "TXT_0484", "text": "TXT_0503", "hint": "TXT_0504"},
+			{"title": "TXT_0505", "text": "TXT_0506", "hint": "TXT_0492"},
 		],
 	},
 	7: {
@@ -112,7 +113,6 @@ const LEVEL_MECHANIC_GUIDES := {
 			{"title": "TXT_0263", "text": "TXT_0264", "hint": "TXT_0265"},
 			{"title": "TXT_0266", "text": "TXT_0267", "hint": "TXT_0268"},
 			{"title": "TXT_0484", "text": "TXT_0485", "hint": "TXT_0486"},
-			{"title": "TXT_0487", "text": "TXT_0488", "hint": "TXT_0489"},
 			{"title": "TXT_0490", "text": "TXT_0491", "hint": "TXT_0492"},
 		],
 	},
@@ -123,11 +123,10 @@ const LEVEL_MECHANIC_GUIDES := {
 			{"title": "TXT_0277", "text": "TXT_0413", "hint": "TXT_0276"},
 		],
 	},
-	9: {
+	10: {
 		"id": &"coral_reefs",
 		"pages": [
 			{"title": "TXT_0279", "text": "TXT_0280", "hint": "TXT_0284"},
-			{"title": "TXT_0282", "text": "TXT_0283", "hint": "TXT_0281"},
 		],
 	},
 	11: {
@@ -135,7 +134,6 @@ const LEVEL_MECHANIC_GUIDES := {
 		"pages": [
 			{"title": "TXT_0285", "text": "TXT_0286", "hint": "TXT_0278"},
 			{"title": "TXT_0290", "text": "TXT_0291", "hint": "TXT_0292"},
-			{"title": "TXT_0287", "text": "TXT_0288", "hint": "TXT_0289"},
 		],
 	},
 	13: {
@@ -365,6 +363,8 @@ func _ready() -> void:
 	first_move_guide.exit_requested.connect(_on_tutorial_exit_requested)
 	first_move_guide.next_requested.connect(_on_tutorial_next_requested)
 	first_move_guide.dialogue_completed.connect(_on_mechanic_dialogue_completed)
+	first_move_guide.dialogue_completed.connect(_on_sprout_greeting_completed)
+	first_move_guide.dialogue_completed.connect(_on_sprout_scan_intro_completed)
 	land_pause_button.pressed.connect(_on_left_quick_button_pressed)
 	land_restart_button.pressed.connect(_on_right_quick_button_pressed)
 	ocean_pause_button.pressed.connect(_on_left_quick_button_pressed)
@@ -793,10 +793,12 @@ func start_level(level_index: int, initial_scan_energy: int = -1) -> void:
 	boss_stage.visible = false
 	_tutorial_dismissed_for_session = false
 	_tutorial_step = (
-		TutorialStep.FIRST_REVEAL
+		TutorialStep.GREETING
 		if current_level_index == 0 and _first_move_guide_enabled
 		else TutorialStep.INACTIVE
 	)
+	if _tutorial_step == TutorialStep.GREETING:
+		call_deferred("_begin_sprout_greeting")
 	_tutorial_number_index = -1
 	_tutorial_target_index = -1
 	_tutorial_last_revealed_index = -1
@@ -846,7 +848,8 @@ func restart_level() -> void:
 	if board.level_number == 1 \
 			and _first_move_guide_enabled \
 			and not _tutorial_dismissed_for_session:
-		_tutorial_step = TutorialStep.FIRST_REVEAL
+		_tutorial_step = TutorialStep.GREETING
+		_begin_sprout_greeting()
 	else:
 		_tutorial_step = TutorialStep.INACTIVE
 	_tutorial_number_index = -1
@@ -870,8 +873,8 @@ func _refresh_active_mechanic_guide_target() -> void:
 	if _active_mechanic_guide_id.is_empty() \
 			or not first_move_guide.is_dialogue_mode():
 		return
-	first_move_guide.set_dialogue_target_global_position(
-		_mechanic_guide_target_global_position(_active_mechanic_guide_id)
+	first_move_guide.set_dialogue_target(
+		_mechanic_guide_target(_active_mechanic_guide_id)
 	)
 
 
@@ -928,7 +931,7 @@ func set_operation_mode(mode: int) -> void:
 	_operation_mode = 1 if mode == 1 else 0
 	land_board.set_operation_mode(_operation_mode)
 	ocean_board.set_operation_mode(_operation_mode)
-	_refresh_instructions()
+	_refresh_scan_ui()
 	_refresh_first_move_guide()
 
 
@@ -1030,114 +1033,45 @@ func set_first_move_guide_enabled(enabled: bool) -> void:
 func _refresh_instructions() -> void:
 	if not is_instance_valid(instructions_label) or not is_instance_valid(board):
 		return
-	if (
-		board.topology == &"hex_pointy_odd_r"
-		and (
-			board.reef_edge_count > 0
-			or board.mobile_current_enabled
-			or board.drifting_mine_enabled
-			or board.tidal_zone_count > 0
-		)
-	):
-		var ocean_rules := PackedStringArray()
-		if board.reef_edge_count > 0:
-			ocean_rules.append(
-				tr("TXT_0166")
-			)
-		if board.mobile_current_enabled:
-			var mobile_group_count := board.mobile_current_group_count
-			var candidates_per_group := int(
-				board.mobile_current_shape.size() / maxi(1, mobile_group_count)
-			)
-			var cores_per_group := int(
-				board.mobile_current_core_count / maxi(1, mobile_group_count)
-			)
-			var mobile_group_label := (
-				tr("TXT_0167")
-				if mobile_group_count == 2
-				else (
-					tr("TXT_0168")
-					if mobile_group_count == 3
-					else tr("TXT_0169") % mobile_group_count
-				)
-			)
-			ocean_rules.append(
-				tr("TXT_0170")
-				% [mobile_group_label, candidates_per_group, cores_per_group]
-			)
-			ocean_rules.append(
-				tr("TXT_0171")
-			)
-			ocean_rules.append(
-				tr("TXT_0172")
-				% [mobile_group_label, roundi(board.mobile_current_step_seconds)]
-			)
-			ocean_rules.append(
-				tr("TXT_0173")
-			)
-		if board.drifting_mine_enabled:
-			ocean_rules.append(
-				tr("TXT_0174")
-			)
-			ocean_rules.append(
-				tr("TXT_0175")
-			)
-			ocean_rules.append(
-				tr("TXT_0176")
-			)
-		if board.tidal_zone_count > 0:
-			ocean_rules.append(
-				tr("TXT_0177")
-			)
-			ocean_rules.append(
-				tr("TXT_0178")
-			)
-		ocean_rules.append(
-			tr("TXT_0158")
-			if _operation_mode == 1
-			else tr("TXT_0157")
-		)
-		instructions_label.text = "\n".join(ocean_rules)
+	var controls_key := "TXT_0158" if _operation_mode == 1 else "TXT_0157"
+	instructions_label.text = tr(controls_key) + "\n" + _scan_status_text()
+
+
+func _scan_status_text() -> String:
+	if _scan_phase == ScanPhase.READY:
+		return tr("TXT_0187") if _operation_mode == 1 else tr("TXT_0498")
+	return tr("TXT_0497")
+
+
+func _begin_sprout_greeting() -> void:
+	if _tutorial_step != TutorialStep.GREETING:
 		return
-	if board.pollution_node_count > 0:
-		var node_rule := (
-			tr("TXT_0179")
-			if board.level_number == 7
-			else tr("TXT_0180")
-		)
-		instructions_label.text = (
-			node_rule
-			+ tr("TXT_0181")
-			+ (
-				tr("TXT_0480") % roundi(board.pollution_reset_seconds)
-				if board.pollution_reset_seconds > 0.0
-				else ""
-			)
-			+ (
-				tr("TXT_0386")
-				if _operation_mode == 1
-				else tr("TXT_0162")
-			)
-		)
+	if is_instance_valid(land_tabletop_actors):
+		land_tabletop_actors.set_greeting_waving(true)
+
+
+func _end_sprout_greeting() -> void:
+	if is_instance_valid(land_tabletop_actors):
+		land_tabletop_actors.set_greeting_waving(false)
+		land_tabletop_actors.restore_land_robot_rig()
+
+
+func _on_sprout_greeting_completed(guide_id: StringName) -> void:
+	if guide_id != &"sprout_greeting":
 		return
-	var tutorial_active := (
-		board.level_number == 1
-		and not _tutorial_dismissed_for_session
-		and _tutorial_step != TutorialStep.INACTIVE
-		and _tutorial_step != TutorialStep.COMPLETE
-	)
-	if _operation_mode == 1:
-		instructions_label.text = (
-			tr("TXT_0159")
-			+ tr("TXT_0160")
-			+ tr("TXT_0161")
-		)
-	else:
-		instructions_label.text = (
-			(tr("TXT_0135") if tutorial_active else tr("TXT_0164"))
-			+ tr("TXT_0162")
-			+ tr("TXT_0163")
-		)
+	if _tutorial_step != TutorialStep.GREETING:
+		return
+	_end_sprout_greeting()
+	_tutorial_step = TutorialStep.FIRST_REVEAL
+	call_deferred("_refresh_first_move_guide")
+
+
+func _on_sprout_scan_intro_completed(guide_id: StringName) -> void:
+	if guide_id != &"eco_scan" or _tutorial_step != TutorialStep.SCAN_INTRO:
+		return
+	_active_mechanic_guide_id = &""
+	_revalidate_tutorial_frontier()
+	_refresh_first_move_guide()
 
 
 func _show_level_mechanic_guide() -> void:
@@ -1167,21 +1101,20 @@ func _request_mechanic_guide(guide_data: Dictionary) -> void:
 		guide_id,
 		pages,
 		_operation_mode == 1,
-		_mechanic_guide_target_global_position(guide_id)
+		_mechanic_guide_target(guide_id)
 	)
 
 
-func _mechanic_guide_target_global_position(
-	guide_id: StringName
-) -> Vector2:
-	if guide_id == &"eco_scan":
-		var robot_hotspot := land_tabletop_actors.find_child(
-			"RobotHotspot",
-			true,
-			false
-		) as Control
-		if is_instance_valid(robot_hotspot):
-			return robot_hotspot.get_global_rect().get_center()
+func _mechanic_guide_target(guide_id: StringName) -> Variant:
+	match guide_id:
+		&"eco_scan":
+			return land_tabletop_actors.find_child(
+				"RobotHotspot",
+				true,
+				false
+			) as Control
+		&"land_obstacles", &"pollution_nodes", &"ancient_tree_roots":
+			return board.get_land_mechanic_guide_target_cell(guide_id)
 	return board.get_mechanic_guide_target_global_position(guide_id)
 
 
@@ -1193,6 +1126,8 @@ func _on_board_interacted() -> void:
 
 
 func _on_mechanic_dialogue_completed(guide_id: StringName) -> void:
+	if guide_id == &"sprout_greeting":
+		return
 	if guide_id.is_empty():
 		return
 	_seen_mechanic_guides[guide_id] = true
@@ -1262,23 +1197,53 @@ func _refresh_first_move_guide() -> void:
 	var hint := ""
 	var show_next := false
 	match _tutorial_step:
+		TutorialStep.GREETING:
+			first_move_guide.show_dialogue(
+				&"sprout_greeting",
+				[{
+					"title": "TXT_0499",
+					"text": "TXT_0501",
+					"hint": "TXT_0500",
+					"button": "TXT_0248",
+				}],
+				_operation_mode == 1
+			)
+			return
 		TutorialStep.FIRST_REVEAL:
 			if board.game_state == MinesweeperBoard.GameState.READY:
-				target_index = board.guide_cell_index
+				target_index = (
+					board.guide_cell_index
+					if _is_valid_tutorial_index(board.guide_cell_index)
+					else _find_unrevealed_safe_index()
+				)
 				title = "TXT_0399"
-				action = "TXT_0434" if _operation_mode == 1 else "TXT_0401"
+				action = "TXT_0502"
 				hint = "TXT_0432"
+				show_next = true
 			else:
 				target_index = _find_unrevealed_safe_index()
 				title = "TXT_0449"
 				action = "TXT_0435" if _operation_mode == 1 else "TXT_0390"
 				hint = "TXT_0406"
+				show_next = true
 		TutorialStep.NUMBER_INFO:
 			target_index = _tutorial_number_index
 			title = "TXT_0453"
 			action = "TXT_0450"
 			hint = "TXT_0410" if _operation_mode == 1 else "TXT_0389"
 			show_next = true
+		TutorialStep.SCAN_INTRO:
+			if _scan_phase == ScanPhase.READY:
+				_active_mechanic_guide_id = &"eco_scan"
+				first_move_guide.show_dialogue(
+					&"eco_scan",
+					SCAN_GUIDE.get("pages", []),
+					_operation_mode == 1,
+					_mechanic_guide_target(&"eco_scan")
+				)
+				return
+			_tutorial_step = TutorialStep.MARK_CORE
+			_refresh_first_move_guide()
 		TutorialStep.MARK_CORE:
 			target_index = _tutorial_target_index
 			title = "TXT_0418"
@@ -1293,11 +1258,13 @@ func _refresh_first_move_guide() -> void:
 			else:
 				action = "TXT_0412" if _operation_mode == 1 else "TXT_0397"
 				hint = "TXT_0407"
+			show_next = true
 		TutorialStep.CHORD:
 			target_index = _tutorial_number_index
 			title = "TXT_0403"
 			action = "TXT_0454" if _operation_mode == 1 else "TXT_0394"
 			hint = "TXT_0417"
+			show_next = true
 
 	if not _is_valid_tutorial_index(target_index):
 		first_move_guide.hide_guide()
@@ -1306,9 +1273,9 @@ func _refresh_first_move_guide() -> void:
 		board.cell_nodes[target_index],
 		target_index,
 		_operation_mode == 1,
-		title,
-		action,
-		hint,
+		tr(title),
+		tr(action),
+		tr(hint),
 		show_next
 	)
 
@@ -1538,10 +1505,8 @@ func _refresh_scan_ui() -> void:
 	match _scan_phase:
 		ScanPhase.LOCKED_FIRST_REVEAL:
 			tooltip = tr("TXT_0185")
-		ScanPhase.CHARGING:
-			tooltip = tr("TXT_0186") % [_scan_energy, _scan_threshold]
-		ScanPhase.READY:
-			tooltip = tr("TXT_0187")
+		ScanPhase.CHARGING, ScanPhase.READY:
+			tooltip = _scan_status_text()
 		ScanPhase.TARGETING:
 			tooltip = tr("TXT_0189")
 		ScanPhase.RESOLVING:
@@ -1552,6 +1517,8 @@ func _refresh_scan_ui() -> void:
 		activation_enabled,
 		tooltip
 	)
+	if is_instance_valid(board):
+		_refresh_instructions()
 	if is_instance_valid(scan_fallback_row):
 		scan_fallback_row.visible = false
 		scan_fallback_button.disabled = not activation_enabled
@@ -1606,9 +1573,23 @@ func _on_tutorial_next_requested() -> void:
 		return
 	match _tutorial_step:
 		TutorialStep.FIRST_REVEAL:
-			if board.guide_cell_index >= 0:
-				board.reveal_cell(board.guide_cell_index)
+			var reveal_target := board.guide_cell_index
+			if not _is_valid_tutorial_index(reveal_target) \
+					or board.revealed[reveal_target]:
+				reveal_target = _find_unrevealed_safe_index()
+			if reveal_target >= 0:
+				board.reveal_cell(reveal_target)
 		TutorialStep.NUMBER_INFO:
+			if _scan_phase == ScanPhase.READY:
+				_tutorial_step = TutorialStep.SCAN_INTRO
+				_active_mechanic_guide_id = &"eco_scan"
+				first_move_guide.show_dialogue(
+					&"eco_scan",
+					SCAN_GUIDE.get("pages", []),
+					_operation_mode == 1,
+					_mechanic_guide_target(&"eco_scan")
+				)
+				return
 			_revalidate_tutorial_frontier()
 			_refresh_first_move_guide()
 		TutorialStep.MARK_CORE:
@@ -1624,6 +1605,7 @@ func _on_tutorial_exit_requested() -> void:
 		return
 	_tutorial_dismissed_for_session = true
 	_tutorial_step = TutorialStep.INACTIVE
+	_end_sprout_greeting()
 	_tutorial_number_index = -1
 	_tutorial_target_index = -1
 	board.clear_guide_cell()
@@ -1906,10 +1888,11 @@ func _on_pollution_nodes_changed(cleansed_count: int, total_count: int) -> void:
 		var group_core_count := int(
 			board.mobile_current_core_count / maxi(1, group_count)
 		)
-		objective_label.text = tr("TXT_0118") % [
-			group_count,
-			group_core_count,
-		]
+		objective_label.text = (
+			tr("TXT_0118")
+			if group_count == 2 and group_core_count == 2
+			else tr("TXT_0508") % [group_count, group_core_count]
+		)
 	elif board.level_number == 7 and total_count > 0:
 		objective_label.text = tr("TXT_0117") % [
 			cleansed_count,
@@ -1919,10 +1902,9 @@ func _on_pollution_nodes_changed(cleansed_count: int, total_count: int) -> void:
 		objective_label.text = tr("TXT_0116") % [
 			cleansed_count,
 			total_count,
-			tr(board.level_name),
 		]
 	else:
-		objective_label.text = tr("TXT_0115") % tr(board.level_name)
+		objective_label.text = tr("TXT_0115")
 
 
 func _on_current_path_feedback(text: String) -> void:

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Green Sweeper 0.7.0\n"
+"Project-Id-Version: Green Sweeper 0.8.2\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,7 +52,7 @@ msgstr "Regenerate the last level you played"
 
 #. 品牌与主菜单 | 运行
 msgid "TXT_0012"
-msgstr "v0.8.1  ·  Land + Ocean + Sky + Universe"
+msgstr "v0.8.2"
 
 #. 设置 | 运行
 msgid "TXT_0013"
@@ -112,7 +112,7 @@ msgstr "Mouse"
 
 #. 设置 | 运行
 msgid "TXT_0027"
-msgstr "Keyboard (Chapters 1–3: Arrows / W S A D + J / K / C; Sky also uses R; mouse remains available)"
+msgstr "Keyboard Controls"
 
 #. 设置 | 运行
 msgid "TXT_0028"
@@ -420,31 +420,31 @@ msgstr "12 Pentagons + 20 Hexagons\nPollution Cores 6"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0104"
-msgstr "32-cell Fullerene"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0105"
-msgstr "42-cell Frequency-2 Cloud Sphere"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0106"
-msgstr "92-cell Frequency-3 Cloud Sphere"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0107"
-msgstr "162-cell Frequency-4 Cloud Sphere"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0108"
-msgstr "252-cell Frequency-5 Cloud Sphere"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0109"
-msgstr "362-cell Frequency-6 Cloud Sphere"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0110"
-msgstr "492-cell Frequency-7 Cloud Sphere"
+msgstr "Cloud Sphere"
 
 #. 关卡名称与棋盘 | 运行
 msgid "TXT_0111"
@@ -460,23 +460,23 @@ msgstr "Controls"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0114"
-msgstr "Reveal every safe cell"
+msgstr "Reveal every safe cell\nRestore the ecology"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0115"
-msgstr "Reveal every safe cell\nRestore %s"
+msgstr "Reveal every safe cell\nRestore the ecology"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0116"
-msgstr "Nodes %d/%d\nRestore %s"
+msgstr "Cleanse Pollution Nodules %d/%d\nRestore the ecology"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0117"
-msgstr "Root Anchors %d/%d"
+msgstr "Toxic Ancient Tree\nPollution Root Systems %d/%d"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0118"
-msgstr "Stop %d drift groups\n%d mines each · No escapes"
+msgstr "Identify two buoy groups · Two mines each\nAny buoy crossing the boundary means failure"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0119"
@@ -496,7 +496,7 @@ msgstr "Tidal Zone %d/%d\nReveal all safe cells"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0123"
-msgstr "Rotate the sphere and clear every safe face"
+msgstr "Reveal every safe cloud face"
 
 #. 旧版原型 | 旧版
 msgid "TXT_0124"
@@ -504,19 +504,19 @@ msgstr "Rotate the fullerene sphere and clear every safe face"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0125"
-msgstr "Keep clearing until a Storm Eye forms · Resolve every surrounding face to break it automatically 0/%d"
+msgstr "Cleanse Storm Eyes 0/%d\nKeep clearing until an eye appears"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0126"
-msgstr "Keep clearing for Storm Eyes · Reveal safe neighbors and correctly flag nearby pollution %d/%d"
+msgstr "Cleanse Storm Eyes %d/%d\nReveal safe neighbors; flag Cores"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0127"
-msgstr "Random wind may reveal or flag · Cloud Shield may block a mine"
+msgstr "Reveal every safe cloud face\nBreeze and Shield may help"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0128"
-msgstr "Clearing may trigger a random reveal or automatic flag"
+msgstr "Reveal every safe cloud face\nA Breeze may lend a hand"
 
 #. 目标与游戏状态 | 运行
 msgid "TXT_0129"
@@ -542,7 +542,7 @@ msgstr "Guide Active"
 msgid "TXT_0134"
 msgstr "Guide Complete"
 
-#. 目标与游戏状态 | 运行
+#. 目标与游戏状态 | 旧版
 msgid "TXT_0135"
 msgstr "Guide in Progress"
 
@@ -604,11 +604,11 @@ msgstr "Purification Paused"
 
 #. 暂停、失败与结算 | 运行
 msgid "TXT_0150"
-msgstr "Pollution Triggered"
+msgstr "Oops! Pollution is out of control!"
 
 #. 暂停、失败与结算 | 运行
 msgid "TXT_0151"
-msgstr "Pollution Triggered · %d Wrong Flags"
+msgstr "Oops! Pollution is out of control!\n%d wrong marker(s)"
 
 #. 暂停、失败与结算 | 运行
 msgid "TXT_0152"
@@ -632,103 +632,99 @@ msgstr "Status"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0157"
-msgstr "LMB Reveal · RMB Flag · Double-click to Chord · C Scan"
+msgstr "LMB Reveal · RMB Flag\nDouble-click: Expand"
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0158"
-msgstr "Move Arrows/WASD · J Reveal/Chord · K Flag · C Scan"
+msgstr "Arrows/WASD: Move\nJ: Reveal / Expand\nK: Flag"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0159"
 msgstr "Arrows / W S A D: Move"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0160"
 msgstr "Move Arrows/WASD · J Reveal/Chord · K Flag"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0161"
 msgstr "\nMouse controls remain available"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0162"
 msgstr "\nLeft: Reveal · Right: Flag · C: Scan"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0163"
 msgstr "\nDouble-click a number to expand"
-
-#. 操作与章节规则 | 运行
-msgid "TXT_0164"
-msgstr "First Reveal May Be a Core"
 
 #. 开发与预览 | 开发
 msgid "TXT_0165"
 msgstr "Controls\nLeft: Reveal · Right: Flag\nDouble-click numbers to expand"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0166"
-msgstr "Reefs block links; numbers ignore the far side"
+msgstr "Reef-separated cells\naren't neighbors."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0167"
 msgstr "Two Groups"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0168"
 msgstr "Three Groups"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0169"
 msgstr "%d Groups"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0170"
-msgstr "%s · %d buoys each · %d mines"
+msgstr "Each buoy group contains two mines."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0171"
-msgstr "Reveal safe buoys · Flag mines · Solved groups stop"
+msgstr "All 4 buoys must be revealed or flagged."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0172"
-msgstr "%s · Move every %d sec · Numbers update"
+msgstr "Every %ds, one buoy group drifts."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0173"
-msgstr "Any unflagged mine escaping = failure"
+msgstr "Any buoy in an unresolved group crossing the boundary means failure."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0174"
 msgstr "Source moves every 20 sec · Numbers update"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0175"
 msgstr "Center is locked · Clear both blue rings normally"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0176"
 msgstr "Clear both rings before the source escapes"
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0177"
-msgstr "Numbers count open zones · Clear one zone to open the next"
+msgstr "Clear this zone's safe cells\nto open the next zone."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0178"
-msgstr "Locked zones show missed cells and wrong flags"
+msgstr "Stuck? Check the\nstatus bar."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0179"
-msgstr "Sever the three Root Anchors"
+msgstr "Cleanse three roots; save the tree."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0180"
-msgstr "Nodes are locked and count in nearby numbers"
+msgstr "Nodules count; don't click."
 
-#. 操作与章节规则 | 运行
+#. 操作与章节规则 | 旧版
 msgid "TXT_0181"
-msgstr "\nReveal safe neighbors · Flag nearby Cores"
+msgstr "\nReveal safe cells; mark Cores."
 
 #. 操作与章节规则 | 运行
 msgid "TXT_0182"
@@ -746,15 +742,15 @@ msgstr "Scan Not Ready"
 msgid "TXT_0185"
 msgstr "Reveal one cell before using Eco Scan"
 
-#. 扫描与格子提示 | 运行
+#. 扫描与格子提示 | 旧版
 msgid "TXT_0186"
 msgstr "Scan Charge %d/%d"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0187"
-msgstr "Click the robot or press C, then choose a cell to scan"
+msgstr "C: Scan"
 
-#. 扫描与格子提示 | 运行
+#. 扫描与格子提示 | 旧版
 msgid "TXT_0188"
 msgstr "Click the robot or press C, then choose a hidden cell"
 
@@ -808,7 +804,7 @@ msgstr "Scan after first reveal · C"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0201"
-msgstr "Press C or click robot"
+msgstr "Click the Sprout to Start Eco Scan"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0202"
@@ -848,11 +844,11 @@ msgstr "The central source cannot be clicked; clear both pale-blue rings to puri
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0211"
-msgstr "Pollution Node Purified"
+msgstr "This Pollution Nodule Is Cleansed!"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0212"
-msgstr "Resolve every surrounding cell to purify the Pollution Node"
+msgstr "Reveal safe neighbors and mark the Pollution Cores to cleanse this nodule"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0213"
@@ -896,7 +892,7 @@ msgstr "Sprout marked a suspected source"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0223"
-msgstr "Suggested starting point (optional)"
+msgstr "Left-click here to try"
 
 #. 扫描与格子提示 | 运行
 msgid "TXT_0224"
@@ -908,19 +904,19 @@ msgstr "Nearby Pollution Cores: %d · Double-click to chord only when every flag
 
 #. 天空动态状态 | 运行
 msgid "TXT_0226"
-msgstr "Drag: Rotate · Left: Reveal · Right: Flag · Double-click Number: Expand · C: Scan\n"
+msgstr "Drag: Rotate\nLMB Reveal · RMB Flag\nDouble-click: Expand"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0227"
-msgstr "Keyboard mode: Arrows Select · W S A D Rotate · J Reveal/Chord · K Flag · R Center"
+msgstr "Arrows Select · WASD Rotate\nJ Reveal/Expand · K Flag\nR Center"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0228"
-msgstr "Rotate the sphere and find a safe starting face"
+msgstr "Rotate the Cloud Sphere and choose where to start"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0229"
-msgstr "Pollution spread · Regenerate and try again"
+msgstr "Pollution has spread. Regenerate and try again"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0230"
@@ -932,39 +928,39 @@ msgstr "%d Uses Left"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0232"
-msgstr "Wind Assist Triggered · The breeze is moving toward its target"
+msgstr "A Breeze is helping!"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0233"
-msgstr "Wind Assist Complete · Pollution Core flagged · %s"
+msgstr "Breeze flagged a Core!\n%s"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0234"
-msgstr "Wind Assist Complete · Safe face revealed · %s"
+msgstr "Breeze revealed a safe face!\n%s"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0235"
-msgstr "Cloud Shield Triggered · Clouds are wrapping around the Pollution Core"
+msgstr "Cloud Shield is helping!"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0236"
-msgstr "Cloud Shield Successful · Pollution Core flagged · %s"
+msgstr "Cloud Shield saved you!\nCore flagged · %s"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0237"
-msgstr "Keep clearing the cloud sphere until the first Storm Eye forms"
+msgstr "Keep clearing for the first Storm Eye."
 
 #. 天空动态状态 | 运行
 msgid "TXT_0238"
-msgstr "The Storm Eye is reforming far away · Keep clearing for Eye %d/%d"
+msgstr "Storm Eye %d/%d is gathering\nKeep clearing cloud faces"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0239"
-msgstr "Storm Eye %d/%d appeared · Reveal safe neighbors and flag nearby pollution"
+msgstr "Storm Eye %d/%d has appeared!"
 
 #. 天空动态状态 | 运行
 msgid "TXT_0240"
-msgstr "Storm Eye Broken · %d/%d"
+msgstr "Storm Eye cleansed · %d/%d"
 
 #. 引导通用 | 运行
 msgid "TXT_0241"
@@ -992,7 +988,7 @@ msgstr "This is a safe suggestion, but you may choose another cell"
 
 #. 引导通用 | 运行
 msgid "TXT_0247"
-msgstr "Start Exploring"
+msgstr "Continue"
 
 #. 引导通用 | 运行
 msgid "TXT_0248"
@@ -1004,7 +1000,7 @@ msgstr "Skip Intro"
 
 #. 引导通用 | 运行
 msgid "TXT_0250"
-msgstr "Next"
+msgstr "Continue"
 
 #. 引导通用 | 运行
 msgid "TXT_0251"
@@ -1016,283 +1012,283 @@ msgstr "A little mystery remains—go take a closer look."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0253"
-msgstr "Sprout: These Gray Cells Are Obstacles"
+msgstr "Sprout: These Cells Are Obstacles"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0254"
-msgstr "Obstacles cannot be revealed, flagged, or scanned, and they never contain pollution."
+msgstr "Obstacle cells cannot be revealed, marked, or scanned"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0255"
-msgstr "Ignore obstacle cells when reading nearby numbers."
+msgstr "They don't contain Pollution Cores either"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0256"
-msgstr "Sprout: Everything Else Works the Same"
+msgstr "Sprout: Everything Else Still Works the Same"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0257"
-msgstr "You do not need to clear obstacles—just reveal every other safe cell."
+msgstr "Leave obstacles alone and purify the other cells"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0258"
-msgstr "Sprout: This Is a Pollution Node"
+msgstr "Sprout: Oh! A Pollution Nodule!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0259"
-msgstr "You cannot click the node, and nearby numbers count it as one source of pollution."
+msgstr "You can't click a nodule directly, but it's a Pollution Core too"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0260"
-msgstr "Sprout: Resolve the Cells Around It"
+msgstr "Sprout: Let's Start Around It!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0261"
-msgstr "Reveal the safe cells around it and flag the surrounding Pollution Cores."
+msgstr "Reveal every safe cell around the nodule and mark every Pollution Core"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0262"
-msgstr "Once every surrounding cell is resolved correctly, the node purifies itself."
+msgstr "Get every neighbor right and we'll cleanse the nodule!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0263"
-msgstr "Sprout: Sever the Three Root Anchors First"
+msgstr "Sprout: Pollution's got the old tree too!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0264"
-msgstr "The large tree in the center cannot be clicked. Start with the three roots connected to it."
+msgstr "We can't cleanse the tree yet. Let's start with its three roots."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0265"
-msgstr "The arrow points to a nodule group on one of the roots."
+msgstr "Look! The arrow points to a nodule group. Let's start there."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0266"
-msgstr "Sprout: Use Normal Minesweeper Around Each Nodule Group"
+msgstr "Sprout: Let's cleanse the whole root together!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0267"
-msgstr "Reveal every safe cell around the group and correctly flag every nearby Pollution Core."
+msgstr "Like cleansing a single Pollution Nodule."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0268"
-msgstr "Once all three roots are severed, the central tree purifies itself."
+msgstr "Once all three roots are clean, the tree can recover too!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0269"
-msgstr "Sprout: Eco Scan Is Fully Charged"
+msgstr "Sprout: Eco probe is fully charged!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0270"
-msgstr "Reveals and first-time flags charge it, and stored energy carries into the next level."
+msgstr "Revealing cells and marking both charge it"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0271"
-msgstr "Sprout: Press C and Choose a Hidden Cell"
+msgstr "Sprout: Click me to pick a cell to probe"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0272"
-msgstr "Scan resolves the selected cell directly: a safe cell is revealed and a Pollution Core is flagged."
+msgstr "The chosen cell is resolved instantly"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0273"
-msgstr "Once fully charged, you can use one Eco Scan."
+msgstr "Unused energy carries over to the next level"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0274"
-msgstr "Sprout: The Ocean Board Uses Hexagons"
+msgstr "Sprout: We've reached the seafloor!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0275"
-msgstr "Each cell has at most six neighbors instead of eight."
+msgstr "The cells here are hexagons, and each has six neighbors."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0276"
-msgstr "Read each number using the six hexagonal directions."
+msgstr "Reveal what you know is safe, and flag the Pollution Cores you find."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0277"
-msgstr "Sprout: The Minesweeper Rules Are Unchanged"
+msgstr "Sprout: The numbers still help us!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0278"
-msgstr "Buoys can still be revealed, flagged, and expanded with a double-click."
+msgstr "Revealing, flagging and expanding are still the familiar controls."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0279"
-msgstr "Sprout: Coral Walls Separate Two Cells"
+msgstr "Sprout: Look! A coral reef!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0280"
-msgstr "Cells on opposite sides of a wall are not adjacent, and numbers ignore the other side."
+msgstr "When a coral reef blocks the edge between two cells, they aren't neighbors anymore."
 
-#. 陆地与海洋引导 | 运行
+#. 陆地与海洋引导 | 旧版
 msgid "TXT_0281"
-msgstr "First see which two cells the wall separates, then read the numbers."
+msgstr "An unblocked shared edge still makes two cells neighbors."
 
-#. 陆地与海洋引导 | 运行
+#. 陆地与海洋引导 | 旧版
 msgid "TXT_0282"
-msgstr "Sprout: You Can Go Around the Wall"
+msgstr "Sprout: Let's go around the reef ends!"
 
-#. 陆地与海洋引导 | 运行
+#. 陆地与海洋引导 | 旧版
 msgid "TXT_0283"
-msgstr "Any shared edge not blocked by a wall remains normally adjacent."
+msgstr "You can go around either end of the reef, and still reveal cells on both sides."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0284"
-msgstr "Double-click expansion will not cross a coral wall either."
+msgstr "Let's go around the ends of the coral reef!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0285"
-msgstr "Sprout: The Pale-Blue Buoys Drift Right"
+msgstr "Sprout: These buoys keep drifting right!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0286"
-msgstr "Each group has four buoys: two are safe and two are mines."
+msgstr "Each group has four buoys, but only two hide Pollution Cores."
 
-#. 陆地与海洋引导 | 运行
+#. 陆地与海洋引导 | 旧版
 msgid "TXT_0287"
-msgstr "Sprout: Solve Each Group Before It Escapes"
+msgstr "Sprout: Let's stop this group together!"
 
-#. 陆地与海洋引导 | 运行
+#. 陆地与海洋引导 | 旧版
 msgid "TXT_0288"
-msgstr "Reveal both safe buoys and flag both mines to stop that group."
+msgstr "Reveal both safe buoys and flag both Pollution Cores to stop this group."
 
-#. 陆地与海洋引导 | 运行
+#. 陆地与海洋引导 | 旧版
 msgid "TXT_0289"
-msgstr "You lose if an unresolved mine drifts beyond the right boundary."
+msgstr "An unflagged Core crossing the right filter boundary ends the run."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0290"
-msgstr "Sprout: Numbers Recalculate After Every Move"
+msgstr "Sprout: Let's stop the buoys together!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0291"
-msgstr "Whenever the buoys move, nearby numbers update for their new positions."
+msgstr "The buoys stop drifting once they're all revealed or flagged."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0292"
-msgstr "Even revealed numbers may change with them."
+msgstr "If unsolved buoys drift past the right containment boundary, you lose."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0293"
-msgstr "Sprout: The Tide Reveals the Board in Zones"
+msgstr "Sprout: Let's clear one patch at a time!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0294"
-msgstr "Only the lit zone is available now; later zones remain locked."
+msgstr "Clear the pollution here before the tide recedes from the next zone."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0295"
-msgstr "Reveal every safe cell in the current zone first."
+msgstr "Zones still under water can't be revealed, flagged or scanned."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0296"
-msgstr "Sprout: Completing a Zone Opens the Next"
+msgstr "Sprout: Check the numbers after the tide!"
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0297"
-msgstr "Opening a new zone automatically expands a safe patch; every zero region expands through its numbered boundary."
+msgstr "While the next zone is underwater, cells across its border aren't neighbors."
 
 #. 陆地与海洋引导 | 运行
 msgid "TXT_0298"
-msgstr "If the next zone stays locked, the status bar shows missed cells or wrong flags."
+msgstr "When the tide recedes, border numbers update, but the Pollution Cores stay in place."
 
 #. 天空引导 | 运行
 msgid "TXT_0299"
-msgstr "Sprout: This Board Is a Sphere"
+msgstr "Sprout: We've Reached the Sky!"
 
 #. 天空引导 | 运行
 msgid "TXT_0300"
-msgstr "The cloud sphere has no edge; the far side is still part of the same board."
+msgstr "The sky's Pollution Cores hide in the Cloud Sphere. There's more to explore on the far side, too."
 
 #. 天空引导 | 运行
 msgid "TXT_0301"
-msgstr "Only cloud faces sharing an edge are adjacent."
+msgstr "Only cells sharing an edge count as neighbors."
 
 #. 天空引导 | 运行
 msgid "TXT_0302"
-msgstr "Sprout: Learn to Rotate the Cloud Sphere"
+msgstr "Sprout: Let's Take a Look Around!"
 
 #. 天空引导 | 运行
 msgid "TXT_0303"
-msgstr "Drag with the mouse or use W S A D to rotate; use the arrow keys to change the selected face."
+msgstr "Hold the left mouse button and drag to rotate the Cloud Sphere."
 
 #. 天空引导 | 运行
 msgid "TXT_0304"
-msgstr "J reveals and K flags; all other Minesweeper rules stay the same."
+msgstr "Revealing, flagging, and expanding work just as before."
 
 #. 天空引导 | 运行
 msgid "TXT_0305"
-msgstr "Sprout: A Breeze May Appear Here"
+msgstr "Sprout: Look, a Breeze!"
 
 #. 天空引导 | 运行
 msgid "TXT_0306"
-msgstr "When you reveal a safe face, the breeze may resolve one extra hidden face."
+msgstr "The Breeze is here to help you."
 
 #. 天空引导 | 运行
 msgid "TXT_0307"
-msgstr "It reveals a safe face or automatically flags pollution."
+msgstr "When a Breeze blows by, the Cloud Sphere turns toward the cell it found."
 
 #. 天空引导 | 运行
 msgid "TXT_0308"
-msgstr "Sprout: The Sphere Turns Toward the Target"
+msgstr "Sprout: See What the Breeze Found!"
 
 #. 天空引导 | 运行
 msgid "TXT_0309"
-msgstr "When the breeze triggers, the view rotates to the affected face."
+msgstr "It revealed a safe cell, or it may have flagged a Pollution Core."
 
 #. 天空引导 | 运行
 msgid "TXT_0310"
-msgstr "This is random assistance; all other deductions are still yours."
+msgstr "The Breeze won't help every time. Let's keep following the numbers."
 
 #. 天空引导 | 运行
 msgid "TXT_0311"
-msgstr "Sprout: This Level Has a Cloud Shield"
+msgstr "Sprout: The sphere keeps growing!"
 
 #. 天空引导 | 运行
 msgid "TXT_0312"
-msgstr "If you hit pollution, the Cloud Shield may prevent that failure."
+msgstr "Let the Cloud Shield protect you."
 
 #. 天空引导 | 运行
 msgid "TXT_0313"
-msgstr "It can succeed at most once per game and is not guaranteed to trigger."
+msgstr "If you hit a Pollution Core, the Cloud Shield may appear."
 
 #. 天空引导 | 运行
 msgid "TXT_0314"
-msgstr "Sprout: A Blocked Core Is Flagged Automatically"
+msgstr "Sprout: The Cloud Shield Flags It Too!"
 
 #. 天空引导 | 运行
 msgid "TXT_0315"
-msgstr "A polluted face blocked by the shield receives a flag automatically."
+msgstr "A Pollution Core you hit gets flagged by the Cloud Shield automatically."
 
 #. 天空引导 | 运行
 msgid "TXT_0316"
-msgstr "The shield is only protection; you should still reason from the numbers."
+msgstr "It appears at most once per game, so stay careful."
 
 #. 天空引导 | 运行
 msgid "TXT_0317"
-msgstr "Sprout: Special Storm Eye Cores Will Appear Here"
+msgstr "Sprout: What's spinning? A Storm Eye!"
 
 #. 天空引导 | 运行
 msgid "TXT_0318"
-msgstr "A Storm Eye may hide on the far side; an edge arrow points toward it."
+msgstr "A Storm Eye is a special Pollution Core. Try to resolve it first."
 
 #. 天空引导 | 运行
 msgid "TXT_0319"
-msgstr "The Storm Eye is a special pollution core and cannot be revealed or flagged directly."
+msgstr "If one appears on the far side of the Cloud Sphere, follow the arrow to find it."
 
 #. 天空引导 | 运行
 msgid "TXT_0320"
-msgstr "Sprout: Resolve Every Face Around the Storm Eye"
+msgstr "Sprout: Let's Cleanse the Storm Eye!"
 
 #. 天空引导 | 运行
 msgid "TXT_0321"
-msgstr "Reveal every safe neighbor and correctly flag nearby pollution; the Storm Eye then cleanses automatically."
+msgstr "Once every surrounding cell is correctly revealed or flagged, the Storm Eye is cleansed."
 
 #. 天空引导 | 运行
 msgid "TXT_0322"
-msgstr "Break every Storm Eye in this level to complete it."
+msgstr "Cleanse every Storm Eye in this level to finish early!"
 
 #. 宇宙引导 | 运行
 msgid "TXT_0323"
@@ -1534,19 +1530,19 @@ msgstr "Generating Star Map"
 msgid "TXT_0382"
 msgstr "Only glowing links create adjacency · The universe keeps growing after each nebula is cleared"
 
-#. 海洋动态状态 | 运行
+#. 海洋动态状态 | 旧版
 msgid "TXT_0383"
 msgstr "%d drift groups started · Group %d moves in %d seconds · %d cells from boundary"
 
-#. 海洋动态状态 | 运行
+#. 海洋动态状态 | 旧版
 msgid "TXT_0384"
 msgstr "%d drift groups crossed the filter · All live mines were safely intercepted"
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0385"
-msgstr "All live mines in %d groups intercepted · Drifting stopped"
+msgstr "All buoys stopped!"
 
-#. 补充与兼容文案 | 运行
+#. 补充与兼容文案 | 旧版
 msgid "TXT_0386"
 msgstr "Move Arrows/WASD · J Reveal/Chord · K Flag · C Scan"
 
@@ -1556,7 +1552,7 @@ msgstr "Both pollution rings cleared · Drifting source purified"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0388"
-msgstr "Two cells are adjacent only when they share an edge."
+msgstr "Look for an edge the two cells share. Touching corners doesn't count."
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0389"
@@ -1564,7 +1560,7 @@ msgstr "For example, 1 means one adjacent Pollution Core"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0390"
-msgstr "Left-click another white cell"
+msgstr "Try revealing another cell"
 
 #. 开发与预览 | 开发
 msgid "TXT_0391"
@@ -1572,7 +1568,7 @@ msgstr "Clear Time\n00:00.0\n\nPollution Cores    0/%d\n\nStatus\nReady"
 
 #. 开发与预览 | 开发
 msgid "TXT_0392"
-msgstr "Objective\nClear every Pollution Core\nRestore the %s ecosystem\n\n"
+msgstr "Objective\nReveal every safe cell\nRestore the ecology\n\n"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0393"
@@ -1592,23 +1588,19 @@ msgstr "Right-click to remove this wrong flag"
 
 #. 第一关教学 | 运行
 msgid "TXT_0397"
-msgstr "Right-click to place a detection seed"
+msgstr "Right-click to place a pollution marker"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0398"
-msgstr "A safe cell is revealed and a Pollution Core is flagged automatically; recharge after use."
+msgstr "Safe cells flip open, cores get flagged; the probe recharges after use"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0399"
-msgstr "Sprout Introduces the Board"
+msgstr "Click Here to Try"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0400"
 msgstr "Left: Reveal\nRight: Pollution Flag\nClick a Revealed Number to Expand\n\nOnly Glowing Links Are Adjacent\nCurves and Wormholes Count\n\nFirst Reveal Is Always Safe\nThe First Four Boards Also Protect Neighbors\nHitting a Core Uses a Shield\nand Auto-flags It\n\nBoard Play Is Mouse-only\nEco Scan Is Unavailable\n\nDeeper Voyages\nCreate Richer Star Webs"
-
-#. 补充与兼容文案 | 运行
-msgid "TXT_0401"
-msgstr "Left-click this suggested safe cell"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0402"
@@ -1620,7 +1612,7 @@ msgstr "Quick Expand"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0404"
-msgstr "A number may therefore count both ordinary pollution and a node."
+msgstr "Nearby numbers count it too, so don't leave it out!"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0405"
@@ -1628,7 +1620,7 @@ msgstr "Scan C"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0406"
-msgstr "The sweeper will continue after you find a number"
+msgstr ""
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0407"
@@ -1652,11 +1644,11 @@ msgstr "Press K to remove this wrong flag"
 
 #. 第一关教学 | 运行
 msgid "TXT_0412"
-msgstr "Press K to place a detection seed"
+msgstr "Press K to place a pollution marker"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0413"
-msgstr "A number still shows the total pollution in adjacent cells."
+msgstr "Each number tells you how many Pollution Cores are hidden in neighboring cells."
 
 #. 开发与预览 | 开发
 msgid "TXT_0414"
@@ -1672,11 +1664,11 @@ msgstr "All flags are in use · If a mine remains, check for a wrong flag"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0417"
-msgstr "Correct flags will expand the surrounding safe cells"
+msgstr "Double-click it when all markers are right\nA wrong one blocks the quick expand"
 
 #. 第一关教学 | 运行
 msgid "TXT_0418"
-msgstr "Detection Seed"
+msgstr "Pollution Marker"
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0419"
@@ -1732,15 +1724,11 @@ msgstr "Tidal Zone %d incomplete · %d safe cells remain hidden, including %d wr
 
 #. 第一关教学 | 运行
 msgid "TXT_0432"
-msgstr "White = Hidden · Yellow = Safe Suggestion"
+msgstr "Some cells are safe, others hide scary cores"
 
 #. 第一关教学 | 运行
 msgid "TXT_0433"
-msgstr "A misplaced seed blocks quick number expansion"
-
-#. 第一关教学 | 运行
-msgid "TXT_0434"
-msgstr "Move here and press J to reveal"
+msgstr ""
 
 #. 第一关教学 | 运行
 msgid "TXT_0435"
@@ -1750,29 +1738,29 @@ msgstr "Move, then press J to reveal another cell"
 msgid "TXT_0436"
 msgstr "Level %d · %s\n%d × %d Board\nPollution Cores %d\n\n"
 
-#. 海洋动态状态 | 运行
+#. 海洋动态状态 | 旧版
 msgid "TXT_0437"
 msgstr "Group %d safely intercepted · Remaining groups continue"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0438"
-msgstr "Group %d moved · All numbers updated · %d cells from boundary"
+msgstr "Group %d drifted."
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0439"
-msgstr "Drift Group %d · Moves in %d seconds · %d cells from boundary"
+msgstr "Group %d: Drifts in %ds"
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0440"
-msgstr "Drift Group %d is moving right"
+msgstr "Group %d is drifting."
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0441"
-msgstr "Group %d live mines intercepted · Remaining groups continue moving"
+msgstr "Group %d stopped!"
 
 #. 海洋动态状态 | 运行
 msgid "TXT_0442"
-msgstr "Group %d live mines crossed the filter unflagged · Mission failed"
+msgstr "Group %d crossed the boundary!"
 
 #. 开发与预览 | 开发
 msgid "TXT_0443"
@@ -1796,11 +1784,11 @@ msgstr "Level 5:5"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0448"
-msgstr "Keep using numbers to determine which ordinary cells hide pollution."
+msgstr "Keep using the numbers to locate Pollution Cores"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0449"
-msgstr "Keep Looking"
+msgstr "Great! One more time"
 
 #. 补充与兼容文案 | 运行
 msgid "TXT_0450"
@@ -1850,9 +1838,9 @@ msgstr "English"
 msgid "TXT_0461"
 msgstr "How to Play"
 
-#. 完整操作说明 | 运行
+#. 完整操作说明 | 旧版
 msgid "TXT_0462"
-msgstr "[GOALS, NUMBERS, AND COUNTER]\nThe basic goal is to reveal every safe cell; drift groups, pollution nodes, Storm Eyes, and other special mechanics also require their related cells to be resolved. A number counts pollution directly adjacent under the current chapter's rules, and Land pollution nodes count too. The top X/Y means flags used / total cores. Wrong and automatic flags increase X; unflaggable Land nodes are excluded from Y. When every surrounding flag is correct and the count matches, double-click a revealed number in Land, Ocean, or Sky (or press J in Keyboard mode) to expand. In Universe, click a revealed number again.\n\n[MOUSE CONTROLS]\nLand/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to expand. Sky: left-click to reveal, right-click to flag, drag to rotate, and double-click a revealed number to expand. Universe: left-click to reveal, right-click to flag, and click a revealed number again to expand. In Land, Ocean, and Sky, press C or click the robot when Eco Scan is full, then choose a hidden cell. Cancel with Right Click, Esc, or C; Keyboard mode in Land/Ocean also accepts K. Universe has no Eco Scan. Outside Scan targeting, Esc toggles pause.\n\n[KEYBOARD AND MENUS]\nIn Keyboard mode, Land/Ocean use Arrows or W S A D to move, J to reveal or expand, and K to flag. Sky uses Arrows to select an adjacent face, W S A D to rotate, J to reveal or expand, K to flag, and R to center the selected face. C activates Eco Scan in the first three chapters. Mouse remains available. Universe board play is mouse-only and ignores the Controls setting. Menus use Arrows and Enter/Space. F11 or Alt+Enter changes display mode.\n\n[ECO SCAN]\nIn Land, Ocean, and Sky, each successful reveal/expand action and the first flag placed on each cell add 1 energy. One action still adds only 1 even if it opens several cells, and energy carries between levels. Each level requires one reveal before Scan can be used. The robot's three lights mark 4/8/12 energy. A scanned safe cell is revealed automatically; a Pollution Core is confirmed and flagged automatically. The charge then empties and must refill. Universe has no Eco Scan.\n\n[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\nLevel 1: 5×5/5 cores; Level 2: 6×6/8; Level 3: 8×8/9 with inoperable ruins ignored by adjacency; Level 4: 9×9/12 with random obstacle clusters.\nPollution nodules on Levels 5–7 cannot be operated and count in nearby numbers. Reveal safe neighbors and correctly flag polluted neighbors to cleanse them. The first action around any uncleansed nodule starts one shared timer for the level. Ordinary actions do not extend it; cleansing one group resets the full time. On timeout, every uncleansed group with progress repollutes its local area plus one outer ring: safe cells close, flags and Scan confirmations clear, and the same number of cores is redistributed inside. Outside reveal states, flags, and core positions stay unchanged; boundary numbers update. Pauses, guides, and interaction locks stop the timer.\nLevel 5: 10×10/13, 1 obstacle cluster, 2 nodules, shared 45 seconds. Level 6: 12×12/17, 2 obstacle clusters, 3 nodules, shared 40 seconds. Level 7: 13×13/20, three roots with 3 nodules each, and the mother tree, shared 60 seconds; cleanse all three roots to cleanse the boss.\n\n[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\nOnly hexes sharing an edge are adjacent. Coral walls cut number counting, zero expansion, and chording. Level 8: 6×6/7; Level 9: 8×7/10 with 1 wall; Level 10: 9×8/14 with 2 walls.\nLevel 11: 10×9/17 total cores; two drift groups take turns moving every 7 seconds, each with 2 safe buoys and 2 mines. Level 12: 11×10/21 total; three groups move every 6 seconds. Reveal buoys and flag mines. Solving one group stops only that group; an unflagged mine crossing the filter causes failure, and related numbers recalculate after every move.\nLevel 13: 12×11/25 with 1 wall and 2 tidal zones. Level 14: 13×12/30 with 2 walls and 3 zones. Only the lit zone can be played; completion unlocks the next and opens a safe patch. Earlier zones remain playable and boundary numbers recalculate.\n\n[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\nPentagons have 5 neighbors and hexagons have 6; only shared sphere edges count, rear faces remain on the same board, and every first reveal is safe. Levels 15–21 use 32/6, 42/8, 92/15, 162/26, 252/40, 362/58, and 492/78 faces/cores.\nOn Levels 17–21, each safe reveal has a one-in-five chance to trigger Breeze Aid, revealing a safe face or auto-flagging a core. Levels 19–21 also have one Cloud Shield: a core hit has a seven-in-ten chance to be blocked and auto-flagged, consuming the shield on success. Levels 20/21 reveal 3/5 Storm Eyes as exploration advances; these Eyes are included in the 58/78 total. Eyes cannot be operated and break automatically when their safe and polluted neighbors are resolved—no double-click required. Break them all to win.\n\n[UNIVERSE EXPEDITION]\nUniverse has no numbered levels, separate map, Eco Scan, or Badge Book, and board play is mouse-only. The left panel shows expedition data; the right panel pauses, starts a new Universe, or returns to Sky. Only glowing links are adjacent; silver lines, cyan curves, and purple wormholes all count.\nEvery first reveal is safe: Boards 1–2 also protect 2 neighbors, Boards 3–4 protect 1, and later boards protect only the chosen node. The ship starts with 2 shields. Hitting pollution first consumes 1 shield and auto-flags it; a hit after shields are gone ends the expedition. Board 7 restores 1 shield, then every 5 boards restores another, up to 2. Revealing every safe star automatically generates the next board.\nEvery genuinely generated board—initial entry, successful advance, or new expedition—adds 1 to the lifetime total. Failure, pause, exit, and UI refresh never reset or duplicate it. The first generation of Board 1,000 freezes the expedition for a one-time perspective crawl and trophy reveal, then opens Badge Hall for placement. Closing the Hall resumes that same board.\n\n[BADGES, BADGE BOOKS, AND BADGE HALL]\nAfter any Land, Ocean, or Sky victory, that level's badge spins and grows at center with a golden glow. Any mouse button, Space, Enter, or a gamepad button stores it in that chapter's Badge Book. From victory, Left Click, Space, Enter, or gamepad continues to the next level/chapter; Right Click or Esc returns to victory; the bottom-right button opens Badge Hall.\nBadge entries on the welcome screen, maps, and Settings all open Badge Hall. The Hall has no Back button: left- or right-click outside the four showcases, or press Esc, to return. Land, Ocean, and Sky covers open their Badge Books; Universe has no button or Badge Book. Before 1,000, asteroids show ones, planets tens, and clusters hundreds. At 1,000, a permanently rotating galaxy and trophy replace those counters while the numeric lifetime total keeps growing.\n\n[NAVIGATION, SETTINGS, AND ASSISTS]\n“Start Journey” opens the Land map and “Badge Hall” opens the Hall. Click a map node once to select and again to enter. From pause, “Back to Level” resumes the current game; normal maps use “Enter Selected Level.” Sky's next chapter enters Universe, and Universe can return to Sky.\nSettings control master volume, BGM, SFX, display mode, mouse/keyboard controls for the first three chapters, and language, and save automatically. Land/Ocean may hit pollution on the first reveal by default. After 2 consecutive first-reveal losses, the next attempt guarantees safety; after 3 consecutive losses within the first 5 moves, the next attempt opens a safe region. Sky and Universe always guarantee the first reveal.\nLand, Ocean, and Sky pause menus can resume, restart, open Level Select, Settings, or this guide, return to the main menu, or quit. Universe pause can resume, start a new Universe, open Settings or this guide, return to the welcome screen, or quit; its right panel separately returns to Sky."
+msgstr "[GOALS, NUMBERS, AND COUNTER]\nThe basic goal is to reveal every safe cell; drift groups, pollution nodules, Storm Eyes, and other special mechanics also require their related cells to be resolved. A number counts pollution directly adjacent under the current chapter's rules, and Land pollution nodules count too. The top X/Y means flags used / total cores. Wrong and automatic flags increase X; unflaggable Land nodules are excluded from Y. When every surrounding flag is correct and the count matches, double-click a revealed number in Land, Ocean, or Sky (or press J in Keyboard mode) to expand. In Universe, click a revealed number again.\n\n[MOUSE CONTROLS]\nLand/Ocean: left-click to reveal, right-click to flag, and double-click a revealed number to expand. Sky: left-click to reveal, right-click to flag, drag to rotate, and double-click a revealed number to expand. Universe: left-click to reveal, right-click to flag, and click a revealed number again to expand. In Land, Ocean, and Sky, press C or click the robot when Eco Scan is full, then choose a hidden cell. Cancel with Right Click, Esc, or C; Keyboard mode in Land/Ocean also accepts K. Universe has no Eco Scan. Outside Scan targeting, Esc toggles pause.\n\n[KEYBOARD AND MENUS]\nIn Keyboard mode, Land/Ocean use Arrows or W S A D to move, J to reveal or expand, and K to flag. Sky uses Arrows to select an adjacent face, W S A D to rotate, J to reveal or expand, K to flag, and R to center the selected face. C activates Eco Scan in the first three chapters. Mouse remains available. Universe board play is mouse-only and ignores the Controls setting. Menus use Arrows and Enter/Space. F11 or Alt+Enter changes display mode.\n\n[ECO SCAN]\nIn Land, Ocean, and Sky, each successful reveal/expand action and the first flag placed on each cell add 1 energy. One action still adds only 1 even if it opens several cells, and energy carries between levels. Each level requires one reveal before Scan can be used. The robot's three lights mark 4/8/12 energy. A scanned safe cell is revealed automatically; a Pollution Core is confirmed and flagged automatically. The charge then empties and must refill. Universe has no Eco Scan.\n\n[LEVELS 1–7: LAND, UP TO 8 SQUARE NEIGHBORS]\nLevel 1: 5×5/5 cores; Level 2: 6×6/8; Level 3: 8×8/9 with inoperable ruins ignored by adjacency; Level 4: 9×9/12 with random obstacle clusters.\nPollution nodules on Levels 5–7 cannot be operated and count in nearby numbers. Reveal safe neighbors and correctly flag polluted neighbors to cleanse them. The first action around any uncleansed nodule starts one shared timer for the level. Ordinary actions do not extend it; cleansing one group resets the full time. On timeout, every uncleansed group with progress repollutes its local area plus one outer ring: safe cells close, flags and Scan confirmations clear, and the same number of cores is redistributed inside. Outside reveal states, flags, and core positions stay unchanged; boundary numbers update. Pauses, guides, and interaction locks stop the timer.\nLevel 5: 10×10/13, 1 obstacle cluster, 2 nodules, shared 45 seconds. Level 6: 12×12/17, 2 obstacle clusters, 3 nodules, shared 40 seconds. Level 7: 13×13/20, three roots with 3 nodules each, and the mother tree, shared 60 seconds; cleanse all three roots to cleanse the boss.\n\n[LEVELS 8–14: OCEAN, UP TO 6 HEX NEIGHBORS]\nOnly hexes sharing an edge are adjacent. Coral walls first appear in Level 10 and cut number counting, zero expansion, and chording. Level 8: 6×6/7; Level 9: 8×7/10; Level 10: 9×8/14 with 2 walls.\nLevel 11: 10×9/17 total cores; two drift groups take turns moving every 7 seconds, each with 2 safe buoys and 2 mines. Level 12: 11×10/21 total; three groups move every 6 seconds. Reveal buoys and flag mines. Solving one group stops only that group; any buoy in an unresolved group crossing the right isolation boundary causes failure, and related numbers recalculate after every move.\nLevel 13: 12×11/25 with 1 wall and 2 tidal zones. Level 14: 13×12/30 with 2 walls and 3 zones. Only the lit zone can be played; completion unlocks the next and opens a safe patch. Earlier zones remain playable and boundary numbers recalculate.\n\n[LEVELS 15–21: SKY, SHARED-EDGE SPHERE ADJACENCY]\nPentagons have 5 neighbors and hexagons have 6; only shared sphere edges count, rear faces remain on the same board, and every first reveal is safe. Levels 15–21 use 32/6, 42/8, 92/15, 162/26, 252/40, 362/58, and 492/78 faces/cores.\nOn Levels 17–21, each safe reveal has a one-in-five chance to trigger Breeze Aid, revealing a safe face or auto-flagging a core. Levels 19–21 also have one Cloud Shield: a core hit has a seven-in-ten chance to be blocked and auto-flagged, consuming the shield on success. Levels 20/21 reveal 3/5 Storm Eyes as exploration advances; these Eyes are included in the 58/78 total. Eyes cannot be operated and break automatically when their safe and polluted neighbors are resolved—no double-click required. Break them all to win.\n\n[UNIVERSE EXPEDITION]\nUniverse has no numbered levels, separate map, Eco Scan, or Badge Book, and board play is mouse-only. The left panel shows expedition data; the right panel pauses, starts a new Universe, or returns to Sky. Only glowing links are adjacent; silver lines, cyan curves, and purple wormholes all count.\nEvery first reveal is safe: Boards 1–2 also protect 2 neighbors, Boards 3–4 protect 1, and later boards protect only the chosen node. The ship starts with 2 shields. Hitting pollution first consumes 1 shield and auto-flags it; a hit after shields are gone ends the expedition. Board 7 restores 1 shield, then every 5 boards restores another, up to 2. Revealing every safe star automatically generates the next board.\nEvery genuinely generated board—initial entry, successful advance, or new expedition—adds 1 to the lifetime total. Failure, pause, exit, and UI refresh never reset or duplicate it. The first generation of Board 1,000 freezes the expedition for a one-time perspective crawl and trophy reveal, then opens Badge Hall for placement. Closing the Hall resumes that same board.\n\n[BADGES, BADGE BOOKS, AND BADGE HALL]\nAfter any Land, Ocean, or Sky victory, that level's badge spins and grows at center with a golden glow. Any mouse button, Space, Enter, or a gamepad button stores it in that chapter's Badge Book. From victory, Left Click, Space, Enter, or gamepad continues to the next level/chapter; Right Click or Esc returns to victory; the bottom-right button opens Badge Hall.\nBadge entries on the welcome screen, maps, and Settings all open Badge Hall. The Hall has no Back button: left- or right-click outside the four showcases, or press Esc, to return. Land, Ocean, and Sky covers open their Badge Books; Universe has no button or Badge Book. Before 1,000, asteroids show ones, planets tens, and clusters hundreds. At 1,000, a permanently rotating galaxy and trophy replace those counters while the numeric lifetime total keeps growing.\n\n[NAVIGATION, SETTINGS, AND ASSISTS]\n“Start Journey” opens the Land map and “Badge Hall” opens the Hall. Click a map node once to select and again to enter. From pause, “Back to Level” resumes the current game; normal maps use “Enter Selected Level.” Land has no previous chapter and chapter navigation does not loop. Sky's next chapter enters Universe, and Universe can return to Sky.\nSettings control master volume, BGM, SFX, display mode, mouse/keyboard controls for the first three chapters, and language, and save automatically. Land/Ocean may hit pollution on the first reveal by default. After 2 consecutive first-reveal losses, the next attempt guarantees safety; after 3 consecutive losses within the first 5 moves, the next attempt opens a safe region. Sky and Universe always guarantee the first reveal.\nLand, Ocean, and Sky pause menus can resume, restart, open Level Select, Settings, or this guide, return to the main menu, or quit. Universe pause can resume, start a new Universe, open Settings or this guide, return to the welcome screen, or quit; its right panel separately returns to Sky."
 
 #. 徽章系统 | 运行
 msgid "TXT_0463"
@@ -1922,57 +1910,57 @@ msgstr "Lifetime Galaxy Achievement · The Developer Was Wrong"
 msgid "TXT_0479"
 msgstr "The ultimate trophy and galaxy now remain forever in the Universe Ecology Showcase"
 
-#. 陆地污染再生 | 运行
+#. 陆地污染再生 | 旧版
 msgid "TXT_0480"
-msgstr "\nAny nodule action starts the shared %d-second timer\nCleanse one group to reset it · Timeout repollutes one outer ring"
+msgstr "\nPollution spreads every %d s."
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0481"
-msgstr "Nodule regrowth: %d seconds"
+msgstr "Pollution spreads in %d seconds"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0482"
-msgstr "Regrowth in %d seconds"
+msgstr "Pollution spreading soon: %d seconds"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0483"
-msgstr "Nodule regrowth repolluted the area"
+msgstr "Pollution spread: nearby cells are polluted again"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0484"
-msgstr "Sprout: Nodules Push Back"
+msgstr "Sprout: Watch Out—Pollution Can Spread!"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0485"
-msgstr "The first action around any nodule group starts the level's single shared timer."
+msgstr "Start playing and the cleansing countdown begins."
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0486"
-msgstr "Cleansing one group resets the timer; ordinary actions do not extend it."
+msgstr "Cleansing any root resets the countdown."
 
-#. 陆地污染再生 | 运行
+#. 陆地污染再生 | 旧版
 msgid "TXT_0487"
 msgstr "Sprout: Timeout Repollutes"
 
-#. 陆地污染再生 | 运行
+#. 陆地污染再生 | 旧版
 msgid "TXT_0488"
 msgstr "On timeout, every uncleansed nodule with progress closes again across one outer ring."
 
-#. 陆地污染再生 | 运行
+#. 陆地污染再生 | 旧版
 msgid "TXT_0489"
 msgstr "All flags and scan confirmations in each affected area are removed."
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0490"
-msgstr "Sprout: Pollution Cores Shift"
+msgstr "Sprout: The Old Clues Can't Be Trusted!"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0491"
-msgstr "During regrowth, pollution cores in the area shift."
+msgstr "Pollution spreads across two rings of cells, reshuffling every Pollution Core inside."
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0492"
-msgstr "Outside reveals, flags, and core positions stay unchanged; boundary numbers update."
+msgstr "Our new clues are mixed up again—let's look for them together!"
 
 #. 陆地污染再生 | 运行
 msgid "TXT_0494"
@@ -1981,3 +1969,1695 @@ msgstr "All pollution nodules are fully cleansed"
 #. 地图与导航 | 运行
 msgid "TXT_0495"
 msgstr "Enter Selected Level"
+
+#. 扫描与提示 | 运行
+msgid "TXT_0498"
+msgstr "Click Sprout to Scan"
+
+#. 扫描与提示 | 运行
+msgid "TXT_0497"
+msgstr "Scan Charging"
+
+#. 新手引导 | 运行
+msgid "TXT_0499"
+msgstr "Hi!"
+
+#. 新手引导 | 运行
+msgid "TXT_0500"
+msgstr "Sprout will be by your side on the cleanup journey ahead!"
+
+#. 新手引导 | 运行
+msgid "TXT_0501"
+msgstr "I'm Sprout, your eco robot!"
+
+#. 第一关教学 | 运行
+msgid "TXT_0502"
+msgstr "The puzzle happens right on this board"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0503"
+msgstr "Once you start cleansing, all nodules share one countdown."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0504"
+msgstr "Cleanse a nodule and the countdown starts over."
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0505"
+msgstr "Sprout: Those Old Clues May Fool Us Now!"
+
+#. 陆地污染再生 | 运行
+msgid "TXT_0506"
+msgstr "Pollution spreads outward by two rings, reshuffling the Pollution Cores inside."
+
+#. 操作与章节规则 | 旧版
+msgid "TXT_0507"
+msgstr "Numbers use 6 neighbors."
+
+#. 目标与游戏状态 | 运行
+msgid "TXT_0508"
+msgstr "Identify %d buoy groups · %d mines each\nAny buoy crossing the boundary means failure"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0509"
+msgstr "Controls Guide"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0510"
+msgstr "Feature Index"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0511"
+msgstr "Purpose"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0512"
+msgstr "Current Controls"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0513"
+msgstr "Feature Illustration (not interactive)"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0514"
+msgstr "Previous"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0515"
+msgstr "Next"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0516"
+msgstr "Page %d / %d"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0517"
+msgstr "Sky"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0518"
+msgstr "Universe"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0519"
+msgstr "Journey & Help"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0520"
+msgstr "Read this indicator; no click is needed."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0521"
+msgstr "Click the button."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0522"
+msgstr "Select the button with Tab or the arrow keys, then press Enter / Space."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0523"
+msgstr "Flag Counter"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0524"
+msgstr "X/Y shows flags used / total cores. Wrong and automatic flags count toward X; unflaggable nodules do not count toward Y."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0525"
+msgstr "Timer"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0526"
+msgstr "Shows elapsed time for this attempt. Pausing and mechanic introductions stop the timer."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0527"
+msgstr "Status Message"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0528"
+msgstr "Shows clearing, probing, and win/loss status. It also reports changes caused by special mechanics."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0529"
+msgstr "Objective Panel"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0530"
+msgstr "Shows the level’s completion conditions and special-objective progress. Follow the objective rather than merely filling the flag counter."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0531"
+msgstr "Controls Strip"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0532"
+msgstr "Lists board controls for the selected input mode and the current probe status."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0533"
+msgstr "Menu Button"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0534"
+msgstr "Pauses the board and timer and opens the in-game menu."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0535"
+msgstr "Click Menu or press Esc. While choosing a probe target, Esc cancels targeting first."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0536"
+msgstr "Press Esc. If probe targeting is active, Esc cancels it first."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0537"
+msgstr "Restart / Next Level Button"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0538"
+msgstr "Restarts the current level during play. After a win it continues to the next level or chapter, as shown by its label."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0539"
+msgstr "Ecology Recovery Display"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0540"
+msgstr "The ecology on the left recovers as purification progresses. It is progress feedback, not a clickable item."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0541"
+msgstr "Pollution Character Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0542"
+msgstr "The pollution character reacts to actions and the result. Its expressions do not replace number clues."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0543"
+msgstr "Starts a new journey at Land Level 1 and opens the level map."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0544"
+msgstr "Appears when a saved journey is available and opens the last played level."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0545"
+msgstr "Opens Settings. A game entered from the pause menu stays paused."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0546"
+msgstr "Quits the game."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0547"
+msgstr "Opens the Badge Hall from Home, the map, or Settings to view lasting chapter progress."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0548"
+msgstr "Map Level Node"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0549"
+msgstr "Marks a level and its unlock state. Locked grey nodes cannot be entered."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0550"
+msgstr "Click once to select it; click the glowing node again to enter."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0551"
+msgstr "Use Tab to focus an available node, then Enter / Space to select it; confirm again to enter."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0552"
+msgstr "Selected Level Information"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0553"
+msgstr "Shows the number and name of the level selected on the map."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0554"
+msgstr "Level Status"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0555"
+msgstr "Distinguishes locked, unlocked, in-progress, and completed levels."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0556"
+msgstr "Chapter Completion Counter"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0557"
+msgstr "Shows how many levels in the current chapter have been completed."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0558"
+msgstr "Best Time"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0559"
+msgstr "Shows the best completion time for the selected level, or dashes if none is recorded."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0560"
+msgstr "Opens the previous chapter’s map. Land has no previous chapter."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0561"
+msgstr "Opens the next chapter’s map. From Sky, this button enters the Endless Universe."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0562"
+msgstr "Map Return / Enter Button"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0563"
+msgstr "Returns to the retained game if there is one; otherwise enters the selected map level."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0564"
+msgstr "Opens this element-indexed guide. Back returns to the originating map, Settings, or pause menu."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0565"
+msgstr "Returns from the map to the Home screen."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0566"
+msgstr "Immediately changes the master volume for all sounds. The setting saves automatically."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0567"
+msgstr "Drag the volume slider."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0568"
+msgstr "Focus the volume slider with Tab, then adjust it with the arrow keys."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0569"
+msgstr "Music Toggle"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0570"
+msgstr "Turns background music on or off without changing sound effects."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0571"
+msgstr "Sound Effects Toggle"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0572"
+msgstr "Turns action sound effects on or off without changing background music."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0573"
+msgstr "Chooses windowed, maximized, or borderless fullscreen mode."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0574"
+msgstr "Choose an option from the dropdown. F11 / Alt+Enter also toggles display mode."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0575"
+msgstr "Focus with Tab, choose with the arrow keys and confirm. F11 / Alt+Enter also toggles the mode."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0576"
+msgstr "Chooses mouse or keyboard controls for Land, Ocean, and Sky. The Universe board always uses mouse controls."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0577"
+msgstr "Switches between Simplified Chinese and English. Interface text updates immediately."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0578"
+msgstr "Saves Settings and returns to the origin. If opened in-game, it returns to the still-paused game."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0579"
+msgstr "Closes the pause menu and resumes the current board and timer."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0580"
+msgstr "Restarts the current level from the pause menu. In Universe it starts a new expedition."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0581"
+msgstr "Opens the level map with play paused. Universe also provides an in-game map button."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0582"
+msgstr "Leaves the current screen and returns to Home."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0583"
+msgstr "Badge Slot"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0584"
+msgstr "Badges light up for completed levels; unfinished levels remain dim."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0585"
+msgstr "Displays seven level badges for the current chapter. When opened after a win, it can continue the journey."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0586"
+msgstr "Right-click to go back. After a win, left-click an empty part of the page to continue to the next level or chapter."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0587"
+msgstr "Esc goes back. After a win, press Space / Enter to continue to the next level or chapter."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0588"
+msgstr "Badge Book Corner Button"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0589"
+msgstr "Opens the Badge Hall; it does not turn to another chapter inside the book."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0590"
+msgstr "Land Badge Book Cover"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0591"
+msgstr "Opens the badge page for Land Levels 1–7."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0592"
+msgstr "Ocean Badge Book Cover"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0593"
+msgstr "Opens the badge page for Ocean Levels 8–14."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0594"
+msgstr "Sky Badge Book Cover"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0595"
+msgstr "Opens the badge page for Sky Levels 15–21."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0596"
+msgstr "Hall Ecology Showcase"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0597"
+msgstr "Each completed level lights its ecology element. Completing a chapter adds a showcase halo."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0598"
+msgstr "Lifetime Universe Counter"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0599"
+msgstr "Counts newly generated Universe boards, not just clears. Asteroids, planets, and clusters show the units, tens, and hundreds."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0600"
+msgstr "Galaxy and Ultimate Trophy"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0601"
+msgstr "The 1,000th newly generated Universe board triggers a celebration. Its galaxy and trophy remain permanently in the Hall."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0602"
+msgstr "Wait for the celebration to open the Hall. Leave the Hall to continue the expedition."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0603"
+msgstr "Badge Hall Empty Area"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0604"
+msgstr "Leaves the Badge Hall and returns to the screen that opened it."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0605"
+msgstr "Click either mouse button in an empty area outside the showcases, ecology elements, and book covers."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0606"
+msgstr "Press Esc to go back."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0607"
+msgstr "Left-click an unflagged cell to reveal it."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0608"
+msgstr "Select a cell with the arrow keys or W S A D, then press J to reveal."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0609"
+msgstr "Right-click to place or remove a flag. Remove a flag before revealing that cell."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0610"
+msgstr "Select a cell and press K to place or remove a flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0611"
+msgstr "When the adjacent flags match the number and are all correct, double-click the number to reveal adjacent safe cells."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0612"
+msgstr "When adjacent flags match and are all correct, select the number and press J to chord."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0613"
+msgstr "On the square board, clues use the eight surrounding cells. Reveal every safe cell and complete any special objective."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0614"
+msgstr "Choose cells on the board, excluding obstacles and special cells that cannot be handled directly."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0615"
+msgstr "Hidden Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0616"
+msgstr "Number Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0617"
+msgstr "The number counts pollution in the eight surrounding cells, including uncleansed nodules. Empty safe cells can expand automatically."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0618"
+msgstr "Sprout Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0619"
+msgstr "Marks suspected pollution, not a confirmed deduction. A flag prevents directly revealing its cell."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0620"
+msgstr "Wrong Flag Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0621"
+msgstr "A flag placed on a safe cell can show the wrong-flag graphic in failure feedback. It still uses a flag slot."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0622"
+msgstr "During play, right-click to undo a mistaken flag. After failure, use Restart to try again."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0623"
+msgstr "During play, use K to remove it. After failure, select Restart."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0624"
+msgstr "Pollution Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0625"
+msgstr "Revealing a Pollution Core causes failure, exposing its polluted graphic. Flag a deduced core instead of testing it."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0626"
+msgstr "Keyboard Cell Focus"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0627"
+msgstr "Marks the cell currently selected by keyboard, not a guaranteed safe cell."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0628"
+msgstr "In mouse mode, point directly at the target cell."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0629"
+msgstr "First Safe Suggestion"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0630"
+msgstr "Sprout can point out a safe starting cell during opening guidance. It is a suggestion; another cell may be chosen."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0631"
+msgstr "Left-click the cell indicated by the guide."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0632"
+msgstr "Press J to begin at the suggested cell."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0633"
+msgstr "Obstacle Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0634"
+msgstr "Leave obstacles in place and clear the other cells."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0635"
+msgstr "Pollution Nodule"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0636"
+msgstr "A nodule is a special core included in number clues. It cannot be revealed, flagged, or probed directly."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0637"
+msgstr "Shared Nodule Countdown"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0638"
+msgstr "The first valid reveal starts the shared countdown; cleansing a nodule resets it. Expiry begins another cycle until the nodules are resolved."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0639"
+msgstr "Use the countdown to prioritize cells around nodules before another spread."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0640"
+msgstr "Nodule Regrowth Area"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0641"
+msgstr "After regrowth, reread clues in both rings instead of relying on old flags and deductions."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0642"
+msgstr "Polluted Roots"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0643"
+msgstr "The ancient tree has three root systems made of linked nodules. Cleanse each using the nodules’ neighbor conditions."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0644"
+msgstr "Reveal safe cells around each group and correctly flag its Pollution Cores."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0645"
+msgstr "Ancient Tree Source"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0646"
+msgstr "The central tree cannot be cleansed directly. It recovers after all three root systems are cleansed."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0647"
+msgstr "Resolve all three root systems and follow their progress in the objective panel."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0648"
+msgstr "Eco Probe Robot"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0649"
+msgstr "At full charge, resolves one eligible hidden cell: reveal it if safe, automatically flag it if polluted. Each level requires a first reveal before probing."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0650"
+msgstr "Click the robot, then left-click a target. Right-click or Esc cancels targeting."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0651"
+msgstr "Press C to target, choose a cell, then press J. K / C / Esc cancels targeting."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0652"
+msgstr "Probe Charge Lights"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0653"
+msgstr "Hex cells use their six shared edges as neighbors, except across coral walls or an unreceded tidal boundary."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0654"
+msgstr "Ocean Hidden Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0655"
+msgstr "Ocean Number Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0656"
+msgstr "Counts only currently valid hex neighbors, not Land’s eight surrounding cells."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0657"
+msgstr "Coral Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0658"
+msgstr "Marks a suspected ocean core. Flags on buoys must also be placed correctly."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0659"
+msgstr "Ocean Wrong Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0660"
+msgstr "Coral on a safe cell can show the wrong-flag graphic after failure and still counts as a used flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0661"
+msgstr "Ocean Pollution Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0662"
+msgstr "Revealing it causes failure. Deduce its location from neighboring numbers and flag it."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0663"
+msgstr "Ocean Flag Counter"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0664"
+msgstr "X/Y is flags used / total level cores, including automatic and wrong flags. Buoy mines are also level cores."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0665"
+msgstr "Coral Wall"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0666"
+msgstr "Do not count cells across the wall; continue deductions around its ends."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0667"
+msgstr "Drifting Buoy"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0668"
+msgstr "Each group has four buoys, two containing mines. Reveal the safe buoys and correctly flag the mines to stop the group."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0669"
+msgstr "Left-click safe buoys and right-click mines. Safe buoys are not automatically revealed."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0670"
+msgstr "Select a buoy, use J for safe cells and K for mines. Safe buoys are not automatically revealed."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0671"
+msgstr "Buoy Drift Interval"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0672"
+msgstr "Level 11 has two groups moving every 7 seconds; Level 12 has three moving every 6 seconds. Unresolved groups keep drifting right."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0673"
+msgstr "Resolve buoys before the next drift, prioritizing unresolved groups near the right edge."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0674"
+msgstr "Right Filter Boundary"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0675"
+msgstr "Any buoy in an unresolved group crossing the right edge causes failure, not just an unflagged mine."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0676"
+msgstr "Reveal every safe buoy and correctly flag the group’s mines before it crosses the boundary."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0677"
+msgstr "Unreceded Tidal Zone"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0678"
+msgstr "Levels 13–14 uncover zones in sequence. Covered zones cannot be revealed, flagged, or probed and have no cross-border adjacency."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0679"
+msgstr "Reveal every safe cell in the active zone to uncover the next one."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0680"
+msgstr "Tidal Border Number"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0681"
+msgstr "When the next zone uncovers, border cells become adjacent and their numbers update. Core positions do not change."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0682"
+msgstr "Reread border numbers after the tide recedes before choosing your next move."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0683"
+msgstr "Ocean Ecology Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0684"
+msgstr "Ocean ecology recovers with clearing progress; it is not a directly clickable target."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0685"
+msgstr "Ocean Pollution Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0686"
+msgstr "The ocean pollution character reacts to actions and the result."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0687"
+msgstr "Use arrows to select a face and J to reveal. W S A D rotates; R brings the selected face to the front."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0688"
+msgstr "Use arrows to select a face and K to place or remove a flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0689"
+msgstr "Hold and drag the left mouse button to rotate the sphere, then release and select a front-facing face."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0690"
+msgstr "W S A D rotates the sphere; arrows select a face; R turns the selected face to the front."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0691"
+msgstr "Hidden Cloud Face"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0692"
+msgstr "Each pentagon or hexagon is one cell. The first reveal is protected; use number clues for later moves."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0693"
+msgstr "Left-click a face to reveal it. Dragging rotates the sphere instead."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0694"
+msgstr "Cloud Number"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0695"
+msgstr "Counts pollution on faces sharing an edge, not merely a vertex. Adjacent faces on the far side also count."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0696"
+msgstr "Aircraft Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0697"
+msgstr "Marks a face you believe polluted. Breeze, Cloud Shield, and probing may also place flags automatically."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0698"
+msgstr "Sky Wrong Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0699"
+msgstr "A mistaken flag on a safe face shows a crossed-out graphic after failure and still uses a flag slot."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0700"
+msgstr "Cloud Pollution Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0701"
+msgstr "Revealing pollution normally causes failure. Cloud Shield is probabilistic, not a reliable way to test a face."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0702"
+msgstr "Sky Flag Counter"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0703"
+msgstr "X/Y shows flags used / ordinary Pollution Cores. Automatic and wrong flags count toward X; Storm Eyes have separate objective progress."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0704"
+msgstr "Breeze"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0705"
+msgstr "From Level 17, revealing a safe cloud face may bring a Breeze. It randomly reveals a safe face or flags a Pollution Core, turning the Cloud Sphere toward its target."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0706"
+msgstr "Wait for the wind to reach its target, then continue. The wind lines need no click."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0707"
+msgstr "Cloud Shield"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0708"
+msgstr "From Level 19, the Cloud Shield may block an accidental Pollution Core reveal and flag it automatically. It can succeed at most once per game and is not guaranteed."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0709"
+msgstr "Wait for the shield animation to finish, then continue deducing."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0710"
+msgstr "Storm Eye Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0711"
+msgstr "Level 20 has three Storm Eyes; Level 21 has five. The eye itself cannot be revealed, flagged, or probed directly."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0712"
+msgstr "Storm Eye Direction Arrow"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0713"
+msgstr "Drag the sphere toward the arrow to find the faces around the eye."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0714"
+msgstr "Rotate toward the arrow with W S A D, then select surrounding faces with the arrow keys."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0715"
+msgstr "Storm Eye Progress"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0716"
+msgstr "The objective tracks broken / required eyes. Eyes form in sequence; keep clearing while waiting for the next one."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0717"
+msgstr "Sky Ecology Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0718"
+msgstr "The sky ecology on the left recovers as the level is cleared."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0719"
+msgstr "Haze Character Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0720"
+msgstr "The haze character reacts to actions and the result; it is not an additional clickable enemy."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0721"
+msgstr "The Universe board is mouse-only and has no Eco Probe."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0722"
+msgstr "Star Map"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0723"
+msgstr "Adjacency follows links, not screen distance. Clearing all safe cores in the current nebula automatically advances to the next."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0724"
+msgstr "Hidden Star Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0725"
+msgstr "The first revealed core is safe. The first four nebulae also protect some linked starting neighbors; later moves still require deduction."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0726"
+msgstr "Left-click a core to reveal it."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0727"
+msgstr "Star Core Number"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0728"
+msgstr "Left-click a number to chord. Connected flags must match the number and all be correct to reveal safe cores."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0729"
+msgstr "Universe Pollution Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0730"
+msgstr "Flags suspected polluted cores; shields can also flag automatically. Flags cannot exceed the current nebula’s core total."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0731"
+msgstr "Right-click a hidden core to place or remove a flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0732"
+msgstr "Polluted Star Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0733"
+msgstr "Revealing pollution spends a shield layer and flags the core. Revealing pollution with no shield ends the expedition."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0734"
+msgstr "Deduce it from numbers and right-click to flag; do not test it with a left-click."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0735"
+msgstr "Normal Star Link"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0736"
+msgstr "Follow a silver line or cyan arc to its other endpoint and include it in deductions."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0737"
+msgstr "Curved Bridge Link"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0738"
+msgstr "A long cyan arc connects cores across star clusters. It is normal adjacency, not decoration."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0739"
+msgstr "Follow the arc to its far end and count that core with the other neighbors."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0740"
+msgstr "Purple Wormhole Link"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0741"
+msgstr "Voyage Shield"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0742"
+msgstr "An expedition starts with two shield layers. A polluted reveal spends one layer and flags the core. Revealing pollution with no shield ends the expedition, so do not use shields as probes."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0743"
+msgstr "Check the remaining layers. Revealing pollution after they are gone causes failure."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0744"
+msgstr "Universe Flag Counter"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0745"
+msgstr "Shows flags used / cores in the current nebula, not flags across the entire expedition."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0746"
+msgstr "Nebulae Cleared"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0747"
+msgstr "Counts nebulae completed in this expedition. Starting a new universe resets it."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0748"
+msgstr "Star Cores Cleared"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0749"
+msgstr "Shows the safe star cores cleared across this expedition."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0750"
+msgstr "Voyage Distance"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0751"
+msgstr "Records progress through this expedition in light-years, also shown in the failure summary."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0752"
+msgstr "Cosmic Turbulence"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0753"
+msgstr "Shows the voyage’s turbulence stage, capped at 5. It rises as more nebulae are cleared."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0754"
+msgstr "Voyage Timer"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0755"
+msgstr "Shows hours, minutes, and seconds for this expedition. Pausing or mechanic introductions stop the timer."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0756"
+msgstr "Universe Status Bar"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0757"
+msgstr "Shows generation, structure, and action feedback. Hovering a core reports its connected cores and pollution clues."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0758"
+msgstr "Hover over a core to read its information."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0759"
+msgstr "Universe Rule Strip"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0760"
+msgstr "Reminds you of link-based adjacency, mouse controls, and the absence of Eco Probe."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0761"
+msgstr "Pauses the voyage and timer and opens the Universe pause menu."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0762"
+msgstr "Click Pause Voyage or press Esc. Press Esc again to resume."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0763"
+msgstr "Abandons the expedition and generates a new map, resetting expedition counters and shields but not lifetime Hall progress."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0764"
+msgstr "Returns to the Sky chapter map, not to the next nebula."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0765"
+msgstr "Expedition Failure Summary"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0766"
+msgstr "After pollution is hit with no shield left, summarizes expedition distance, cleared nebulae, and safe cores."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0767"
+msgstr "Click New Universe to restart, or Back to Sky to return to the map."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0768"
+msgstr "Starship Warp Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0769"
+msgstr "After a nebula is cleared, the craft and trails accelerate as the board moves to the next. Cores cannot be operated during the transition."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0770"
+msgstr "Wait until the transition finishes."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0771"
+msgstr "A hidden cell may be safe or polluted. The first reveal is not normally guaranteed safe; repeated first-click mines or early losses can trigger opening assistance."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0772"
+msgstr "A hidden hex may be safe or polluted. As on Land, repeated first-click mines or early losses can trigger opening assistance."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0773"
+msgstr "Coral walls first appear in Level 10 and block adjacency across them. Cells on both sides remain playable, and the ends can be passed around."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0774"
+msgstr "Click the dropdown and choose the desired option."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0775"
+msgstr "Focus the dropdown with Tab, choose an option with the arrow keys, and confirm."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0776"
+msgstr "Level Heading"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0777"
+msgstr "Shows the current level’s number and name; it is not a clickable level selector."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0778"
+msgstr "Board Summary"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0779"
+msgstr "Shows the board’s dimensions or structure and its ordinary Pollution Core count."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0780"
+msgstr "Cell Tooltip"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0781"
+msgstr "Describes a cell’s state, restrictions, and available actions. It refers to that cell, not an extra objective."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0782"
+msgstr "Hold the pointer over a cell to read it."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0783"
+msgstr "Move the keyboard selection; read the side panels for state and controls."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0784"
+msgstr "Cleared Empty Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0785"
+msgstr "Shows no number when there is no adjacent pollution and may expand a safe area."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0786"
+msgstr "Wilted Sprout Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0787"
+msgstr "On failure, a sprout flag on a core wilts. It marks the failed attempt, not new pollution."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0788"
+msgstr "Use Restart to try again."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0789"
+msgstr "Cleansed Nodule"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0790"
+msgstr "After safe neighbors are revealed and ordinary cores correctly flagged, the nodule becomes cleansed and stops regrowing pollution."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0791"
+msgstr "Cleansed Root Segment"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0792"
+msgstr "After its nodule is cleansed, connected root segments recover, showing progress along the ancient tree’s roots."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0793"
+msgstr "Opening Assist Feedback"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0794"
+msgstr "Two consecutive first-reveal mine losses grant a safe next opening. Three consecutive losses within five moves can enlarge that opening. It is not guaranteed every game."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0795"
+msgstr "Restart and choose a cell normally. Assistance applies to the first valid reveal."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0796"
+msgstr "Ocean Cleared Empty Cell"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0797"
+msgstr "Shows no number when valid adjacent pollution is zero. Cells across reefs or unreceded tidal borders are excluded."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0798"
+msgstr "Ocean Failed Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0799"
+msgstr "On failure, coral correctly flagging pollution shows its failed state, distinct from a wrong flag."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0800"
+msgstr "Cleared Empty Cloud Face"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0801"
+msgstr "A safe face with no adjacent pollution shows no number and may expand connected safe faces."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0802"
+msgstr "Sky Failed Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0803"
+msgstr "On failure, an aircraft flag correctly placed on pollution uses its failed graphic, distinct from a crossed-out wrong flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0804"
+msgstr "Regenerate the sphere to try again."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0805"
+msgstr "Guide Continue Button"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0806"
+msgstr "Advances to the next introduction card after you read the current one."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0807"
+msgstr "Closes the mechanic introduction and returns to the board without resolving cells for you."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0808"
+msgstr "New Badge Award"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0809"
+msgstr "After a win, the current level’s badge appears. Confirm to place it in the Badge Book."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0810"
+msgstr "Click either mouse button to store it in the Badge Book."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0811"
+msgstr "Press Space / Enter to store it in the Badge Book."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0812"
+msgstr "Hub Star Core"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0813"
+msgstr "A larger ringed core connects to at least seven neighboring cores. Its ring indicates high degree, not an extra shield."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0814"
+msgstr "Follow every link to a neighbor, then left-click to reveal or right-click to flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0815"
+msgstr "Probe Target Highlight"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0816"
+msgstr "During targeting, the highlight marks an eligible probe target. Energy is not spent before confirmation; obstacles, nodules, and covered tidal cells are ineligible."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0817"
+msgstr "Left-click to confirm the target. Right-click or Esc cancels targeting."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0818"
+msgstr "Select a target and press J to confirm. K / C / Esc cancels."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0819"
+msgstr "Probe-Confirmed Flag"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0820"
+msgstr "The robot automatically flags confirmed pollution, counting it as a used flag. Unlike a manual flag, this is a confirmed result."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0821"
+msgstr "Reveal actions and first-time flag placements earn energy; three lit lamps mean 12 points. A successful probe spends the full charge; unused energy carries to the next level."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0822"
+msgstr "Tidal Zone Progress"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0823"
+msgstr "The objective shows active zone / total zones. Clear the current zone’s safe cells before the next becomes available."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0824"
+msgstr "Board Basics"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0825"
+msgstr "Numbers & Chording"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0826"
+msgstr "Cleanup Readouts"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0827"
+msgstr "Sprout’s Eco Probe"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0828"
+msgstr "Before Chording"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0829"
+msgstr "After Chording"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0830"
+msgstr "Left-click to reveal; right-click to place or remove a flag. Remove a flag before revealing its cell."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0831"
+msgstr "Select with arrows or W S A D; J reveals, K places or removes a flag."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0832"
+msgstr "Double-click a revealed number to chord. Check flag positions first: a matching count does not mean the flags are correct."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0833"
+msgstr "Select a number and press J to chord. Check flag positions first: a matching count does not mean the flags are correct."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0834"
+msgstr "Used / Total"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0835"
+msgstr "Revealing cells and flagging a cell for the first time charge Sprout. When all three lamps light up, probe once to reveal a safe target or flag pollution. Each level requires a first reveal; obstacles, special cores and covered tidal cells are excluded. Unused energy carries forward."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0836"
+msgstr "Probe Charge"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0837"
+msgstr "Choose a Target"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0838"
+msgstr "Confirmed Pollution"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0839"
+msgstr "Flags record suspected pollution but do not guarantee a correct guess. Revealing pollution directly fails the attempt; after clearing every safe cell, finish the special task shown in the objective panel."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0840"
+msgstr "A number counts pollution among the eight surrounding cells but does not show where it is. A blank means no pollution nearby and opens the connected safe area automatically."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0841"
+msgstr "The objective panel on the right shows what remains for this level, and the status panel responds to your last action. Progress on special tasks such as nodules and roots also appears in the objective panel."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0842"
+msgstr "Nodules count toward clues but cannot be revealed, flagged or probed directly. Reveal every safe neighbor and correctly flag adjacent pollution to cleanse a nodule automatically."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0843"
+msgstr "The ancient tree has three roots formed from nodule groups. Cleanse each group using the nodule rules. The tree cannot be operated directly; it recovers after all three roots are cleansed."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0844"
+msgstr "After Cleansing"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0845"
+msgstr "Obstacle cells contain no pollution and cannot be revealed, flagged or probed. There is no need to clear them; simply work around them and cleanse the other cells."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0846"
+msgstr "Ancient Tree Roots"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0847"
+msgstr "Flags record suspected pollution; revealing pollution causes failure. Besides revealing all safe cells, complete special objectives such as buoys. The flag count alone does not show completion."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0848"
+msgstr "Ocean numbers count pollution among valid edge-sharing neighbors: at most six, unlike Land’s eight. Blank cells automatically open connected safe areas."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0849"
+msgstr "The objective panel on the right tracks tasks such as buoys or tidal zones; the status panel reports current feedback. Follow the level objective rather than judging completion from the flag count above."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0850"
+msgstr "Coral walls appear from Level 10. Cells across a wall are not neighbors, and clues ignore pollution behind the wall. Unblocked shared edges still count, so keep deducing around the reef's ends."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0851"
+msgstr "Each group has four buoys, two of which are mines. Reveal every safe buoy and correctly flag both mines to stop the group; safe buoys do not open automatically."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0852"
+msgstr "Levels 13-14 uncover zones in sequence: clear every safe cell in the active zone to open the next. Covered cells cannot be revealed, flagged or probed, so finish the current zone first."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0853"
+msgstr "Drifting Buoys"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0854"
+msgstr "Tidal Zones"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0855"
+msgstr "Rotating the Sphere"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0856"
+msgstr "There are cloud faces on the far side too. Turn the area you want to see toward you to check how its faces connect."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0857"
+msgstr "Hold and drag the left mouse button to rotate the sphere."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0858"
+msgstr "W S A D rotates the Cloud Sphere; arrow keys select a cloud face, and R brings it to the front."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0859"
+msgstr "Numbers count Pollution Cores on cloud faces sharing an edge, including neighbors on the far side. Touching only at a corner does not count. Blank faces open connected safe cloud faces too."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0860"
+msgstr "The objective panel on the right shows your goal and Storm Eye cleansing progress. The status panel tells you what just happened. The ordinary flag count above excludes Storm Eyes."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0861"
+msgstr "Breeze & Cloud Shield"
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0862"
+msgstr "From Level 17, safe reveals may trigger a breeze that reveals another safe face or flags pollution, turning the sphere toward it. From Level 19, Cloud Shield may block and flag a polluted reveal, at most once per attempt. Both are random help, not substitutes for deduction."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0863"
+msgstr "Keep clearing cloud faces to bring out Storm Eyes one at a time: three in Level 20 and five in Level 21. Edge arrows point to eyes on the far side; eyes cannot be revealed, flagged or probed."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0864"
+msgstr "Finding Storm Eyes"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0865"
+msgstr "Star Core Controls"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0866"
+msgstr "Universe boards are mouse-only and have no Eco Probe. Each nebula’s first reveal is safe. Use clues afterward to distinguish safe cores from pollution; a flag still represents your judgment."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0867"
+msgstr "Left-click to reveal, right-click to place or remove a flag; hover over a core for details."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0868"
+msgstr "Numbers & Star Links"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0869"
+msgstr "Numbers count pollution at directly linked cores, regardless of distance. Silver lines, cyan arcs and purple wormholes all count as adjacency: follow each to its other end. Large rings mean at least seven neighbors, not shields."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0870"
+msgstr "Expedition Progress"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0871"
+msgstr "Flags count only the current nebula; cleared nebulae, safe cores, distance and time accumulate across the expedition. Clearing every safe core advances automatically. Turbulence rises with progress, up to level 5."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0872"
+msgstr "Shields Remaining"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0873"
+msgstr "Level Map"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0874"
+msgstr "Nodes show levels and unlock states; the panel shows the selected level and best time. Return / Enter resumes a retained game. Sky’s next chapter leads to Endless Universe."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0875"
+msgstr "Badge Book"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0876"
+msgstr "Each chapter’s seven badges light up as levels are cleared; unfinished ones stay dim. After a win, the book lets you continue the journey. Its bottom-right button opens the Hall, not another chapter."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0877"
+msgstr "Book: right-click to return; after a win, left-click blank page space to continue. Hall: click a book cover to open it; click empty space outside exhibits with either button to return."
+
+#. UI元素操作说明 | 旧版
+msgid "TXT_0878"
+msgstr "Book: Esc returns; after a win, Space / Enter continues. Hall: Esc returns."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0879"
+msgstr "Opening Help"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0880"
+msgstr "Land and Ocean first reveals are not guaranteed safe. Repeated opening mine losses or early failures in one level can grant Sprout’s optional safe suggestion. Sky protects each attempt’s first reveal; Universe protects the first reveal in each nebula."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0881"
+msgstr "Reveal & Flag"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0882"
+msgstr "Reading Numbers"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0883"
+msgstr "Chording"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0884"
+msgstr "Charging Sprout"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0885"
+msgstr "Revealing cells and flagging a cell for the first time charge Sprout. Three lit lamps provide one probe use; unused energy carries over to the next level."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0886"
+msgstr "Using the Probe"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0887"
+msgstr "A probe reveals a safe cell or automatically flags pollution. Reveal a cell first in each level; obstacles, nodules, storm eyes and covered tidal cells cannot be targeted."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0888"
+msgstr "When adjacent flags match the number, chording reveals the remaining neighbors at once. Check flag positions first: matching the count does not mean the flags are correct."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0889"
+msgstr "Double-click a revealed number to open its unflagged neighbors."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0890"
+msgstr "Select a number and press J to open its unflagged neighbors."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0891"
+msgstr "Cleansing Nodules"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0892"
+msgstr "Countdown & Regrowth"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0893"
+msgstr "The first valid reveal starts the shared countdown, and cleansing a nodule resets it. On expiry the timer restarts and cores within two surrounding rings reshuffle. Previous clues and flags are no longer reliable, so reassess."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0894"
+msgstr "Stopping Buoys"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0895"
+msgstr "Drift & Boundary"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0896"
+msgstr "Level 11 has two groups drifting right one turn every 7 seconds; Level 12 has three groups every 6 seconds. Unresolved groups keep drifting, and any buoy crossing the right boundary fails the run, not just mines."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0897"
+msgstr "Waiting for Low Tide"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0898"
+msgstr "Numbers After the Tide"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0899"
+msgstr "Covered tidal borders block adjacency; the two sides connect only after the tide recedes, and border clues update accordingly. Pollution Cores have not moved, so reread the clues before moving on."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0900"
+msgstr "Before Receding"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0901"
+msgstr "After Receding"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0940"
+msgstr "Each pentagon or hexagon is one cloud face. Flag faces where you suspect a Pollution Core. Your first reveal each attempt is safe; later polluted reveals usually mean failure, so follow the number clues."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0941"
+msgstr "Arrow keys select a cloud face; J reveals it, and K places or removes a flag."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0942"
+msgstr "Cleansing Storm Eyes"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0943"
+msgstr "Reveal all safe neighbors and correctly flag every surrounding Pollution Core to cleanse a Storm Eye automatically. Cleansing all eyes clears the level without clearing the whole sphere; track progress in the objective panel."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0944"
+msgstr "Connected flags must match the number and all be correct before the remaining neighbors can open. Incorrect flags block chording; follow the links and check their positions again."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0945"
+msgstr "Left-click a revealed number once to try opening its unflagged linked cores."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0946"
+msgstr "Shield Recovery"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0947"
+msgstr "Clearing Board 7 restores one shield layer. Every five boards cleared after that restores another, up to two layers; a full shield cannot store extra layers."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0948"
+msgstr "A New Expedition"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0949"
+msgstr "Failure summarizes the expedition. New Universe resets its counters and shields, but keeps lifetime Hall progress. Back to Sky opens the map rather than advancing to the next nebula."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0950"
+msgstr "The Hall gathers chapter achievements; book covers lead to their badge books. The Universe display counts all boards generated over your lifetime, not just clears. New expeditions do not reset it."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0951"
+msgstr "Left-click a book cover to open it; click empty space outside exhibits with any mouse button to return."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0952"
+msgstr "Top Flag Counter"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0953"
+msgstr "Top Elapsed Time"
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0954"
+msgstr "The left counter shows flags used / total flaggable cores. Automatic and wrong flags count too."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0955"
+msgstr "The right counter records this attempt’s time. It pauses with the game."
+
+#. UI元素操作说明 | 运行
+msgid "TXT_0956"
+msgstr "Use a probe on a cloud face you are unsure about: it reveals a safe face or flags a Pollution Core. Reveal a cloud face first in each level to enable probing. Storm Eyes cannot be probed."
+
+#. 天空引导 | 运行
+msgid "TXT_0957"
+msgstr "Press WASD to rotate the Cloud Sphere."

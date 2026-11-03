@@ -25,7 +25,7 @@ const SKY_MECHANIC_GUIDES := {
 		"id": &"sky_sphere",
 		"pages": [
 			{"title": "TXT_0299", "text": "TXT_0300", "hint": "TXT_0301"},
-			{"title": "TXT_0302", "text": "TXT_0303", "hint": "TXT_0304"},
+			{"title": "TXT_0302", "text": "TXT_0303", "keyboard_text": "TXT_0957", "hint": "TXT_0304"},
 		],
 	},
 	17: {
@@ -306,10 +306,7 @@ func _prepare_copied_interface() -> void:
 	subtitle_label.text = tr("TXT_0097")
 	level_summary_label.text = tr("TXT_0103")
 	objective_label.text = tr("TXT_0123")
-	instructions_label.text = (
-		tr("TXT_0226")
-		+ tr("TXT_0227")
-	)
+	_refresh_instructions()
 	flags_label.text = "0/6"
 	status_label.text = tr("TXT_0228")
 	pause_overlay.visible = false
@@ -456,6 +453,9 @@ func set_operation_mode(mode: int) -> void:
 	_operation_mode = 1 if mode == 1 else 0
 	if is_instance_valid(_sky_board):
 		_sky_board.call("set_operation_mode", _operation_mode)
+	if is_node_ready():
+		first_move_guide.set_keyboard_mode(_operation_mode == 1)
+		_refresh_scan_ui()
 
 
 func refresh_localized_interface() -> void:
@@ -473,10 +473,7 @@ func refresh_localized_interface() -> void:
 		face_count,
 		core_count,
 	]
-	instructions_label.text = (
-		tr("TXT_0226")
-		+ tr("TXT_0227")
-	)
+	_refresh_instructions()
 	if _total_boss_eyes > 0:
 		objective_label.text = (
 			tr("TXT_0126")
@@ -559,7 +556,7 @@ func _show_level_mechanic_guide() -> void:
 	first_move_guide.show_dialogue(
 		guide_id,
 		pages,
-		false,
+		_operation_mode == 1,
 		_sky_guide_target_global_position(guide_id)
 	)
 
@@ -835,6 +832,17 @@ func _finish_scan_ability() -> void:
 	_refresh_scan_ui()
 
 
+func _refresh_instructions() -> void:
+	var controls_key := "TXT_0227" if _operation_mode == 1 else "TXT_0226"
+	instructions_label.text = tr(controls_key) + "\n" + _scan_status_text()
+
+
+func _scan_status_text() -> String:
+	if _scan_phase == ScanPhase.READY:
+		return tr("TXT_0187") if _operation_mode == 1 else tr("TXT_0498")
+	return tr("TXT_0497")
+
+
 func _refresh_scan_ui() -> void:
 	var locked := _scan_phase == ScanPhase.LOCKED_FIRST_REVEAL
 	var finished := _scan_phase == ScanPhase.FINISHED
@@ -853,10 +861,8 @@ func _refresh_scan_ui() -> void:
 	)
 	var tooltip := tr("TXT_0203")
 	match _scan_phase:
-		ScanPhase.CHARGING:
-			tooltip = tr("TXT_0186") % [_scan_energy, SCAN_CAPACITY]
-		ScanPhase.READY:
-			tooltip = tr("TXT_0188")
+		ScanPhase.CHARGING, ScanPhase.READY:
+			tooltip = _scan_status_text()
 		ScanPhase.TARGETING:
 			tooltip = tr("TXT_0190")
 		ScanPhase.RESOLVING:
@@ -864,6 +870,7 @@ func _refresh_scan_ui() -> void:
 		ScanPhase.FINISHED:
 			tooltip = tr("TXT_0192")
 	tabletop_actors.call("set_scan_activation_enabled", enabled, tooltip)
+	_refresh_instructions()
 
 
 func _start_timer() -> void:
