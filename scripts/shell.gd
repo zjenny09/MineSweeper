@@ -1232,7 +1232,17 @@ func _create_level_marker(level: Dictionary) -> void:
 		button.add_theme_stylebox_override("pressed", marker_style.duplicate())
 		button.add_theme_stylebox_override("disabled", marker_style.duplicate())
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	button.add_theme_font_size_override("font_size", 13)
+	# Markers manage their own bilingual typography: the global localization
+	# pass would otherwise shrink English numerals to ~10px.
+	button.set_meta(&"localization_style_skip", true)
+	var marker_english: bool = save_store.get_language() == LANGUAGE_ENGLISH
+	if marker_english:
+		button.add_theme_font_override(
+			"font", load("res://assets/fonts/PatrickHand-Regular.ttf")
+		)
+	button.add_theme_font_size_override(
+		"font_size", 20 if marker_english else 13
+	)
 	button.add_theme_constant_override("outline_size", 1)
 	button.pressed.connect(_on_level_marker_pressed.bind(level_number))
 	marker_root.add_child(button)
